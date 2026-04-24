@@ -958,13 +958,17 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
 }
 
 /* ════════════════════════════════════════════════════════════ */
-/* DESKTOP PRINT STYLES (unchanged from original) */
+/* DESKTOP PRINT STYLES (NO PAGE TITLES) */
 /* ════════════════════════════════════════════════════════════ */
 @media print and (min-width: 1025px) {
   @page { 
     size: letter portrait; 
-    margin: 0.01in 0.01in;
+    margin: 0.5in 0.5in;
     padding: 0;
+  }
+
+  @page :first {
+    margin-top: 0.3in;
   }
 
   * { 
@@ -989,15 +993,20 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
     margin: 0 !important;
     padding: 0 !important;
     background: #ffffff !important;
-    border: 2px solid #D97706 !important;
+    border: none !important;
     min-height: auto !important;
     display: flex !important;
     flex-direction: column !important;
+    page-break-after: always;
+  }
+
+  .page:last-of-type {
+    page-break-after: avoid;
   }
 
   .toolbar { display: none !important; }
   .page::before, .page::after,
-  .page-corner-bl, .page-corner-br { display: block !important; }
+  .page-corner-bl, .page-corner-br { display: none !important; }
   .header::after { display: none !important; }
   .section-header::before { animation: none !important; }
 
@@ -1028,6 +1037,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
     background: #ffffff !important;
     border-color: #D97706 !important;
     margin-bottom: 6px !important;
+    page-break-inside: avoid !important;
   }
 
   .section::before { background: none !important; }
@@ -1050,6 +1060,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
     background: #ffffff !important;
     border-color: #D97706 !important;
     margin-bottom: 6px !important;
+    page-break-inside: avoid !important;
   }
 
   .top-grid::before { background: none !important; }
@@ -1074,6 +1085,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
     background: #ffffff !important;
     border-color: #D97706 !important;
     margin-bottom: 6px !important;
+    page-break-inside: avoid !important;
   }
 
   .flood-item {
@@ -1718,7 +1730,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
 
   <div class="footer">
     <span class="footer-text">GENERATOR INSTALLATION ESTIMATE · CONFIDENTIAL</span>
-    <span style="font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--text-dim);">BLANK TEMPLATE    Ver.1.0</span>
+    <span style="font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--text-dim);">BLANK TEMPLATE</span>
   </div>
 
 </div>
