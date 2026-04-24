@@ -259,10 +259,11 @@ body.offline { padding-top: 50px; }
 
 /* ── CONTENT ── */
 .content { 
-  padding: 14px 18px;
+  padding: 8px 14px;
   display: flex;
   flex-direction: column;
   flex: 1;
+  overflow-y: auto;
 }
 
 @media (max-width: 480px) { .content { padding: 10px 8px; } }
@@ -270,9 +271,11 @@ body.offline { padding-top: 50px; }
 /* ── SECTIONS ── */
 .section {
   border: 1px solid var(--border);
-  margin-bottom: 10px;
+  margin-bottom: 6px;
   background: #FFFFFF;
   position: relative;
+  page-break-inside: avoid;
+  break-inside: avoid;
 }
 
 .section::before {
@@ -289,7 +292,7 @@ body.offline { padding-top: 50px; }
   font-family: var(--font-display);
   font-size: 0.7rem;
   letter-spacing: 4px;
-  padding: 6px 16px;
+  padding: 4px 12px;
   border-bottom: 1px solid var(--border);
   text-shadow: 0 0 6px rgba(217,119,6,0.15);
   font-weight: 500;
@@ -313,7 +316,9 @@ body.offline { padding-top: 50px; }
   50% { opacity: 0.4; transform: scale(0.7); }
 }
 
-.section-body { padding: 10px 14px; }
+.section-body { 
+  padding: 6px 10px;
+}
 
 @media (max-width: 480px) { .section-body { padding: 8px 8px; } }
 
@@ -323,9 +328,11 @@ body.offline { padding-top: 50px; }
   grid-template-columns: 1fr 1fr;
   gap: 0;
   border: 1px solid var(--border);
-  margin-bottom: 10px;
+  margin-bottom: 6px;
   background: #FFFFFF;
   position: relative;
+  page-break-inside: avoid;
+  break-inside: avoid;
 }
 
 .top-grid::before {
@@ -341,7 +348,7 @@ body.offline { padding-top: 50px; }
   .top-col:first-child { border-right: none !important; border-bottom: 1px solid var(--border); }
 }
 
-.top-col { padding: 12px 14px; }
+.top-col { padding: 8px 10px; }
 .top-col:first-child { border-right: 1px solid var(--border); }
 
 /* ── COL LABEL ── */
@@ -357,7 +364,7 @@ body.offline { padding-top: 50px; }
   font-size: 0.6rem;
   letter-spacing: 3px;
   padding: 3px 12px 3px 8px;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
   text-shadow: 0 0 6px rgba(217,119,6,0.1);
   font-weight: 500;
 }
@@ -367,7 +374,7 @@ body.offline { padding-top: 50px; }
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-bottom: 7px;
+  margin-bottom: 5px;
   flex-wrap: wrap;
 }
 .field-row:last-child { margin-bottom: 0; }
@@ -458,9 +465,9 @@ textarea {
 textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0.1); }
 
 /* ── GRIDS ── */
-.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 10px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 6px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 6px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 6px; }
 
 @media (max-width: 600px) {
   .grid-2 { grid-template-columns: 1fr; }
@@ -589,7 +596,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   display: flex;
   align-items: center;
   gap: 7px;
-  margin-bottom: 9px;
+  margin-bottom: 6px;
   flex-wrap: wrap;
 }
 
@@ -607,7 +614,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
 .divider {
   border: none;
   border-top: 1px solid rgba(217,119,6,0.15);
-  margin: 8px 0;
+  margin: 6px 0;
   position: relative;
   background: #FFFFFF;
 }
@@ -631,15 +638,17 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   display: flex;
   border: 1px solid var(--border);
   border-top: none;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
   flex-wrap: wrap;
   background: #FFFFFF;
+  page-break-inside: avoid;
+  break-inside: avoid;
 }
 
 .flood-item {
   flex: 1;
   min-width: 130px;
-  padding: 2px 14px;
+  padding: 2px 12px;
   border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
@@ -729,8 +738,8 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
 /* ── GAS APPLIANCES BOX ── */
 .gas-appliances-box {
   border: 1px solid rgba(217,119,6,0.2);
-  padding: 10px 12px;
-  margin-bottom: 10px;
+  padding: 8px 10px;
+  margin-bottom: 6px;
   background: #FFFFFF;
   position: relative;
 }
@@ -748,14 +757,14 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   font-size: 0.6rem;
   letter-spacing: 3px;
   color: var(--text-muted);
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   text-transform: uppercase;
 }
 
 /* ── FOOTER ── */
 .footer {
   background: #FFFFFF;
-  padding: 10px 22px;
+  padding: 6px 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -764,6 +773,8 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   border-top: 1px solid var(--border-bright);
   margin-top: auto;
   flex-shrink: 0;
+  page-break-before: avoid;
+  break-before: avoid;
 }
 
 .footer-text {
@@ -779,10 +790,10 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
 ::-webkit-scrollbar-thumb { background: rgba(217,119,6,0.3); border-radius: 0; }
 ::-webkit-scrollbar-thumb:hover { background: var(--cyan-dim); }
 
-/* ── PRINT (OPTIMIZED) ── */
+/* ── PRINT (OPTIMIZED FOR SINGLE PAGE) ── */
 @page { 
   size: letter portrait; 
-  margin: 0.01in 0.01in;
+  margin: 0.3in 0.3in;
   padding: 0;
   @top-left { content: none; }
   @top-center { content: none; }
@@ -804,6 +815,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
     padding: 0 !important;
     margin: 0 !important;
     width: auto !important;
+    height: auto !important;
   }
 
   #offline-banner { display: none !important; }
@@ -816,10 +828,11 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
     padding: 0 !important;
     background: #ffffff !important;
     border: 2px solid #D97706 !important;
-    min-height: 100vh !important;
+    min-height: auto !important;
+    height: auto !important;
     display: flex !important;
     flex-direction: column !important;
-    height: auto !important;
+    page-break-after: always !important;
   }
 
   .page::before, .page::after,
@@ -829,103 +842,118 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   .header::after { display: none !important; }
   .section-header::before { animation: none !important; }
 
-  /* ── HEADER (Larger sizing) ── */
+  /* ── HEADER (Compact for print) ── */
   .header {
     background: #ffffff !important;
-    border-bottom-color: #D97706 !important;
-    page-break-after: avoid;
-    break-after: avoid;
-    padding: 6px 20px !important;
-    min-height: 60px !important;
+    border-bottom: 1px solid #D97706 !important;
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+    padding: 4px 16px !important;
+    min-height: 50px !important;
     margin: 0 !important;
     flex-shrink: 0 !important;
   }
 
-  .header-logo { gap: 10px; }
-  .logo-img { width: 48px !important; height: 48px !important; }
-  .company-name { font-size: 1.05rem !important; color: #D97706 !important; text-shadow: none !important; letter-spacing: 3px !important; }
-  .doc-title { color: #D97706 !important; text-shadow: none !important; font-size: 0.75rem !important; letter-spacing: 5px !important; }
+  .header-logo { gap: 8px !important; }
+  .logo-img { width: 40px !important; height: 40px !important; }
+  .company-name { 
+    font-size: 0.95rem !important; 
+    color: #D97706 !important; 
+    text-shadow: none !important; 
+    letter-spacing: 2.5px !important; 
+    line-height: 1.1 !important;
+  }
+  .doc-title { 
+    color: #D97706 !important; 
+    text-shadow: none !important; 
+    font-size: 0.7rem !important; 
+    letter-spacing: 4px !important; 
+  }
 
-  /* ── CONTENT (Enlarged spacing) ── */
+  /* ── CONTENT (Minimized spacing) ── */
   .content { 
-    padding: 6px 14px !important; 
+    padding: 4px 10px !important; 
     background: #ffffff !important;
     margin: 0 !important;
     flex: 1 !important;
-    overflow: hidden !important;
+    overflow: visible !important;
   }
   
   .section { 
     background: #ffffff !important;
-    border-color: #D97706 !important;
-    margin-bottom: 6px !important;
+    border: 1px solid #D97706 !important;
+    margin-bottom: 4px !important;
     page-break-inside: avoid !important;
   }
 
   .section::before { background: none !important; }
 
   .section-header { 
-    padding: 4px 14px !important; 
+    padding: 3px 10px !important; 
     background: #f5f5f5 !important;
     color: #D97706 !important;
-    border-bottom-color: #D97706 !important;
+    border-bottom: 1px solid #D97706 !important;
     text-shadow: none !important;
-    font-size: 0.72rem !important;
-    letter-spacing: 4.5px !important;
+    font-size: 0.65rem !important;
+    letter-spacing: 3.5px !important;
   }
 
   .section-body { 
-    padding: 6px 12px !important; 
+    padding: 4px 8px !important; 
     background: #ffffff !important;
   }
   
   .top-grid {
     background: #ffffff !important;
-    border-color: #D97706 !important;
-    margin-bottom: 6px !important;
+    border: 1px solid #D97706 !important;
+    margin-bottom: 4px !important;
     page-break-inside: avoid !important;
   }
 
   .top-grid::before { background: none !important; }
   
   .top-col { 
-    padding: 6px 12px !important; 
+    padding: 4px 8px !important; 
     border-color: #D97706 !important;
     background: #ffffff !important;
   }
 
   .col-label {
     background: #f5f5f5 !important;
-    border-color: #D97706 !important;
+    border: 1px solid #D97706 !important;
+    border-left: 3px solid #D97706 !important;
     color: #D97706 !important;
     text-shadow: none !important;
-    font-size: 0.68rem !important;
-    padding: 3px 12px 3px 8px !important;
-    margin-bottom: 6px !important;
-    letter-spacing: 3.5px !important;
+    font-size: 0.62rem !important;
+    padding: 2px 10px 2px 6px !important;
+    margin-bottom: 4px !important;
+    letter-spacing: 3px !important;
   }
 
   .flood-bar {
     background: #ffffff !important;
-    border-color: #D97706 !important;
-    margin-bottom: 6px !important;
+    border: 1px solid #D97706 !important;
+    margin-bottom: 4px !important;
+    page-break-inside: avoid !important;
   }
 
   .flood-item {
-    border-color: #D97706 !important;
+    border-right: 1px solid #D97706 !important;
     background: #ffffff !important;
-    padding: 3px 10px !important;
+    padding: 2px 8px !important;
     gap: 1px !important;
   }
 
-  .field-row { margin-bottom: 5px !important; }
-  .inline-row { margin-bottom: 5px !important; }
-  .grid-2, .grid-3, .grid-4 { margin-bottom: 5px !important; gap: 4px !important; }
+  .flood-item:last-child { border-right: none !important; }
+
+  .field-row { margin-bottom: 3px !important; }
+  .inline-row { margin-bottom: 3px !important; }
+  .grid-2, .grid-3, .grid-4 { margin-bottom: 3px !important; gap: 3px !important; }
 
   label {
     color: #6B7280 !important;
-    font-size: 0.63rem !important;
-    letter-spacing: 2px !important;
+    font-size: 0.58rem !important;
+    letter-spacing: 1.5px !important;
   }
 
   input[type="text"], 
@@ -936,37 +964,37 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   textarea, 
   select {
     background: #ffffff !important;
-    border-bottom-color: #D97706 !important;
+    border-bottom: 2px solid #D97706 !important;
     color: #1F2937 !important;
-    min-height: 22px !important;
-    padding: 2px 4px !important;
-    font-size: 0.82rem !important;
+    min-height: 18px !important;
+    padding: 2px 3px !important;
+    font-size: 0.75rem !important;
   }
 
   textarea { 
-    min-height: 24px !important; 
+    min-height: 20px !important; 
     background: #ffffff !important;
-    border-color: #D97706 !important;
-    padding: 4px !important;
+    border: 1px solid #D97706 !important;
+    padding: 3px !important;
   }
 
   .yn-group { 
-    border-color: #D97706 !important;
+    border: 1px solid #D97706 !important;
     background: #ffffff !important;
   }
 
   .yn-group .yn-label { 
-    min-height: 22px !important; 
-    padding: 0 12px !important; 
+    min-height: 18px !important; 
+    padding: 0 10px !important; 
     color: #6B7280 !important;
     border-color: #D97706 !important;
     background: transparent !important;
-    font-size: 0.66rem !important;
-    letter-spacing: 2.5px !important;
+    font-size: 0.6rem !important;
+    letter-spacing: 1.5px !important;
   }
 
   .yn-group .yn-label:first-of-type { 
-    border-right-color: #D97706 !important; 
+    border-right: 1px solid #D97706 !important; 
   }
 
   .yn-group .yn-y:checked + .yn-label-y {
@@ -984,17 +1012,17 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   }
 
   .check-item { 
-    min-height: 22px !important; 
+    min-height: 18px !important; 
     padding: 2px 6px 2px 4px !important; 
     background: #ffffff !important;
-    border-color: #D97706 !important;
+    border: 1px solid #D97706 !important;
   }
 
   .check-item span {
     color: #1F2937 !important;
     text-shadow: none !important;
-    font-size: 0.62rem !important;
-    letter-spacing: 1.2px !important;
+    font-size: 0.56rem !important;
+    letter-spacing: 0.8px !important;
   }
 
   .check-item:has(input:checked) {
@@ -1009,10 +1037,10 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   }
 
   .gas-appliances-box {
-    border-color: #D97706 !important;
+    border: 1px solid #D97706 !important;
     background: #ffffff !important;
-    margin-bottom: 6px !important;
-    padding: 6px 12px !important;
+    margin-bottom: 4px !important;
+    padding: 4px 8px !important;
   }
 
   .gas-appliances-box::before {
@@ -1021,31 +1049,31 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
 
   .gas-appliances-label {
     color: #6B7280 !important;
-    font-size: 0.66rem !important;
-    margin-bottom: 4px !important;
-    letter-spacing: 3.5px !important;
+    font-size: 0.6rem !important;
+    margin-bottom: 3px !important;
+    letter-spacing: 3px !important;
   }
 
   .divider {
-    border-top-color: #D97706 !important;
+    border-top: 1px solid #D97706 !important;
     background: #ffffff !important;
-    margin: 4px 0 !important;
+    margin: 3px 0 !important;
   }
 
   .divider::before {
     background: #ffffff !important;
     color: #D97706 !important;
-    font-size: 0.65rem !important;
+    font-size: 0.58rem !important;
   }
 
-  /* ── FOOTER (Anchored to bottom, larger) ── */
+  /* ── FOOTER (Bottom anchored, compact) ── */
   .footer {
     background: #ffffff !important;
-    border-top-color: #D97706 !important;
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
-    padding: 6px 14px !important;
-    font-size: 0.6rem !important;
+    border-top: 1px solid #D97706 !important;
+    page-break-before: avoid !important;
+    break-before: avoid !important;
+    padding: 4px 12px !important;
+    font-size: 0.55rem !important;
     margin-top: auto !important;
     flex-shrink: 0 !important;
     min-height: auto !important;
@@ -1053,12 +1081,12 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
 
   .footer-text {
     color: #D97706 !important;
-    font-size: 0.6rem !important;
-    letter-spacing: 2.5px !important;
+    font-size: 0.55rem !important;
+    letter-spacing: 2px !important;
   }
 
   #address-suggestions, #gps-status, #gps-btn { display: none !important; }
-  #address { padding-right: 6px !important; }
+  #address { padding-right: 4px !important; }
 
   /* ── PAGE BREAK PREVENTION ── */
   .section { page-break-inside: avoid !important; }
@@ -1444,7 +1472,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
             <label class="check-item"><input type="checkbox" name="pad" value="existing" aria-label="Existing pad"><span>Existing</span></label>
           </div>
         </div>
-        <div class="field-block" style="margin-top:10px;">
+        <div class="field-block" style="margin-top:6px;">
           <textarea id="pad_notes" name="pad_notes" placeholder="Additional pad notes..." aria-label="Pad notes"></textarea>
         </div>
       </div>
@@ -1487,7 +1515,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
 
       <div class="section-body">
 
-        <div class="inline-row" style="margin-bottom:14px;">
+        <div class="inline-row" style="margin-bottom:8px;">
           <div class="check-group">
             <label class="check-item"><input type="checkbox" name="fuel_type" value="natural_gas" aria-label="Natural gas fuel"><span>Natural Gas</span></label>
             <label class="check-item"><input type="checkbox" name="fuel_type" value="needs_tank" aria-label="Needs propane tank"><span>Needs Tank</span></label>
@@ -1500,7 +1528,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
 
         <div class="gas-appliances-box">
           <div class="gas-appliances-label">Existing Gas Appliances</div>
-          <div class="check-group" style="margin-bottom:10px;">
+          <div class="check-group" style="margin-bottom:6px;">
             <label class="check-item"><input type="checkbox" name="gas_appliances" value="range" aria-label="Gas range"><span>Range</span></label>
             <label class="check-item"><input type="checkbox" name="gas_appliances" value="cooktop" aria-label="Gas cooktop"><span>Cooktop</span></label>
             <label class="check-item"><input type="checkbox" name="gas_appliances" value="oven" aria-label="Gas oven"><span>Oven</span></label>
@@ -1516,7 +1544,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
           </div>
         </div>
 
-        <div class="grid-4" style="margin-bottom:14px;">
+        <div class="grid-4" style="margin-bottom:8px;">
           <div class="field-block">
             <label for="fuel_underground">Underground (ft)</label>
             <input type="number" id="fuel_underground" name="fuel_underground" inputmode="numeric" autocomplete="off" aria-label="Underground fuel line footage">
@@ -1529,7 +1557,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
             <label for="fuel_attic">Attic (ft)</label>
             <input type="number" id="fuel_attic" name="fuel_attic" inputmode="numeric" autocomplete="off" aria-label="Attic fuel line footage">
           </div>
-          <div class="field-block" style="display:flex;flex-direction:column;gap:6px;">
+          <div class="field-block" style="display:flex;flex-direction:column;gap:4px;">
             <label>Bore</label>
             <div class="yn-group">
               <input type="radio" name="bore_fuel" id="bf_y" value="Y" class="yn-y" aria-label="Bore fuel line yes">
