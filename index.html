@@ -60,6 +60,9 @@ body {
   position: relative;
   margin-top: 0px;
   padding-top: 0px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 /* Corner accents */
@@ -107,6 +110,7 @@ body {
   page-break-after: avoid;
   break-after: avoid;
   margin: 0;
+  flex-shrink: 0;
 }
 
 .header::after {
@@ -204,6 +208,7 @@ body.offline { padding-top: 50px; }
   gap: 6px;
   align-items: center;
   flex-wrap: wrap;
+  flex-shrink: 0;
 }
 
 .btn {
@@ -257,6 +262,7 @@ body.offline { padding-top: 50px; }
   padding: 14px 18px;
   display: flex;
   flex-direction: column;
+  flex: 1;
 }
 
 @media (max-width: 480px) { .content { padding: 10px 8px; } }
@@ -756,7 +762,8 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   flex-wrap: wrap;
   gap: 6px;
   border-top: 1px solid var(--border-bright);
-  margin-top: auto;
+  margin-top: 0;
+  flex-shrink: 0;
 }
 
 .footer-text {
@@ -772,11 +779,191 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
 ::-webkit-scrollbar-thumb { background: rgba(217,119,6,0.3); border-radius: 0; }
 ::-webkit-scrollbar-thumb:hover { background: var(--cyan-dim); }
 
-/* ── PRINT ── */
-@media print {
+/* ════════════════════════════════════════════════════════════ */
+/* MOBILE-SPECIFIC PRINT STYLES (for 1-page mobile printing) */
+/* ════════════════════════════════════════════════════════════ */
+@media print and (max-width: 1024px) {
+  body {
+    width: 100% !important;
+    padding: 0 !important;
+  }
+
+  .page {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: 1px solid #D97706 !important;
+  }
+
+  .page::before, .page::after,
+  .page-corner-bl, .page-corner-br {
+    display: none !important;
+  }
+
+  /* Tighter spacing for mobile */
+  .header {
+    padding: 4px 10px !important;
+    min-height: auto !important;
+    margin: 0 !important;
+  }
+
+  .logo-img {
+    width: 35px !important;
+    height: 35px !important;
+  }
+
+  .company-name {
+    font-size: 0.85rem !important;
+    line-height: 1.1 !important;
+  }
+
+  .doc-title {
+    font-size: 0.55rem !important;
+    letter-spacing: 2px !important;
+  }
+
+  .content {
+    padding: 4px 6px !important;
+  }
+
+  .section {
+    margin-bottom: 4px !important;
+    border: 1px solid #D97706 !important;
+  }
+
+  .section-header {
+    padding: 2px 8px !important;
+    font-size: 0.58rem !important;
+    letter-spacing: 2px !important;
+  }
+
+  .section-body {
+    padding: 3px 6px !important;
+  }
+
+  .top-grid {
+    margin-bottom: 4px !important;
+  }
+
+  .top-col {
+    padding: 3px 6px !important;
+  }
+
+  .col-label {
+    font-size: 0.54rem !important;
+    padding: 1px 6px 1px 4px !important;
+    margin-bottom: 6px !important;
+  }
+
+  .field-row {
+    margin-bottom: 2px !important;
+  }
+
+  .inline-row {
+    margin-bottom: 3px !important;
+  }
+
+  .flood-bar {
+    margin-bottom: 4px !important;
+  }
+
+  .flood-item {
+    padding: 1px 4px !important;
+    gap: 0 !important;
+  }
+
+  label {
+    font-size: 0.50rem !important;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="date"],
+  input[type="number"],
+  textarea,
+  select {
+    min-height: 16px !important;
+    padding: 0.5px 2px !important;
+    font-size: 0.70rem !important;
+    border-bottom: 1px solid #D97706 !important;
+  }
+
+  textarea {
+    min-height: 18px !important;
+  }
+
+  .yn-group {
+    min-height: 16px !important;
+  }
+
+  .yn-group .yn-label {
+    padding: 0 6px !important;
+    font-size: 0.52rem !important;
+    min-height: 16px !important;
+  }
+
+  .check-item {
+    min-height: 16px !important;
+    padding: 0 4px !important;
+    font-size: 0.50rem !important;
+  }
+
+  .check-item input[type="checkbox"],
+  .check-item input[type="radio"] {
+    width: 12px !important;
+    height: 12px !important;
+    min-height: 12px !important;
+    min-width: 12px !important;
+  }
+
+  .gas-appliances-box {
+    padding: 6px 8px !important;
+    margin-bottom: 4px !important;
+  }
+
+  .gas-appliances-label {
+    font-size: 0.50rem !important;
+    margin-bottom: 4px !important;
+  }
+
+  .grid-2, .grid-3, .grid-4 {
+    gap: 2px !important;
+    margin-bottom: 3px !important;
+  }
+
+  .divider {
+    margin: 2px 0 !important;
+  }
+
+  .divider::before {
+    font-size: 0.48rem !important;
+  }
+
+  .footer {
+    padding: 4px 8px !important;
+    font-size: 0.48rem !important;
+  }
+
+  .footer-text {
+    font-size: 0.48rem !important;
+  }
+
+  /* Prevent page breaks in critical areas */
+  .header { page-break-after: avoid !important; }
+  .section { page-break-inside: avoid !important; }
+  .top-grid { page-break-inside: avoid !important; }
+}
+
+/* ════════════════════════════════════════════════════════════ */
+/* DESKTOP PRINT STYLES (unchanged from original) */
+/* ════════════════════════════════════════════════════════════ */
+@media print and (min-width: 1025px) {
   @page { 
     size: letter portrait; 
-    margin: 0in 0in;
+    margin: 0.01in 0.01in;
     padding: 0;
   }
 
@@ -790,8 +977,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
     background-image: none !important;
     padding: 0 !important;
     margin: 0 !important;
-    width: 100% !important;
-    max-width: 8.5in !important;
+    width: auto !important;
   }
 
   #offline-banner { display: none !important; }
@@ -804,8 +990,9 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
     padding: 0 !important;
     background: #ffffff !important;
     border: 2px solid #D97706 !important;
-    page-break-after: avoid !important;
-    break-after: avoid !important;
+    min-height: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
   }
 
   .toolbar { display: none !important; }
@@ -817,59 +1004,58 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   .header {
     background: #ffffff !important;
     border-bottom-color: #D97706 !important;
-    page-break-after: avoid !important;
-    break-after: avoid !important;
-    padding: 4px 12px !important;
-    min-height: auto !important;
+    page-break-after: avoid;
+    break-after: avoid;
+    padding: 6px 20px !important;
+    min-height: 55px !important;
     margin: 0 !important;
+    flex-shrink: 0 !important;
   }
 
-  .header-logo { gap: 8px; }
-  .logo-img { width: 38px !important; height: 38px !important; }
-  .company-name { font-size: 0.85rem !important; color: #D97706 !important; text-shadow: none !important; line-height: 1.1; }
-  .doc-title { color: #D97706 !important; text-shadow: none !important; font-size: 0.58rem !important; }
+  .header-logo { gap: 10px; }
+  .logo-img { width: 45px !important; height: 45px !important; }
+  .company-name { font-size: 1rem !important; color: #D97706 !important; text-shadow: none !important; }
+  .doc-title { color: #D97706 !important; text-shadow: none !important; font-size: 0.65rem !important; }
 
   .content { 
-    padding: 4px 8px !important; 
+    padding: 6px 10px !important; 
     background: #ffffff !important;
     margin: 0 !important;
+    flex: 1 !important;
   }
   
   .section { 
     background: #ffffff !important;
     border-color: #D97706 !important;
-    margin-bottom: 4px !important;
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
+    margin-bottom: 6px !important;
   }
 
   .section::before { background: none !important; }
 
   .section-header { 
-    padding: 2px 8px !important; 
+    padding: 3px 10px !important; 
     background: #f5f5f5 !important;
     color: #D97706 !important;
     border-bottom-color: #D97706 !important;
     text-shadow: none !important;
-    font-size: 0.6rem !important;
-    line-height: 1.2;
+    font-size: 0.65rem !important;
   }
 
   .section-body { 
-    padding: 3px 6px !important; 
+    padding: 5px 8px !important; 
     background: #ffffff !important;
   }
   
   .top-grid {
     background: #ffffff !important;
     border-color: #D97706 !important;
-    margin-bottom: 4px !important;
+    margin-bottom: 6px !important;
   }
 
   .top-grid::before { background: none !important; }
   
   .top-col { 
-    padding: 3px 6px !important; 
+    padding: 5px 8px !important; 
     border-color: #D97706 !important;
     background: #ffffff !important;
   }
@@ -879,35 +1065,31 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
     border-color: #D97706 !important;
     color: #D97706 !important;
     text-shadow: none !important;
-    font-size: 0.52rem !important;
-    padding: 1px 6px 1px 4px !important;
-    margin-bottom: 5px !important;
-    line-height: 1.1;
+    font-size: 0.55rem !important;
+    padding: 2px 8px 2px 6px !important;
+    margin-bottom: 8px !important;
   }
 
   .flood-bar {
     background: #ffffff !important;
     border-color: #D97706 !important;
-    margin-bottom: 4px !important;
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
+    margin-bottom: 6px !important;
   }
 
   .flood-item {
     border-color: #D97706 !important;
     background: #ffffff !important;
-    padding: 1px 6px !important;
+    padding: 1px 8px !important;
     gap: 1px !important;
   }
 
-  .field-row { margin-bottom: 2px !important; }
-  .inline-row { margin-bottom: 2px !important; }
-  .grid-2, .grid-3, .grid-4 { margin-bottom: 2px !important; gap: 2px !important; }
+  .field-row { margin-bottom: 3px !important; }
+  .inline-row { margin-bottom: 4px !important; }
+  .grid-2, .grid-3, .grid-4 { margin-bottom: 4px !important; gap: 4px !important; }
 
   label {
     color: #6B7280 !important;
-    font-size: 0.5rem !important;
-    line-height: 1.1;
+    font-size: 0.54rem !important;
   }
 
   input[type="text"], 
@@ -920,14 +1102,13 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
     background: #ffffff !important;
     border-bottom-color: #D97706 !important;
     color: #1F2937 !important;
-    min-height: 16px !important;
+    min-height: 18px !important;
     padding: 1px 2px !important;
-    font-size: 0.7rem !important;
-    line-height: 1;
+    font-size: 0.78rem !important;
   }
 
   textarea { 
-    min-height: 18px !important; 
+    min-height: 20px !important; 
     background: #ffffff !important;
     border-color: #D97706 !important;
   }
@@ -938,13 +1119,12 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   }
 
   .yn-group .yn-label { 
-    min-height: 16px !important; 
-    padding: 0 6px !important; 
+    min-height: 18px !important; 
+    padding: 0 8px !important; 
     color: #6B7280 !important;
     border-color: #D97706 !important;
     background: transparent !important;
-    font-size: 0.5rem !important;
-    line-height: 1.1;
+    font-size: 0.58rem !important;
   }
 
   .yn-group .yn-label:first-of-type { 
@@ -966,19 +1146,16 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   }
 
   .check-item { 
-    min-height: 16px !important; 
-    padding: 1px 3px 1px 2px !important; 
+    min-height: 18px !important; 
+    padding: 1px 4px 1px 3px !important; 
     background: #ffffff !important;
     border-color: #D97706 !important;
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
   }
 
   .check-item span {
     color: #1F2937 !important;
     text-shadow: none !important;
-    font-size: 0.52rem !important;
-    line-height: 1.1;
+    font-size: 0.56rem !important;
   }
 
   .check-item:has(input:checked) {
@@ -995,8 +1172,6 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   .gas-appliances-box {
     border-color: #D97706 !important;
     background: #ffffff !important;
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
   }
 
   .gas-appliances-box::before {
@@ -1005,68 +1180,38 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
 
   .gas-appliances-label {
     color: #6B7280 !important;
-    font-size: 0.5rem !important;
-    line-height: 1.1;
+    font-size: 0.54rem !important;
   }
 
   .divider {
     border-top-color: #D97706 !important;
     background: #ffffff !important;
-    margin: 2px 0 !important;
+    margin: 4px 0 !important;
   }
 
   .divider::before {
     background: #ffffff !important;
     color: #D97706 !important;
-    font-size: 0.5rem !important;
-    padding: 0 3px !important;
+    font-size: 0.54rem !important;
   }
 
   .footer {
     background: #ffffff !important;
     border-top-color: #D97706 !important;
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
-    padding: 4px 8px !important;
-    font-size: 0.48rem !important;
-    margin-top: auto !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    padding: 6px 10px !important;
+    font-size: 0.5rem !important;
+    margin-top: 0 !important;
+    flex-shrink: 0 !important;
   }
 
   .footer-text {
     color: #D97706 !important;
   }
 
-  #address-suggestions, #gps-status { display: none !important; }
+  #address-suggestions, #gps-status, #gps-btn { display: none !important; }
   #address { padding-right: 6px !important; }
-  #gps-btn { display: none !important; }
-
-  /* MOBILE: Force single page */
-  @media screen and (max-width: 600px) {
-    body {
-      width: 100% !important;
-    }
-
-    .page {
-      min-height: 11in !important;
-      display: flex !important;
-      flex-direction: column !important;
-      page-break-after: avoid !important;
-      break-after: avoid !important;
-    }
-
-    .content {
-      flex: 1 1 auto !important;
-    }
-
-    .footer {
-      margin-top: auto !important;
-    }
-
-    .header { padding: 3px 8px !important; min-height: auto !important; }
-    .logo-img { width: 32px !important; height: 32px !important; }
-    .company-name { font-size: 0.75rem !important; }
-    .doc-title { font-size: 0.5rem !important; }
-  }
 }
 </style>
 </head>
@@ -1569,11 +1714,11 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
       </div>
     </div>
 
-    <div class="footer">
-      <span class="footer-text">GENERATOR INSTALLATION ESTIMATE · CONFIDENTIAL</span>
-      <span style="font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--text-dim);">BLANK TEMPLATEv1</span>
-    </div>
+  </div>
 
+  <div class="footer">
+    <span class="footer-text">GENERATOR INSTALLATION ESTIMATE · CONFIDENTIAL</span>
+    <span style="font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--text-dim);">BLANK TEMPLATE    Ver.1.0</span>
   </div>
 
 </div>
