@@ -779,198 +779,20 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
 ::-webkit-scrollbar-thumb { background: rgba(217,119,6,0.3); border-radius: 0; }
 ::-webkit-scrollbar-thumb:hover { background: var(--cyan-dim); }
 
-/* ════════════════════════════════════════════════════════════ */
-/* MOBILE-SPECIFIC PRINT STYLES (for 1-page mobile printing) */
-/* ════════════════════════════════════════════════════════════ */
-@media print and (max-width: 1024px) {
-  body {
-    width: 100% !important;
-    padding: 0 !important;
-  }
-
-  .page {
-    max-width: 100% !important;
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    box-shadow: none !important;
-    border: 1px solid #D97706 !important;
-  }
-
-  .page::before, .page::after,
-  .page-corner-bl, .page-corner-br {
-    display: none !important;
-  }
-
-  /* Tighter spacing for mobile */
-  .header {
-    padding: 4px 10px !important;
-    min-height: auto !important;
-    margin: 0 !important;
-  }
-
-  .logo-img {
-    width: 35px !important;
-    height: 35px !important;
-  }
-
-  .company-name {
-    font-size: 0.85rem !important;
-    line-height: 1.1 !important;
-  }
-
-  .doc-title {
-    font-size: 0.55rem !important;
-    letter-spacing: 2px !important;
-  }
-
-  .content {
-    padding: 4px 6px !important;
-  }
-
-  .section {
-    margin-bottom: 4px !important;
-    border: 1px solid #D97706 !important;
-  }
-
-  .section-header {
-    padding: 2px 8px !important;
-    font-size: 0.58rem !important;
-    letter-spacing: 2px !important;
-  }
-
-  .section-body {
-    padding: 3px 6px !important;
-  }
-
-  .top-grid {
-    margin-bottom: 4px !important;
-  }
-
-  .top-col {
-    padding: 3px 6px !important;
-  }
-
-  .col-label {
-    font-size: 0.54rem !important;
-    padding: 1px 6px 1px 4px !important;
-    margin-bottom: 6px !important;
-  }
-
-  .field-row {
-    margin-bottom: 2px !important;
-  }
-
-  .inline-row {
-    margin-bottom: 3px !important;
-  }
-
-  .flood-bar {
-    margin-bottom: 4px !important;
-  }
-
-  .flood-item {
-    padding: 1px 4px !important;
-    gap: 0 !important;
-  }
-
-  label {
-    font-size: 0.50rem !important;
-  }
-
-  input[type="text"],
-  input[type="email"],
-  input[type="tel"],
-  input[type="date"],
-  input[type="number"],
-  textarea,
-  select {
-    min-height: 16px !important;
-    padding: 0.5px 2px !important;
-    font-size: 0.70rem !important;
-    border-bottom: 1px solid #D97706 !important;
-  }
-
-  textarea {
-    min-height: 18px !important;
-  }
-
-  .yn-group {
-    min-height: 16px !important;
-  }
-
-  .yn-group .yn-label {
-    padding: 0 6px !important;
-    font-size: 0.52rem !important;
-    min-height: 16px !important;
-  }
-
-  .check-item {
-    min-height: 16px !important;
-    padding: 0 4px !important;
-    font-size: 0.50rem !important;
-  }
-
-  .check-item input[type="checkbox"],
-  .check-item input[type="radio"] {
-    width: 12px !important;
-    height: 12px !important;
-    min-height: 12px !important;
-    min-width: 12px !important;
-  }
-
-  .gas-appliances-box {
-    padding: 6px 8px !important;
-    margin-bottom: 4px !important;
-  }
-
-  .gas-appliances-label {
-    font-size: 0.50rem !important;
-    margin-bottom: 4px !important;
-  }
-
-  .grid-2, .grid-3, .grid-4 {
-    gap: 2px !important;
-    margin-bottom: 3px !important;
-  }
-
-  .divider {
-    margin: 2px 0 !important;
-  }
-
-  .divider::before {
-    font-size: 0.48rem !important;
-  }
-
-  .footer {
-    padding: 4px 8px !important;
-    font-size: 0.48rem !important;
-  }
-
-  .footer-text {
-    font-size: 0.48rem !important;
-  }
-
-  /* Prevent page breaks in critical areas */
-  .header { page-break-after: avoid !important; }
-  .section { page-break-inside: avoid !important; }
-  .top-grid { page-break-inside: avoid !important; }
+/* ── PRINT ── */
+@page { 
+  size: letter portrait; 
+  margin: 0.01in 0.01in;
+  padding: 0;
+  @top-left { content: none; }
+  @top-center { content: none; }
+  @top-right { content: none; }
+  @bottom-left { content: none; }
+  @bottom-center { content: none; }
+  @bottom-right { content: none; }
 }
 
-/* ════════════════════════════════════════════════════════════ */
-/* DESKTOP PRINT STYLES (NO PAGE TITLES) */
-/* ════════════════════════════════════════════════════════════ */
-@media print and (min-width: 1025px) {
-  @page { 
-    size: letter portrait; 
-    margin: 0.5in 0.5in;
-    padding: 0;
-  }
-
-  @page :first {
-    margin-top: 0.3in;
-  }
-
+@media print {
   * { 
     -webkit-print-color-adjust: exact !important; 
     print-color-adjust: exact !important;
@@ -993,20 +815,16 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
     margin: 0 !important;
     padding: 0 !important;
     background: #ffffff !important;
-    border: none !important;
+    border: 2px solid #D97706 !important;
     min-height: auto !important;
     display: flex !important;
     flex-direction: column !important;
-    page-break-after: always;
   }
 
-  .page:last-of-type {
-    page-break-after: avoid;
-  }
+  .page::before, .page::after,
+  .page-corner-bl, .page-corner-br { display: block !important; }
 
   .toolbar { display: none !important; }
-  .page::before, .page::after,
-  .page-corner-bl, .page-corner-br { display: none !important; }
   .header::after { display: none !important; }
   .section-header::before { animation: none !important; }
 
@@ -1019,6 +837,21 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
     min-height: 55px !important;
     margin: 0 !important;
     flex-shrink: 0 !important;
+  }
+
+  .header::before {
+    content: "GENERATOR INSTALLATION ESTIMATE" !important;
+    position: absolute;
+    top: -24px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #D97706;
+    white-space: nowrap;
+    letter-spacing: 2px;
+    text-shadow: none !important;
   }
 
   .header-logo { gap: 10px; }
@@ -1037,7 +870,6 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
     background: #ffffff !important;
     border-color: #D97706 !important;
     margin-bottom: 6px !important;
-    page-break-inside: avoid !important;
   }
 
   .section::before { background: none !important; }
@@ -1060,7 +892,6 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
     background: #ffffff !important;
     border-color: #D97706 !important;
     margin-bottom: 6px !important;
-    page-break-inside: avoid !important;
   }
 
   .top-grid::before { background: none !important; }
@@ -1085,7 +916,6 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
     background: #ffffff !important;
     border-color: #D97706 !important;
     margin-bottom: 6px !important;
-    page-break-inside: avoid !important;
   }
 
   .flood-item {
@@ -1730,7 +1560,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
 
   <div class="footer">
     <span class="footer-text">GENERATOR INSTALLATION ESTIMATE · CONFIDENTIAL</span>
-    <span style="font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--text-dim);">BLANK TEMPLATE</span>
+    <span style="font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--text-dim);">BLANK TEMPLATE     Ver.1.0</span>
   </div>
 
 </div>
