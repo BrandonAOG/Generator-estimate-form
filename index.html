@@ -1251,45 +1251,46 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
       </div>
 
       <div class="section-body">
-        <div class="inline-row">
-          <label for="gen_size" style="margin-right:2px;">Size</label>
-          <input type="text" id="gen_size" name="gen_size" placeholder="22kW" autocomplete="off" style="width:80px;min-width:80px;" aria-label="Generator size">
-          <span class="inline-label" style="margin-left:6px;">Placement</span>
-          <div class="check-group">
-            <label class="check-item"><input type="checkbox" name="placement" value="Right" aria-label="Right placement"><span>Right</span></label>
-            <label class="check-item"><input type="checkbox" name="placement" value="Left" aria-label="Left placement"><span>Left</span></label>
-            <label class="check-item"><input type="checkbox" name="placement" value="Back" aria-label="Back placement"><span>Back</span></label>
-          </div>
-          <span class="inline-label" style="margin-left:6px;">Seal Window</span>
-          <div class="yn-group">
-            <input type="radio" name="seal_window" id="sw_y" value="Y" class="yn-y" aria-label="Seal window yes">
-            <label class="yn-label yn-label-y" for="sw_y">Y</label>
-            <input type="radio" name="seal_window" id="sw_n" value="N" class="yn-n" aria-label="Seal window no">
-            <label class="yn-label yn-label-n" for="sw_n">N</label>
-          </div>
-          <span class="inline-label" style="margin-left:6px;">Wiring</span>
-          <div class="check-group">
-            <label class="check-item"><input type="checkbox" name="wiring" value="aluminum" aria-label="Aluminum wiring"><span>Aluminum</span></label>
-            <label class="check-item"><input type="checkbox" name="wiring" value="copper" aria-label="Copper wiring"><span>Copper</span></label>
-          </div>
-        </div>
+       <div class="inline-row">
+  <label for="gen_size" style="margin-right:2px;">Size</label>
+  <input type="text" id="gen_size" name="gen_size" placeholder="22kW" autocomplete="off" style="width:80px;min-width:80px;" aria-label="Generator size">
+  <span class="inline-label" style="margin-left:6px;">Placement</span>
+  <div class="check-group">
+    <label class="check-item"><input type="checkbox" name="placement" value="Right" aria-label="Right placement"><span>Right</span></label>
+    <label class="check-item"><input type="checkbox" name="placement" value="Left" aria-label="Left placement"><span>Left</span></label>
+    <label class="check-item"><input type="checkbox" name="placement" value="Back" aria-label="Back placement"><span>Back</span></label>
+  </div>
+  <span class="inline-label" style="margin-left:6px;">Seal Window</span>
+  <div class="yn-group">
+    <input type="radio" name="seal_window" id="sw_y" value="Y" class="yn-y" aria-label="Seal window yes">
+    <label class="yn-label yn-label-y" for="sw_y">Y</label>
+    <input type="radio" name="seal_window" id="sw_n" value="N" class="yn-n" aria-label="Seal window no">
+    <label class="yn-label yn-label-n" for="sw_n">N</label>
+  </div>
+</div>
 
-        <div class="inline-row">
-          <span class="inline-label">Elec. Run Footage</span>
-          <input type="number" id="elec_run_ft" name="elec_run_ft" class="short" placeholder="ft" inputmode="numeric" autocomplete="off" aria-label="Electrical run footage">
-          <div class="check-group">
-            <label class="check-item"><input type="checkbox" name="run" value="undergrnd" aria-label="Underground electrical"><span>Under Grnd</span></label>
-            <label class="check-item"><input type="checkbox" name="run" value="abovegrnd" aria-label="Above ground electrical"><span>Above Grnd</span></label>
-            <label class="check-item"><input type="checkbox" name="run" value="attic" aria-label="Attic electrical"><span>Attic</span></label>
-          </div>
-          <span class="inline-label">Bore</span>
-          <div class="yn-group">
-            <input type="radio" name="bore_gen" id="bore_gen_y" value="Y" class="yn-y" aria-label="Bore generator yes">
-            <label class="yn-label yn-label-y" for="bore_gen_y">Y</label>
-            <input type="radio" name="bore_gen" id="bore_gen_n" value="N" class="yn-n" aria-label="Bore generator no">
-            <label class="yn-label yn-label-n" for="bore_gen_n">N</label>
-          </div>
-        </div>
+<div class="inline-row">
+  <span class="inline-label">Elec. Run Footage</span>
+  <input type="number" id="elec_run_ft" name="elec_run_ft" class="short" placeholder="ft" inputmode="numeric" autocomplete="off" aria-label="Electrical run footage">
+  <div class="check-group">
+    <label class="check-item"><input type="checkbox" name="run" value="undergrnd" aria-label="Underground electrical"><span>Under Grnd</span></label>
+    <label class="check-item"><input type="checkbox" name="run" value="abovegrnd" aria-label="Above ground electrical"><span>Above Grnd</span></label>
+    <label class="check-item"><input type="checkbox" name="run" value="attic" aria-label="Attic electrical"><span>Attic</span></label>
+  </div>
+  <span class="inline-label" style="margin-left:6px;">Wiring</span>
+  <div class="check-group">
+    <label class="check-item"><input type="checkbox" name="wiring" value="aluminum" aria-label="Aluminum wiring"><span>Aluminum</span></label>
+    <label class="check-item"><input type="checkbox" name="wiring" value="copper" aria-label="Copper wiring"><span>Copper</span></label>
+  </div>
+  <span class="inline-label">Bore</span>
+  <div class="yn-group">
+    <input type="radio" name="bore_gen" id="bore_gen_y" value="Y" class="yn-y" aria-label="Bore generator yes">
+    <label class="yn-label yn-label-y" for="bore_gen_y">Y</label>
+    <input type="radio" name="bore_gen" id="bore_gen_n" value="N" class="yn-n" aria-label="Bore generator no">
+    <label class="yn-label yn-label-n" for="bore_gen_n">N</label>
+  </div>
+</div>
+
 
         <div class="field-block">
           <textarea id="gen_notes" name="gen_notes" placeholder="Additional notes on generator placement / run..." aria-label="Generator notes"></textarea>
