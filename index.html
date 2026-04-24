@@ -779,7 +779,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
 ::-webkit-scrollbar-thumb { background: rgba(217,119,6,0.3); border-radius: 0; }
 ::-webkit-scrollbar-thumb:hover { background: var(--cyan-dim); }
 
-/* ── PRINT ── */
+/* ── PRINT (OPTIMIZED) ── */
 @page { 
   size: letter portrait; 
   margin: 0.01in 0.01in;
@@ -819,6 +819,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
     min-height: auto !important;
     display: flex !important;
     flex-direction: column !important;
+    height: 100% !important;
   }
 
   .page::before, .page::after,
@@ -828,76 +829,66 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   .header::after { display: none !important; }
   .section-header::before { animation: none !important; }
 
+  /* ── HEADER (Reduced padding) ── */
   .header {
     background: #ffffff !important;
     border-bottom-color: #D97706 !important;
     page-break-after: avoid;
     break-after: avoid;
-    padding: 6px 20px !important;
-    min-height: 55px !important;
+    padding: 4px 16px !important;
+    min-height: 50px !important;
     margin: 0 !important;
     flex-shrink: 0 !important;
   }
 
-  .header::before {
-    content: "GENERATOR INSTALLATION ESTIMATE" !important;
-    position: absolute;
-    top: -24px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-family: var(--font-display);
-    font-size: 1.1rem;
-    font-weight: bold;
-    color: #D97706;
-    white-space: nowrap;
-    letter-spacing: 2px;
-    text-shadow: none !important;
-  }
+  .header-logo { gap: 8px; }
+  .logo-img { width: 40px !important; height: 40px !important; }
+  .company-name { font-size: 0.85rem !important; color: #D97706 !important; text-shadow: none !important; }
+  .doc-title { color: #D97706 !important; text-shadow: none !important; font-size: 0.6rem !important; }
 
-  .header-logo { gap: 10px; }
-  .logo-img { width: 45px !important; height: 45px !important; }
-  .company-name { font-size: 1rem !important; color: #D97706 !important; text-shadow: none !important; }
-  .doc-title { color: #D97706 !important; text-shadow: none !important; font-size: 0.65rem !important; }
-
+  /* ── CONTENT (Tighter spacing) ── */
   .content { 
-    padding: 6px 10px !important; 
+    padding: 4px 10px !important; 
     background: #ffffff !important;
     margin: 0 !important;
     flex: 1 !important;
+    overflow: hidden !important;
   }
   
   .section { 
     background: #ffffff !important;
     border-color: #D97706 !important;
-    margin-bottom: 6px !important;
+    margin-bottom: 3px !important;
+    page-break-inside: avoid !important;
   }
 
   .section::before { background: none !important; }
 
   .section-header { 
-    padding: 3px 10px !important; 
+    padding: 2px 10px !important; 
     background: #f5f5f5 !important;
     color: #D97706 !important;
     border-bottom-color: #D97706 !important;
     text-shadow: none !important;
-    font-size: 0.65rem !important;
+    font-size: 0.6rem !important;
   }
 
   .section-body { 
-    padding: 5px 8px !important; 
+    padding: 3px 8px !important; 
     background: #ffffff !important;
   }
   
   .top-grid {
     background: #ffffff !important;
     border-color: #D97706 !important;
-    margin-bottom: 6px !important;
+    margin-bottom: 3px !important;
+    page-break-inside: avoid !important;
   }
 
   .top-grid::before { background: none !important; }
   
   .top-col { 
-    padding: 5px 8px !important; 
+    padding: 3px 8px !important; 
     border-color: #D97706 !important;
     background: #ffffff !important;
   }
@@ -907,31 +898,31 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
     border-color: #D97706 !important;
     color: #D97706 !important;
     text-shadow: none !important;
-    font-size: 0.55rem !important;
-    padding: 2px 8px 2px 6px !important;
-    margin-bottom: 8px !important;
+    font-size: 0.52rem !important;
+    padding: 1px 8px 1px 5px !important;
+    margin-bottom: 4px !important;
   }
 
   .flood-bar {
     background: #ffffff !important;
     border-color: #D97706 !important;
-    margin-bottom: 6px !important;
+    margin-bottom: 3px !important;
   }
 
   .flood-item {
     border-color: #D97706 !important;
     background: #ffffff !important;
-    padding: 1px 8px !important;
-    gap: 1px !important;
+    padding: 1px 6px !important;
+    gap: 0.5px !important;
   }
 
-  .field-row { margin-bottom: 3px !important; }
-  .inline-row { margin-bottom: 4px !important; }
-  .grid-2, .grid-3, .grid-4 { margin-bottom: 4px !important; gap: 4px !important; }
+  .field-row { margin-bottom: 2px !important; }
+  .inline-row { margin-bottom: 2px !important; }
+  .grid-2, .grid-3, .grid-4 { margin-bottom: 2px !important; gap: 2px !important; }
 
   label {
     color: #6B7280 !important;
-    font-size: 0.54rem !important;
+    font-size: 0.51rem !important;
   }
 
   input[type="text"], 
@@ -944,13 +935,13 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
     background: #ffffff !important;
     border-bottom-color: #D97706 !important;
     color: #1F2937 !important;
-    min-height: 18px !important;
-    padding: 1px 2px !important;
-    font-size: 0.78rem !important;
+    min-height: 16px !important;
+    padding: 0px 2px !important;
+    font-size: 0.72rem !important;
   }
 
   textarea { 
-    min-height: 20px !important; 
+    min-height: 16px !important; 
     background: #ffffff !important;
     border-color: #D97706 !important;
   }
@@ -961,12 +952,12 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   }
 
   .yn-group .yn-label { 
-    min-height: 18px !important; 
-    padding: 0 8px !important; 
+    min-height: 16px !important; 
+    padding: 0 6px !important; 
     color: #6B7280 !important;
     border-color: #D97706 !important;
     background: transparent !important;
-    font-size: 0.58rem !important;
+    font-size: 0.54rem !important;
   }
 
   .yn-group .yn-label:first-of-type { 
@@ -988,8 +979,8 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   }
 
   .check-item { 
-    min-height: 18px !important; 
-    padding: 1px 4px 1px 3px !important; 
+    min-height: 16px !important; 
+    padding: 0px 4px 0px 2px !important; 
     background: #ffffff !important;
     border-color: #D97706 !important;
   }
@@ -997,7 +988,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   .check-item span {
     color: #1F2937 !important;
     text-shadow: none !important;
-    font-size: 0.56rem !important;
+    font-size: 0.51rem !important;
   }
 
   .check-item:has(input:checked) {
@@ -1014,6 +1005,8 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   .gas-appliances-box {
     border-color: #D97706 !important;
     background: #ffffff !important;
+    margin-bottom: 3px !important;
+    padding: 3px 8px !important;
   }
 
   .gas-appliances-box::before {
@@ -1022,38 +1015,47 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
 
   .gas-appliances-label {
     color: #6B7280 !important;
-    font-size: 0.54rem !important;
+    font-size: 0.52rem !important;
+    margin-bottom: 2px !important;
   }
 
   .divider {
     border-top-color: #D97706 !important;
     background: #ffffff !important;
-    margin: 4px 0 !important;
+    margin: 2px 0 !important;
   }
 
   .divider::before {
     background: #ffffff !important;
     color: #D97706 !important;
-    font-size: 0.54rem !important;
+    font-size: 0.52rem !important;
   }
 
+  /* ── FOOTER (Keep on first page, minimal padding) ── */
   .footer {
     background: #ffffff !important;
     border-top-color: #D97706 !important;
-    page-break-inside: avoid;
-    break-inside: avoid;
-    padding: 6px 10px !important;
-    font-size: 0.5rem !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    padding: 3px 10px !important;
+    font-size: 0.48rem !important;
     margin-top: 0 !important;
     flex-shrink: 0 !important;
+    min-height: auto !important;
   }
 
   .footer-text {
     color: #D97706 !important;
+    font-size: 0.48rem !important;
   }
 
   #address-suggestions, #gps-status, #gps-btn { display: none !important; }
   #address { padding-right: 6px !important; }
+
+  /* ── PAGE BREAK PREVENTION ── */
+  .section { page-break-inside: avoid !important; }
+  .top-grid { page-break-inside: avoid !important; }
+  .flood-bar { page-break-inside: avoid !important; }
 }
 </style>
 </head>
@@ -1553,12 +1555,14 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
           <input type="text" id="new_build_date" name="new_build_date" class="long" autocomplete="off" aria-label="New build ready date or notes">
         </div>
 
+      </div>
+    </div>
 
   </div>
 
   <div class="footer">
     <span class="footer-text">GENERATOR INSTALLATION ESTIMATE · CONFIDENTIAL</span>
-    <span style="font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--text-dim);">BLANK TEMPLATE     Ver.1.0</span>
+    <span style="font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--text-dim);">BLANK TEMPLATE     Ver.0.0</span>
   </div>
 </div>
 
