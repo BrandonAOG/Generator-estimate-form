@@ -1051,7 +1051,26 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
 
   #address-suggestions, #gps-status, #gps-btn { display: none !important; }
   #address { padding-right: 6px !important; }
+} /* Mobile-only print styles - only applies when body has .is-mobile-device class */
+@media print {
+  body.is-mobile-device {
+    zoom: 0.68 !important;
+  }
+  
+  body.is-mobile-device .page {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  
+  body.is-mobile-device .section,
+  body.is-mobile-device .top-grid,
+  body.is-mobile-device .flood-bar,
+  body.is-mobile-device .footer {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
 }
+
 </style>
 </head>
 <body>
@@ -1558,12 +1577,17 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
 
   <div class="footer">
     <span class="footer-text">GENERATOR INSTALLATION ESTIMATE · CONFIDENTIAL</span>
-    <span style="font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--text-dim);">BLANK TEMPLATE</span>
+    <span style="font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--text-dim);">Ver. 1.0B</span>
   </div>
 
 </div>
 
 <script>
+// Detect mobile device for print-specific styling
+if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+  document.body.classList.add('is-mobile-device');
+}
+
 // ==================== SERVICE WORKER + OFFLINE SUPPORT ====================
 (function setupOfflineSupport() {
   // Register Service Worker
