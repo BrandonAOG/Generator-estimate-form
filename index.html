@@ -1052,17 +1052,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   #address-suggestions, #gps-status, #gps-btn { display: none !important; }
   #address { padding-right: 6px !important; }
 } /* Mobile-only print styles - only applies when body has .is-mobile-device class */
-@page {
-  size: letter portrait;
-  margin: 0.1in !important;
-}
-
 @media print {
-  html, body {
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-  
   body.is-mobile-device {
     zoom: 0.59 !important;
     margin: 0 !important;
@@ -1090,6 +1080,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
     break-inside: avoid !important;
   }
 }
+
 
 </style>
 </head>
