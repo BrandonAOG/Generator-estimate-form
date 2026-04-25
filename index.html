@@ -1066,7 +1066,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
 
   <div class="header">
     <div class="header-logo">
-     <img src="https://raw.githubusercontent.com/BrandonAOG/AOG-Logo/main/logo.png" alt="logo" width="50" height="40">
+     <img src="https://raw.githubusercontent.com/BrandonAOG/AOG-Logo/main/logo.png" alt="logo" width="50" height="40" crossorigin="anonymous">
       <div class="company-name">Always On<br>Generators</div>
     </div>
     <div class="doc-title">Installation Estimate</div>
@@ -1707,114 +1707,136 @@ function closeImageModal() {
   document.getElementById('imageModal').style.display = 'none';
 }
 
-onclone: function(clonedDocument) {
-  // REMOVE PLACEHOLDERS
-  var allInputs = clonedDocument.querySelectorAll('input[placeholder], textarea[placeholder]');
-  allInputs.forEach(function(el) {
-    el.removeAttribute('placeholder');
-  });
+/* ─────────────────────────────────────────────────────────────
+   saveImageFromModal — renders the #page div to a JPEG and
+   downloads it.  Fixes:
+     1. Function was never defined (only called).
+     2. onclone block was floating loose outside any function.
+     3. Inline SVGs use currentColor → we resolve to the actual
+        amber value so they appear in the canvas.
+     4. The external logo <img> gets crossorigin="anonymous"
+        (set in HTML) so html2canvas can read its pixels.
+   ───────────────────────────────────────────────────────────── */
+function saveImageFromModal() {
+  closeImageModal();
 
-  var clonedInputs = clonedDocument.querySelectorAll('input, textarea, select');
-  
-  clonedInputs.forEach(function(el) {
-    el.style.visibility = 'visible';
-    el.style.opacity = '1';
-    el.style.backgroundColor = '#ffffff';
-    el.style.color = '#1F2937';
-    
-    // TEXT INPUTS, EMAILS, TEL, NUMBERS, DATES
-    if (el.type === 'text' || el.type === 'email' || el.type === 'tel' || el.type === 'number' || el.type === 'date') {
-      if (el.value && el.value.trim()) {
-        el.style.position = 'absolute';
-        el.style.left = '-9999px';
-        el.style.visibility = 'hidden';
-        
-        var wrapper = el.parentNode;
-        if (wrapper && !wrapper.querySelector('[data-value-display="true"]')) {
-          var replacement = clonedDocument.createElement('div');
-          replacement.setAttribute('data-value-display', 'true');
-          replacement.style.fontFamily = 'Share Tech Mono, monospace';
-          replacement.style.fontSize = '0.82rem';
-          replacement.style.color = '#1F2937';
-          replacement.style.padding = '5px 6px';
-          replacement.style.minHeight = '34px';
-          replacement.style.display = 'flex';
-          replacement.style.alignItems = 'center';
-          replacement.style.borderBottom = '2px solid rgba(217,119,6,0.25)';
-          replacement.style.width = '100%';
-          replacement.style.boxSizing = 'border-box';
-          replacement.textContent = el.value;
-          
-          wrapper.insertBefore(replacement, el);
-        }
-      }
-    } 
-    // TEXTAREAS
-    else if (el.tagName.toLowerCase() === 'textarea') {
-      if (el.value && el.value.trim()) {
-        el.style.minHeight = '40px';
-        el.style.height = 'auto';
-        el.textContent = el.value;
-        el.value = el.value;
-      }
-    }
-    // SELECT
-    else if (el.tagName.toLowerCase() === 'select') {
-      if (el.value) {
-        el.style.position = 'absolute';
-        el.style.left = '-9999px';
-        
-        var wrapper = el.parentNode;
-        if (wrapper && !wrapper.querySelector('[data-value-display="true"]')) {
-          var replacement = clonedDocument.createElement('div');
-          replacement.setAttribute('data-value-display', 'true');
-          replacement.style.fontFamily = 'Share Tech Mono, monospace';
-          replacement.style.fontSize = '0.82rem';
-          replacement.style.color = '#1F2937';
-          replacement.style.padding = '5px 6px';
-          replacement.style.minHeight = '34px';
-          replacement.style.display = 'flex';
-          replacement.style.alignItems = 'center';
-          replacement.textContent = el.value;
-          
-          wrapper.insertBefore(replacement, el);
-        }
-      }
-    }
-  });
+  var page = document.getElementById('page');
+  var toolbar = document.getElementById('toolbar');
+  if (toolbar) toolbar.style.display = 'none';
 
-  // CHECKBOXES AND RADIOS
-  var allCheckboxes = clonedDocument.querySelectorAll('input[type="checkbox"], input[type="radio"]');
-  allCheckboxes.forEach(function(el) {
-    if (el.checked) {
-      el.style.accentColor = '#D97706';
-      el.style.visibility = 'visible';
-      el.style.opacity = '1';
-      
-      var container = el.closest('.check-item');
-      if (container) {
-        container.style.background = 'rgba(217,119,6,0.12)';
-        container.style.borderColor = 'rgba(217,119,6,0.6)';
-        container.style.boxShadow = '0 0 6px rgba(217,119,6,0.15)';
-        
-        var span = container.querySelector('span');
-        if (span) {
-          span.style.color = '#D97706';
-          span.style.fontWeight = '600';
+  /* Temporarily hide the animated ::after scanline (pseudo-element
+     can't be hidden, so we toggle a class that removes the animation) */
+  page.classList.add('capturing');
+
+  html2canvas(page, {
+    scale: 2,
+    useCORS: true,
+    allowTaint: false,
+    backgroundColor: '#ffffff',
+    logging: false,
+    imageTimeout: 15000,
+
+    onclone: function(clonedDoc) {
+      var AMBER = '#D97706';
+
+      /* ── 1. Hide toolbar in clone ── */
+      var tb = clonedDoc.getElementById('toolbar');
+      if (tb) tb.style.display = 'none';
+
+      /* ── 2. Hide address dropdown & GPS status ── */
+      var sugg = clonedDoc.getElementById('address-suggestions');
+      if (sugg) sugg.style.display = 'none';
+      var gpsSt = clonedDoc.getElementById('gps-status');
+      if (gpsSt) gpsSt.style.display = 'none';
+
+      /* ── 3. Resolve currentColor on every SVG element ──
+         html2canvas doesn't inherit CSS color into SVG stroke/fill
+         when the value is "currentColor", so we walk every SVG
+         and replace the keyword with the computed amber value.      */
+      clonedDoc.querySelectorAll('svg').forEach(function(svg) {
+        /* Give the SVG itself an explicit color so currentColor works,
+           but also walk child elements and hard-code their attributes. */
+        svg.style.color = AMBER;
+
+        svg.querySelectorAll('*').forEach(function(el) {
+          ['stroke', 'fill'].forEach(function(attr) {
+            var val = el.getAttribute(attr);
+            if (val && val.toLowerCase() === 'currentcolor') {
+              el.setAttribute(attr, AMBER);
+            }
+          });
+          /* Also fix any inline style stroke/fill */
+          if (el.style.stroke === 'currentColor' || el.style.stroke === 'currentcolor') {
+            el.style.stroke = AMBER;
+          }
+          if (el.style.fill === 'currentColor' || el.style.fill === 'currentcolor') {
+            el.style.fill = AMBER;
+          }
+        });
+
+        /* For the col-label SVGs that inherit color via CSS,
+           also directly set stroke on the svg root */
+        var computedStroke = svg.getAttribute('stroke');
+        if (!computedStroke || computedStroke.toLowerCase() === 'currentcolor') {
+          svg.setAttribute('stroke', AMBER);
         }
-      }
-      
-      var ynLabel = el.nextElementSibling;
-      if (ynLabel && ynLabel.classList.contains('yn-label')) {
-        if (el.classList.contains('yn-y')) {
-          ynLabel.style.background = 'rgba(5,150,105,0.12)';
-          ynLabel.style.color = '#059669';
-        } else if (el.classList.contains('yn-n')) {
-          ynLabel.style.background = 'rgba(220,38,38,0.12)';
-          ynLabel.style.color = '#DC2626';
+      });
+
+      /* ── 4. Make col-label SVG icons visible ──
+         The col-label uses `stroke="currentColor"` via CSS color
+         inheritance. After step 3 the strokes are fixed, but ensure
+         the svg has an explicit fill="none" so it doesn't go solid. */
+      clonedDoc.querySelectorAll('.col-label svg').forEach(function(svg) {
+        svg.style.color = AMBER;
+        if (!svg.getAttribute('fill')) svg.setAttribute('fill', 'none');
+      });
+
+      /* ── 5. Apply checked styles so checkboxes/radios look right ── */
+      clonedDoc.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(function(el) {
+        if (el.checked) {
+          el.style.accentColor = AMBER;
+          var container = el.closest('.check-item');
+          if (container) {
+            container.style.background = 'rgba(217,119,6,0.12)';
+            container.style.borderColor = 'rgba(217,119,6,0.6)';
+            var span = container.querySelector('span');
+            if (span) { span.style.color = AMBER; span.style.fontWeight = '600'; }
+          }
+          var ynLabel = el.nextElementSibling;
+          if (ynLabel && ynLabel.classList.contains('yn-label')) {
+            if (el.classList.contains('yn-y')) {
+              ynLabel.style.background = 'rgba(5,150,105,0.12)';
+              ynLabel.style.color = '#059669';
+            } else if (el.classList.contains('yn-n')) {
+              ynLabel.style.background = 'rgba(220,38,38,0.12)';
+              ynLabel.style.color = '#DC2626';
+            }
+          }
         }
-      }
+      });
+
+      /* ── 6. Remove placeholders so empty fields look clean ── */
+      clonedDoc.querySelectorAll('[placeholder]').forEach(function(el) {
+        el.removeAttribute('placeholder');
+      });
     }
+
+  }).then(function(canvas) {
+    /* Restore toolbar */
+    if (toolbar) toolbar.style.display = '';
+    page.classList.remove('capturing');
+
+    /* Download */
+    var link = document.createElement('a');
+    link.download = 'AOG_Estimate_' + (document.getElementById('name').value.replace(/\s+/g,'_') || 'Form') + '.jpg';
+    link.href = canvas.toDataURL('image/jpeg', 0.92);
+    link.click();
+
+  }).catch(function(err) {
+    if (toolbar) toolbar.style.display = '';
+    page.classList.remove('capturing');
+    console.error('html2canvas error:', err);
+    alert('Image capture failed. Please use Print / PDF instead.');
   });
 }
 
