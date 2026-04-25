@@ -1073,10 +1073,11 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
 
   <div class="toolbar" id="toolbar">
     <button class="btn btn-gold" onclick="printPDF()">🖨 Print / PDF</button>
+    <button class="btn btn-gold" onclick="savePDF()">📄 Save PDF</button>
     <button class="btn" onclick="clearForm()">↺ Clear</button>
     <button class="btn" onclick="saveAsImage()">📸 Save Image</button>
     <button class="btn" onclick="sendEmail()">✉ Send Email</button>
-  </div>
+</div>
 
   <div class="content">
 
@@ -1803,7 +1804,53 @@ function getFormData() {
 
 function printPDF() {
   if (!validateForm()) return;
-  window.print();
+  
+  var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  var isAndroid = /Android/i.test(navigator.userAgent);
+  var modal = document.getElementById('pdfModal');
+  var instr = document.getElementById('pdfInstructions');
+  
+  if (isIOS) {
+    instr.innerHTML = 
+      "<b style='color:#FFB300'>1.</b> Tap CONTINUE to open Print preview<br>" +
+      "<b style='color:#FFB300'>2.</b> <span style='color:#FFB300'>PINCH-ZOOM OUT</span> on the page thumbnail<br>" +
+      "<b style='color:#FFB300'>3.</b> Tap the Share icon (top right)<br>" +
+      "<b style='color:#FFB300'>4.</b> Tap <span style='color:#FFB300'>'Save to Files'</span><br><br>" +
+      "<span style='color:#888; font-size:11px; font-family:Exo 2,sans-serif;'>► This bypasses the Safari print header gap for a clean PDF export.</span>";
+    modal.style.display = 'flex';
+  } else if (isAndroid) {
+    instr.innerHTML = 
+      "<b style='color:#FFB300'>1.</b> Tap CONTINUE to open Print preview<br>" +
+      "<b style='color:#FFB300'>2.</b> Change Printer to <span style='color:#FFB300'>'Save as PDF'</span><br>" +
+      "<b style='color:#FFB300'>3.</b> Tap the download icon<br><br>" +
+      "<span style='color:#888; font-size:11px; font-family:Exo 2,sans-serif;'>► PDF will save to your Downloads folder.</span>";
+    modal.style.display = 'flex';
+  } else {
+    instr.innerHTML = 
+      "<b style='color:#FFB300'>1.</b> Click CONTINUE to open Print dialog<br>" +
+      "<b style='color:#FFB300'>2.</b> Set Destination to <span style='color:#FFB300'>'Save as PDF'</span><br>" +
+      "<b style='color:#FFB300'>3.</b> Click Save<br><br>" +
+      "<span style='color:#888; font-size:11px; font-family:Exo 2,sans-serif;'>► Or pick your printer to print directly.</span>";
+    modal.style.display = 'flex';
+  }
+}
+
+function confirmPdfPrint() {
+  document.getElementById('pdfModal').style.display = 'none';
+  setTimeout(function() { window.print(); }, 250);
+}
+
+function closePdfModal() {
+  document.getElementById('pdfModal').style.display = 'none';
+}
+
+// Close modal when clicking outside
+document.addEventListener('click', function(e) {
+  var modal = document.getElementById('pdfModal');
+  if (modal && e.target === modal) {
+    modal.style.display = 'none';
+  }
+});
 }
 
 function sendEmail() {
@@ -2283,5 +2330,24 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 })();
 </script>
+
+<!-- ▼▼▼ PDF SAVE MODAL ▼▼▼ -->
+<div id="pdfModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(4px);">
+  <div style="background:linear-gradient(135deg,#0a0a0a 0%,#1a1a1a 100%); border:2px solid #FFB300; border-radius:12px; padding:30px; max-width:420px; width:90%; box-shadow:0 0 40px rgba(255,179,0,0.4), inset 0 0 20px rgba(0,229,255,0.05); font-family:'Exo 2',sans-serif;">
+    
+    <h2 style="color:#FFB300; font-family:'Orbitron',sans-serif; margin:0 0 8px 0; font-size:18px; letter-spacing:2px; text-shadow:0 0 10px rgba(255,179,0,0.5);">📄 SAVE AS PDF</h2>
+    
+    <div style="height:1px; background:linear-gradient(90deg,#FFB300,transparent); margin-bottom:18px;"></div>
+    
+    <div id="pdfInstructions" style="color:#00E5FF; font-family:'Share Tech Mono',monospace; font-size:13px; line-height:1.8;"></div>
+    
+    <div style="margin-top:24px; display:flex; justify-content:flex-end; gap:10px;">
+      <button onclick="closePdfModal()" style="background:transparent; border:1px solid #666; color:#999; padding:9px 18px; border-radius:6px; cursor:pointer; font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:1px;">CANCEL</button>
+      <button onclick="confirmPdfPrint()" style="background:linear-gradient(135deg,#FFB300,#FF8C00); border:none; color:#000; padding:9px 22px; border-radius:6px; cursor:pointer; font-weight:bold; font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:1px; box-shadow:0 0 15px rgba(255,179,0,0.4);">CONTINUE ▶</button>
+    </div>
+  </div>
+</div>
+<!-- ▲▲▲ END PDF MODAL ▲▲▲ -->
+
 </body>
 </html>
