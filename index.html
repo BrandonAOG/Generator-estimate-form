@@ -1919,6 +1919,25 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
       }
     `;
   });
+  
+  window.addEventListener('afterprint', function() {
+    var styleEl = document.getElementById('mobile-print-styles');
+    if (styleEl) styleEl.innerHTML = '';
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  var todayInput = document.getElementById('today');
+  if (todayInput && !todayInput.value) todayInput.value = new Date().toISOString().split('T')[0];
+  if (!navigator.onLine) {
+    var b = document.getElementById('offline-banner');
+    if (b) b.classList.add('show');
+    document.body.classList.add('offline');
+  }
+  setupAddressAutocomplete();
+  setupGpsButton();
+  restoreDraft();
+});
   window.addEventListener('afterprint', function() {
     var styleEl = document.getElementById('mobile-print-styles');
     if (styleEl) styleEl.innerHTML = '';
