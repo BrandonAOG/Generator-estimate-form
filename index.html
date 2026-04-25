@@ -1070,6 +1070,26 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
     break-inside: avoid !important;
   }
 }
+@media print {
+  body.is-mobile-device {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  body.is-mobile-device .page {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+  
+  body.is-mobile-device .header {
+    margin-top: 0 !important;
+    padding-top: 4px !important;
+  }
+  
+  @page {
+    margin: 0.1in 0.1in !important;
+  }
+}
 
 </style>
 </head>
