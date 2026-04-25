@@ -1053,8 +1053,10 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   #address { padding-right: 6px !important; }
 }
 </style>
+<style id="mobile-print-styles"></style>
 </head>
 <body>
+
 
 <!-- Offline indicator banner -->
 <div id="offline-banner">⚠️ YOU ARE OFFLINE — Your data will be auto-saved locally</div>
@@ -2184,10 +2186,56 @@ document.getElementById('gps-btn').addEventListener('click', function() {
 // ===================== INIT =====================
 document.addEventListener('DOMContentLoaded', function() {
   var todayInput = document.getElementById('today');
-  if (todayInput && !todayInput.value) {
+    if (todayInput && !todayInput.value) {
     todayInput.value = new Date().toISOString().split('T')[0];
   }
 });
+</script>
+
+<script>
+(function() {
+  var isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  if (!isMobile) return;
+  
+  window.addEventListener('beforeprint', function() {
+    var styleEl = document.getElementById('mobile-print-styles');
+    if (!styleEl) return;
+    styleEl.innerHTML = `
+      @page { size: letter portrait; margin: 0.2in; }
+      html, body {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 1050px !important;
+        height: auto !important;
+      }
+      body {
+        transform: scale(0.72) !important;
+        transform-origin: top left !important;
+      }
+      .page {
+        width: 1050px !important;
+        max-width: 1050px !important;
+        margin: 0 !important;
+        min-height: 0 !important;
+        height: auto !important;
+        display: block !important;
+      }
+      .toolbar { display: none !important; }
+      .header { padding: 6px 20px !important; margin: 0 !important; }
+      .content { padding: 6px 10px !important; margin: 0 !important; display: block !important; }
+      .footer { margin: 0 !important; padding: 6px 20px !important; }
+      .section, .top-grid, .flood-bar {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+    `;
+  });
+  
+  window.addEventListener('afterprint', function() {
+    var styleEl = document.getElementById('mobile-print-styles');
+    if (styleEl) styleEl.innerHTML = '';
+  });
+})();
 </script>
 </body>
 </html>
