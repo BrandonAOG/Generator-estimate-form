@@ -1051,8 +1051,8 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
 
   #address-suggestions, #gps-status, #gps-btn { display: none !important; }
   #address { padding-right: 6px !important; }
-}/* Mobile-only print styles - only applies when body has .is-mobile-device class */
-@media print {
+}/* Mobile-only print styles - ONLY applies on mobile devices (max-width 900px) */
+@media print and (max-width: 900px) {
   @page {
     size: letter portrait;
     margin: 0.15in;
@@ -1122,6 +1122,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
     margin-bottom: 4px !important;
   }
 }
+
 
 
 </style>
