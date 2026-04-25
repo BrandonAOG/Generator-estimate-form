@@ -822,21 +822,42 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   .section-header::before { animation: none !important; }
 
   .header {
-    background: #ffffff !important;
-    border-bottom-color: #D97706 !important;
-    page-break-after: avoid;
-    break-after: avoid;
-    padding: 6px 20px !important;
-    min-height: auto !important;
-    height: auto !important;
-    margin: 0 !important;
-    display: block !important;
-  }
+  background: #ffffff !important;
+  border-bottom-color: #D97706 !important;
+  page-break-after: avoid;
+  break-after: avoid;
+  padding: 6px 20px !important;
+  min-height: auto !important;
+  height: auto !important;
+  margin: 0 !important;
 
-  .header-logo { gap: 10px; }
-  .logo-img { width: 45px !important; height: 45px !important; }
-  .company-name { font-size: 1rem !important; color: #D97706 !important; text-shadow: none !important; }
-  .doc-title { color: #D97706 !important; text-shadow: none !important; font-size: 1rem !important; }
+  display: flex !important;        /* centers children horizontally */
+  align-items: center !important;  /* centers children vertically */
+}
+
+.header-logo {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px;
+}
+
+.logo-img {
+  width: 45px !important;
+  height: 45px !important;
+}
+
+.company-name {
+  font-size: 1rem !important;
+  color: #D97706 !important;
+  text-shadow: none !important;
+}
+
+.doc-title {
+  color: #D97706 !important;
+  text-shadow: none !important;
+  font-size: 1rem !important;
+}
+
 
   .content { 
     padding: 6px 10px !important; 
@@ -844,7 +865,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
     margin: 0 !important;
     display: block !important;
     flex: none !important;
-    height: auto !important;
+    height: center !important;
   }
   
   .section { 
@@ -1561,7 +1582,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
 
   <div class="footer">
     <span class="footer-text">GENERATOR INSTALLATION ESTIMATE · CONFIDENTIAL</span>
-    <span style="font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--text-dim);">Ver. 2.0B</span>
+    <span style="font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--text-dim);">Ver. 1.0B</span>
   </div>
 
 </div>
