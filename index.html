@@ -1688,6 +1688,115 @@ function printPDF() {
   modal.style.display = 'flex';
 }
 
+function saveImageFromModal() {
+  closeImageModal();
+  var page = document.getElementById('page');
+  var toolbar = document.getElementById('toolbar');
+  if (toolbar) toolbar.style.display = 'none';
+
+  html2canvas(page, {
+    scale: 2,
+    backgroundColor: '#FFFFFF',
+    useCORS: true,
+    logging: false,
+    onclone: function(clonedDocument) {
+      // Remove placeholders for clean export
+      var allInputs = clonedDocument.querySelectorAll('input[placeholder], textarea[placeholder]');
+      allInputs.forEach(function(el) {
+        el.removeAttribute('placeholder');
+      });
+
+      var clonedInputs = clonedDocument.querySelectorAll('input, textarea, select');
+      clonedInputs.forEach(function(el) {
+        el.style.visibility = 'visible';
+        el.style.opacity = '1';
+        el.style.backgroundColor = '#ffffff';
+        el.style.color = '#1F2937';
+
+        if (el.type === 'text' || el.type === 'email' || el.type === 'tel' || el.type === 'number' || el.type === 'date') {
+          if (el.value && el.value.trim()) {
+            el.setAttribute('value', el.value);
+            el.style.position = 'absolute';
+            el.style.left = '-9999px';
+            el.style.visibility = 'hidden';
+
+            var wrapper = el.parentNode;
+            if (wrapper && !wrapper.querySelector('[data-value-display="true"]')) {
+              var replacement = clonedDocument.createElement('div');
+              replacement.setAttribute('data-value-display', 'true');
+              replacement.style.fontFamily = 'Share Tech Mono, monospace';
+              replacement.style.fontSize = '0.82rem';
+              replacement.style.color = '#1F2937';
+              replacement.style.padding = '5px 6px';
+              replacement.style.minHeight = '34px';
+              replacement.style.display = 'flex';
+              replacement.style.alignItems = 'center';
+              replacement.style.borderBottom = '2px solid rgba(217,119,6,0.25)';
+              replacement.style.width = '100%';
+              replacement.style.boxSizing = 'border-box';
+              replacement.textContent = el.value;
+              wrapper.insertBefore(replacement, el);
+            }
+          }
+        } else if (el.tagName.toLowerCase() === 'textarea') {
+          if (el.value && el.value.trim()) {
+            el.textContent = el.value;
+          }
+        }
+      });
+
+      // Style checked checkboxes/radios
+      var allCheckboxes = clonedDocument.querySelectorAll('input[type="checkbox"], input[type="radio"]');
+      allCheckboxes.forEach(function(el) {
+        if (el.checked) {
+          el.setAttribute('checked', 'checked');
+          el.style.accentColor = '#D97706';
+
+          var container = el.closest('.check-item');
+          if (container) {
+            container.style.background = 'rgba(217,119,6,0.12)';
+            container.style.borderColor = 'rgba(217,119,6,0.6)';
+            var span = container.querySelector('span');
+            if (span) {
+              span.style.color = '#D97706';
+              span.style.fontWeight = '600';
+            }
+          }
+
+          var ynLabel = el.nextElementSibling;
+          if (ynLabel && ynLabel.classList.contains('yn-label')) {
+            if (el.classList.contains('yn-y')) {
+              ynLabel.style.background = 'rgba(5,150,105,0.12)';
+              ynLabel.style.color = '#059669';
+            } else if (el.classList.contains('yn-n')) {
+              ynLabel.style.background = 'rgba(220,38,38,0.12)';
+              ynLabel.style.color = '#DC2626';
+            }
+          }
+        }
+      });
+    }
+  }).then(function(canvas) {
+    if (toolbar) toolbar.style.display = '';
+    canvas.toBlob(function(blob) {
+      var name = (document.getElementById('name').value || 'estimate').replace(/[^a-z0-9]/gi, '_');
+      var date = new Date().toISOString().split('T')[0];
+      var filename = 'AOG_Estimate_' + name + '_' + date + '.jpg';
+
+      var link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setTimeout(function() { URL.revokeObjectURL(link.href); }, 1000);
+    }, 'image/jpeg', 0.92);
+  }).catch(function(err) {
+    if (toolbar) toolbar.style.display = '';
+    alert('Error generating image: ' + err.message);
+  });
+}
+
 function openImageModal() {
   if (!validateForm()) return;
   var modal = document.getElementById('imageModal');
@@ -1705,117 +1814,6 @@ function closePdfModal() {
 
 function closeImageModal() {
   document.getElementById('imageModal').style.display = 'none';
-}
-
-onclone: function(clonedDocument) {
-  // REMOVE PLACEHOLDERS
-  var allInputs = clonedDocument.querySelectorAll('input[placeholder], textarea[placeholder]');
-  allInputs.forEach(function(el) {
-    el.removeAttribute('placeholder');
-  });
-
-  var clonedInputs = clonedDocument.querySelectorAll('input, textarea, select');
-  
-  clonedInputs.forEach(function(el) {
-    el.style.visibility = 'visible';
-    el.style.opacity = '1';
-    el.style.backgroundColor = '#ffffff';
-    el.style.color = '#1F2937';
-    
-    // TEXT INPUTS, EMAILS, TEL, NUMBERS, DATES
-    if (el.type === 'text' || el.type === 'email' || el.type === 'tel' || el.type === 'number' || el.type === 'date') {
-      if (el.value && el.value.trim()) {
-        el.style.position = 'absolute';
-        el.style.left = '-9999px';
-        el.style.visibility = 'hidden';
-        
-        var wrapper = el.parentNode;
-        if (wrapper && !wrapper.querySelector('[data-value-display="true"]')) {
-          var replacement = clonedDocument.createElement('div');
-          replacement.setAttribute('data-value-display', 'true');
-          replacement.style.fontFamily = 'Share Tech Mono, monospace';
-          replacement.style.fontSize = '0.82rem';
-          replacement.style.color = '#1F2937';
-          replacement.style.padding = '5px 6px';
-          replacement.style.minHeight = '34px';
-          replacement.style.display = 'flex';
-          replacement.style.alignItems = 'center';
-          replacement.style.borderBottom = '2px solid rgba(217,119,6,0.25)';
-          replacement.style.width = '100%';
-          replacement.style.boxSizing = 'border-box';
-          replacement.textContent = el.value;
-          
-          wrapper.insertBefore(replacement, el);
-        }
-      }
-    } 
-    // TEXTAREAS
-    else if (el.tagName.toLowerCase() === 'textarea') {
-      if (el.value && el.value.trim()) {
-        el.style.minHeight = '40px';
-        el.style.height = 'auto';
-        el.textContent = el.value;
-        el.value = el.value;
-      }
-    }
-    // SELECT
-    else if (el.tagName.toLowerCase() === 'select') {
-      if (el.value) {
-        el.style.position = 'absolute';
-        el.style.left = '-9999px';
-        
-        var wrapper = el.parentNode;
-        if (wrapper && !wrapper.querySelector('[data-value-display="true"]')) {
-          var replacement = clonedDocument.createElement('div');
-          replacement.setAttribute('data-value-display', 'true');
-          replacement.style.fontFamily = 'Share Tech Mono, monospace';
-          replacement.style.fontSize = '0.82rem';
-          replacement.style.color = '#1F2937';
-          replacement.style.padding = '5px 6px';
-          replacement.style.minHeight = '34px';
-          replacement.style.display = 'flex';
-          replacement.style.alignItems = 'center';
-          replacement.textContent = el.value;
-          
-          wrapper.insertBefore(replacement, el);
-        }
-      }
-    }
-  });
-
-  // CHECKBOXES AND RADIOS
-  var allCheckboxes = clonedDocument.querySelectorAll('input[type="checkbox"], input[type="radio"]');
-  allCheckboxes.forEach(function(el) {
-    if (el.checked) {
-      el.style.accentColor = '#D97706';
-      el.style.visibility = 'visible';
-      el.style.opacity = '1';
-      
-      var container = el.closest('.check-item');
-      if (container) {
-        container.style.background = 'rgba(217,119,6,0.12)';
-        container.style.borderColor = 'rgba(217,119,6,0.6)';
-        container.style.boxShadow = '0 0 6px rgba(217,119,6,0.15)';
-        
-        var span = container.querySelector('span');
-        if (span) {
-          span.style.color = '#D97706';
-          span.style.fontWeight = '600';
-        }
-      }
-      
-      var ynLabel = el.nextElementSibling;
-      if (ynLabel && ynLabel.classList.contains('yn-label')) {
-        if (el.classList.contains('yn-y')) {
-          ynLabel.style.background = 'rgba(5,150,105,0.12)';
-          ynLabel.style.color = '#059669';
-        } else if (el.classList.contains('yn-n')) {
-          ynLabel.style.background = 'rgba(220,38,38,0.12)';
-          ynLabel.style.color = '#DC2626';
-        }
-      }
-    }
-  });
 }
 
 function setupAddressAutocomplete() {
