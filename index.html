@@ -1051,13 +1051,14 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
 
   #address-suggestions, #gps-status, #gps-btn { display: none !important; }
   #address { padding-right: 6px !important; }
-} /* Mobile-only print styles - only applies when body has .is-mobile-device class */
+}/* Mobile-only print styles - only applies when body has .is-mobile-device class */
 @media print {
   body.is-mobile-device {
     zoom: 0.59 !important;
     margin: 0 !important;
     padding: 0 !important;
     transform-origin: top left !important;
+    width: 1050px !important;
   }
   
   body.is-mobile-device .page {
@@ -1065,11 +1066,30 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
     max-width: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
+    min-height: 0 !important;
+    height: auto !important;
+    display: block !important;
   }
   
   body.is-mobile-device .header {
+    margin: 0 !important;
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+    min-height: 0 !important;
+    height: auto !important;
+  }
+  
+  body.is-mobile-device .toolbar {
+    display: none !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+  }
+  
+  body.is-mobile-device .content {
+    padding-top: 4px !important;
     margin-top: 0 !important;
-    padding-top: 0 !important;
   }
   
   body.is-mobile-device .section,
