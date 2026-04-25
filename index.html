@@ -1817,23 +1817,41 @@ function printPDF() {
       "<b style='color:#FFB300'>3.</b> Tap the Share icon (top right)<br>" +
       "<b style='color:#FFB300'>4.</b> Tap <span style='color:#FFB300'>'Save to Files'</span><br><br>" +
       "<span style='color:#888; font-size:11px; font-family:Exo 2,sans-serif;'>► This bypasses the Safari print header gap for a clean PDF export.</span>";
-    modal.style.display = 'flex';
   } else if (isAndroid) {
     instr.innerHTML = 
       "<b style='color:#FFB300'>1.</b> Tap CONTINUE to open Print preview<br>" +
       "<b style='color:#FFB300'>2.</b> Change Printer to <span style='color:#FFB300'>'Save as PDF'</span><br>" +
       "<b style='color:#FFB300'>3.</b> Tap the download icon<br><br>" +
       "<span style='color:#888; font-size:11px; font-family:Exo 2,sans-serif;'>► PDF will save to your Downloads folder.</span>";
-    modal.style.display = 'flex';
   } else {
     instr.innerHTML = 
       "<b style='color:#FFB300'>1.</b> Click CONTINUE to open Print dialog<br>" +
       "<b style='color:#FFB300'>2.</b> Set Destination to <span style='color:#FFB300'>'Save as PDF'</span><br>" +
       "<b style='color:#FFB300'>3.</b> Click Save<br><br>" +
       "<span style='color:#888; font-size:11px; font-family:Exo 2,sans-serif;'>► Or pick your printer to print directly.</span>";
-    modal.style.display = 'flex';
   }
+  modal.style.display = 'flex';
 }
+
+function savePDF() {
+  printPDF();
+}
+
+function confirmPdfPrint() {
+  document.getElementById('pdfModal').style.display = 'none';
+  setTimeout(function() { window.print(); }, 250);
+}
+
+function closePdfModal() {
+  document.getElementById('pdfModal').style.display = 'none';
+}
+
+document.addEventListener('click', function(e) {
+  var modal = document.getElementById('pdfModal');
+  if (modal && e.target === modal) {
+    modal.style.display = 'none';
+  }
+});
 
 function confirmPdfPrint() {
   document.getElementById('pdfModal').style.display = 'none';
