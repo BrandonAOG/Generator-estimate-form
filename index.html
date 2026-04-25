@@ -1739,16 +1739,25 @@ function saveImageFromModal() {
   var gpsStatusDisplay = gpsStatus ? gpsStatus.style.display : '';
   if (gpsStatus) gpsStatus.style.display = 'none';
 
-  // Capture at standard letter dimensions: 816px x 1056px @ 96dpi = 8.5" x 11"
+  // Force scroll to top to capture everything
+  var scrollTop = window.scrollY || document.documentElement.scrollTop;
+  window.scrollTo(0, 0);
+
+  // Capture with improved settings
   html2canvas(pageEl, { 
-    scale: 1, 
+    scale: 2,  // Higher scale for better quality
     useCORS: true, 
     allowTaint: true, 
     backgroundColor: '#ffffff', 
     logging: false,
-    windowWidth: 816,
-    windowHeight: 1056
+    imageTimeout: 0,  // No timeout for images
+    timeout: 0,  // No timeout for canvas
+    width: pageEl.scrollWidth,  // Use actual element width
+    height: pageEl.scrollHeight  // Use actual element height
   }).then(function(canvas) {
+    // Restore scroll position
+    window.scrollTo(0, scrollTop);
+    
     // Restore UI immediately
     allInputs.forEach(function(el) { 
       if (placeholderBackup[el.id] !== undefined) el.placeholder = placeholderBackup[el.id]; 
@@ -1756,12 +1765,12 @@ function saveImageFromModal() {
     if (gpsStatus) gpsStatus.style.display = gpsStatusDisplay;
     toolbar.style.display = '';
 
-    // Convert to JPEG data URL
+    // Convert to JPEG
     var dataURL = canvas.toDataURL('image/jpeg', 0.90);
     
     if (isMobile) {
       if (isIOS) {
-        // iOS Safari: Use blob download approach instead of window.open
+        // iOS Safari: Use blob download approach
         canvas.toBlob(function(blob) {
           var url = URL.createObjectURL(blob);
           var link = document.createElement('a');
@@ -1819,6 +1828,7 @@ function saveImageFromModal() {
     
   }).catch(function(err) {
     // Restore on error
+    window.scrollTo(0, scrollTop);
     allInputs.forEach(function(el) { 
       if (placeholderBackup[el.id] !== undefined) el.placeholder = placeholderBackup[el.id]; 
     });
