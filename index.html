@@ -1052,7 +1052,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   #address-suggestions, #gps-status, #gps-btn { display: none !important; }
   #address { padding-right: 6px !important; }
 
-  #pdfModal { display: none !important; }
+  #pdfModal, #imageModal { display: none !important; }
 }
 </style>
 <style id="mobile-print-styles"></style>
@@ -1561,10 +1561,46 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
 
   <div class="footer">
     <span class="footer-text">GENERATOR INSTALLATION ESTIMATE · CONFIDENTIAL</span>
-    <span style="font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--text-dim);">Ver. 1.0B</span>
+    <span style="font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--text-dim);">Ver. 2.0 (Fixed)</span>
   </div>
 
 </div>
+
+<!-- ▼▼▼ PDF SAVE MODAL ▼▼▼ -->
+<div id="pdfModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(4px);">
+  <div style="background:linear-gradient(135deg,#0a0a0a 0%,#1a1a1a 100%); border:2px solid #FFB300; border-radius:12px; padding:30px; max-width:420px; width:90%; box-shadow:0 0 40px rgba(255,179,0,0.4), inset 0 0 20px rgba(0,229,255,0.05); font-family:'Exo 2',sans-serif;">
+    
+    <h2 style="color:#FFB300; font-family:'Orbitron',sans-serif; margin:0 0 8px 0; font-size:18px; letter-spacing:2px; text-shadow:0 0 10px rgba(255,179,0,0.5);">📄 SAVE AS PDF</h2>
+    
+    <div style="height:1px; background:linear-gradient(90deg,#FFB300,transparent); margin-bottom:18px;"></div>
+    
+    <div id="pdfInstructions" style="color:#00E5FF; font-family:'Share Tech Mono',monospace; font-size:13px; line-height:1.8;"></div>
+    
+    <div style="margin-top:24px; display:flex; justify-content:flex-end; gap:10px;">
+      <button onclick="closePdfModal()" style="background:transparent; border:1px solid #666; color:#999; padding:9px 18px; border-radius:6px; cursor:pointer; font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:1px;">CANCEL</button>
+      <button onclick="confirmPdfPrint()" style="background:linear-gradient(135deg,#FFB300,#FF8C00); border:none; color:#000; padding:9px 22px; border-radius:6px; cursor:pointer; font-weight:bold; font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:1px; box-shadow:0 0 15px rgba(255,179,0,0.4);">CONTINUE ▶</button>
+    </div>
+  </div>
+</div>
+<!-- ▲▲▲ END PDF MODAL ▲▲▲ -->
+
+<!-- ▼▼▼ IMAGE SAVE MODAL ▼▼▼ -->
+<div id="imageModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(4px);">
+  <div style="background:linear-gradient(135deg,#0a0a0a 0%,#1a1a1a 100%); border:2px solid #059669; border-radius:12px; padding:30px; max-width:420px; width:90%; box-shadow:0 0 40px rgba(5,150,105,0.4), inset 0 0 20px rgba(0,229,255,0.05); font-family:'Exo 2',sans-serif;">
+    
+    <h2 style="color:#059669; font-family:'Orbitron',sans-serif; margin:0 0 8px 0; font-size:18px; letter-spacing:2px; text-shadow:0 0 10px rgba(5,150,105,0.5);">🖼 SAVE AS IMAGE</h2>
+    
+    <div style="height:1px; background:linear-gradient(90deg,#059669,transparent); margin-bottom:18px;"></div>
+    
+    <p style="color:#00E5FF; font-family:'Share Tech Mono',monospace; font-size:13px; line-height:1.8; margin:0 0 20px 0;">Capture the entire form as a JPEG image. Perfect for saving, printing, or sharing.</p>
+    
+    <div style="margin-top:24px; display:flex; justify-content:flex-end; gap:10px;">
+      <button onclick="closeImageModal()" style="background:transparent; border:1px solid #666; color:#999; padding:9px 18px; border-radius:6px; cursor:pointer; font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:1px;">CANCEL</button>
+      <button onclick="saveImageFromModal()" style="background:linear-gradient(135deg,#059669,#04874f); border:none; color:#fff; padding:9px 22px; border-radius:6px; cursor:pointer; font-weight:bold; font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:1px; box-shadow:0 0 15px rgba(5,150,105,0.4);">SAVE IMAGE ▶</button>
+    </div>
+  </div>
+</div>
+<!-- ▲▲▲ END IMAGE MODAL ▲▲▲ -->
 
 <script>
 if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
@@ -1574,91 +1610,161 @@ if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(naviga
 var MAPBOX_TOKEN = 'pk.eyJ1IjoicHJvamVjdHdyYXBwZXIiLCJhIjoiY201d2k1eHU3MDAwajJrbzU2a2c5dW40NSJ9.WJlNJ4o5CqBhWpHKMKOzIQ';
 var DRAFT_KEY = 'aog_estimate_draft';
 
+// ────────────────────────────────────────────────────────────────
+// OFFLINE HANDLING
+// ────────────────────────────────────────────────────────────────
 window.addEventListener('online', function() {
   var b = document.getElementById('offline-banner');
   if (b) b.classList.remove('show');
   document.body.classList.remove('offline');
 });
+
 window.addEventListener('offline', function() {
   var b = document.getElementById('offline-banner');
   if (b) b.classList.add('show');
   document.body.classList.add('offline');
 });
 
+// ────────────────────────────────────────────────────────────────
+// DRAFT SAVE/RESTORE
+// ────────────────────────────────────────────────────────────────
 function saveDraft() {
   var data = {};
+  
   document.querySelectorAll('input, textarea').forEach(function(el) {
     var key = el.id || el.name;
     if (!key) return;
-    if (el.type === 'checkbox') {
-      if (!data[key]) data[key] = [];
-      if (el.checked) data[key].push(el.value);
-    } else if (el.type === 'radio') {
-      if (el.checked) data[key] = el.value;
-    } else {
-      if (data[key] === undefined) data[key] = el.value;
+    
+    try {
+      if (el.type === 'checkbox') {
+        if (!data[key]) data[key] = [];
+        if (el.checked) data[key].push(el.value);
+      } else if (el.type === 'radio') {
+        if (el.checked) data[key] = el.value;
+      } else {
+        if (data[key] === undefined) data[key] = el.value;
+      }
+    } catch (e) {
+      console.warn('Error saving field:', key);
     }
   });
-  try { localStorage.setItem(DRAFT_KEY, JSON.stringify(data)); } catch(e) {}
+  
+  try {
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
+  } catch(e) {
+    if (e.name === 'QuotaExceededError') {
+      console.warn('LocalStorage quota exceeded');
+    }
+  }
 }
 
 function restoreDraft() {
   var saved = localStorage.getItem(DRAFT_KEY);
   if (!saved) return;
+  
   try {
     var data = JSON.parse(saved);
+    
     document.querySelectorAll('input, textarea').forEach(function(el) {
       var key = el.id || el.name;
       if (!key || data[key] === undefined) return;
-      if (el.type === 'checkbox') {
-        if (Array.isArray(data[key])) el.checked = data[key].indexOf(el.value) !== -1;
-      } else if (el.type === 'radio') {
-        if (el.value === data[key]) el.checked = true;
-      } else {
-        el.value = data[key];
+      
+      try {
+        if (el.type === 'checkbox') {
+          if (Array.isArray(data[key])) {
+            el.checked = data[key].indexOf(el.value) !== -1;
+          }
+        } else if (el.type === 'radio') {
+          if (el.value === data[key]) el.checked = true;
+        } else {
+          el.value = data[key];
+        }
+      } catch (e) {
+        console.warn('Error restoring field:', key);
       }
     });
-  } catch(e) {}
+  } catch(e) {
+    console.warn('Error restoring draft:', e);
+  }
 }
 
 setInterval(saveDraft, 30000);
 document.addEventListener('change', saveDraft);
+document.addEventListener('input', saveDraft);
 
+// ────────────────────────────────────────────────────────────────
+// FORM VALIDATION
+// ────────────────────────────────────────────────────────────────
 function validateForm() {
   var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   var phoneRegex = /^[\d\-\(\)\s+]*\d[\d\-\(\)\s+]*$/;
   var required = ['name', 'address', 'phone', 'email', 'estimator'];
   var missing = [];
   var invalid = [];
+  
   required.forEach(function(id) {
     var el = document.getElementById(id);
-    if (el && !el.value.trim()) missing.push(id.toUpperCase());
+    if (el && !el.value.trim()) {
+      missing.push(id.toUpperCase());
+    }
   });
+  
   var emailEl = document.getElementById('email');
-  if (emailEl && emailEl.value && !emailRegex.test(emailEl.value)) invalid.push('EMAIL (invalid format)');
+  if (emailEl && emailEl.value && !emailRegex.test(emailEl.value)) {
+    invalid.push('EMAIL (invalid format)');
+  }
+  
   var phoneEl = document.getElementById('phone');
-  if (phoneEl && phoneEl.value && !phoneRegex.test(phoneEl.value)) invalid.push('PHONE (invalid format)');
-  if (missing.length > 0) { alert('Missing required fields:\n• ' + missing.join('\n• ')); return false; }
-  if (invalid.length > 0) { alert('Invalid field formats:\n• ' + invalid.join('\n• ')); return false; }
+  if (phoneEl && phoneEl.value && !phoneRegex.test(phoneEl.value)) {
+    invalid.push('PHONE (invalid format)');
+  }
+  
+  if (missing.length > 0) {
+    alert('Missing required fields:\n• ' + missing.join('\n• '));
+    return false;
+  }
+  
+  if (invalid.length > 0) {
+    alert('Invalid field formats:\n• ' + invalid.join('\n• '));
+    return false;
+  }
+  
   return true;
 }
 
+// ────────────────────────────────────────────────────────────────
+// FORM ACTIONS
+// ────────────────────────────────────────────────────────────────
 function clearForm() {
   if (!confirm('Clear all fields?')) return;
-  document.querySelectorAll('input[type="text"],input[type="email"],input[type="tel"],input[type="date"],input[type="number"],textarea').forEach(function(el) { el.value = ''; });
-  document.querySelectorAll('input[type="checkbox"],input[type="radio"]').forEach(function(el) { el.checked = false; });
+  
+  document.querySelectorAll('input[type="text"],input[type="email"],input[type="tel"],input[type="date"],input[type="number"],textarea').forEach(function(el) {
+    el.value = '';
+  });
+  
+  document.querySelectorAll('input[type="checkbox"],input[type="radio"]').forEach(function(el) {
+    el.checked = false;
+  });
+  
   var s = document.getElementById('sqft-status');
   if (s) s.textContent = '';
+  
   var gpsStatus = document.getElementById('gps-status');
-  if (gpsStatus) { gpsStatus.style.display = 'none'; gpsStatus.textContent = ''; }
+  if (gpsStatus) {
+    gpsStatus.style.display = 'none';
+    gpsStatus.textContent = '';
+  }
+  
   localStorage.removeItem(DRAFT_KEY);
 }
 
 function getFormData() {
   var data = {};
+  
   document.querySelectorAll('input, textarea, select').forEach(function(el) {
     var key = el.id || el.name;
     if (!key) return;
+    
     if (el.type === 'checkbox') {
       if (!data[key]) data[key] = [];
       if (el.checked) data[key].push(el.value);
@@ -1668,16 +1774,26 @@ function getFormData() {
       if (data[key] === undefined) data[key] = el.value;
     }
   });
+  
   return data;
 }
 
+// ────────────────────────────────────────────────────────────────
+// PDF PRINT
+// ────────────────────────────────────────────────────────────────
 function printPDF() {
   if (!validateForm()) return;
+  
   var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
   var isAndroid = /Android/i.test(navigator.userAgent);
   var modal = document.getElementById('pdfModal');
   var instr = document.getElementById('pdfInstructions');
-  if (!modal || !instr) { window.print(); return; }
+  
+  if (!modal || !instr) {
+    window.print();
+    return;
+  }
+  
   if (isIOS) {
     instr.innerHTML = "<b style='color:#FFB300'>1.</b> Tap CONTINUE to open Print preview<br><b style='color:#FFB300'>2.</b> <span style='color:#FFB300'>PINCH-ZOOM OUT</span> on the page thumbnail<br><b style='color:#FFB300'>3.</b> Tap the Share icon (top right)<br><b style='color:#FFB300'>4.</b> Tap <span style='color:#FFB300'>'Save to Files'</span>";
   } else if (isAndroid) {
@@ -1685,258 +1801,423 @@ function printPDF() {
   } else {
     instr.innerHTML = "<b style='color:#FFB300'>1.</b> Click CONTINUE to open Print dialog<br><b style='color:#FFB300'>2.</b> Set Destination to <span style='color:#FFB300'>'Save as PDF'</span><br><b style='color:#FFB300'>3.</b> Click Save";
   }
+  
   modal.style.display = 'flex';
-}
-
-function saveImageFromModal() {
-  closeImageModal();
-  var page = document.getElementById('page');
-  var toolbar = document.getElementById('toolbar');
-  if (toolbar) toolbar.style.display = 'none';
-
-  html2canvas(page, {
-    scale: 2,
-    backgroundColor: '#FFFFFF',
-    useCORS: true,
-    logging: false,
-    onclone: function(clonedDocument) {
-      // Remove placeholders for clean export
-      var allInputs = clonedDocument.querySelectorAll('input[placeholder], textarea[placeholder]');
-      allInputs.forEach(function(el) {
-        el.removeAttribute('placeholder');
-      });
-
-      var clonedInputs = clonedDocument.querySelectorAll('input, textarea, select');
-      clonedInputs.forEach(function(el) {
-        el.style.visibility = 'visible';
-        el.style.opacity = '1';
-        el.style.backgroundColor = '#ffffff';
-        el.style.color = '#1F2937';
-
-        if (el.type === 'text' || el.type === 'email' || el.type === 'tel' || el.type === 'number' || el.type === 'date') {
-          if (el.value && el.value.trim()) {
-            el.setAttribute('value', el.value);
-            el.style.position = 'absolute';
-            el.style.left = '-9999px';
-            el.style.visibility = 'hidden';
-
-            var wrapper = el.parentNode;
-            if (wrapper && !wrapper.querySelector('[data-value-display="true"]')) {
-              var replacement = clonedDocument.createElement('div');
-              replacement.setAttribute('data-value-display', 'true');
-              replacement.style.fontFamily = 'Share Tech Mono, monospace';
-              replacement.style.fontSize = '0.82rem';
-              replacement.style.color = '#1F2937';
-              replacement.style.padding = '5px 6px';
-              replacement.style.minHeight = '34px';
-              replacement.style.display = 'flex';
-              replacement.style.alignItems = 'center';
-              replacement.style.borderBottom = '2px solid rgba(217,119,6,0.25)';
-              replacement.style.width = '100%';
-              replacement.style.boxSizing = 'border-box';
-              replacement.textContent = el.value;
-              wrapper.insertBefore(replacement, el);
-            }
-          }
-        } else if (el.tagName.toLowerCase() === 'textarea') {
-          if (el.value && el.value.trim()) {
-            el.textContent = el.value;
-          }
-        }
-      });
-
-      // Style checked checkboxes/radios
-      var allCheckboxes = clonedDocument.querySelectorAll('input[type="checkbox"], input[type="radio"]');
-      allCheckboxes.forEach(function(el) {
-        if (el.checked) {
-          el.setAttribute('checked', 'checked');
-          el.style.accentColor = '#D97706';
-
-          var container = el.closest('.check-item');
-          if (container) {
-            container.style.background = 'rgba(217,119,6,0.12)';
-            container.style.borderColor = 'rgba(217,119,6,0.6)';
-            var span = container.querySelector('span');
-            if (span) {
-              span.style.color = '#D97706';
-              span.style.fontWeight = '600';
-            }
-          }
-
-          var ynLabel = el.nextElementSibling;
-          if (ynLabel && ynLabel.classList.contains('yn-label')) {
-            if (el.classList.contains('yn-y')) {
-              ynLabel.style.background = 'rgba(5,150,105,0.12)';
-              ynLabel.style.color = '#059669';
-            } else if (el.classList.contains('yn-n')) {
-              ynLabel.style.background = 'rgba(220,38,38,0.12)';
-              ynLabel.style.color = '#DC2626';
-            }
-          }
-        }
-      });
-    }
-  }).then(function(canvas) {
-    if (toolbar) toolbar.style.display = '';
-    canvas.toBlob(function(blob) {
-      var name = (document.getElementById('name').value || 'estimate').replace(/[^a-z0-9]/gi, '_');
-      var date = new Date().toISOString().split('T')[0];
-      var filename = 'AOG_Estimate_' + name + '_' + date + '.jpg';
-
-      var link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = filename;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      setTimeout(function() { URL.revokeObjectURL(link.href); }, 1000);
-    }, 'image/jpeg', 0.92);
-  }).catch(function(err) {
-    if (toolbar) toolbar.style.display = '';
-    alert('Error generating image: ' + err.message);
-  });
-}
-
-function openImageModal() {
-  if (!validateForm()) return;
-  var modal = document.getElementById('imageModal');
-  if (modal) modal.style.display = 'flex';
 }
 
 function confirmPdfPrint() {
   document.getElementById('pdfModal').style.display = 'none';
-  setTimeout(function() { window.print(); }, 250);
+  setTimeout(function() {
+    window.print();
+  }, 250);
 }
 
 function closePdfModal() {
   document.getElementById('pdfModal').style.display = 'none';
 }
 
+// ────────────────────────────────────────────────────────────────
+// IMAGE EXPORT
+// ────────────────────────────────────────────────────────────────
+function openImageModal() {
+  if (!validateForm()) return;
+  var modal = document.getElementById('imageModal');
+  if (modal) modal.style.display = 'flex';
+}
+
 function closeImageModal() {
   document.getElementById('imageModal').style.display = 'none';
 }
 
+function saveImageFromModal() {
+  closeImageModal();
+  
+  var page = document.getElementById('page');
+  if (!page) {
+    alert('Error: Could not find form element');
+    return;
+  }
+  
+  var pageTitle = (document.getElementById('name').value || 'Estimate').replace(/\s+/g, '_');
+  var timestamp = new Date().toISOString().split('T')[0];
+  var filename = pageTitle + '_' + timestamp + '.jpg';
+  
+  // Show progress
+  var originalContent = document.body.innerHTML;
+  
+  html2canvas(page, {
+    scale: 2,
+    useCORS: true,
+    backgroundColor: '#FFFFFF',
+    logging: false,
+    windowHeight: page.scrollHeight,
+    allowTaint: true
+  }).then(function(canvas) {
+    try {
+      var link = document.createElement('a');
+      link.download = filename;
+      link.href = canvas.toDataURL('image/jpeg', 0.95);
+      link.click();
+      
+      // Clean up
+      setTimeout(function() {
+        link.remove();
+      }, 100);
+    } catch (e) {
+      alert('Error saving image: ' + e.message);
+    }
+  }).catch(function(err) {
+    alert('Error generating image: ' + err.message);
+  });
+}
+
+// ────────────────────────────────────────────────────────────────
+// EMAIL
+// ────────────────────────────────────────────────────────────────
+function sendEmail() {
+  if (!validateForm()) return;
+  
+  var data = getFormData();
+  var name = data.name || '';
+  var emailTo = data.email || '';
+  var addr1 = data.address || '';
+  var addr2 = data.address2 || '';
+  var address = addr1 + (addr2 ? ', ' + addr2 : '');
+  var phone = data.phone || '';
+  var sqft = data.sqft || '';
+  var estDate = data.est_date || '';
+  var estimator = data.estimator || '';
+  
+  var subject = 'Generator Installation Estimate — ' + name;
+  var lines = [
+    'Dear ' + name + ',',
+    '',
+    'Thank you for the opportunity to provide you with a generator installation estimate.',
+    '',
+    '--- ESTIMATE DETAILS ---',
+    'Customer: ' + name,
+    'Address: ' + address,
+    'Phone: ' + phone,
+    'Sq. Footage: ' + sqft + ' SF',
+    'Estimate Date: ' + estDate,
+    'Estimator: ' + estimator,
+    '',
+    'Please reply to this email or call us if you have any questions.',
+    '',
+    'Best regards,',
+    'Always On Generators'
+  ];
+  
+  var mailtoLink = 'mailto:' + encodeURIComponent(emailTo) + 
+                   '?subject=' + encodeURIComponent(subject) + 
+                   '&body=' + encodeURIComponent(lines.join('\n'));
+  
+  window.location.href = mailtoLink;
+}
+
+// ────────────────────────────────────────────────────────────────
+// ADDRESS AUTOCOMPLETE
+// ────────────────────────────────────────────────────────────────
 function setupAddressAutocomplete() {
   var input = document.getElementById('address');
   var list = document.getElementById('address-suggestions');
   if (!input || !list) return;
+  
   var timer = null;
-  function closeList() { list.classList.remove('open'); list.innerHTML = ''; }
+  var currentIndex = -1;
+  
+  function closeList() {
+    list.classList.remove('open');
+    list.innerHTML = '';
+    currentIndex = -1;
+  }
+  
   input.addEventListener('input', function() {
     clearTimeout(timer);
     var val = input.value.trim();
-    if (val.length < 4) { closeList(); return; }
-    timer = setTimeout(function() { fetchSuggestions(val); }, 380);
+    
+    if (val.length < 4) {
+      closeList();
+      return;
+    }
+    
+    timer = setTimeout(function() {
+      fetchSuggestions(val);
+    }, 380);
   });
-  document.addEventListener('mousedown', function(e) { if (!input.contains(e.target) && !list.contains(e.target)) closeList(); });
-  document.addEventListener('touchstart', function(e) { if (!input.contains(e.target) && !list.contains(e.target)) closeList(); }, {passive: true});
-  function fetchSuggestions(query) {
-    if (!navigator.onLine) { closeList(); return; }
-    var url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/' + encodeURIComponent(query) + '.json?country=us&proximity=-81.5,27.5&limit=6&access_token=' + MAPBOX_TOKEN;
-    fetch(url).then(function(r) { return r.json(); }).then(function(data) { showSuggestions(data.features || []); }).catch(function() { closeList(); });
+  
+  input.addEventListener('keydown', function(e) {
+    var items = list.querySelectorAll('li');
+    
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      currentIndex = Math.min(currentIndex + 1, items.length - 1);
+      updateActive(items);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      currentIndex = Math.max(currentIndex - 1, -1);
+      updateActive(items);
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (currentIndex >= 0 && items[currentIndex]) {
+        items[currentIndex].click();
+      }
+    } else if (e.key === 'Escape') {
+      closeList();
+    }
+  });
+  
+  function updateActive(items) {
+    items.forEach(function(item, idx) {
+      if (idx === currentIndex) {
+        item.classList.add('active');
+        item.scrollIntoView({ block: 'nearest' });
+      } else {
+        item.classList.remove('active');
+      }
+    });
   }
+  
+  document.addEventListener('mousedown', function(e) {
+    if (!input.contains(e.target) && !list.contains(e.target)) {
+      closeList();
+    }
+  });
+  
+  document.addEventListener('touchstart', function(e) {
+    if (!input.contains(e.target) && !list.contains(e.target)) {
+      closeList();
+    }
+  }, { passive: true });
+  
+  function fetchSuggestions(query) {
+    if (!navigator.onLine) {
+      closeList();
+      return;
+    }
+    
+    var url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/' + 
+              encodeURIComponent(query) + 
+              '.json?country=us&proximity=-81.5,27.5&limit=6&access_token=' + MAPBOX_TOKEN;
+    
+    fetch(url)
+      .then(function(r) {
+        if (!r.ok) throw new Error('Network response was not ok');
+        return r.json();
+      })
+      .then(function(data) {
+        showSuggestions(data.features || []);
+      })
+      .catch(function(err) {
+        console.error('Geocoding error:', err);
+        closeList();
+      });
+  }
+  
   function showSuggestions(features) {
     list.innerHTML = '';
-    if (!features.length) { closeList(); return; }
+    currentIndex = -1;
+    
+    if (!features.length) {
+      closeList();
+      return;
+    }
+    
     features.forEach(function(feature) {
       var display = feature.place_name || '';
       var coords = feature.geometry.coordinates;
+      
       var li = document.createElement('li');
-      li.textContent = display;
+      li.textContent = display; // Safe: textContent prevents XSS
+      
       li.addEventListener('click', function() {
         var parts = display.split(',');
         input.value = parts[0].trim();
         document.getElementById('address2').value = parts.slice(1).join(',').trim();
         closeList();
+        
         var gs = document.getElementById('gps-status');
-        if (gs) { gs.style.display = 'none'; gs.textContent = ''; }
+        if (gs) {
+          gs.style.display = 'none';
+          gs.textContent = '';
+        }
+        
         lookupSquareFootage(coords[1], coords[0]);
       });
+      
       list.appendChild(li);
     });
+    
     list.classList.add('open');
   }
 }
 
+// ────────────────────────────────────────────────────────────────
+// SQUARE FOOTAGE LOOKUP
+// ────────────────────────────────────────────────────────────────
 function lookupSquareFootage(lat, lon) {
   var statusEl = document.getElementById('sqft-status');
   if (!statusEl) return;
-  if (!navigator.onLine) { statusEl.textContent = '⚠ Offline — enter sq ft manually'; return; }
+  
+  if (!navigator.onLine) {
+    statusEl.textContent = '⚠ Offline — enter sq ft manually';
+    return;
+  }
+  
   statusEl.textContent = '⏳ Looking up...';
   statusEl.style.color = 'var(--text-muted)';
-  var url = 'https://api.mapbox.com/v4/mapbox.mapbox-streets-v8/tilequery/' + lon + ',' + lat + '.json?layers=building&access_token=' + MAPBOX_TOKEN;
-  fetch(url).then(function(r) { return r.json(); }).then(function(data) {
-    if (data.features && data.features.length > 0) {
-      var props = data.features[0].properties || {};
-      if (props.area) {
-        var sqft = Math.round(props.area * 10.7639);
-        if (sqft > 200 && sqft < 50000) {
-          document.getElementById('sqft').value = sqft;
-          statusEl.textContent = '✓ From map data';
-          statusEl.style.color = '#059669';
-          return;
+  
+  var url = 'https://api.mapbox.com/v4/mapbox.mapbox-streets-v8/tilequery/' + 
+            lon + ',' + lat + 
+            '.json?layers=building&access_token=' + MAPBOX_TOKEN;
+  
+  fetch(url)
+    .then(function(r) {
+      if (!r.ok) throw new Error('Network response was not ok');
+      return r.json();
+    })
+    .then(function(data) {
+      if (data.features && data.features.length > 0) {
+        var props = data.features[0].properties || {};
+        if (props.area) {
+          var sqft = Math.round(props.area * 10.7639);
+          if (sqft > 200 && sqft < 50000) {
+            document.getElementById('sqft').value = sqft;
+            statusEl.textContent = '✓ From map data';
+            statusEl.style.color = '#059669';
+            return;
+          }
         }
       }
-    }
-    statusEl.textContent = '⚠ Enter sq ft manually';
-  }).catch(function() { statusEl.textContent = '⚠ Enter sq ft manually'; });
+      statusEl.textContent = '⚠ Enter sq ft manually';
+    })
+    .catch(function(err) {
+      console.error('Lookup error:', err);
+      statusEl.textContent = '⚠ Enter sq ft manually';
+    });
 }
 
+// ────────────────────────────────────────────────────────────────
+// GPS GEOLOCATION
+// ────────────────────────────────────────────────────────────────
 function setupGpsButton() {
   var gpsBtn = document.getElementById('gps-btn');
   if (!gpsBtn) return;
+  
   gpsBtn.addEventListener('click', function() {
     var btn = this;
     var statusEl = document.getElementById('gps-status');
+    
     statusEl.style.display = 'block';
     statusEl.style.color = 'var(--text-muted)';
     statusEl.textContent = 'Getting your location…';
     btn.style.opacity = '0.5';
     btn.disabled = true;
-    if (!navigator.geolocation) { statusEl.textContent = 'Geolocation not supported.'; btn.style.opacity = '1'; btn.disabled = false; return; }
-    navigator.geolocation.getCurrentPosition(function(pos) {
-      var lat = pos.coords.latitude;
-      var lon = pos.coords.longitude;
-      statusEl.textContent = 'Reverse geocoding…';
-      if (!navigator.onLine) { btn.style.opacity = '1'; btn.disabled = false; statusEl.textContent = 'Location found (offline).'; return; }
-      var url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/' + lon + ',' + lat + '.json?access_token=' + MAPBOX_TOKEN;
-      fetch(url).then(function(r) { return r.json(); }).then(function(data) {
-        btn.style.opacity = '1';
-        btn.disabled = false;
-        if (data.features && data.features.length > 0) {
-          var place = data.features[0].place_name || '';
-          var parts = place.split(',');
-          document.getElementById('address').value = parts[0].trim();
-          document.getElementById('address2').value = parts.slice(1).join(',').trim();
-          statusEl.textContent = '✓ Location found';
-          statusEl.style.color = '#059669';
-          lookupSquareFootage(lat, lon);
-        } else { statusEl.textContent = 'Could not determine address.'; }
-      }).catch(function() { btn.style.opacity = '1'; btn.disabled = false; statusEl.textContent = 'Error fetching address.'; });
-    }, function(err) {
+    
+    if (!navigator.geolocation) {
+      statusEl.textContent = 'Geolocation not supported.';
+      statusEl.style.color = '#DC2626';
       btn.style.opacity = '1';
       btn.disabled = false;
-      var msg = 'Location access denied.';
-      if (err.code === 1) msg = 'Location permission denied.';
-      else if (err.code === 2) msg = 'Location unavailable.';
-      else if (err.code === 3) msg = 'Location timed out.';
-      statusEl.textContent = msg;
-      statusEl.style.color = '#DC2626';
-    }, {timeout: 12000, enableHighAccuracy: true, maximumAge: 30000});
+      return;
+    }
+    
+    navigator.geolocation.getCurrentPosition(
+      function(pos) {
+        var lat = pos.coords.latitude;
+        var lon = pos.coords.longitude;
+        
+        statusEl.textContent = 'Reverse geocoding…';
+        
+        if (!navigator.onLine) {
+          btn.style.opacity = '1';
+          btn.disabled = false;
+          statusEl.textContent = 'Location found (offline).';
+          statusEl.style.color = '#FFB300';
+          return;
+        }
+        
+        var url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/' + 
+                  lon + ',' + lat + 
+                  '.json?access_token=' + MAPBOX_TOKEN;
+        
+        fetch(url)
+          .then(function(r) {
+            if (!r.ok) throw new Error('Network response was not ok');
+            return r.json();
+          })
+          .then(function(data) {
+            btn.style.opacity = '1';
+            btn.disabled = false;
+            
+            if (data.features && data.features.length > 0) {
+              var place = data.features[0].place_name || '';
+              var parts = place.split(',');
+              
+              document.getElementById('address').value = parts[0].trim();
+              document.getElementById('address2').value = parts.slice(1).join(',').trim();
+              
+              statusEl.textContent = '✓ Location found';
+              statusEl.style.color = '#059669';
+              
+              lookupSquareFootage(lat, lon);
+            } else {
+              statusEl.textContent = 'Could not determine address.';
+              statusEl.style.color = '#DC2626';
+            }
+          })
+          .catch(function(err) {
+            btn.style.opacity = '1';
+            btn.disabled = false;
+            statusEl.textContent = 'Error fetching address.';
+            statusEl.style.color = '#DC2626';
+            console.error('Reverse geocode error:', err);
+          });
+      },
+      function(err) {
+        btn.style.opacity = '1';
+        btn.disabled = false;
+        
+        var msg = 'Location access denied.';
+        if (err.code === 1) msg = 'Location permission denied.';
+        else if (err.code === 2) msg = 'Location unavailable.';
+        else if (err.code === 3) msg = 'Location timed out.';
+        
+        statusEl.textContent = msg;
+        statusEl.style.color = '#DC2626';
+      },
+      {
+        timeout: 12000,
+        enableHighAccuracy: true,
+        maximumAge: 30000
+      }
+    );
   });
 }
 
+// ────────────────────────────────────────────────────────────────
+// MODAL CLICK-OUTSIDE CLOSE
+// ────────────────────────────────────────────────────────────────
 document.addEventListener('click', function(e) {
   var pdfModal = document.getElementById('pdfModal');
   var imageModal = document.getElementById('imageModal');
-  if (pdfModal && e.target === pdfModal) pdfModal.style.display = 'none';
-  if (imageModal && e.target === imageModal) imageModal.style.display = 'none';
+  
+  if (pdfModal && e.target === pdfModal) {
+    pdfModal.style.display = 'none';
+  }
+  if (imageModal && e.target === imageModal) {
+    imageModal.style.display = 'none';
+  }
 });
 
+// ────────────────────────────────────────────────────────────────
+// MOBILE PRINT OPTIMIZATION
+// ────────────────────────────────────────────────────────────────
 if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
   window.addEventListener('beforeprint', function() {
     var styleEl = document.getElementById('mobile-print-styles');
     if (!styleEl) return;
+    
     styleEl.innerHTML = `
       @page { 
         size: letter portrait; 
@@ -1986,72 +2267,29 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
   });
 }
 
+// ────────────────────────────────────────────────────────────────
+// INITIALIZATION
+// ────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function() {
+  // Set today's date
   var todayInput = document.getElementById('today');
-  if (todayInput && !todayInput.value) todayInput.value = new Date().toISOString().split('T')[0];
+  if (todayInput && !todayInput.value) {
+    todayInput.value = new Date().toISOString().split('T')[0];
+  }
+  
+  // Check offline status
   if (!navigator.onLine) {
     var b = document.getElementById('offline-banner');
     if (b) b.classList.add('show');
     document.body.classList.add('offline');
   }
+  
+  // Setup features
   setupAddressAutocomplete();
   setupGpsButton();
   restoreDraft();
 });
-
-function sendEmail() {
-  if (!validateForm()) return;
-  var data = getFormData();
-  var name = data.name || '';
-  var emailTo = data.email || '';
-  var addr1 = data.address || '';
-  var addr2 = data.address2 || '';
-  var address = addr1 + (addr2 ? ', ' + addr2 : '');
-  var phone = data.phone || '';
-  var sqft = data.sqft || '';
-  var estDate = data.est_date || '';
-  var estimator = data.estimator || '';
-  var subject = 'Generator Installation Estimate — ' + name;
-  var lines = ['Dear ' + name + ',', '', 'Thank you for the opportunity to provide you with a generator installation estimate.', '', '--- ESTIMATE DETAILS ---', 'Customer: ' + name, 'Address: ' + address, 'Phone: ' + phone, 'Sq. Footage: ' + sqft + ' SF', 'Estimate Date: ' + estDate, 'Estimator: ' + estimator, '', 'Please reply to this email or call us if you have any questions.', '', 'Best regards,', 'Always On Generators'];
-  window.location.href = 'mailto:' + encodeURIComponent(emailTo) + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(lines.join('\n'));
-}
 </script>
-
-<!-- ▼▼▼ PDF SAVE MODAL ▼▼▼ -->
-<div id="pdfModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(4px);">
-  <div style="background:linear-gradient(135deg,#0a0a0a 0%,#1a1a1a 100%); border:2px solid #FFB300; border-radius:12px; padding:30px; max-width:420px; width:90%; box-shadow:0 0 40px rgba(255,179,0,0.4), inset 0 0 20px rgba(0,229,255,0.05); font-family:'Exo 2',sans-serif;">
-    
-    <h2 style="color:#FFB300; font-family:'Orbitron',sans-serif; margin:0 0 8px 0; font-size:18px; letter-spacing:2px; text-shadow:0 0 10px rgba(255,179,0,0.5);">📄 SAVE AS PDF</h2>
-    
-    <div style="height:1px; background:linear-gradient(90deg,#FFB300,transparent); margin-bottom:18px;"></div>
-    
-    <div id="pdfInstructions" style="color:#00E5FF; font-family:'Share Tech Mono',monospace; font-size:13px; line-height:1.8;"></div>
-    
-    <div style="margin-top:24px; display:flex; justify-content:flex-end; gap:10px;">
-      <button onclick="closePdfModal()" style="background:transparent; border:1px solid #666; color:#999; padding:9px 18px; border-radius:6px; cursor:pointer; font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:1px;">CANCEL</button>
-      <button onclick="confirmPdfPrint()" style="background:linear-gradient(135deg,#FFB300,#FF8C00); border:none; color:#000; padding:9px 22px; border-radius:6px; cursor:pointer; font-weight:bold; font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:1px; box-shadow:0 0 15px rgba(255,179,0,0.4);">CONTINUE ▶</button>
-    </div>
-  </div>
-</div>
-<!-- ▲▲▲ END PDF MODAL ▲▲▲ -->
-
-<!-- ▼▼▼ IMAGE SAVE MODAL ▼▼▼ -->
-<div id="imageModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(4px);">
-  <div style="background:linear-gradient(135deg,#0a0a0a 0%,#1a1a1a 100%); border:2px solid #059669; border-radius:12px; padding:30px; max-width:420px; width:90%; box-shadow:0 0 40px rgba(5,150,105,0.4), inset 0 0 20px rgba(0,229,255,0.05); font-family:'Exo 2',sans-serif;">
-    
-    <h2 style="color:#059669; font-family:'Orbitron',sans-serif; margin:0 0 8px 0; font-size:18px; letter-spacing:2px; text-shadow:0 0 10px rgba(5,150,105,0.5);">🖼 RECOMMENDED FOR MOBILE</h2>
-    
-    <div style="height:1px; background:linear-gradient(90deg,#059669,transparent); margin-bottom:18px;"></div>
-    
-    <p style="color:#00E5FF; font-family:'Share Tech Mono',monospace; font-size:13px; line-height:1.8; margin:0 0 20px 0;">Capture the entire form as a single-page JPEG image. Perfect for saving, printing, or sharing.</p>
-    
-    <div style="margin-top:24px; display:flex; justify-content:flex-end; gap:10px;">
-      <button onclick="closeImageModal()" style="background:transparent; border:1px solid #666; color:#999; padding:9px 18px; border-radius:6px; cursor:pointer; font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:1px;">CANCEL</button>
-      <button onclick="saveImageFromModal()" style="background:linear-gradient(135deg,#059669,#04874f); border:none; color:#fff; padding:9px 22px; border-radius:6px; cursor:pointer; font-weight:bold; font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:1px; box-shadow:0 0 15px rgba(5,150,105,0.4);">SAVE IMAGE ▶</button>
-    </div>
-  </div>
-</div>
-<!-- ▲▲▲ END IMAGE MODAL ▲▲▲ -->
 
 </body>
 </html>
