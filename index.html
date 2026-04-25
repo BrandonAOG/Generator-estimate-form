@@ -1723,86 +1723,145 @@ function saveImageFromModal() {
   var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
   var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
   
-  // Hide toolbar
+  var originalDisplay = toolbar.style.display;
+  var scrollTop = window.scrollY || document.documentElement.scrollTop;
+  
   toolbar.style.display = 'none';
+  window.scrollTo(0, 0);
   
-  // Clear placeholders
-  var allInputs = document.querySelectorAll('input[type="text"], input[type="email"], input[type="tel"], input[type="date"], input[type="number"], textarea');
-  var placeholderBackup = {};
-  allInputs.forEach(function(el) { 
-    placeholderBackup[el.id] = el.placeholder; 
-    el.placeholder = ''; 
-  });
-  
-  // Hide gps status
   var gpsStatus = document.getElementById('gps-status');
   var gpsStatusDisplay = gpsStatus ? gpsStatus.style.display : '';
   if (gpsStatus) gpsStatus.style.display = 'none';
 
-  // Force scroll to top to capture everything
-  var scrollTop = window.scrollY || document.documentElement.scrollTop;
-  window.scrollTo(0, 0);
-
-  // Capture with improved settings
-  html2canvas(pageEl, { 
-    scale: 2,  // Higher scale for better quality
-    useCORS: true, 
-    allowTaint: true, 
-    backgroundColor: '#ffffff', 
-    logging: false,
-    imageTimeout: 0,  // No timeout for images
-    timeout: 0,  // No timeout for canvas
-    width: pageEl.scrollWidth,  // Use actual element width
-    height: pageEl.scrollHeight  // Use actual element height
-  }).then(function(canvas) {
-    // Restore scroll position
-    window.scrollTo(0, scrollTop);
-    
-    // Restore UI immediately
-    allInputs.forEach(function(el) { 
-      if (placeholderBackup[el.id] !== undefined) el.placeholder = placeholderBackup[el.id]; 
-    });
-    if (gpsStatus) gpsStatus.style.display = gpsStatusDisplay;
-    toolbar.style.display = '';
-
-    // Convert to JPEG
-    var dataURL = canvas.toDataURL('image/jpeg', 0.90);
-    
-    if (isMobile) {
-      if (isIOS) {
-        // iOS Safari: Use blob download approach
-        canvas.toBlob(function(blob) {
-          var url = URL.createObjectURL(blob);
-          var link = document.createElement('a');
-          link.href = url;
-          link.download = 'estimate-' + customerName + '.jpg';
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          setTimeout(function() { URL.revokeObjectURL(url); }, 100);
-        }, 'image/jpeg', 0.90);
-      } else {
-        // Android: Try window.open first, fallback to download
-        var win = window.open('', '_blank');
-        if (win) {
-          try {
-            win.document.write('<!DOCTYPE html><html><head><title>Estimate</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;background:#111;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:16px;}img{max-width:100%;height:auto;border:3px solid #FFB300;border-radius:8px;}p{color:#00E5FF;font-family:"Share Tech Mono",monospace;text-align:center;margin-top:20px;font-size:14px;letter-spacing:1px;}</style></head><body><img src="' + dataURL + '" /><p>📱 Long-press image to save</p></body></html>');
-            win.document.close();
-          } catch(e) {
-            // Fallback to download if write fails
-            canvas.toBlob(function(blob) {
-              var url = URL.createObjectURL(blob);
-              var link = document.createElement('a');
-              link.href = url;
-              link.download = 'estimate-' + customerName + '.jpg';
-              document.body.appendChild(link);
-              link.click();
-              document.body.removeChild(link);
-              setTimeout(function() { URL.revokeObjectURL(url); }, 100);
-            }, 'image/jpeg', 0.90);
+  setTimeout(function() {
+    html2canvas(pageEl, { 
+      scale: 1.5,
+      useCORS: true, 
+      allowTaint: true, 
+      backgroundColor: '#ffffff', 
+      logging: false,
+      imageTimeout: 10000,
+      timeout: 10000,
+      windowWidth: pageEl.offsetWidth,
+      windowHeight: pageEl.scrollHeight,
+      onclone: function(clonedDocument) {
+        var clonedInputs = clonedDocument.querySelectorAll('input, textarea, select');
+        
+        clonedInputs.forEach(function(el) {
+          el.style.visibility = 'visible';
+          el.style.opacity = '1';
+          el.style.backgroundColor = '#ffffff';
+          el.style.color = '#1F2937';
+          
+          // TEXT INPUTS, EMAILS, TEL, NUMBERS, DATES
+          if (el.type === 'text' || el.type === 'email' || el.type === 'tel' || el.type === 'number' || el.type === 'date') {
+            if (el.value && el.value.trim()) {
+              // Hide the input field
+              el.style.position = 'absolute';
+              el.style.left = '-9999px';
+              el.style.visibility = 'hidden';
+              
+              // Create visible replacement div
+              var wrapper = el.parentNode;
+              if (wrapper && !wrapper.querySelector('[data-value-display="true"]')) {
+                var replacement = clonedDocument.createElement('div');
+                replacement.setAttribute('data-value-display', 'true');
+                replacement.style.fontFamily = 'Share Tech Mono, monospace';
+                replacement.style.fontSize = '0.82rem';
+                replacement.style.color = '#1F2937';
+                replacement.style.padding = '5px 6px';
+                replacement.style.minHeight = '34px';
+                replacement.style.display = 'flex';
+                replacement.style.alignItems = 'center';
+                replacement.style.borderBottom = '2px solid rgba(217,119,6,0.25)';
+                replacement.style.width = '100%';
+                replacement.style.boxSizing = 'border-box';
+                replacement.textContent = el.value;
+                
+                wrapper.insertBefore(replacement, el);
+              }
+            }
+          } 
+          // TEXTAREAS
+          else if (el.tagName.toLowerCase() === 'textarea') {
+            if (el.value && el.value.trim()) {
+              el.style.minHeight = '40px';
+              el.style.height = 'auto';
+              el.textContent = el.value;
+              el.value = el.value; // Ensure value is set
+            }
           }
-        } else {
-          // Pop-up blocked: fallback to direct download
+          // SELECT
+          else if (el.tagName.toLowerCase() === 'select') {
+            if (el.value) {
+              el.style.position = 'absolute';
+              el.style.left = '-9999px';
+              
+              var wrapper = el.parentNode;
+              if (wrapper && !wrapper.querySelector('[data-value-display="true"]')) {
+                var replacement = clonedDocument.createElement('div');
+                replacement.setAttribute('data-value-display', 'true');
+                replacement.style.fontFamily = 'Share Tech Mono, monospace';
+                replacement.style.fontSize = '0.82rem';
+                replacement.style.color = '#1F2937';
+                replacement.style.padding = '5px 6px';
+                replacement.style.minHeight = '34px';
+                replacement.style.display = 'flex';
+                replacement.style.alignItems = 'center';
+                replacement.textContent = el.value;
+                
+                wrapper.insertBefore(replacement, el);
+              }
+            }
+          }
+        });
+
+        // CHECKBOXES AND RADIOS
+        var allCheckboxes = clonedDocument.querySelectorAll('input[type="checkbox"], input[type="radio"]');
+        allCheckboxes.forEach(function(el) {
+          if (el.checked) {
+            el.style.accentColor = '#D97706';
+            el.style.visibility = 'visible';
+            el.style.opacity = '1';
+            
+            // Highlight the container
+            var container = el.closest('.check-item');
+            if (container) {
+              container.style.background = 'rgba(217,119,6,0.12)';
+              container.style.borderColor = 'rgba(217,119,6,0.6)';
+              container.style.boxShadow = '0 0 6px rgba(217,119,6,0.15)';
+              
+              // Highlight the label text
+              var span = container.querySelector('span');
+              if (span) {
+                span.style.color = '#D97706';
+                span.style.fontWeight = '600';
+              }
+            }
+            
+            // Also highlight Y/N groups
+            var ynLabel = el.nextElementSibling;
+            if (ynLabel && ynLabel.classList.contains('yn-label')) {
+              if (el.classList.contains('yn-y')) {
+                ynLabel.style.background = 'rgba(5,150,105,0.12)';
+                ynLabel.style.color = '#059669';
+              } else if (el.classList.contains('yn-n')) {
+                ynLabel.style.background = 'rgba(220,38,38,0.12)';
+                ynLabel.style.color = '#DC2626';
+              }
+            }
+          }
+        });
+      }
+    }).then(function(canvas) {
+      window.scrollTo(0, scrollTop);
+      toolbar.style.display = originalDisplay;
+      if (gpsStatus) gpsStatus.style.display = gpsStatusDisplay;
+
+      var dataURL = canvas.toDataURL('image/jpeg', 0.95);
+      
+      if (isMobile) {
+        if (isIOS) {
           canvas.toBlob(function(blob) {
             var url = URL.createObjectURL(blob);
             var link = document.createElement('a');
@@ -1812,31 +1871,56 @@ function saveImageFromModal() {
             link.click();
             document.body.removeChild(link);
             setTimeout(function() { URL.revokeObjectURL(url); }, 100);
-          }, 'image/jpeg', 0.90);
-          alert('Image saved to Downloads folder.');
+          }, 'image/jpeg', 0.95);
+        } else {
+          var win = window.open('', '_blank');
+          if (win) {
+            try {
+              win.document.write('<!DOCTYPE html><html><head><title>Estimate</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;background:#111;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:16px;}img{max-width:100%;height:auto;border:3px solid #FFB300;border-radius:8px;}p{color:#00E5FF;font-family:"Share Tech Mono",monospace;text-align:center;margin-top:20px;font-size:14px;letter-spacing:1px;}</style></head><body><img src="' + dataURL + '" /><p>📱 Long-press image to save</p></body></html>');
+              win.document.close();
+            } catch(e) {
+              canvas.toBlob(function(blob) {
+                var url = URL.createObjectURL(blob);
+                var link = document.createElement('a');
+                link.href = url;
+                link.download = 'estimate-' + customerName + '.jpg';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                setTimeout(function() { URL.revokeObjectURL(url); }, 100);
+              }, 'image/jpeg', 0.95);
+            }
+          } else {
+            canvas.toBlob(function(blob) {
+              var url = URL.createObjectURL(blob);
+              var link = document.createElement('a');
+              link.href = url;
+              link.download = 'estimate-' + customerName + '.jpg';
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+              setTimeout(function() { URL.revokeObjectURL(url); }, 100);
+            }, 'image/jpeg', 0.95);
+            alert('Image saved to Downloads folder.');
+          }
         }
+      } else {
+        var a = document.createElement('a');
+        a.href = dataURL;
+        a.download = 'estimate-' + customerName + '.jpg';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
       }
-    } else {
-      // Desktop: direct download
-      var a = document.createElement('a');
-      a.href = dataURL;
-      a.download = 'estimate-' + customerName + '.jpg';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    }
-    
-  }).catch(function(err) {
-    // Restore on error
-    window.scrollTo(0, scrollTop);
-    allInputs.forEach(function(el) { 
-      if (placeholderBackup[el.id] !== undefined) el.placeholder = placeholderBackup[el.id]; 
+      
+    }).catch(function(err) {
+      window.scrollTo(0, scrollTop);
+      toolbar.style.display = originalDisplay;
+      if (gpsStatus) gpsStatus.style.display = gpsStatusDisplay;
+      console.error('Canvas capture failed:', err);
+      alert('Could not capture image. Try Print/PDF instead.');
     });
-    if (gpsStatus) gpsStatus.style.display = gpsStatusDisplay;
-    toolbar.style.display = '';
-    console.error('Canvas capture failed:', err);
-    alert('Could not capture image. Try Print/PDF instead.');
-  });
+  }, 300);
 }
 
 function setupAddressAutocomplete() {
