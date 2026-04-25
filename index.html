@@ -1722,7 +1722,7 @@ function saveImageFromModal() {
   var pageEl = document.getElementById('page');
   var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
   
-  // Hide toolbar and modal
+  // Hide toolbar
   toolbar.style.display = 'none';
   
   // Clear placeholders
@@ -1731,6 +1731,58 @@ function saveImageFromModal() {
   allInputs.forEach(function(el) { 
     placeholderBackup[el.id] = el.placeholder; 
     el.placeholder = ''; 
+  });
+  
+  // Hide gps status
+  var gpsStatus = document.getElementById('gps-status');
+  var gpsStatusDisplay = gpsStatus ? gpsStatus.style.display : '';
+  if (gpsStatus) gpsStatus.style.display = 'none';
+
+  // Capture at standard letter dimensions: 816px x 1056px @ 96dpi = 8.5" x 11"
+  html2canvas(pageEl, { 
+    scale: 1, 
+    useCORS: true, 
+    allowTaint: true, 
+    backgroundColor: '#ffffff', 
+    logging: false,
+    windowWidth: 816,
+    windowHeight: 1056
+  }).then(function(canvas) {
+    // Restore UI immediately
+    allInputs.forEach(function(el) { 
+      if (placeholderBackup[el.id] !== undefined) el.placeholder = placeholderBackup[el.id]; 
+    });
+    if (gpsStatus) gpsStatus.style.display = gpsStatusDisplay;
+    toolbar.style.display = '';
+
+    // Convert canvas to blob, then to downloadable file
+    canvas.toBlob(function(blob) {
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'estimate-' + customerName + '.jpg';
+      
+      // Append to body, click, then remove
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      
+      // Clean up the blob URL after a short delay
+      setTimeout(function() {
+        URL.revokeObjectURL(url);
+      }, 100);
+      
+    }, 'image/jpeg', 0.90);
+    
+  }).catch(function(err) {
+    // Restore on error
+    allInputs.forEach(function(el) { 
+      if (placeholderBackup[el.id] !== undefined) el.placeholder = placeholderBackup[el.id]; 
+    });
+    if (gpsStatus) gpsStatus.style.display = gpsStatusDisplay;
+    toolbar.style.display = '';
+    console.error('Canvas capture failed:', err);
+    alert('Could not capture image. Try Print/PDF instead.');
   });
   
   // Hide gps status
