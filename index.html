@@ -1052,14 +1052,34 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   #address-suggestions, #gps-status, #gps-btn { display: none !important; }
   #address { padding-right: 6px !important; }
 } /* Mobile-only print styles - only applies when body has .is-mobile-device class */
+@page {
+  size: letter portrait;
+  margin: 0.1in !important;
+}
+
 @media print {
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
   body.is-mobile-device {
     zoom: 0.59 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transform-origin: top left !important;
   }
   
   body.is-mobile-device .page {
     width: 100% !important;
     max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  body.is-mobile-device .header {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
   }
   
   body.is-mobile-device .section,
@@ -1068,26 +1088,6 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   body.is-mobile-device .footer {
     page-break-inside: avoid !important;
     break-inside: avoid !important;
-  }
-}
-@media print {
-  body.is-mobile-device {
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-  
-  body.is-mobile-device .page {
-    margin-top: 0 !important;
-    padding-top: 0 !important;
-  }
-  
-  body.is-mobile-device .header {
-    margin-top: 0 !important;
-    padding-top: 4px !important;
-  }
-  
-  @page {
-    margin: 0.1in 0.1in !important;
   }
 }
 
