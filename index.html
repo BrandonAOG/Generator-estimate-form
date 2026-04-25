@@ -1880,18 +1880,24 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
     styleEl.innerHTML = `
       @page { 
         size: letter portrait; 
-        margin: 0 !important; 
+        margin: 0mm !important;
+        padding: 0 !important;
       }
-      html, body { 
+      @page :first { margin: 0mm !important; }
+      @page :left { margin: 0mm !important; }
+      @page :right { margin: 0mm !important; }
+      html { 
         margin: 0 !important; 
-        padding: 0 !important; 
-        width: 100% !important; 
-        height: auto !important;
+        padding: 0 !important;
         background: #FFFFFF !important;
       }
-      body {
-        zoom: 0.58 !important;
-        -webkit-transform-origin: top left !important;
+      body { 
+        margin: 0 !important; 
+        padding: 0 !important; 
+        width: 100% !important;
+        zoom: 0.55 !important;
+        background: #FFFFFF !important;
+        -webkit-print-color-adjust: exact !important;
       }
       .page { 
         width: 100% !important; 
@@ -1900,27 +1906,25 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
         padding: 0 !important; 
         border: 2px solid #D97706 !important;
         box-shadow: none !important;
-        min-height: 0 !important;
       }
       .toolbar, #offline-banner, #pdfModal { 
         display: none !important; 
       }
-      .header {
-        padding: 4px 16px !important;
-        min-height: 0 !important;
-      }
-      .content {
-        padding: 4px 8px !important;
-      }
+      .header { padding: 4px 16px !important; min-height: 0 !important; }
+      .content { padding: 4px 8px !important; }
+      .footer { padding: 4px 16px !important; }
       .section, .top-grid, .flood-bar, .gas-appliances-box { 
         page-break-inside: avoid !important; 
         break-inside: avoid !important; 
       }
-      .footer {
-        padding: 4px 16px !important;
-      }
     `;
   });
+  window.addEventListener('afterprint', function() {
+    var styleEl = document.getElementById('mobile-print-styles');
+    if (styleEl) styleEl.innerHTML = '';
+  });
+}
+
 
   window.addEventListener('afterprint', function() {
     var styleEl = document.getElementById('mobile-print-styles');
