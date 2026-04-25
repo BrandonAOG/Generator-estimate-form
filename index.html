@@ -1053,30 +1053,43 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   #address { padding-right: 6px !important; }
 }/* Mobile-only print styles - only applies when body has .is-mobile-device class */
 @media print {
-  body.is-mobile-device {
-    zoom: 0.59 !important;
+  @page {
+    size: letter portrait;
+    margin: 0.15in;
+  }
+  
+  html, body.is-mobile-device {
     margin: 0 !important;
     padding: 0 !important;
-    transform-origin: top left !important;
     width: 1050px !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+  
+  body.is-mobile-device {
+    transform: scale(0.72) !important;
+    transform-origin: top left !important;
+    -webkit-transform: scale(0.72) !important;
+    -webkit-transform-origin: top left !important;
   }
   
   body.is-mobile-device .page {
-    width: 100% !important;
-    max-width: 100% !important;
+    width: 1050px !important;
+    max-width: 1050px !important;
     margin: 0 !important;
     padding: 0 !important;
     min-height: 0 !important;
     height: auto !important;
     display: block !important;
+    border: 2px solid #D97706 !important;
   }
   
   body.is-mobile-device .header {
     margin: 0 !important;
-    padding-top: 4px !important;
-    padding-bottom: 4px !important;
+    padding: 6px 20px !important;
     min-height: 0 !important;
     height: auto !important;
+    display: flex !important;
   }
   
   body.is-mobile-device .toolbar {
@@ -1088,16 +1101,25 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   }
   
   body.is-mobile-device .content {
-    padding-top: 4px !important;
-    margin-top: 0 !important;
+    padding: 6px 10px !important;
+    margin: 0 !important;
+    display: block !important;
+    flex: none !important;
+  }
+  
+  body.is-mobile-device .footer {
+    margin: 0 !important;
+    padding: 6px 20px !important;
+    page-break-before: avoid !important;
+    break-before: avoid !important;
   }
   
   body.is-mobile-device .section,
   body.is-mobile-device .top-grid,
-  body.is-mobile-device .flood-bar,
-  body.is-mobile-device .footer {
+  body.is-mobile-device .flood-bar {
     page-break-inside: avoid !important;
     break-inside: avoid !important;
+    margin-bottom: 4px !important;
   }
 }
 
