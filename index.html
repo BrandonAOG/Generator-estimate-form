@@ -2462,6 +2462,39 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
     var styleEl = document.getElementById('mobile-print-styles');
     if (styleEl) styleEl.innerHTML = '';
   });
+
+  // SAFARI CLEAN PRINT OVERRIDE
+  // ────────────────────────────────────────────────────────────────
+  if (/Safari/i.test(navigator.userAgent) && !/Chrome/i.test(navigator.userAgent)) {
+    const originalPrint = window.print;
+
+    window.print = function() {
+      var pageHTML = document.querySelector('.page')?.outerHTML || '';
+
+      var win = window.open('', '_blank');
+
+      win.document.write(`
+        <html>
+          <head>
+            <title>Print</title>
+            <style>
+              @page { margin: 0; }
+              body { margin: 0; padding: 0; }
+            </style>
+          </head>
+          <body>${pageHTML}</body>
+        </html>
+      `);
+
+      win.document.close();
+
+      win.onload = function() {
+        win.focus();
+        win.print();
+        win.close();
+      };
+    };
+  }
 }
 
 // ────────────────────────────────────────────────────────────────
