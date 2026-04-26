@@ -1933,7 +1933,7 @@ function saveImageFromModal() {
   
   var pageTitle = (document.getElementById('name').value || 'Estimate').replace(/\s+/g, '_');
   var timestamp = new Date().toISOString().split('T')[0];
-  var filename = pageTitle + '_' + timestamp + '.jpg';
+  var filename = pageTitle + '_' + timestamp + '.jpg'; // staying JPEG
   
   // Show loading indicator
   var loadingDiv = document.createElement('div');
@@ -1952,91 +1952,79 @@ function saveImageFromModal() {
     removeContainer: true,
     
     onclone: function(clonedDoc, clonedElement) {
+
       // ─── FIX 1: Resolve all SVG inheritance issues ───
       var svgs = clonedDoc.querySelectorAll('svg');
       
       svgs.forEach(function(svg) {
-        // Get the actual rendered color from the parent element
         var parent = svg.parentElement;
-        var computedColor = '#D97706'; // fallback
+        var computedColor = '#D97706';
         
         try {
           if (parent) {
             var parentStyle = clonedDoc.defaultView.getComputedStyle(parent);
             computedColor = parentStyle.color || '#D97706';
           }
-        } catch (e) {
-          computedColor = '#D97706';
-        }
-        
-        // Ensure xmlns is set (required for some renderers)
+        } catch (e) {}
+
         if (!svg.getAttribute('xmlns')) {
           svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
         }
-        
-        // Get SVG-level attributes that need to cascade
+
         var svgStroke = svg.getAttribute('stroke');
         var svgFill = svg.getAttribute('fill');
         var svgStrokeWidth = svg.getAttribute('stroke-width');
         var svgStrokeLinecap = svg.getAttribute('stroke-linecap');
         var svgStrokeLinejoin = svg.getAttribute('stroke-linejoin');
-        
-        // Resolve currentColor at SVG level
+
         if (svgStroke === 'currentColor') svgStroke = computedColor;
         if (svgFill === 'currentColor') svgFill = computedColor;
-        
-        // Apply to ALL drawable children
+
         var shapes = svg.querySelectorAll('path, polyline, polygon, line, rect, circle, ellipse, text');
         
         shapes.forEach(function(el) {
-          // Resolve currentColor on element
           if (el.getAttribute('stroke') === 'currentColor') {
             el.setAttribute('stroke', computedColor);
           }
           if (el.getAttribute('fill') === 'currentColor') {
             el.setAttribute('fill', computedColor);
           }
-          
-          // Inherit from SVG parent if not explicitly set
-          if (svgStroke && !el.hasAttribute('stroke')) {
-            el.setAttribute('stroke', svgStroke);
-          }
-          if (svgFill && !el.hasAttribute('fill')) {
-            el.setAttribute('fill', svgFill);
-          }
-          if (svgStrokeWidth && !el.hasAttribute('stroke-width')) {
-            el.setAttribute('stroke-width', svgStrokeWidth);
-          }
-          if (svgStrokeLinecap && !el.hasAttribute('stroke-linecap')) {
-            el.setAttribute('stroke-linecap', svgStrokeLinecap);
-          }
-          if (svgStrokeLinejoin && !el.hasAttribute('stroke-linejoin')) {
-            el.setAttribute('stroke-linejoin', svgStrokeLinejoin);
-          }
-          
-          // If element has no fill specified at all, set to none (prevents black fill bug)
+          if (svgStroke && !el.hasAttribute('stroke')) el.setAttribute('stroke', svgStroke);
+          if (svgFill && !el.hasAttribute('fill')) el.setAttribute('fill', svgFill);
+          if (svgStrokeWidth && !el.hasAttribute('stroke-width')) el.setAttribute('stroke-width', svgStrokeWidth);
+          if (svgStrokeLinecap && !el.hasAttribute('stroke-linecap')) el.setAttribute('stroke-linecap', svgStrokeLinecap);
+          if (svgStrokeLinejoin && !el.hasAttribute('stroke-linejoin')) el.setAttribute('stroke-linejoin', svgStrokeLinejoin);
           if (!el.hasAttribute('fill') && el.tagName.toLowerCase() !== 'text') {
             el.setAttribute('fill', 'none');
           }
         });
       });
-      
-      // ─── FIX 2: Force placeholder text to be invisible ───
+
+      // ─── FIX: Make SVG icons survive iPhone JPEG recompression ───
+      var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+      if (isIOS) {
+        var allPaths = clonedDoc.querySelectorAll('svg path');
+        allPaths.forEach(function(p) {
+          var original = parseFloat(p.getAttribute('stroke-width')) || 2;
+          p.setAttribute('stroke-width', original * 2.2);   // thicker
+          p.setAttribute('stroke', '#b86a05');              // darker amber
+        });
+      }
+
+      // ─── FIX 2: Hide placeholder text ───
       var inputs = clonedDoc.querySelectorAll('input, textarea');
       inputs.forEach(function(input) {
-        if (!input.value) {
-          input.setAttribute('placeholder', '');
-        }
+        if (!input.value) input.setAttribute('placeholder', '');
       });
-  // ─── FIX 2.5: Ensure pulse animations are static for capture ───
-var pulseElements = clonedDoc.querySelectorAll('.section-header::before, .col-label::before');
-var allHeaders = clonedDoc.querySelectorAll('.section-header, .col-label');
-allHeaders.forEach(function(h) {
-    h.style.animationPlayState = 'paused';
-});
 
-      
-      // ─── FIX 3: Hide modals in clone ───
+      // ─── FIX 2.5: Pause animations ───
+      var allHeaders = clonedDoc.querySelectorAll('.section-header, .col-label');
+      allHeaders.forEach(function(h) {
+        h.style.animationPlayState = 'paused';
+      });
+
+      // ─── FIX 3: Hide modals ───
       var modals = clonedDoc.querySelectorAll('#pdfModal, #imageModal, #offline-banner, .toolbar');
       modals.forEach(function(m) {
         m.style.display = 'none';
@@ -2049,12 +2037,15 @@ allHeaders.forEach(function(h) {
       var link = document.createElement('a');
       link.download = filename;
       link.href = canvas.toDataURL('image/jpeg', 0.95);
-      
-      // For iOS Safari compatibility
+
+      // iPhone fallback
       if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
         var newTab = window.open();
         if (newTab) {
-          newTab.document.write('<img src="' + link.href + '" style="max-width:100%;"/><p style="font-family:sans-serif;padding:10px;">Long-press the image and select "Save to Photos"</p>');
+          newTab.document.write(
+            '<img src="' + link.href + '" style="max-width:100%;"/>' +
+            '<p style="font-family:sans-serif;padding:10px;">Long‑press the image and select "Save to Photos"</p>'
+          );
         } else {
           link.click();
         }
