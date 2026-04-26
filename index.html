@@ -1651,22 +1651,34 @@ function enterPrintMode() {
   var page = document.getElementById('page');
   if (!page) return null;
 
-  // Add to BOTH html and body — iOS Safari needs the html element
-  // constrained to prevent its print engine from using the viewport width
   document.documentElement.classList.add('print-mode');
   document.body.classList.add('print-mode');
 
-  // Calculate scales AFTER entering print mode (some classes may affect layout)
   var info = calculateUniformScale();
 
-  // Apply non-uniform scale: stretches the page edge-to-edge on both axes
-  // Use 0 0 (not "top left") — iOS Safari is more reliable with numeric origin
-  page.style.transform       = 'scale(' + info.scaleX + ', ' + info.scaleY + ')';
+  // Detect iOS Safari
+  var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  var isSafari = /Safari/i.test(navigator.userAgent) && !/Chrome|CriOS|FxiOS|EdgiOS/i.test(navigator.userAgent);
+  var isIOSSafari = isIOS && isSafari;
+
+  // Only reduce scale for iOS Safari to fit on 1 page
+  if (isIOSSafari) {
+    var iosScaleX = info.scaleX * 0.85;
+    var iosScaleY = info.scaleY * 0.85;
+    page.style.transform = 'scale(' + iosScaleX + ', ' + iosScaleY + ')';
+  } else {
+    // Desktop and other devices: use normal scale (keeps PDF perfect)
+    page.style.transform = 'scale(' + info.scaleX + ', ' + info.scaleY + ')';
+  }
+
   page.style.transformOrigin = '0 0';
   page.style.width           = PAGE_NATURAL_W + 'px';
   page.style.position        = 'absolute';
   page.style.top             = '0';
   page.style.left            = '0';
+  page.style.margin          = '0';
+  page.style.padding         = '0';
+  page.style.boxSizing       = 'border-box';
 
   return info;
 }
