@@ -796,19 +796,31 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
    When body.print-mode is set, the page is locked to exact 
    8.5"x11" dimensions and scaled to fit. Same dimensions used
    for both print AND html2canvas image export = identical output.
+
+   iOS SAFARI FIX: We MUST use position:absolute with explicit pixel
+   dimensions, because iOS Safari's print engine respects the layout
+   box of positioned elements but ignores `transform` scaling when
+   determining page bleed. Without this, content drifts off the right
+   edge because iOS lays out at the natural 1050px width and only
+   then scales — overflowing the 816px paper.
    ═══════════════════════════════════════════════════════════════ */
 
 /* Letter paper dimensions at 96dpi: 816 x 1056 px */
-/* The .page natural width is 1050px - we scale uniformly */
+/* The .page natural width is 1050px - we apply X/Y stretch */
 
+html.print-mode,
 body.print-mode {
   background: #FFFFFF !important;
-  width: 8.5in !important;
-  min-width: 8.5in !important;
-  max-width: 8.5in !important;
+  width: 816px !important;
+  min-width: 816px !important;
+  max-width: 816px !important;
+  height: 1056px !important;
+  min-height: 1056px !important;
+  max-height: 1056px !important;
   margin: 0 !important;
   padding: 0 !important;
   overflow: hidden !important;
+  position: relative !important;
 }
 
 body.print-mode #offline-banner,
@@ -822,6 +834,10 @@ body.print-mode .gps-btn {
 }
 
 body.print-mode .page {
+  /* Pin to top-left of paper so iOS cannot drift it */
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
   width: 1050px !important;
   max-width: 1050px !important;
   min-width: 1050px !important;
@@ -832,8 +848,8 @@ body.print-mode .page {
   box-shadow: none !important;
   border: 2px solid #D97706 !important;
   background: #FFFFFF !important;
-  transform-origin: top left !important;
-  /* The actual scale is set inline via JS to fit 8.5x11 exactly */
+  transform-origin: 0 0 !important;
+  /* The actual scale(scaleX, scaleY) is set inline via JS */
 }
 
 /* Pause animations during capture */
@@ -859,7 +875,7 @@ body.print-mode select {
 /* ── PRINT ── */
 @media print {
   @page { 
-    size: letter portrait; 
+    size: 8.5in 11in;
     margin: 0;
   }
 
@@ -873,9 +889,14 @@ body.print-mode select {
     background-image: none !important;
     padding: 0 !important;
     margin: 0 !important;
-    width: 8.5in !important;
-    height: 11in !important;
+    width: 816px !important;
+    min-width: 816px !important;
+    max-width: 816px !important;
+    height: 1056px !important;
+    min-height: 1056px !important;
+    max-height: 1056px !important;
     overflow: hidden !important;
+    position: relative !important;
   }
 
   #offline-banner,
@@ -890,6 +911,9 @@ body.print-mode select {
 
   /* The .page transform-scale is applied inline by JS before print */
   .page {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
     width: 1050px !important;
     max-width: 1050px !important;
     min-width: 1050px !important;
@@ -900,7 +924,7 @@ body.print-mode select {
     box-shadow: none !important;
     border: 2px solid #D97706 !important;
     background: #ffffff !important;
-    transform-origin: top left !important;
+    transform-origin: 0 0 !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
     page-break-after: avoid !important;
@@ -1625,15 +1649,22 @@ function enterPrintMode() {
   var page = document.getElementById('page');
   if (!page) return null;
 
+  // Add to BOTH html and body — iOS Safari needs the html element
+  // constrained to prevent its print engine from using the viewport width
+  document.documentElement.classList.add('print-mode');
   document.body.classList.add('print-mode');
 
   // Calculate scales AFTER entering print mode (some classes may affect layout)
   var info = calculateUniformScale();
 
   // Apply non-uniform scale: stretches the page edge-to-edge on both axes
+  // Use 0 0 (not "top left") — iOS Safari is more reliable with numeric origin
   page.style.transform       = 'scale(' + info.scaleX + ', ' + info.scaleY + ')';
-  page.style.transformOrigin = 'top left';
+  page.style.transformOrigin = '0 0';
   page.style.width           = PAGE_NATURAL_W + 'px';
+  page.style.position        = 'absolute';
+  page.style.top             = '0';
+  page.style.left            = '0';
 
   return info;
 }
@@ -1644,7 +1675,11 @@ function exitPrintMode() {
     page.style.transform       = '';
     page.style.transformOrigin = '';
     page.style.width           = '';
+    page.style.position        = '';
+    page.style.top             = '';
+    page.style.left            = '';
   }
+  document.documentElement.classList.remove('print-mode');
   document.body.classList.remove('print-mode');
 }
 
@@ -2073,13 +2108,17 @@ function saveImageFromModal() {
             }
           });
 
-          // Make sure clone has print-mode applied
+          // Make sure clone has print-mode applied to html AND body
+          clonedDoc.documentElement.classList.add('print-mode');
           clonedDoc.body.classList.add('print-mode');
 
-          // Apply the same scale to the cloned page
+          // Apply the same scale + positioning to the cloned page
           clonedPage.style.transform       = 'scale(' + info.scaleX + ', ' + info.scaleY + ')';
-          clonedPage.style.transformOrigin = 'top left';
+          clonedPage.style.transformOrigin = '0 0';
           clonedPage.style.width           = PAGE_NATURAL_W + 'px';
+          clonedPage.style.position        = 'absolute';
+          clonedPage.style.top             = '0';
+          clonedPage.style.left            = '0';
 
           // Pause animations
           clonedDoc.querySelectorAll('.section-header, .col-label, .header').forEach(function(h) {
