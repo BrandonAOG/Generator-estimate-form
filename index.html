@@ -1145,7 +1145,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
       L102 32
     "
     fill="none"
-    stroke="#D97706"
+    stroke="currentColor"
     stroke-width="6"
     stroke-linecap="round"
     stroke-linejoin="round"
@@ -1224,7 +1224,7 @@ Customer Info
        M68 74 H92 V112 H68 V74
        M60 36 A6 6 0 1 1 60 48 A6 6 0 1 1 60 36"
     fill="none"
-    stroke="#D97706"
+    stroke="currentColor"
     stroke-width="6"
     stroke-linecap="round"
     stroke-linejoin="round"
@@ -2318,6 +2318,13 @@ function saveImageFromModal() {
     removeContainer: true,
     
     onclone: function(clonedDoc, clonedElement) {
+
+      // Fix ALL currentColor references anywhere in the document first
+      clonedDoc.querySelectorAll('*').forEach(function(el) {
+        if (el.getAttribute('stroke') === 'currentColor') el.setAttribute('stroke', '#D97706');
+        if (el.getAttribute('fill') === 'currentColor') el.setAttribute('fill', '#D97706');
+      });
+
       var svgs = clonedDoc.querySelectorAll('svg');
       
       svgs.forEach(function(svg) {
@@ -2344,24 +2351,30 @@ function saveImageFromModal() {
         if (svgStroke === 'currentColor') svgStroke = computedColor;
         if (svgFill === 'currentColor') svgFill = computedColor;
 
-        var shapes = svg.querySelectorAll('path, polyline, polygon, line, rect, circle, ellipse, text');
-        
-        shapes.forEach(function(el) {
-          if (el.getAttribute('stroke') === 'currentColor') {
-            el.setAttribute('stroke', computedColor);
-          }
-          if (el.getAttribute('fill') === 'currentColor') {
-            el.setAttribute('fill', computedColor);
-          }
-          if (svgStroke && !el.hasAttribute('stroke')) el.setAttribute('stroke', svgStroke);
-          if (svgFill && !el.hasAttribute('fill')) el.setAttribute('fill', svgFill);
-          if (svgStrokeWidth && !el.hasAttribute('stroke-width')) el.setAttribute('stroke-width', svgStrokeWidth);
-          if (svgStrokeLinecap && !el.hasAttribute('stroke-linecap')) el.setAttribute('stroke-linecap', svgStrokeLinecap);
-          if (svgStrokeLinejoin && !el.hasAttribute('stroke-linejoin')) el.setAttribute('stroke-linejoin', svgStrokeLinejoin);
-          if (!el.hasAttribute('fill') && el.tagName.toLowerCase() !== 'text') {
-            el.setAttribute('fill', 'none');
-          }
-        });
+       var shapes = svg.querySelectorAll('path, polyline, polygon, line, rect, circle, ellipse, text');
+
+shapes.forEach(function(el) {
+  if (el.getAttribute('stroke') === 'currentColor' || !el.getAttribute('stroke')) {
+    el.setAttribute('stroke', '#D97706');
+  }
+  if (el.getAttribute('fill') === 'currentColor') {
+    el.setAttribute('fill', '#D97706');
+  }
+  if (!el.getAttribute('stroke-width')) el.setAttribute('stroke-width', svgStrokeWidth || '2');
+  if (!el.getAttribute('stroke-linecap')) el.setAttribute('stroke-linecap', svgStrokeLinecap || 'round');
+  if (!el.getAttribute('stroke-linejoin')) el.setAttribute('stroke-linejoin', svgStrokeLinejoin || 'round');
+  if (!el.hasAttribute('fill') && el.tagName.toLowerCase() !== 'text') {
+    el.setAttribute('fill', 'none');
+  }
+});
+
+// Also fix stroke on the SVG's direct children (path with stroke on itself)
+svg.querySelectorAll('[stroke="currentColor"]').forEach(function(el) {
+  el.setAttribute('stroke', '#D97706');
+});
+svg.querySelectorAll('[fill="currentColor"]').forEach(function(el) {
+  el.setAttribute('fill', '#D97706');
+});
       });
 
       var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
