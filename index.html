@@ -932,7 +932,6 @@ body.print-mode select {
     display: none !important; 
   }
 
-  /* The .page transform-scale is applied inline by JS before print */
   .page {
     position: absolute !important;
     top: 0 !important;
@@ -948,7 +947,6 @@ body.print-mode select {
     border: 2px solid #D97706 !important;
     background: #ffffff !important;
     overflow: visible !important;
-    position: relative !important;
 
     transform-origin: 0 0 !important;
     page-break-inside: avoid !important;
@@ -1050,6 +1048,39 @@ body.print-mode select {
 
   label { color: #6B7280 !important; }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   🔥 iOS SAFARI PRINT PREVIEW FIX (APPLIED LAST VIA CASCADE)
+   This MUST come AFTER the main @media print block.
+   It forces 816px width BEFORE the transform scale is applied,
+   preventing iOS Safari from laying out at 1050px.
+   ═══════════════════════════════════════════════════════════════ */
+@media print {
+  @supports (-webkit-touch-callout: none) {
+    /* iOS Safari ONLY */
+    html, body {
+      width: 816px !important;
+      max-width: 816px !important;
+      min-width: 816px !important;
+      height: 1056px !important;
+      max-height: 1056px !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      overflow: hidden !important;
+    }
+
+    .page {
+      width: 816px !important;
+      max-width: 816px !important;
+      min-width: 816px !important;
+      height: auto !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      transform: scale(1) !important;
+    }
+  }
+}
+
 </style>
 </head>
 <body>
