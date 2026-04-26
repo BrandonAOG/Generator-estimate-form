@@ -1663,8 +1663,8 @@ function enterPrintMode() {
 
   // Only reduce scale for iOS Safari to fit on 1 page
   if (isIOSSafari) {
-    var iosScaleX = info.scaleX * 0.85;
-    var iosScaleY = info.scaleY * 0.85;
+    var iosScaleX = info.scaleX * 0.55;
+    var iosScaleY = info.scaleY * 0.55;
     page.style.transform = 'scale(' + iosScaleX + ', ' + iosScaleY + ')';
   } else {
     // Desktop and other devices: use normal scale (keeps PDF perfect)
