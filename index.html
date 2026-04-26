@@ -2541,12 +2541,14 @@ document.addEventListener('click', function(e) {
     }
   `;
 
-  function applyPrintStyles() {
+ function applyPrintStyles() {
+    if (!isMobile) return;
     var styleEl = document.getElementById('mobile-print-styles');
     if (styleEl) styleEl.innerHTML = PRINT_CSS;
   }
 
   function clearPrintStyles() {
+    if (!isMobile) return;
     var styleEl = document.getElementById('mobile-print-styles');
     if (styleEl) styleEl.innerHTML = '';
   }
