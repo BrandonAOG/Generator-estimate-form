@@ -2493,13 +2493,10 @@ document.addEventListener('click', function(e) {
   'use strict';
 
   var isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
-            || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+              || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
-// Only override print on MOBILE Safari, never desktop Safari
-var isDesktopSafari = /Safari/i.test(navigator.userAgent)
-                   && !/Chrome|CriOS|FxiOS|EdgiOS|Mobile/i.test(navigator.userAgent);
-
-if (!isMobile || isDesktopSafari) return;
+  var isDesktopSafari = /Safari/i.test(navigator.userAgent)
+                     && !/Chrome|CriOS|FxiOS|EdgiOS|Mobile/i.test(navigator.userAgent);
 
   var PRINT_CSS = `
     @page { 
@@ -2554,8 +2551,15 @@ if (!isMobile || isDesktopSafari) return;
     if (styleEl) styleEl.innerHTML = '';
   }
 
+  // Always attach — needed for offline mode on ALL browsers
   window.addEventListener('beforeprint', applyPrintStyles);
   window.addEventListener('afterprint', clearPrintStyles);
+
+  // Only override window.print on mobile Safari, never desktop
+  if (!isMobile || isDesktopSafari) return;
+
+  var isSafari = /Safari/i.test(navigator.userAgent)
+              && !/Chrome|CriOS|FxiOS|EdgiOS/i.test(navigator.userAgent);
 
   if (isSafari) {
     window.print = function() {
@@ -2604,7 +2608,6 @@ if (!isMobile || isDesktopSafari) return;
     };
   }
 })();
-
 // ────────────────────────────────────────────────────────────────
 // INITIALIZATION (SINGLE VERSION)
 // ────────────────────────────────────────────────────────────────
