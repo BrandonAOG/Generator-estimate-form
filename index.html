@@ -1933,8 +1933,7 @@ function saveImageFromModal() {
   
   var pageTitle = (document.getElementById('name').value || 'Estimate').replace(/\s+/g, '_');
   var timestamp = new Date().toISOString().split('T')[0];
-  var filename = pageTitle + '_' + timestamp + '.png';
-
+  var filename = pageTitle + '_' + timestamp + '.jpg';
   
   // Show loading indicator
   var loadingDiv = document.createElement('div');
@@ -2044,8 +2043,7 @@ function saveImageFromModal() {
     try {
       var link = document.createElement('a');
       link.download = filename;
-      link.href = canvas.toDataURL('image/png');
-
+      link.href = canvas.toDataURL('image/jpeg', 0.95);
       
       if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
         var newTab = window.open();
