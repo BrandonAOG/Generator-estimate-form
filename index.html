@@ -871,6 +871,30 @@ body.print-mode select {
   box-shadow: none !important;
   background: #FFFFFF !important;
 }
+/* ═══════════════════════════════════════════════════════════════
+   iOS SAFARI PRINT PREVIEW FIX
+   Prevents 2-page layout in Safari print preview by constraining
+   width to 816px (paper width) in the @media print query.
+   Desktop print output remains unchanged.
+   ═══════════════════════════════════════════════════════════════ */
+@media print {
+  @supports (-webkit-touch-callout: none) {
+    /* iOS Safari ONLY - applied during print preview */
+    html, body {
+      width: 816px !important;
+      max-width: 816px !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+    
+    .page {
+      width: 816px !important;
+      max-width: 816px !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+  }
+}
 
 /* ── PRINT ── */
 @media print {
@@ -2190,7 +2214,7 @@ function saveImageFromModal() {
       var newTab = window.open();
       if (newTab) {
         newTab.document.write(
-          '<html><head><title>' + filename + '</title>' +
+          '<html><head><title>' + filename + '</title>' + 
           '<style>body{margin:0;padding:0;background:#000;font-family:sans-serif;}img{display:block;width:100%;height:auto;}p{color:#fff;padding:16px;text-align:center;}</style>' +
           '</head><body>' +
           '<img src="' + dataUrl + '" alt="' + filename + '"/>' +
