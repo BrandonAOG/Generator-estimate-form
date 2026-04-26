@@ -1125,13 +1125,42 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
 <div class="top-grid">
   <div class="top-col">
     <div class="col-label">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
-     xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
-  <path d="M12 12c2.5 0 4.5-2 4.5-4.5S14.5 3 12 3 7.5 5 7.5 7.5 9.5 12 12 12z"
-        stroke="#D97706" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M5 21c0-3.5 3.5-5.5 7-5.5s7 2 7 5.5"
-        stroke="#D97706" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+     <svg width="18" height="18" viewBox="0 0 122 122" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+  <path
+    d="
+      M61 10
+      C76 10 88 22 88 38
+      C88 54 76 66 61 66
+      C46 66 34 54 34 38
+      C34 22 46 10 61 10
+
+      M26 114
+      C26 90 44 74 61 74
+      C78 74 96 90 96 114
+
+      M26 114 H96
+
+      M20 52
+      L10 42
+      L20 32
+
+      M102 52
+      L112 42
+      L102 32
+    "
+    fill="none"
+    stroke="#D97706"
+    stroke-width="6"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
 </svg>
+
+
+
+
+
+
 
 
 Customer Info
@@ -1185,14 +1214,16 @@ Customer Info
 
       <div class="top-col">
        <div class="col-label">
- <svg width="15" height="15" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+ <svg width="18" height="18" viewBox="0 0 122 114" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
   <path
-    d="M12 3 L21 10 L3 10 Z
-       M5 10 H19 V21 H5 Z
-       M10 14 H14 V21 H10 Z"
+    d="M61 4 L8 48 M61 4 L114 48
+       M15 56 V112 H107 V56
+       M30 76 H56 V98 H30 V76
+       M68 74 H92 V112 H68 V74
+       M60 36 A6 6 0 1 1 60 48 A6 6 0 1 1 60 36"
     fill="none"
     stroke="#D97706"
-    stroke-width="2"
+    stroke-width="6"
     stroke-linecap="round"
     stroke-linejoin="round"
   />
@@ -1902,7 +1933,8 @@ function saveImageFromModal() {
   
   var pageTitle = (document.getElementById('name').value || 'Estimate').replace(/\s+/g, '_');
   var timestamp = new Date().toISOString().split('T')[0];
-  var filename = pageTitle + '_' + timestamp + '.jpg';
+  var filename = pageTitle + '_' + timestamp + '.png';
+
   
   // Show loading indicator
   var loadingDiv = document.createElement('div');
@@ -1921,91 +1953,86 @@ function saveImageFromModal() {
     removeContainer: true,
     
     onclone: function(clonedDoc, clonedElement) {
-      // ─── FIX 1: Resolve all SVG inheritance issues ───
+
+      // ─── FIX 1: Resolve SVG inheritance issues ───
       var svgs = clonedDoc.querySelectorAll('svg');
-      
       svgs.forEach(function(svg) {
-        // Get the actual rendered color from the parent element
         var parent = svg.parentElement;
-        var computedColor = '#D97706'; // fallback
-        
+        var computedColor = '#D97706';
+
         try {
           if (parent) {
             var parentStyle = clonedDoc.defaultView.getComputedStyle(parent);
             computedColor = parentStyle.color || '#D97706';
           }
-        } catch (e) {
-          computedColor = '#D97706';
-        }
-        
-        // Ensure xmlns is set (required for some renderers)
+        } catch (e) {}
+
         if (!svg.getAttribute('xmlns')) {
           svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
         }
-        
-        // Get SVG-level attributes that need to cascade
+
         var svgStroke = svg.getAttribute('stroke');
         var svgFill = svg.getAttribute('fill');
         var svgStrokeWidth = svg.getAttribute('stroke-width');
         var svgStrokeLinecap = svg.getAttribute('stroke-linecap');
         var svgStrokeLinejoin = svg.getAttribute('stroke-linejoin');
-        
-        // Resolve currentColor at SVG level
+
         if (svgStroke === 'currentColor') svgStroke = computedColor;
         if (svgFill === 'currentColor') svgFill = computedColor;
-        
-        // Apply to ALL drawable children
+
         var shapes = svg.querySelectorAll('path, polyline, polygon, line, rect, circle, ellipse, text');
-        
         shapes.forEach(function(el) {
-          // Resolve currentColor on element
           if (el.getAttribute('stroke') === 'currentColor') {
             el.setAttribute('stroke', computedColor);
           }
           if (el.getAttribute('fill') === 'currentColor') {
             el.setAttribute('fill', computedColor);
           }
-          
-          // Inherit from SVG parent if not explicitly set
-          if (svgStroke && !el.hasAttribute('stroke')) {
-            el.setAttribute('stroke', svgStroke);
-          }
-          if (svgFill && !el.hasAttribute('fill')) {
-            el.setAttribute('fill', svgFill);
-          }
-          if (svgStrokeWidth && !el.hasAttribute('stroke-width')) {
-            el.setAttribute('stroke-width', svgStrokeWidth);
-          }
-          if (svgStrokeLinecap && !el.hasAttribute('stroke-linecap')) {
-            el.setAttribute('stroke-linecap', svgStrokeLinecap);
-          }
-          if (svgStrokeLinejoin && !el.hasAttribute('stroke-linejoin')) {
-            el.setAttribute('stroke-linejoin', svgStrokeLinejoin);
-          }
-          
-          // If element has no fill specified at all, set to none (prevents black fill bug)
+          if (svgStroke && !el.hasAttribute('stroke')) el.setAttribute('stroke', svgStroke);
+          if (svgFill && !el.hasAttribute('fill')) el.setAttribute('fill', svgFill);
+          if (svgStrokeWidth && !el.hasAttribute('stroke-width')) el.setAttribute('stroke-width', svgStrokeWidth);
+          if (svgStrokeLinecap && !el.hasAttribute('stroke-linecap')) el.setAttribute('stroke-linecap', svgStrokeLinecap);
+          if (svgStrokeLinejoin && !el.hasAttribute('stroke-linejoin')) el.setAttribute('stroke-linejoin', svgStrokeLinejoin);
           if (!el.hasAttribute('fill') && el.tagName.toLowerCase() !== 'text') {
             el.setAttribute('fill', 'none');
           }
         });
       });
-      
-      // ─── FIX 2: Force placeholder text to be invisible ───
+
+      // ─── FIX 2: Convert ALL SVGs to PNG <img> with proper size ───
+      svgs = clonedDoc.querySelectorAll('svg'); // re‑query in clone
+      svgs.forEach(function(svg) {
+        var rect = svg.getBoundingClientRect();
+        var width = rect.width || parseFloat(svg.getAttribute('width')) || 24;
+        var height = rect.height || parseFloat(svg.getAttribute('height')) || 24;
+
+        var xml = new XMLSerializer().serializeToString(svg);
+        var svg64 = btoa(unescape(encodeURIComponent(xml)));
+        var imgSrc = 'data:image/svg+xml;base64,' + svg64;
+
+        var img = clonedDoc.createElement('img');
+        img.src = imgSrc;
+        img.style.width = width + 'px';
+        img.style.height = height + 'px';
+        img.style.display = 'inline-block';
+
+        svg.parentNode.insertBefore(img, svg);
+        svg.style.display = 'none';
+      });
+
+      // ─── FIX 3: Hide placeholder text ───
       var inputs = clonedDoc.querySelectorAll('input, textarea');
       inputs.forEach(function(input) {
-        if (!input.value) {
-          input.setAttribute('placeholder', '');
-        }
+        if (!input.value) input.setAttribute('placeholder', '');
       });
-  // ─── FIX 2.5: Ensure pulse animations are static for capture ───
-var pulseElements = clonedDoc.querySelectorAll('.section-header::before, .col-label::before');
-var allHeaders = clonedDoc.querySelectorAll('.section-header, .col-label');
-allHeaders.forEach(function(h) {
-    h.style.animationPlayState = 'paused';
-});
 
-      
-      // ─── FIX 3: Hide modals in clone ───
+      // ─── FIX 4: Pause animations ───
+      var allHeaders = clonedDoc.querySelectorAll('.section-header, .col-label');
+      allHeaders.forEach(function(h) {
+        h.style.animationPlayState = 'paused';
+      });
+
+      // ─── FIX 5: Hide modals ───
       var modals = clonedDoc.querySelectorAll('#pdfModal, #imageModal, #offline-banner, .toolbar');
       modals.forEach(function(m) {
         m.style.display = 'none';
@@ -2017,9 +2044,9 @@ allHeaders.forEach(function(h) {
     try {
       var link = document.createElement('a');
       link.download = filename;
-      link.href = canvas.toDataURL('image/jpeg', 0.95);
+      link.href = canvas.toDataURL('image/png');
+
       
-      // For iOS Safari compatibility
       if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
         var newTab = window.open();
         if (newTab) {
@@ -2045,6 +2072,7 @@ allHeaders.forEach(function(h) {
     alert('Error generating image: ' + err.message);
   });
 }
+
 
 // ────────────────────────────────────────────────────────────────
 // EMAIL
