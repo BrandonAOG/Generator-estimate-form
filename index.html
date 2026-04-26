@@ -2273,11 +2273,8 @@ function printPDF() {
 
 function confirmPdfPrint() {
   document.getElementById('pdfModal').style.display = 'none';
-  setTimeout(function() {
-    window.print();
-  }, 250);
+  window.print();  // called immediately, still inside the click gesture
 }
-
 function closePdfModal() {
   document.getElementById('pdfModal').style.display = 'none';
 }
