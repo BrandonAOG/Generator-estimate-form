@@ -2732,22 +2732,35 @@ function setupGpsButton() {
         var lat = pos.coords.latitude;
         var lng = pos.coords.longitude;
 
-        var url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/' +
-                  lng + ',' + lat +
-                  '.json?access_token=' + MAPBOX_TOKEN +
-                  '&types=address&limit=1';
+        var url = 'https://nominatim.openstreetmap.org/reverse?format=json&lat=' +
+                  lat + '&lon=' + lng + '&addressdetails=1';
 
-        fetch(url)
+        fetch(url, {
+          headers: { 'Accept-Language': 'en', 'User-Agent': 'AOG-Estimate-Form' }
+        })
           .then(function(r) { return r.json(); })
           .then(function(data) {
             btn.disabled = false;
-            if (data.features && data.features.length > 0) {
-              var f = data.features[0];
-              var parts = f.place_name.split(',');
-              var addrInput = document.getElementById('address');
+            if (data && data.address) {
+              var a = data.address;
+
+              // Build street line
+              var street = '';
+              if (a.house_number && a.road) street = a.house_number + ' ' + a.road;
+              else if (a.road) street = a.road;
+              else street = data.display_name.split(',')[0];
+
+              // Build city, state zip line
+              var city  = a.city || a.town || a.village || a.county || '';
+              var state = a.state || '';
+              var zip   = a.postcode || '';
+              var cityLine = city + (state ? ', ' + state : '') + (zip ? ' ' + zip : '');
+
+              var addrInput  = document.getElementById('address');
               var addr2Input = document.getElementById('address2');
-              if (addrInput) addrInput.value = parts[0].trim();
-              if (addr2Input) addr2Input.value = parts.slice(1).join(',').trim();
+              if (addrInput)  addrInput.value  = street;
+              if (addr2Input) addr2Input.value = cityLine;
+
               if (status) { status.textContent = '✓ Location found'; status.style.display = 'block'; }
               saveDraft();
               setTimeout(function() {
@@ -2773,8 +2786,7 @@ function setupGpsButton() {
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
   });
-}
-// ────────────────────────────────────────────────────────────────
+}// ────────────────────────────────────────────────────────────────
 // INITIALIZATION (SINGLE VERSION)
 // ────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function() {
