@@ -2493,12 +2493,13 @@ document.addEventListener('click', function(e) {
   'use strict';
 
   var isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
-              || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+            || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
-  if (!isMobile) return;
+// Only override print on MOBILE Safari, never desktop Safari
+var isDesktopSafari = /Safari/i.test(navigator.userAgent)
+                   && !/Chrome|CriOS|FxiOS|EdgiOS|Mobile/i.test(navigator.userAgent);
 
-  var isSafari = /Safari/i.test(navigator.userAgent)
-              && !/Chrome|CriOS|FxiOS|EdgiOS/i.test(navigator.userAgent);
+if (!isMobile || isDesktopSafari) return;
 
   var PRINT_CSS = `
     @page { 
