@@ -2410,138 +2410,59 @@ document.addEventListener('click', function(e) {
 // ────────────────────────────────────────────────────────────────
 // MOBILE PRINT OPTIMIZATION
 // ────────────────────────────────────────────────────────────────
-(function() {
-  'use strict';
-
-  // Enhanced mobile detection (includes modern iPads)
-  var isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
-              || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-
-  if (!isMobile) return;
-
-  var isSafari = /Safari/i.test(navigator.userAgent)
-              && !/Chrome|CriOS|FxiOS|EdgiOS/i.test(navigator.userAgent);
-
-  // ──────────────────────────────────────────────────────────────
-  // Print CSS (single source of truth)
-  // ──────────────────────────────────────────────────────────────
-  var PRINT_CSS = `
-    @page { 
-      size: letter portrait; 
-      margin: 0 !important;
-    }
-    @page :first { margin: 0 !important; }
-    @page :left  { margin: 0 !important; }
-    @page :right { margin: 0 !important; }
-
-    html { 
-      margin: 0 !important; 
-      padding: 0 !important;
-      background: #FFFFFF !important;
-    }
-    body { 
-      margin: 0 !important; 
-      padding: 0 !important; 
-      width: 100% !important;
-      zoom: 0.55;
-      background: #FFFFFF !important;
-      -webkit-print-color-adjust: exact !important;
-      print-color-adjust: exact !important;
-    }
-    .page { 
-      width: 100% !important; 
-      max-width: 100% !important; 
-      margin: 0 !important; 
-      padding: 0 !important; 
-      border: 5px solid #D97706 !important;
-      box-shadow: none !important;
-    }
-    .toolbar, #offline-banner, #pdfModal, #imageModal { 
-      display: none !important; 
-    }
-    .header  { padding: 4px 16px !important; min-height: 0 !important; }
-    .content { padding: 4px 8px  !important; }
-    .footer  { padding: 4px 16px !important; }
-    .section, .top-grid, .flood-bar, .gas-appliances-box { 
-      page-break-inside: avoid !important; 
-      break-inside: avoid !important; 
-    }
-  `;
-
-  // ──────────────────────────────────────────────────────────────
-  // Standard path: inject styles via beforeprint/afterprint
-  // ──────────────────────────────────────────────────────────────
-  function applyPrintStyles() {
+if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+  window.addEventListener('beforeprint', function() {
     var styleEl = document.getElementById('mobile-print-styles');
-    if (styleEl) styleEl.innerHTML = PRINT_CSS;
-  }
-
-  function clearPrintStyles() {
+    if (!styleEl) return;
+    
+    styleEl.innerHTML = `
+      @page { 
+        size: letter portrait; 
+        margin: 0mm !important;
+        padding: 0 !important;
+      }
+      @page :first { margin: 0mm !important; }
+      @page :left { margin: 0mm !important; }
+      @page :right { margin: 0mm !important; }
+      html { 
+        margin: 0 !important; 
+        padding: 0 !important;
+        background: #FFFFFF !important;
+      }
+      body { 
+        margin: 0 !important; 
+        padding: 0 !important; 
+        width: 100% !important;
+        zoom: 0.55 !important;
+        background: #FFFFFF !important;
+        -webkit-print-color-adjust: exact !important;
+      }
+      .page { 
+        width: 100% !important; 
+        max-width: 100% !important; 
+        margin: 0 !important; 
+        padding: 0 !important; 
+        border: 2px solid #D97706 !important;
+        box-shadow: none !important;
+      }
+      .toolbar, #offline-banner, #pdfModal, #imageModal { 
+        display: none !important; 
+      }
+      .header { padding: 4px 16px !important; min-height: 0 !important; }
+      .content { padding: 4px 8px !important; }
+      .footer { padding: 4px 16px !important; }
+      .section, .top-grid, .flood-bar, .gas-appliances-box { 
+        page-break-inside: avoid !important; 
+        break-inside: avoid !important; 
+      }
+    `;
+  });
+  
+  window.addEventListener('afterprint', function() {
     var styleEl = document.getElementById('mobile-print-styles');
     if (styleEl) styleEl.innerHTML = '';
-  }
-
-  window.addEventListener('beforeprint', applyPrintStyles);
-  window.addEventListener('afterprint', clearPrintStyles);
-
-  // ──────────────────────────────────────────────────────────────
-  // Safari path: print via new window with full assets
-  // ──────────────────────────────────────────────────────────────
-  if (isSafari) {
-    window.print = function() {
-      var pageEl = document.querySelector('.page');
-      if (!pageEl) {
-        console.warn('No .page element found to print.');
-        return;
-      }
-
-      // Copy existing stylesheets and inline <style> tags
-      var existingStyles = Array.from(
-        document.querySelectorAll('link[rel="stylesheet"], style')
-      ).map(function(el) {
-        // Skip the dynamic mobile-print-styles holder (we'll add fresh CSS)
-        if (el.id === 'mobile-print-styles') return '';
-        return el.outerHTML;
-      }).join('\n');
-
-      var win = window.open('', '_blank');
-      if (!win) {
-        alert('Please allow pop-ups to print.');
-        return;
-      }
-
-      win.document.open();
-      win.document.write(
-        '<!DOCTYPE html><html><head>' +
-        '<meta charset="UTF-8">' +
-        '<base href="' + location.href + '">' +
-        '<title>Print</title>' +
-        existingStyles +
-        '<style>' + PRINT_CSS + '</style>' +
-        '</head><body>' +
-        pageEl.outerHTML +
-        '</body></html>'
-      );
-      win.document.close();
-
-      // Wait for assets (images, fonts) before printing
-      win.onload = function() {
-        win.focus();
-        setTimeout(function() {
-          win.print();
-          // Note: don't auto-close on iOS — Safari needs the window
-          // to remain open until the user dismisses the print sheet.
-          // Optional: close after a delay for desktop Safari
-          setTimeout(function() {
-            try { win.close(); } catch (e) {}
-          }, 1000);
-        }, 300);
-      };
-    };
-  }
-})();
-
-
+  });
+}
 
 // ────────────────────────────────────────────────────────────────
 // INITIALIZATION
