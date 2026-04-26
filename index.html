@@ -2584,19 +2584,38 @@ document.addEventListener('click', function(e) {
         return;
       }
 
-      win.document.open();
-      win.document.write(
-        '<!DOCTYPE html><html><head>' +
-        '<meta charset="UTF-8">' +
-        '<base href="' + location.href + '">' +
-        '<title>Print</title>' +
-        existingStyles +
-        '<style>' + PRINT_CSS + '</style>' +
-        '</head><body>' +
-        pageEl.outerHTML +
-        '</body></html>'
-      );
-      win.document.close();
+   // Bake live input values into the clone before serializing
+var clone = pageEl.cloneNode(true);
+
+// Text inputs, textareas, selects
+var liveInputs = pageEl.querySelectorAll('input, textarea, select');
+var cloneInputs = clone.querySelectorAll('input, textarea, select');
+liveInputs.forEach(function(liveEl, i) {
+  var cloneEl = cloneInputs[i];
+  if (!cloneEl) return;
+  if (liveEl.type === 'checkbox' || liveEl.type === 'radio') {
+    if (liveEl.checked) cloneEl.setAttribute('checked', 'checked');
+    else cloneEl.removeAttribute('checked');
+  } else if (liveEl.tagName === 'TEXTAREA') {
+    cloneEl.textContent = liveEl.value;
+  } else {
+    cloneEl.setAttribute('value', liveEl.value);
+  }
+});
+
+win.document.open();
+win.document.write(
+  '<!DOCTYPE html><html><head>' +
+  '<meta charset="UTF-8">' +
+  '<base href="' + location.href + '">' +
+  '<title>Print</title>' +
+  existingStyles +
+  '<style>' + PRINT_CSS + '</style>' +
+  '</head><body>' +
+  clone.outerHTML +
+  '</body></html>'
+);
+win.document.close();
 
       win.onload = function() {
         win.focus();
