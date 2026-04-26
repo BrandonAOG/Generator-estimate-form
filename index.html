@@ -1663,9 +1663,11 @@ function enterPrintMode() {
 
   // Only reduce scale for iOS Safari to fit on 1 page
   if (isIOSSafari) {
-    var iosScaleX = info.scaleX * 0.55;
-    var iosScaleY = info.scaleY * 0.55;
+    // Very aggressive scaling for iOS Safari - 65% to ensure single page in preview
+    var iosScaleX = info.scaleX * 0.65;
+    var iosScaleY = info.scaleY * 0.65;
     page.style.transform = 'scale(' + iosScaleX + ', ' + iosScaleY + ')';
+    console.log('iOS Safari detected - scaling to 65%');
   } else {
     // Desktop and other devices: use normal scale (keeps PDF perfect)
     page.style.transform = 'scale(' + info.scaleX + ', ' + info.scaleY + ')';
