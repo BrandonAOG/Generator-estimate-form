@@ -1102,54 +1102,70 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
 
   <div class="content">
 
-    <!-- Customer + Property -->
-    <div class="top-grid">
-      <div class="top-col">
-        <div class="col-label">
-  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;color:var(--cyan);">
-    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-    <circle cx="12" cy="7" r="4"></circle>
-  </svg>
-  <span>Customer Info</span>
-</div>
+   <!-- Customer + Property -->
+<div class="top-grid">
+  <div class="top-col">
+    <div class="col-label">
+      <svg 
+        width="15" 
+        height="15" 
+        viewBox="0 0 24 24" 
+        fill="none" 
+        stroke="currentColor" 
+        stroke-width="2.5" 
+        stroke-linecap="round" 
+        stroke-linejoin="round" 
+        style="flex-shrink:0;">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+        <circle cx="12" cy="7" r="4"></circle>
+      </svg>
+      <span>Customer Info</span>
+    </div>
 
-        <div class="field-row">
-          <label for="name">Name</label>
-          <input type="text" id="name" name="name" class="long" autocomplete="name" aria-label="Customer name">
-        </div>
+    <div class="field-row">
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" class="long" autocomplete="name" aria-label="Customer name">
+    </div>
 
-        <div class="field-row">
-          <label for="address">Address</label>
-          <div class="addr-wrap">
-            <input type="text" id="address" name="address" class="long" placeholder="Start typing address..." autocomplete="off" autocorrect="off" autocapitalize="words" spellcheck="false" aria-label="Street address">
-            <button class="gps-btn" title="Use my current location" id="gps-btn" type="button" aria-label="Get location from GPS">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="8" stroke-dasharray="2 4"/></svg>
-            </button>
-            <ul id="address-suggestions" aria-label="Address suggestions"></ul>
-          </div>
-        </div>
-        <div id="gps-status"></div>
-        <div class="field-row">
-          <label></label>
-          <input type="text" id="address2" name="address2" class="long" autocomplete="off" aria-label="City, state, and zip code">
-        </div>
-        <div class="field-row">
-          <label for="hoa">Community/HOA</label>
-          <input type="text" id="hoa" name="hoa" class="long" autocomplete="off" aria-label="Community or HOA name">
-        </div>
-        <div class="field-row">
-          <label for="phone">Phone #</label>
-          <input type="tel" id="phone" name="phone" class="long" autocomplete="tel" aria-label="Phone number" pattern="[0-9\-\(\)\s]*">
-        </div>
-        <div class="field-row">
-          <label for="email">Best Email</label>
-          <input type="email" id="email" name="email" class="long" autocomplete="email" aria-label="Email address">
-        </div>
-        <div class="field-row">
-          <label for="today">Today's Date</label>
-          <input type="date" id="today" name="today" class="med" autocomplete="off" aria-label="Today's date">
-        </div>
+    <div class="field-row">
+      <label for="address">Address</label>
+      <div class="addr-wrap">
+        <input type="text" id="address" name="address" class="long" placeholder="Start typing address..." autocomplete="off" autocorrect="off" autocapitalize="words" spellcheck="false" aria-label="Street address">
+        <button class="gps-btn" title="Use my current location" id="gps-btn" type="button" aria-label="Get location from GPS">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="8" stroke-dasharray="2 4"/></svg>
+        </button>
+        <ul id="address-suggestions" aria-label="Address suggestions"></ul>
       </div>
+    </div>
+    
+    <div id="gps-status"></div>
+    
+    <div class="field-row">
+      <label></label>
+      <input type="text" id="address2" name="address2" class="long" autocomplete="off" aria-label="City, state, and zip code">
+    </div>
+    
+    <div class="field-row">
+      <label for="hoa">Community/HOA</label>
+      <input type="text" id="hoa" name="hoa" class="long" autocomplete="off" aria-label="Community or HOA name">
+    </div>
+    
+    <div class="field-row">
+      <label for="phone">Phone #</label>
+      <input type="tel" id="phone" name="phone" class="long" autocomplete="tel" aria-label="Phone number" pattern="[0-9\-\(\)\s]*">
+    </div>
+    
+    <div class="field-row">
+      <label for="email">Best Email</label>
+      <input type="email" id="email" name="email" class="long" autocomplete="email" aria-label="Email address">
+    </div>
+    
+    <div class="field-row">
+      <label for="today">Today's Date</label>
+      <input type="date" id="today" name="today" class="med" autocomplete="off" aria-label="Today's date">
+    </div>
+  </div>
+
 
       <div class="top-col">
         <div class="col-label">
@@ -1863,16 +1879,32 @@ function saveImageFromModal() {
   var timestamp = new Date().toISOString().split('T')[0];
   var filename = pageTitle + '_' + timestamp + '.jpg';
   
-  // Show progress
-  var originalContent = document.body.innerHTML;
-  
   html2canvas(page, {
     scale: 2,
     useCORS: true,
     backgroundColor: '#FFFFFF',
     logging: false,
     windowHeight: page.scrollHeight,
-    allowTaint: true
+    allowTaint: true,
+    onclone: function(clonedDoc) {
+      // Fix SVG currentColor rendering
+      var svgs = clonedDoc.querySelectorAll('svg');
+      svgs.forEach(function(svg) {
+        // Get computed color from parent
+        var computedColor = window.getComputedStyle(svg).color || '#D97706';
+        
+        // Convert currentColor to explicit hex
+        var strokes = svg.querySelectorAll('[stroke="currentColor"]');
+        strokes.forEach(function(el) {
+          el.setAttribute('stroke', computedColor);
+        });
+        
+        var fills = svg.querySelectorAll('[fill="currentColor"]');
+        fills.forEach(function(el) {
+          el.setAttribute('fill', computedColor);
+        });
+      });
+    }
   }).then(function(canvas) {
     try {
       var link = document.createElement('a');
