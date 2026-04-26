@@ -1698,10 +1698,11 @@ Customer Info
 <!-- ▲▲▲ END IMAGE MODAL ▲▲▲ -->
 
 <script>
+var nativePrint = window.print.bind(window);
+
 if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
   document.body.classList.add('is-mobile-device');
 }
-
 var MAPBOX_TOKEN = 'pk.eyJ1IjoicHJvamVjdHdyYXBwZXIiLCJhIjoiY201d2k1eHU3MDAwajJrbzU2a2c5dW40NSJ9.WJlNJ4o5CqBhWpHKMKOzIQ';
 var DRAFT_KEY = 'aog_estimate_draft';
 
