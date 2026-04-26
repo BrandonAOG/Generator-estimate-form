@@ -362,6 +362,17 @@ body.offline { padding-top: 50px; }
   font-weight: 500;
 }
 
+.col-label::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background: var(--cyan);
+  box-shadow: 0 0 6px var(--cyan);
+  flex-shrink: 0;
+  animation: pulse 2s ease-in-out infinite;
+}
+
 /* ── FIELD ROWS ── */
 .field-row {
   display: flex;
@@ -919,6 +930,13 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
     margin-bottom: 8px !important;
   }
 
+  .col-label::before {
+    animation: none !important;
+    background: #D97706 !important;
+    box-shadow: none !important;
+  }
+
+
   .flood-bar {
     background: #ffffff !important;
     border-color: #D97706 !important;
@@ -1130,7 +1148,7 @@ Customer Info
       <div class="addr-wrap">
         <input type="text" id="address" name="address" class="long" placeholder="Start typing address..." autocomplete="off" autocorrect="off" autocapitalize="words" spellcheck="false" aria-label="Street address">
         <button class="gps-btn" title="Use my current location" id="gps-btn" type="button" aria-label="Get location from GPS">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="8" stroke-dasharray="2 4"/></svg>
+          <svg width="15" height="15" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="8" stroke-dasharray="2 4"/></svg>
         </button>
         <ul id="address-suggestions" aria-label="Address suggestions"></ul>
       </div>
@@ -1166,11 +1184,20 @@ Customer Info
 
 
       <div class="top-col">
-        <div class="col-label">
-  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-    <polyline points="9 22 9 12 15 12 15 22"></polyline>
-  </svg>
+       <div class="col-label">
+ <svg width="15" height="15" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+  <path
+    d="M12 3 L21 10 L3 10 Z
+       M5 10 H19 V21 H5 Z
+       M10 14 H14 V21 H10 Z"
+    fill="none"
+    stroke="#D97706"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>
+
   Property Info
 </div>
 
@@ -1877,6 +1904,12 @@ function saveImageFromModal() {
   var timestamp = new Date().toISOString().split('T')[0];
   var filename = pageTitle + '_' + timestamp + '.jpg';
   
+  // Show loading indicator
+  var loadingDiv = document.createElement('div');
+  loadingDiv.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1a1a1a;border:2px solid #D97706;color:#D97706;padding:20px 40px;font-family:monospace;z-index:99999;border-radius:8px;box-shadow:0 0 30px rgba(217,119,6,0.4);';
+  loadingDiv.textContent = '⏳ Generating image...';
+  document.body.appendChild(loadingDiv);
+  
   html2canvas(page, {
     scale: 2,
     useCORS: true,
@@ -1884,40 +1917,131 @@ function saveImageFromModal() {
     logging: false,
     windowHeight: page.scrollHeight,
     allowTaint: true,
-    onclone: function(clonedDoc) {
-      // Fix SVG currentColor rendering
+    imageTimeout: 15000,
+    removeContainer: true,
+    
+    onclone: function(clonedDoc, clonedElement) {
+      // ─── FIX 1: Resolve all SVG inheritance issues ───
       var svgs = clonedDoc.querySelectorAll('svg');
+      
       svgs.forEach(function(svg) {
-        // Get computed color from parent
-        var computedColor = window.getComputedStyle(svg).color || '#D97706';
+        // Get the actual rendered color from the parent element
+        var parent = svg.parentElement;
+        var computedColor = '#D97706'; // fallback
         
-        // Convert currentColor to explicit hex
-        var strokes = svg.querySelectorAll('[stroke="currentColor"]');
-        strokes.forEach(function(el) {
-          el.setAttribute('stroke', computedColor);
-        });
+        try {
+          if (parent) {
+            var parentStyle = clonedDoc.defaultView.getComputedStyle(parent);
+            computedColor = parentStyle.color || '#D97706';
+          }
+        } catch (e) {
+          computedColor = '#D97706';
+        }
         
-        var fills = svg.querySelectorAll('[fill="currentColor"]');
-        fills.forEach(function(el) {
-          el.setAttribute('fill', computedColor);
+        // Ensure xmlns is set (required for some renderers)
+        if (!svg.getAttribute('xmlns')) {
+          svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+        }
+        
+        // Get SVG-level attributes that need to cascade
+        var svgStroke = svg.getAttribute('stroke');
+        var svgFill = svg.getAttribute('fill');
+        var svgStrokeWidth = svg.getAttribute('stroke-width');
+        var svgStrokeLinecap = svg.getAttribute('stroke-linecap');
+        var svgStrokeLinejoin = svg.getAttribute('stroke-linejoin');
+        
+        // Resolve currentColor at SVG level
+        if (svgStroke === 'currentColor') svgStroke = computedColor;
+        if (svgFill === 'currentColor') svgFill = computedColor;
+        
+        // Apply to ALL drawable children
+        var shapes = svg.querySelectorAll('path, polyline, polygon, line, rect, circle, ellipse, text');
+        
+        shapes.forEach(function(el) {
+          // Resolve currentColor on element
+          if (el.getAttribute('stroke') === 'currentColor') {
+            el.setAttribute('stroke', computedColor);
+          }
+          if (el.getAttribute('fill') === 'currentColor') {
+            el.setAttribute('fill', computedColor);
+          }
+          
+          // Inherit from SVG parent if not explicitly set
+          if (svgStroke && !el.hasAttribute('stroke')) {
+            el.setAttribute('stroke', svgStroke);
+          }
+          if (svgFill && !el.hasAttribute('fill')) {
+            el.setAttribute('fill', svgFill);
+          }
+          if (svgStrokeWidth && !el.hasAttribute('stroke-width')) {
+            el.setAttribute('stroke-width', svgStrokeWidth);
+          }
+          if (svgStrokeLinecap && !el.hasAttribute('stroke-linecap')) {
+            el.setAttribute('stroke-linecap', svgStrokeLinecap);
+          }
+          if (svgStrokeLinejoin && !el.hasAttribute('stroke-linejoin')) {
+            el.setAttribute('stroke-linejoin', svgStrokeLinejoin);
+          }
+          
+          // If element has no fill specified at all, set to none (prevents black fill bug)
+          if (!el.hasAttribute('fill') && el.tagName.toLowerCase() !== 'text') {
+            el.setAttribute('fill', 'none');
+          }
         });
+      });
+      
+      // ─── FIX 2: Force placeholder text to be invisible ───
+      var inputs = clonedDoc.querySelectorAll('input, textarea');
+      inputs.forEach(function(input) {
+        if (!input.value) {
+          input.setAttribute('placeholder', '');
+        }
+      });
+  // ─── FIX 2.5: Ensure pulse animations are static for capture ───
+var pulseElements = clonedDoc.querySelectorAll('.section-header::before, .col-label::before');
+var allHeaders = clonedDoc.querySelectorAll('.section-header, .col-label');
+allHeaders.forEach(function(h) {
+    h.style.animationPlayState = 'paused';
+});
+
+      
+      // ─── FIX 3: Hide modals in clone ───
+      var modals = clonedDoc.querySelectorAll('#pdfModal, #imageModal, #offline-banner, .toolbar');
+      modals.forEach(function(m) {
+        m.style.display = 'none';
       });
     }
   }).then(function(canvas) {
+    document.body.removeChild(loadingDiv);
+    
     try {
       var link = document.createElement('a');
       link.download = filename;
       link.href = canvas.toDataURL('image/jpeg', 0.95);
-      link.click();
       
-      // Clean up
-      setTimeout(function() {
-        link.remove();
-      }, 100);
+      // For iOS Safari compatibility
+      if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+        var newTab = window.open();
+        if (newTab) {
+          newTab.document.write('<img src="' + link.href + '" style="max-width:100%;"/><p style="font-family:sans-serif;padding:10px;">Long-press the image and select "Save to Photos"</p>');
+        } else {
+          link.click();
+        }
+      } else {
+        document.body.appendChild(link);
+        link.click();
+        setTimeout(function() {
+          document.body.removeChild(link);
+        }, 100);
+      }
     } catch (e) {
       alert('Error saving image: ' + e.message);
     }
   }).catch(function(err) {
+    if (loadingDiv.parentNode) {
+      document.body.removeChild(loadingDiv);
+    }
+    console.error('html2canvas error:', err);
     alert('Error generating image: ' + err.message);
   });
 }
