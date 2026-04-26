@@ -2273,12 +2273,10 @@ function printPDF() {
 
 function confirmPdfPrint() {
   document.getElementById('pdfModal').style.display = 'none';
-  window.print();  // called immediately, still inside the click gesture
+  requestAnimationFrame(function() {
+    window.print();
+  });
 }
-function closePdfModal() {
-  document.getElementById('pdfModal').style.display = 'none';
-}
-
 // ────────────────────────────────────────────────────────────────
 // IMAGE EXPORT (SINGLE VERSION)
 // ────────────────────────────────────────────────────────────────
