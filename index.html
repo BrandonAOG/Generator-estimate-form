@@ -909,18 +909,19 @@ body.print-mode select {
   }
 
   html, body {
-    background: #ffffff !important;
-    background-image: none !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    width: 816px !important;
-    min-width: 816px !important;
-    max-width: 816px !important;
-    height: auto !important;
-    min-height: 100vh !important;
-    overflow: visible !important;
-    position: relative !important;
-  }
+  background: #ffffff !important;
+  background-image: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  width: 816px !important;
+  min-width: 816px !important;
+  max-width: 816px !important;
+  height: auto !important;
+  min-height: auto !important;  /* ← REMOVE min-height constraint */
+  overflow: visible !important;
+  position: relative !important;
+}
+
 
   #offline-banner,
   .toolbar,
