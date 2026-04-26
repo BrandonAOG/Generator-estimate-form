@@ -2275,9 +2275,9 @@ function printPDF() {
 function confirmPdfPrint() {
   document.getElementById('pdfModal').style.display = 'none';
   
-  document.body.style.zoom = '101%';
+  document.body.style.zoom = '100%';
   requestAnimationFrame(function() {
-    document.body.style.zoom = '102%';
+    document.body.style.zoom = '84%';
     requestAnimationFrame(function() {
       nativePrint();
     });
