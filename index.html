@@ -2462,34 +2462,36 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
     var styleEl = document.getElementById('mobile-print-styles');
     if (styleEl) styleEl.innerHTML = '';
   });
-}
-// SAFARI CLEAN PRINT OVERRIDE
-// ────────────────────────────────────────────────────────────────
-if (/Safari/i.test(navigator.userAgent) && !/Chrome/i.test(navigator.userAgent)) {
-  const originalPrint = window.print;
 
-  window.print = function() {
-    var pageHTML = document.querySelector('.page')?.outerHTML || '';
-    var styleEl = document.getElementById('mobile-print-styles');
-    var css = styleEl ? styleEl.innerHTML : '';
+  // SAFARI CLEAN PRINT OVERRIDE
+  // ────────────────────────────────────────────────────────────────
+  if (/Safari/i.test(navigator.userAgent) && !/Chrome/i.test(navigator.userAgent)) {
+    const originalPrint = window.print;
 
-    var win = window.open('', '_blank');
+    window.print = function() {
+      var pageHTML = document.querySelector('.page')?.outerHTML || '';
+      var styleEl = document.getElementById('mobile-print-styles');
+      var css = styleEl ? styleEl.innerHTML : '';
 
-    win.document.open();
-    win.document.write('<html><head><title>Print</title>');
-    win.document.write('<style>' + css + '</style>');
-    win.document.write('</head><body>');
-    win.document.write(pageHTML);
-    win.document.write('</body></html>');
-    win.document.close();
+      var win = window.open('', '_blank');
 
-    win.onload = function() {
-      win.focus();
-      win.print();
-      win.close();
+      win.document.open();
+      win.document.write('<html><head><meta charset="UTF-8"><title>Print</title>');
+      win.document.write('<style>' + css + '</style>');
+      win.document.write('</head><body>');
+      win.document.write(pageHTML);
+      win.document.write('</body></html>');
+      win.document.close();
+
+      win.onload = function() {
+        win.focus();
+        win.print();
+        win.close();
+      };
     };
-  };
+  }
 }
+
 
 
 // ────────────────────────────────────────────────────────────────
