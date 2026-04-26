@@ -2274,14 +2274,7 @@ function printPDF() {
 
 function confirmPdfPrint() {
   document.getElementById('pdfModal').style.display = 'none';
-  
-  document.body.style.zoom = '99%';
-  requestAnimationFrame(function() {
-    document.body.style.zoom = '100%';
-    requestAnimationFrame(function() {
-      nativePrint();
-    });
-  });
+  nativePrint();
 }
 // ────────────────────────────────────────────────────────────────
 // IMAGE EXPORT (SINGLE VERSION)
