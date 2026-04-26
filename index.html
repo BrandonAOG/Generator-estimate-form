@@ -2199,29 +2199,6 @@ function sendEmail() {
 }
 
 // ────────────────────────────────────────────────────────────────
-// INITIALIZATION
-// ────────────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', function() {
-  // Set today's date
-  var todayInput = document.getElementById('today');
-  if (todayInput && !todayInput.value) {
-    todayInput.value = new Date().toISOString().split('T')[0];
-  }
-  
-  // Check offline status
-  if (!navigator.onLine) {
-    var b = document.getElementById('offline-banner');
-    if (b) b.classList.add('show');
-    document.body.classList.add('offline');
-  }
-  
-  // Setup features
-  setupAddressAutocomplete();
-  setupGpsButton();
-  setupFieldValidation();  // NEW
-  restoreDraft();
-});
-// ────────────────────────────────────────────────────────────────
 // FORM ACTIONS
 // ────────────────────────────────────────────────────────────────
 function clearForm() {
@@ -2636,25 +2613,24 @@ document.addEventListener('click', function(e) {
 // INITIALIZATION (SINGLE VERSION)
 // ────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function() {
-  // Set today's date
   var todayInput = document.getElementById('today');
   if (todayInput && !todayInput.value) {
     todayInput.value = new Date().toISOString().split('T')[0];
   }
-  
-  // Check offline status
+
   if (!navigator.onLine) {
     var b = document.getElementById('offline-banner');
     if (b) b.classList.add('show');
     document.body.classList.add('offline');
   }
-  
-  // Setup features
-  setupAddressAutocomplete();
-  setupGpsButton();
-  setupFieldValidation();
+
+  if (typeof setupAddressAutocomplete === 'function') setupAddressAutocomplete();
+  if (typeof setupGpsButton === 'function') setupGpsButton();
+  if (typeof setupFieldValidation === 'function') setupFieldValidation();
+
   restoreDraft();
 });
+
 </script>
 
 </body>
