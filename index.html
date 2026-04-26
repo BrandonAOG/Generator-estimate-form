@@ -1696,16 +1696,25 @@ function enterPrintMode() {
 function exitPrintMode() {
   var page = document.getElementById('page');
   if (page) {
-    page.style.transform       = '';
+    page.style.transform = '';
     page.style.transformOrigin = '';
-    page.style.width           = '';
-    page.style.position        = '';
-    page.style.top             = '';
-    page.style.left            = '';
+    page.style.width = '';
+    page.style.maxWidth = '';
+    page.style.position = '';
+    page.style.top = '';
+    page.style.left = '';
+    page.style.margin = '';
+    page.style.padding = '';
   }
+  // Clean up iOS Safari width constraints
+  document.documentElement.style.width = '';
+  document.documentElement.style.maxWidth = '';
+  document.body.style.width = '';
+  document.body.style.maxWidth = '';
   document.documentElement.classList.remove('print-mode');
   document.body.classList.remove('print-mode');
 }
+
 
 // ════════════════════════════════════════════════════════════════
 //  OFFLINE HANDLING
