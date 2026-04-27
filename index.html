@@ -1906,146 +1906,166 @@ function saveImageFromModal() {
   var originalTop = page.style.top;
   var originalLeft = page.style.left;
   var originalWidth = page.style.width;
+  var originalMargin = page.style.margin;
+  var originalMinHeight = page.style.minHeight;
+  var originalHeight = page.style.height;
   
-  // Temporarily remove transform and reset positioning for clean capture
+  // CRITICAL: Remove print-mode class if present
+  document.body.classList.remove('print-mode');
+  
+  // Reset to natural state for clean capture
   page.style.transform = 'none';
   page.style.position = 'relative';
   page.style.top = 'auto';
   page.style.left = 'auto';
   page.style.width = '1050px';
   page.style.margin = '0 auto';
+  page.style.minHeight = 'auto';
+  page.style.height = 'auto';
   
-  html2canvas(page, {
-    scale: 2,
-    useCORS: true,
-    backgroundColor: '#FFFFFF',
-    logging: false,
-    windowHeight: page.scrollHeight,
-    allowTaint: true,
-    imageTimeout: 15000,
-    removeContainer: true,
-    
-    onclone: function(clonedDoc, clonedElement) {
-      var svgs = clonedDoc.querySelectorAll('svg');
+  // Force reflow to ensure styles are applied
+  void page.offsetHeight;
+  
+  // Wait a tick for the DOM to settle
+  setTimeout(function() {
+    html2canvas(page, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: '#FFFFFF',
+      logging: false,
+      windowHeight: page.scrollHeight,
+      allowTaint: true,
+      imageTimeout: 15000,
+      removeContainer: true,
       
-      svgs.forEach(function(svg) {
-        var parent = svg.parentElement;
-        var computedColor = '#D97706';
+      onclone: function(clonedDoc, clonedElement) {
+        var svgs = clonedDoc.querySelectorAll('svg');
         
-        try {
-          if (parent) {
-            var parentStyle = clonedDoc.defaultView.getComputedStyle(parent);
-            computedColor = parentStyle.color || '#D97706';
-          }
-        } catch (e) {}
+        svgs.forEach(function(svg) {
+          var parent = svg.parentElement;
+          var computedColor = '#D97706';
+          
+          try {
+            if (parent) {
+              var parentStyle = clonedDoc.defaultView.getComputedStyle(parent);
+              computedColor = parentStyle.color || '#D97706';
+            }
+          } catch (e) {}
 
-        if (!svg.getAttribute('xmlns')) {
-          svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+          if (!svg.getAttribute('xmlns')) {
+            svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+          }
+
+          var svgStroke = svg.getAttribute('stroke');
+          var svgFill = svg.getAttribute('fill');
+          var svgStrokeWidth = svg.getAttribute('stroke-width');
+          var svgStrokeLinecap = svg.getAttribute('stroke-linecap');
+          var svgStrokeLinejoin = svg.getAttribute('stroke-linejoin');
+
+          if (svgStroke === 'currentColor') svgStroke = computedColor;
+          if (svgFill === 'currentColor') svgFill = computedColor;
+
+          var shapes = svg.querySelectorAll('path, polyline, polygon, line, rect, circle, ellipse, text');
+          
+          shapes.forEach(function(el) {
+            if (el.getAttribute('stroke') === 'currentColor') {
+              el.setAttribute('stroke', computedColor);
+            }
+            if (el.getAttribute('fill') === 'currentColor') {
+              el.setAttribute('fill', computedColor);
+            }
+            if (svgStroke && !el.hasAttribute('stroke')) el.setAttribute('stroke', svgStroke);
+            if (svgFill && !el.hasAttribute('fill')) el.setAttribute('fill', svgFill);
+            if (svgStrokeWidth && !el.hasAttribute('stroke-width')) el.setAttribute('stroke-width', svgStrokeWidth);
+            if (svgStrokeLinecap && !el.hasAttribute('stroke-linecap')) el.setAttribute('stroke-linecap', svgStrokeLinecap);
+            if (svgStrokeLinejoin && !el.hasAttribute('stroke-linejoin')) el.setAttribute('stroke-linejoin', svgStrokeLinejoin);
+            if (!el.hasAttribute('fill') && el.tagName.toLowerCase() !== 'text') {
+              el.setAttribute('fill', 'none');
+            }
+          });
+        });
+
+        var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+        if (isIOS) {
+          var allPaths = clonedDoc.querySelectorAll('svg path');
+          allPaths.forEach(function(p) {
+            var original = parseFloat(p.getAttribute('stroke-width')) || 2;
+            p.setAttribute('stroke-width', original * 2.2);
+            p.setAttribute('stroke', '#b86a05');
+          });
         }
 
-        var svgStroke = svg.getAttribute('stroke');
-        var svgFill = svg.getAttribute('fill');
-        var svgStrokeWidth = svg.getAttribute('stroke-width');
-        var svgStrokeLinecap = svg.getAttribute('stroke-linecap');
-        var svgStrokeLinejoin = svg.getAttribute('stroke-linejoin');
-
-        if (svgStroke === 'currentColor') svgStroke = computedColor;
-        if (svgFill === 'currentColor') svgFill = computedColor;
-
-        var shapes = svg.querySelectorAll('path, polyline, polygon, line, rect, circle, ellipse, text');
-        
-        shapes.forEach(function(el) {
-          if (el.getAttribute('stroke') === 'currentColor') {
-            el.setAttribute('stroke', computedColor);
-          }
-          if (el.getAttribute('fill') === 'currentColor') {
-            el.setAttribute('fill', computedColor);
-          }
-          if (svgStroke && !el.hasAttribute('stroke')) el.setAttribute('stroke', svgStroke);
-          if (svgFill && !el.hasAttribute('fill')) el.setAttribute('fill', svgFill);
-          if (svgStrokeWidth && !el.hasAttribute('stroke-width')) el.setAttribute('stroke-width', svgStrokeWidth);
-          if (svgStrokeLinecap && !el.hasAttribute('stroke-linecap')) el.setAttribute('stroke-linecap', svgStrokeLinecap);
-          if (svgStrokeLinejoin && !el.hasAttribute('stroke-linejoin')) el.setAttribute('stroke-linejoin', svgStrokeLinejoin);
-          if (!el.hasAttribute('fill') && el.tagName.toLowerCase() !== 'text') {
-            el.setAttribute('fill', 'none');
-          }
+        var inputs = clonedDoc.querySelectorAll('input, textarea');
+        inputs.forEach(function(input) {
+          if (!input.value) input.setAttribute('placeholder', '');
         });
-      });
 
-      var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-      if (isIOS) {
-        var allPaths = clonedDoc.querySelectorAll('svg path');
-        allPaths.forEach(function(p) {
-          var original = parseFloat(p.getAttribute('stroke-width')) || 2;
-          p.setAttribute('stroke-width', original * 2.2);
-          p.setAttribute('stroke', '#b86a05');
+        var allHeaders = clonedDoc.querySelectorAll('.section-header, .col-label');
+        allHeaders.forEach(function(h) {
+          h.style.animationPlayState = 'paused';
+        });
+
+        var modals = clonedDoc.querySelectorAll('#pdfModal, #imageModal, #offline-banner, .toolbar');
+        modals.forEach(function(m) {
+          m.style.display = 'none';
         });
       }
-
-      var inputs = clonedDoc.querySelectorAll('input, textarea');
-      inputs.forEach(function(input) {
-        if (!input.value) input.setAttribute('placeholder', '');
-      });
-
-      var allHeaders = clonedDoc.querySelectorAll('.section-header, .col-label');
-      allHeaders.forEach(function(h) {
-        h.style.animationPlayState = 'paused';
-      });
-
-      var modals = clonedDoc.querySelectorAll('#pdfModal, #imageModal, #offline-banner, .toolbar');
-      modals.forEach(function(m) {
-        m.style.display = 'none';
-      });
-    }
-  }).then(function(canvas) {
-    // Restore original styles
-    page.style.transform = originalTransform;
-    page.style.position = originalPosition;
-    page.style.top = originalTop;
-    page.style.left = originalLeft;
-    page.style.width = originalWidth;
-    
-    document.body.removeChild(loadingDiv);
-    
-    try {
-      var link = document.createElement('a');
-      link.download = filename;
-      link.href = canvas.toDataURL('image/jpeg', 0.95);
-
-      if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-        var newTab = window.open();
-        if (newTab) {
-          newTab.document.write(
-            '<img src="' + link.href + '" style="max-width:100%;"/>' +
-            '<p style="font-family:sans-serif;padding:10px;">Long‑press the image and select "Save to Photos"</p>'
-          );
-        } else {
-          link.click();
-        }
-      } else {
-        document.body.appendChild(link);
-        link.click();
-        setTimeout(function() {
-          document.body.removeChild(link);
-        }, 100);
-      }
-    } catch (e) {
-      alert('Error saving image: ' + e.message);
-    }
-  }).catch(function(err) {
-    // Restore original styles even on error
-    page.style.transform = originalTransform;
-    page.style.position = originalPosition;
-    page.style.top = originalTop;
-    page.style.left = originalLeft;
-    page.style.width = originalWidth;
-    
-    if (loadingDiv.parentNode) {
+    }).then(function(canvas) {
+      // Restore original styles
+      page.style.transform = originalTransform;
+      page.style.position = originalPosition;
+      page.style.top = originalTop;
+      page.style.left = originalLeft;
+      page.style.width = originalWidth;
+      page.style.margin = originalMargin;
+      page.style.minHeight = originalMinHeight;
+      page.style.height = originalHeight;
+      
       document.body.removeChild(loadingDiv);
-    }
-    console.error('html2canvas error:', err);
-    alert('Error generating image: ' + err.message);
-  });
+      
+      try {
+        var link = document.createElement('a');
+        link.download = filename;
+        link.href = canvas.toDataURL('image/jpeg', 0.95);
+
+        if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+          var newTab = window.open();
+          if (newTab) {
+            newTab.document.write(
+              '<img src="' + link.href + '" style="max-width:100%;"/>' +
+              '<p style="font-family:sans-serif;padding:10px;">Long‑press the image and select "Save to Photos"</p>'
+            );
+          } else {
+            link.click();
+          }
+        } else {
+          document.body.appendChild(link);
+          link.click();
+          setTimeout(function() {
+            document.body.removeChild(link);
+          }, 100);
+        }
+      } catch (e) {
+        alert('Error saving image: ' + e.message);
+      }
+    }).catch(function(err) {
+      // Restore original styles even on error
+      page.style.transform = originalTransform;
+      page.style.position = originalPosition;
+      page.style.top = originalTop;
+      page.style.left = originalLeft;
+      page.style.width = originalWidth;
+      page.style.margin = originalMargin;
+      page.style.minHeight = originalMinHeight;
+      page.style.height = originalHeight;
+      
+      if (loadingDiv.parentNode) {
+        document.body.removeChild(loadingDiv);
+      }
+      console.error('html2canvas error:', err);
+      alert('Error generating image: ' + err.message);
+    });
+  }, 50); // Wait 50ms for DOM to settle
 }
 
 
