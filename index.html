@@ -2303,181 +2303,171 @@ function saveImageFromModal() {
   var filename = pageTitle + '_' + timestamp + '.jpg';
   
   var loadingDiv = document.createElement('div');
+  loadingDiv.id = 'image-loading-indicator';
   loadingDiv.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1a1a1a;border:2px solid #D97706;color:#D97706;padding:20px 40px;font-family:monospace;z-index:99999;border-radius:8px;box-shadow:0 0 30px rgba(217,119,6,0.4);';
-  loadingDiv.textContent = '⏳ Generating image...';
+  loadingDiv.textContent = '⏳ Generating image... (this may take 10-15 seconds)';
   document.body.appendChild(loadingDiv);
   
-  // Clone the page for rendering
-  var clone = page.cloneNode(true);
-  
-  // Bake input values into clone
-  var liveInputs = page.querySelectorAll('input, textarea, select');
-  var cloneInputs = clone.querySelectorAll('input, textarea, select');
-  liveInputs.forEach(function(liveEl, i) {
-    var cloneEl = cloneInputs[i];
-    if (!cloneEl) return;
-    if (liveEl.type === 'checkbox' || liveEl.type === 'radio') {
-      cloneEl.checked = liveEl.checked;
-    } else {
-      cloneEl.value = liveEl.value;
-    }
-  });
-  
-  // Convert SVGs to solid colored paths
-  var svgs = clone.querySelectorAll('svg');
-  svgs.forEach(function(svg) {
-    var computedColor = '#D97706';
-    try {
-      if (svg.parentElement) {
-        var parentStyle = window.getComputedStyle(svg.parentElement);
-        computedColor = parentStyle.color || '#D97706';
-      }
-    } catch (e) {}
-
-    if (!svg.getAttribute('xmlns')) {
-      svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-    }
-
-    var shapes = svg.querySelectorAll('*');
-    shapes.forEach(function(el) {
-      if (el.getAttribute('stroke') === 'currentColor' || !el.getAttribute('stroke')) {
-        el.setAttribute('stroke', computedColor);
-      }
-      if (el.getAttribute('fill') === 'currentColor') {
-        el.setAttribute('fill', computedColor);
-      }
-      if (el.tagName.toLowerCase() !== 'text' && !el.getAttribute('fill')) {
-        el.setAttribute('fill', 'none');
-      }
-      
-      var currentWidth = parseFloat(el.getAttribute('stroke-width')) || 2;
-      el.setAttribute('stroke-width', currentWidth * 1.8);
-      
-      if (!el.getAttribute('stroke-linecap')) el.setAttribute('stroke-linecap', 'round');
-      if (!el.getAttribute('stroke-linejoin')) el.setAttribute('stroke-linejoin', 'round');
-    });
-  });
-  
-  // Simplify the clone
-  clone.querySelectorAll('.toolbar, #offline-banner, #pdfModal, #imageModal').forEach(function(el) {
-    el.style.display = 'none';
-  });
-  
-  // Create temporary container
-  var tempContainer = document.createElement('div');
-  tempContainer.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:1050px;background:#FFFFFF;';
-  tempContainer.appendChild(clone);
-  document.body.appendChild(tempContainer);
-  
-  // Render with html2canvas
-  html2canvas(tempContainer, {
-    scale: window.devicePixelRatio * 2,
-    useCORS: true,
-    backgroundColor: '#FFFFFF',
-    logging: false,
-    windowHeight: clone.scrollHeight,
-    allowTaint: true,
-    imageTimeout: 20000,
-    removeContainer: false,
-    foreignObjectRendering: false
-  }).then(function(canvas) {
-    // Clean up temp container immediately
-    if (tempContainer.parentNode) {
-      document.body.removeChild(tempContainer);
-    }
-    
-    try {
-      // Use toBlob for better browser compatibility
-      canvas.toBlob(function(blob) {
-        if (!blob) {
-          throw new Error('Canvas toBlob failed - blob is null');
-        }
-        
-        var blobUrl = URL.createObjectURL(blob);
-        var isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
-        
-        if (isIOS) {
-          // iOS: open in new tab for long-press save
-          var newTab = window.open();
-          if (newTab) {
-            newTab.document.write(
-              '<html><body style="margin:0;padding:0;background:#000;">' +
-              '<img src="' + blobUrl + '" style="max-width:100%;width:100%;display:block;"/>' +
-              '<p style="font-family:sans-serif;padding:20px;color:#fff;text-align:center;">' +
-              'Long-press the image and select "Save to Photos"</p>' +
-              '</body></html>'
-            );
-            newTab.document.close();
-          }
-        } else {
-          // Android/Desktop: standard download
-          var link = document.createElement('a');
-          link.href = blobUrl;
-          link.download = filename;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          
-          // Revoke blob URL after a short delay
-          setTimeout(function() {
-            URL.revokeObjectURL(blobUrl);
-          }, 1000);
-        }
-        
-        // Remove loading indicator
-        if (loadingDiv.parentNode) {
-          document.body.removeChild(loadingDiv);
-        }
-      }, 'image/jpeg', 0.95);
-      
-    } catch (e) {
-      // Fallback to toDataURL if toBlob fails
-      try {
-        var jpegData = canvas.toDataURL('image/jpeg', 0.95);
-        var isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
-        
-        if (isIOS) {
-          var newTab = window.open();
-          if (newTab) {
-            newTab.document.write(
-              '<html><body style="margin:0;padding:0;background:#000;">' +
-              '<img src="' + jpegData + '" style="max-width:100%;width:100%;display:block;"/>' +
-              '<p style="font-family:sans-serif;padding:20px;color:#fff;text-align:center;">' +
-              'Long-press the image and select "Save to Photos"</p>' +
-              '</body></html>'
-            );
-            newTab.document.close();
-          }
-        } else {
-          var link = document.createElement('a');
-          link.href = jpegData;
-          link.download = filename;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-        }
-        
-        if (loadingDiv.parentNode) {
-          document.body.removeChild(loadingDiv);
-        }
-      } catch (fallbackErr) {
-        if (loadingDiv.parentNode) {
-          document.body.removeChild(loadingDiv);
-        }
-        alert('Error saving image: ' + fallbackErr.message);
-      }
-    }
-  }).catch(function(err) {
-    // Clean up on error
+  // Set a timeout to prevent infinite loading
+  var timeoutId = setTimeout(function() {
     if (loadingDiv.parentNode) {
       document.body.removeChild(loadingDiv);
     }
-    if (tempContainer.parentNode) {
-      document.body.removeChild(tempContainer);
+    alert('Image generation timed out. Try using Print/PDF instead.');
+  }, 30000); // 30 second timeout
+  
+  try {
+    // Clone the page for rendering
+    var clone = page.cloneNode(true);
+    
+    // Bake input values into clone
+    var liveInputs = page.querySelectorAll('input, textarea, select');
+    var cloneInputs = clone.querySelectorAll('input, textarea, select');
+    liveInputs.forEach(function(liveEl, i) {
+      var cloneEl = cloneInputs[i];
+      if (!cloneEl) return;
+      if (liveEl.type === 'checkbox' || liveEl.type === 'radio') {
+        cloneEl.checked = liveEl.checked;
+      } else {
+        cloneEl.value = liveEl.value;
+      }
+    });
+    
+    // Remove modals and toolbars
+    clone.querySelectorAll('.toolbar, #offline-banner, #pdfModal, #imageModal, #address-suggestions').forEach(function(el) {
+      el.style.display = 'none';
+    });
+    
+    // Create temporary container
+    var tempContainer = document.createElement('div');
+    tempContainer.id = 'temp-html2canvas-container';
+    tempContainer.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:1050px;background:#FFFFFF;margin:0;padding:0;';
+    tempContainer.appendChild(clone);
+    document.body.appendChild(tempContainer);
+    
+    // Configure html2canvas with minimal options for speed
+    var canvas = html2canvas(tempContainer, {
+      scale: 1.5, // Reduced from 2x for faster rendering
+      useCORS: true,
+      backgroundColor: '#FFFFFF',
+      logging: false,
+      windowHeight: clone.scrollHeight,
+      windowWidth: 1050,
+      allowTaint: true,
+      imageTimeout: 5000, // Reduced timeout
+      removeContainer: false,
+      foreignObjectRendering: false,
+      ignoreElements: function(element) {
+        // Skip certain elements for speed
+        var classes = element.className || '';
+        return classes.includes('toolbar') || classes.includes('offline-banner');
+      }
+    }).then(function(canvas) {
+      clearTimeout(timeoutId);
+      
+      // Clean up temp container
+      if (tempContainer.parentNode) {
+        document.body.removeChild(tempContainer);
+      }
+      
+      try {
+        // Convert canvas to blob
+        canvas.toBlob(
+          function(blob) {
+            try {
+              if (!blob) {
+                throw new Error('Blob creation failed');
+              }
+              
+              var blobUrl = URL.createObjectURL(blob);
+              var isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+              
+              if (isIOS) {
+                // iOS: open in new tab
+                setTimeout(function() {
+                  var newTab = window.open();
+                  if (newTab) {
+                    var img = new Image();
+                    img.src = blobUrl;
+                    newTab.document.write(
+                      '<html><body style="margin:0;padding:0;background:#000;text-align:center;">' +
+                      '<img src="' + blobUrl + '" style="max-width:100%;width:100%;display:block;margin-top:20px;"/>' +
+                      '<p style="font-family:sans-serif;padding:20px;color:#0f0;text-align:center;font-size:14px;">' +
+                      '✓ Long-press image and select "Save to Photos"</p>' +
+                      '</body></html>'
+                    );
+                    newTab.document.close();
+                  }
+                }, 100);
+              } else {
+                // Android/Desktop: download
+                var link = document.createElement('a');
+                link.href = blobUrl;
+                link.download = filename;
+                link.style.display = 'none';
+                document.body.appendChild(link);
+                link.click();
+                
+                setTimeout(function() {
+                  document.body.removeChild(link);
+                  URL.revokeObjectURL(blobUrl);
+                }, 500);
+              }
+              
+              // Remove loading indicator
+              if (loadingDiv.parentNode) {
+                document.body.removeChild(loadingDiv);
+              }
+            } catch (blobErr) {
+              clearTimeout(timeoutId);
+              if (loadingDiv.parentNode) {
+                document.body.removeChild(loadingDiv);
+              }
+              console.error('Blob error:', blobErr);
+              alert('Error processing image. Please try again.');
+            }
+          },
+          'image/jpeg',
+          0.92
+        );
+      } catch (canvasErr) {
+        clearTimeout(timeoutId);
+        if (loadingDiv.parentNode) {
+          document.body.removeChild(loadingDiv);
+        }
+        console.error('Canvas error:', canvasErr);
+        alert('Error converting image. Try Print/PDF instead.');
+      }
+    }).catch(function(html2canvasErr) {
+      clearTimeout(timeoutId);
+      if (tempContainer.parentNode) {
+        try {
+          document.body.removeChild(tempContainer);
+        } catch (e) {}
+      }
+      if (loadingDiv.parentNode) {
+        document.body.removeChild(loadingDiv);
+      }
+      
+      console.error('html2canvas error:', html2canvasErr);
+      
+      // Provide user-friendly error message
+      var errorMsg = 'Image generation failed. ';
+      if (html2canvasErr.message) {
+        errorMsg += html2canvasErr.message;
+      }
+      errorMsg += '\n\nPlease use Print/PDF instead (Button: 🖨 Print / PDF)';
+      alert(errorMsg);
+    });
+    
+  } catch (err) {
+    clearTimeout(timeoutId);
+    if (loadingDiv.parentNode) {
+      document.body.removeChild(loadingDiv);
     }
-    console.error('html2canvas error:', err);
-    alert('Error generating image. Try using Print/PDF instead.');
-  });
+    console.error('Setup error:', err);
+    alert('Error setting up image capture: ' + err.message);
+  }
 }
 
 
