@@ -2075,6 +2075,34 @@ function nativePrint() {
     }, 2000);
   }, delay);
 }
+function printPDF() {
+  var modal = document.getElementById('pdfModal');
+  var instructions = document.getElementById('pdfInstructions');
+  
+  var isAndroid = /Android/i.test(navigator.userAgent);
+  var isIOS     = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  var isChrome  = /Chrome/i.test(navigator.userAgent);
+  var isSafari  = /Safari/i.test(navigator.userAgent) && !isChrome;
+
+  var msg = '';
+
+  if (isAndroid && isChrome) {
+    msg = '1. Tap CONTINUE below\n2. In the print dialog, tap the destination\n3. Select "Save as PDF"\n4. Tap Save';
+  } else if (isIOS && isSafari) {
+    msg = '1. Tap CONTINUE below\n2. Tap the Share icon\n3. Select "Print" then pinch-zoom outward\n   on the preview to save as PDF';
+  } else if (isIOS && isChrome) {
+    msg = '1. Tap CONTINUE below\n2. In the print dialog select "Save as PDF"';
+  } else {
+    msg = '1. Click CONTINUE below\n2. In the print dialog, set\n   Destination → "Save as PDF"\n3. Click Save';
+  }
+
+  if (instructions) {
+    instructions.style.whiteSpace = 'pre-line';
+    instructions.textContent = msg;
+  }
+
+  if (modal) modal.style.display = 'flex';
+}
 
 function confirmPdfPrint() {
   document.getElementById('pdfModal').style.display = 'none';
