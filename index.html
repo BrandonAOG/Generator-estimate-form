@@ -2000,15 +2000,8 @@ function closePdfModal() {
 
 function confirmPdfPrint() {
   document.getElementById('pdfModal').style.display = 'none';
-  // Mobile gets its own isolated print window; desktop uses doPrint() untouched
-  if (window._mobilePrintOverride &&
-      /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-    window._mobilePrintOverride();
-  } else {
-    doPrint(); // Desktop — completely unchanged
-  }
+  doPrint();
 }
-
 
 // The unified print routine. Same on every device.
 function doPrint() {
