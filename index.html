@@ -871,31 +871,6 @@ body.print-mode select {
   box-shadow: none !important;
   background: #FFFFFF !important;
 }
-/* ═══════════════════════════════════════════════════════════════
-   iOS SAFARI PRINT PREVIEW FIX
-   Prevents 2-page layout in Safari print preview by constraining
-   width to 816px (paper width) in the @media print query.
-   Desktop print output remains unchanged.
-   ═══════════════════════════════════════════════════════════════ */
-@media print {
-  @supports (-webkit-touch-callout: none) {
-    /* iOS Safari ONLY - applied during print preview */
-    html, body {
-      width: 816px !important;
-      max-width: 816px !important;
-      margin: 0 !important;
-      padding: 0 !important;
-    }
-    
-    .page {
-      width: 816px !important;
-      max-width: 816px !important;
-      margin: 0 !important;
-      padding: 0 !important;
-    }
-  }
-}
-
 /* ── PRINT ── */
 @media print {
   @page { 
