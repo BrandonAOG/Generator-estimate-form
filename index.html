@@ -2525,129 +2525,134 @@ document.addEventListener('click', function(e) {
   'use strict';
 
   var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-  var isSafari = /Safari/i.test(navigator.userAgent) &&
-                 !/Chrome|CriOS|FxiOS|EdgiOS/i.test(navigator.userAgent);
+  var isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+              || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
   var PRINT_CSS = `
     @page { 
       size: letter portrait; 
       margin: 0 !important;
     }
-    
-    html {
-      overflow: hidden !important;
-      margin: 0 !important;
+    @page :first { margin: 0 !important; }
+    @page :left  { margin: 0 !important; }
+    @page :right { margin: 0 !important; }
+
+    html { 
+      margin: 0 !important; 
       padding: 0 !important;
+      background: #FFFFFF !important;
     }
-    
     body { 
       margin: 0 !important; 
       padding: 0 !important; 
       width: 100% !important;
-      height: auto !important;
-      overflow: visible !important;
-      display: flex !important;
-      justify-content: center !important;
+      zoom: 0.55;
+      background: #FFFFFF !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
     }
-    
     .page { 
-      width: 855px !important;
-      max-width: 855px !important;
+      width: 100% !important; 
+      max-width: 100% !important; 
+      margin: 0 !important; 
+      padding: 0 !important; 
       border: 5px solid #D97706 !important;
-      margin: 0 auto !important;
-      padding: 0 !important;
-      box-sizing: border-box !important;
+      box-shadow: none !important;
     }
-    
-    .toolbar, #offline-banner { 
-      display: none !important;
+    .toolbar, #offline-banner, #pdfModal, #imageModal { 
+      display: none !important; 
+    }
+    .header  { padding: 4px 16px !important; min-height: 0 !important; }
+    .content { padding: 4px 8px  !important; }
+    .footer  { padding: 4px 16px !important; }
+    .section, .top-grid, .flood-bar, .gas-appliances-box { 
+      page-break-inside: avoid !important; 
+      break-inside: avoid !important; 
     }
   `;
 
-  window.addEventListener('beforeprint', function() {
-    if (!isIOS) return;
+  function applyPrintStyles() {
+    if (!isMobile) return;
     var styleEl = document.getElementById('mobile-print-styles');
     if (styleEl) styleEl.innerHTML = PRINT_CSS;
-  });
+  }
 
-  window.addEventListener('afterprint', function() {
-    if (!isIOS) return;
+  function clearPrintStyles() {
+    if (!isMobile) return;
     var styleEl = document.getElementById('mobile-print-styles');
     if (styleEl) styleEl.innerHTML = '';
-  });
-
-  if (isIOS && isSafari) {
-    window.print = function() {
-      var pageEl = document.querySelector('.page');
-      if (!pageEl) return;
-
-      var existingStyles = Array.from(
-        document.querySelectorAll('link[rel="stylesheet"], style')
-      ).map(function(el) {
-        return el.outerHTML;
-      }).join('\n');
-
-      var clone = pageEl.cloneNode(true);
-      
-      // Get original width for scaling calculation
-      var originalWidth = pageEl.offsetWidth || 1000;
-      var scaledWidth = Math.round(originalWidth * 0.855); // 85.5%
-
-      var liveInputs = pageEl.querySelectorAll('input, textarea, select');
-      var cloneInputs = clone.querySelectorAll('input, textarea, select');
-      liveInputs.forEach(function(liveEl, i) {
-        var cloneEl = cloneInputs[i];
-        if (!cloneEl) return;
-        
-        if (liveEl.type === 'checkbox' || liveEl.type === 'radio') {
-          if (liveEl.checked) cloneEl.setAttribute('checked', 'checked');
-          else cloneEl.removeAttribute('checked');
-        } else if (liveEl.tagName === 'TEXTAREA') {
-          cloneEl.textContent = liveEl.value;
-        } else {
-          cloneEl.setAttribute('value', liveEl.value);
-        }
-      });
-
-      var win = window.open('', '_blank');
-      win.document.open();
-      win.document.write(
-        '<!DOCTYPE html><html><head>' +
-        '<meta charset="UTF-8">' +
-        '<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">' +
-        '<title>Print</title>' +
-        existingStyles +
-        '<style>' + PRINT_CSS + '</style>' +
-        '</head><body>' +
-        clone.outerHTML +
-        '</body></html>'
-      );
-      win.document.close();
-
-      win.onload = function() {
-        win.focus();
-        
-        setTimeout(function() {
-          try {
-            var printPageEl = win.document.querySelector('.page');
-            if (printPageEl) {
-              /* Apply 85.5% scaling via width constraint */
-              printPageEl.style.width = scaledWidth + 'px';
-              printPageEl.style.maxWidth = scaledWidth + 'px';
-              printPageEl.style.margin = '0 auto';
-              void printPageEl.offsetHeight;
-            }
-          } catch (e) {}
-          
-          win.print();
-          
-          setTimeout(function() {
-            try { win.close(); } catch (e) {}
-          }, 1000);
-        }, 500);
-      };
-    };
   }
+
+  // Always attach — needed for offline mode on ALL browsers
+  window.addEventListener('beforeprint', applyPrintStyles);
+  window.addEventListener('afterprint', clearPrintStyles);
+
+  // ✅ Only override window.print on iOS (iPhone/iPad)
+  if (!isIOS) return;
+
+  window.print = function() {
+    var pageEl = document.querySelector('.page');
+    if (!pageEl) {
+      console.warn('No .page element found to print.');
+      return;
+    }
+
+    var existingStyles = Array.from(
+      document.querySelectorAll('link[rel="stylesheet"], style')
+    ).map(function(el) {
+      if (el.id === 'mobile-print-styles') return '';
+      return el.outerHTML;
+    }).join('\n');
+
+    var win = window.open('', '_blank');
+    if (!win) {
+      alert('Please allow pop-ups to print.');
+      return;
+    }
+
+    // Bake live input values into the clone before serializing
+    var clone = pageEl.cloneNode(true);
+
+    // Text inputs, textareas, selects
+    var liveInputs = pageEl.querySelectorAll('input, textarea, select');
+    var cloneInputs = clone.querySelectorAll('input, textarea, select');
+    liveInputs.forEach(function(liveEl, i) {
+      var cloneEl = cloneInputs[i];
+      if (!cloneEl) return;
+      if (liveEl.type === 'checkbox' || liveEl.type === 'radio') {
+        if (liveEl.checked) cloneEl.setAttribute('checked', 'checked');
+        else cloneEl.removeAttribute('checked');
+      } else if (liveEl.tagName === 'TEXTAREA') {
+        cloneEl.textContent = liveEl.value;
+      } else {
+        cloneEl.setAttribute('value', liveEl.value);
+      }
+    });
+
+    win.document.open();
+    win.document.write(
+      '<!DOCTYPE html><html><head>' +
+      '<meta charset="UTF-8">' +
+      '<base href="' + location.href + '">' +
+      '<title>Print</title>' +
+      existingStyles +
+      '<style>' + PRINT_CSS + '</style>' +
+      '</head><body>' +
+      clone.outerHTML +
+      '</body></html>'
+    );
+    win.document.close();
+
+    win.onload = function() {
+      win.focus();
+      setTimeout(function() {
+        win.print();
+        setTimeout(function() {
+          try { win.close(); } catch (e) {}
+        }, 1000);
+      }, 300);
+    };
+  };
 })();
 
 
