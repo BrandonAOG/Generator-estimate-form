@@ -1846,94 +1846,41 @@ function closeImageModal() {
   document.getElementById('imageModal').style.display = 'none';
 }
 
-// ────────────────────────────────────────────────────────────────
-// SHARED CAPTURE HELPER
-// Runs html2canvas on the form and returns the canvas via callback.
-// Used by both Save Image AND iOS Safari Print PDF (which prints
-// the captured image instead of the live DOM, sidestepping all of
-// iOS Safari's print-CSS quirks).
-// ────────────────────────────────────────────────────────────────
-function captureFormCanvas(onSuccess, onError, options) {
+function saveImageFromModal() {
+  closeImageModal();
+  
   var page = document.getElementById('page');
   if (!page) {
-    if (onError) onError(new Error('Form element not found'));
+    alert('Error: Could not find form element');
     return;
   }
-
-  options = options || {};
-  var showLoadingMessage = options.loadingMessage || '⏳ Generating image...';
-  var loadingDiv = null;
-  if (options.showLoading !== false) {
-    loadingDiv = document.createElement('div');
-    loadingDiv.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1a1a1a;border:2px solid #D97706;color:#D97706;padding:20px 40px;font-family:monospace;z-index:99999;border-radius:8px;box-shadow:0 0 30px rgba(217,119,6,0.4);';
-    loadingDiv.textContent = showLoadingMessage;
-    document.body.appendChild(loadingDiv);
-  }
-
-  function cleanupLoading() {
-    if (loadingDiv && loadingDiv.parentNode) {
-      document.body.removeChild(loadingDiv);
-    }
-  }
-
-  // Measure the page's true content dimensions. On iOS Safari, the .page
-  // uses min-height: 100vh which makes its scrollHeight equal to the
-  // viewport height — NOT the actual content height. So we measure by
-  // summing the heights of the page's direct children (header + content
-  // + footer), which gives us the real content size even when the
-  // viewport-bound min-height is shrinking the reported page height.
-  var pageRect = page.getBoundingClientRect();
-
-  function measureContentHeight(pageEl) {
-    var children = pageEl.children;
-    if (children && children.length > 0) {
-      var lastChild = children[children.length - 1];
-      var lastRect = lastChild.getBoundingClientRect();
-      var firstRect = children[0].getBoundingClientRect();
-      var bottomOfLast = lastRect.bottom - firstRect.top;
-      if (bottomOfLast > 0) return Math.ceil(bottomOfLast);
-    }
-    return 0;
-  }
-
-  var measuredFromChildren = measureContentHeight(page);
-  var contentH = Math.max(
-    page.scrollHeight,
-    page.offsetHeight,
-    Math.ceil(pageRect.height),
-    measuredFromChildren
-  );
-  var contentW = Math.max(
-    page.scrollWidth,
-    page.offsetWidth,
-    Math.ceil(pageRect.width)
-  );
-  var CAPTURE_PAD_TOP = 4;
-  var CAPTURE_PAD_BOTTOM = 12;
-  var captureH = contentH + CAPTURE_PAD_TOP + CAPTURE_PAD_BOTTOM;
-
+  
+  var pageTitle = (document.getElementById('name').value || 'Estimate').replace(/\s+/g, '_');
+  var timestamp = new Date().toISOString().split('T')[0];
+  var filename = pageTitle + '_' + timestamp + '.jpg';
+  
+  var loadingDiv = document.createElement('div');
+  loadingDiv.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1a1a1a;border:2px solid #D97706;color:#D97706;padding:20px 40px;font-family:monospace;z-index:99999;border-radius:8px;box-shadow:0 0 30px rgba(217,119,6,0.4);';
+  loadingDiv.textContent = '⏳ Generating image...';
+  document.body.appendChild(loadingDiv);
+  
   html2canvas(page, {
     scale: 2,
     useCORS: true,
     backgroundColor: '#FFFFFF',
     logging: false,
-    width: contentW,
-    height: captureH,
-    windowWidth:  contentW,
-    windowHeight: captureH,
-    x: 0,
-    y: -CAPTURE_PAD_TOP,
+    windowHeight: page.scrollHeight,
     allowTaint: true,
     imageTimeout: 15000,
     removeContainer: true,
-
+    
     onclone: function(clonedDoc, clonedElement) {
       var svgs = clonedDoc.querySelectorAll('svg');
-
+      
       svgs.forEach(function(svg) {
         var parent = svg.parentElement;
         var computedColor = '#D97706';
-
+        
         try {
           if (parent) {
             var parentStyle = clonedDoc.defaultView.getComputedStyle(parent);
@@ -1955,7 +1902,7 @@ function captureFormCanvas(onSuccess, onError, options) {
         if (svgFill === 'currentColor') svgFill = computedColor;
 
         var shapes = svg.querySelectorAll('path, polyline, polygon, line, rect, circle, ellipse, text');
-
+        
         shapes.forEach(function(el) {
           if (el.getAttribute('stroke') === 'currentColor') {
             el.setAttribute('stroke', computedColor);
@@ -1998,33 +1945,10 @@ function captureFormCanvas(onSuccess, onError, options) {
       modals.forEach(function(m) {
         m.style.display = 'none';
       });
-
-      var clonedPage = clonedDoc.getElementById('page');
-      if (clonedPage) {
-        clonedPage.style.minHeight = '0';
-      }
     }
   }).then(function(canvas) {
-    cleanupLoading();
-    if (onSuccess) onSuccess(canvas);
-  }).catch(function(err) {
-    cleanupLoading();
-    console.error('html2canvas error:', err);
-    if (onError) onError(err);
-  });
-}
-
-// ────────────────────────────────────────────────────────────────
-// SAVE IMAGE — uses captureFormCanvas
-// ────────────────────────────────────────────────────────────────
-function saveImageFromModal() {
-  closeImageModal();
-
-  var pageTitle = (document.getElementById('name').value || 'Estimate').replace(/\s+/g, '_');
-  var timestamp = new Date().toISOString().split('T')[0];
-  var filename = pageTitle + '_' + timestamp + '.jpg';
-
-  captureFormCanvas(function(canvas) {
+    document.body.removeChild(loadingDiv);
+    
     try {
       var link = document.createElement('a');
       link.download = filename;
@@ -2050,7 +1974,11 @@ function saveImageFromModal() {
     } catch (e) {
       alert('Error saving image: ' + e.message);
     }
-  }, function(err) {
+  }).catch(function(err) {
+    if (loadingDiv.parentNode) {
+      document.body.removeChild(loadingDiv);
+    }
+    console.error('html2canvas error:', err);
     alert('Error generating image: ' + err.message);
   });
 }
@@ -2160,7 +2088,7 @@ document.addEventListener('click', function(e) {
       overflow: hidden !important;
     }
     body { 
-      margin: 0 auto !important;        /* horizontal auto-center */
+      margin: 0 !important; 
       padding: 0 !important; 
       width: 100% !important;
       height: 100% !important;
@@ -2169,17 +2097,11 @@ document.addEventListener('click', function(e) {
       overflow: hidden !important;
       -webkit-print-color-adjust: exact !important;
       print-color-adjust: exact !important;
-      /* Use flex to center the zoomed page horizontally within the sheet.
-         Without this, CSS zoom on a wider-than-paper element leaves the
-         result hugging the left edge of the paper. */
-      display: flex !important;
-      justify-content: center !important;
-      align-items: flex-start !important;
     }
     .page { 
       width: 100% !important; 
       max-width: 100% !important; 
-      margin: 0 auto !important;        /* center inside body */
+      margin: 0 !important; 
       padding: 0 !important; 
       border: 5px solid #D97706 !important;
       box-shadow: none !important;
@@ -2206,43 +2128,27 @@ document.addEventListener('click', function(e) {
   var FALLBACK_ZOOM = 0.55;
 
   // Calculate the zoom factor needed to fit the page on a single
-  // letter-sized sheet. Returns a stable 2-decimal value like 0.55, 0.62,
-  // 0.70 — both axes are checked, the more restrictive wins, and we
-  // ALWAYS round DOWN so repeated calls produce the same result even if
-  // scrollHeight drifts by 1-2px between calls (which it does on iOS Safari
-  // when web fonts finish loading or input heights settle).
+  // letter-sized sheet. Returns a number like 0.55, 0.62, etc.
+  // Both axes are checked — whichever scale is more restrictive wins.
   function computePrintZoom() {
     var pageEl = document.querySelector('.page');
     if (!pageEl) return FALLBACK_ZOOM;
     // Letter paper at 96dpi
     var PAPER_W = 816;
     var PAPER_H = 1056;
-    // Larger safety buffer to absorb iOS Safari measurement drift between
-    // page loads. Without this, a repeated print can return a tiny bit
-    // higher zoom and overflow onto a second page.
-    var SAFETY = 24;  // ~3% of letter height — more than enough for drift
+    // Small safety margin so the page never overflows by 1px due to rounding
+    var MARGIN  = 4;
 
     var naturalW = pageEl.scrollWidth  || pageEl.offsetWidth  || 1050;
     var naturalH = pageEl.scrollHeight || pageEl.offsetHeight || 1400;
 
-    // Add the same safety buffer to the measurement side so the zoom
-    // we pick is a little smaller than strictly required.
-    var zX = (PAPER_W - SAFETY) / naturalW;
-    var zY = (PAPER_H - SAFETY) / naturalH;
+    var zX = (PAPER_W - MARGIN) / naturalW;
+    var zY = (PAPER_H - MARGIN) / naturalH;
     var z  = Math.min(zX, zY);
 
     // Clamp to sane bounds
     if (!isFinite(z) || z <= 0) return FALLBACK_ZOOM;
     if (z > 1) z = 1;
-
-    // Round DOWN to 2 decimal places for stability. Math.floor(z * 100) / 100
-    // means 0.687 -> 0.68, 0.692 -> 0.69, etc. — repeat runs return the same
-    // number even if z shifts by a fraction of a percent.
-    z = Math.floor(z * 100) / 100;
-
-    // Final guard: never exceed FALLBACK_ZOOM if the form is so short
-    // that we'd somehow round up (defensive only).
-    if (z < 0.30) z = 0.30;
     return z;
   }
 
@@ -2275,174 +2181,72 @@ document.addEventListener('click', function(e) {
               && !/Chrome|CriOS|FxiOS|EdgiOS/i.test(navigator.userAgent);
 
   if (isSafari) {
-    // iOS Safari: instead of fighting iOS's print engine to lay out the
-    // form's HTML/CSS correctly, we render the form to an image (using
-    // the same html2canvas pipeline as Save Image), then print THAT
-    // image. iOS Safari prints a full-bleed image perfectly — there's
-    // no DOM/CSS for it to misinterpret.
     window.print = function() {
-      // Save state for restoration
-      var savedBodyHTML       = document.body.innerHTML;
-      var savedBodyClassName  = document.body.className;
-      var savedBodyStyle      = document.body.getAttribute('style') || '';
-      var savedHtmlStyle      = document.documentElement.getAttribute('style') || '';
-      var savedScrollY        = window.scrollY;
-      var savedTitle          = document.title;
-      var restored = false;
-
-      function restore() {
-        if (restored) return;
-        restored = true;
-        window.removeEventListener('afterprint', restore);
-
-        var styleEl = document.getElementById('aog-ios-print-style');
-        if (styleEl && styleEl.parentNode) styleEl.parentNode.removeChild(styleEl);
-
-        document.body.innerHTML = savedBodyHTML;
-        document.body.className = savedBodyClassName;
-        document.body.setAttribute('style', savedBodyStyle);
-        document.documentElement.setAttribute('style', savedHtmlStyle);
-        document.title = savedTitle;
-        window.scrollTo(0, savedScrollY);
-
-        // Re-attach event handlers since innerHTML restore creates fresh elements
-        if (typeof setupAddressAutocomplete === 'function') setupAddressAutocomplete();
-        if (typeof setupGpsButton === 'function') setupGpsButton();
-        if (typeof setupFieldValidation === 'function') setupFieldValidation();
+      var pageEl = document.querySelector('.page');
+      if (!pageEl) {
+        console.warn('No .page element found to print.');
+        return;
       }
 
-      // Capture the form to a canvas, then build a print page that
-      // contains just that image. Letter portrait at 96dpi = 816 x 1056.
-      // We size the image to fill width and let height scale to maintain
-      // aspect ratio. If the resulting image is taller than letter, we
-      // scale down further so it fits on one page.
-      captureFormCanvas(function(canvas) {
-        var imgDataUrl = canvas.toDataURL('image/jpeg', 0.95);
+      var existingStyles = Array.from(
+        document.querySelectorAll('link[rel="stylesheet"], style')
+      ).map(function(el) {
+        if (el.id === 'mobile-print-styles') return '';
+        return el.outerHTML;
+      }).join('\n');
 
-        // Compute display dimensions in CSS pixels. Letter at 96dpi:
-        var PAPER_W = 816;
-        var PAPER_H = 1056;
-        var canvasAspect = canvas.height / canvas.width;
-        var displayW = PAPER_W;
-        var displayH = PAPER_W * canvasAspect;
-        if (displayH > PAPER_H) {
-          displayH = PAPER_H;
-          displayW = PAPER_H / canvasAspect;
-        }
+      var win = window.open('', '_blank');
+      if (!win) {
+        alert('Please allow pop-ups to print.');
+        return;
+      }
 
-        // Inject @page + print-only CSS. Centered on the sheet.
-        var printStyleEl = document.createElement('style');
-        printStyleEl.id = 'aog-ios-print-style';
-        printStyleEl.innerHTML =
-          '@page { size: letter portrait; margin: 0; }' +
-          '@page :first { margin: 0; }' +
-          '@media print {' +
-            'html, body {' +
-              'margin: 0 !important;' +
-              'padding: 0 !important;' +
-              'width: ' + PAPER_W + 'px !important;' +
-              'min-width: ' + PAPER_W + 'px !important;' +
-              'max-width: ' + PAPER_W + 'px !important;' +
-              'height: ' + PAPER_H + 'px !important;' +
-              'min-height: ' + PAPER_H + 'px !important;' +
-              'max-height: ' + PAPER_H + 'px !important;' +
-              'background: #FFFFFF !important;' +
-              'overflow: hidden !important;' +
-              '-webkit-print-color-adjust: exact !important;' +
-              'print-color-adjust: exact !important;' +
-            '}' +
-            'body > *:not(#aog-print-wrapper) { display: none !important; }' +
-            '#aog-print-wrapper {' +
-              'display: flex !important;' +
-              'align-items: center !important;' +
-              'justify-content: center !important;' +
-              'width: ' + PAPER_W + 'px !important;' +
-              'height: ' + PAPER_H + 'px !important;' +
-              'margin: 0 !important;' +
-              'padding: 0 !important;' +
-              'background: #FFFFFF !important;' +
-            '}' +
-            '#aog-print-wrapper img {' +
-              'display: block !important;' +
-              'width: ' + Math.floor(displayW) + 'px !important;' +
-              'height: ' + Math.floor(displayH) + 'px !important;' +
-              'max-width: ' + PAPER_W + 'px !important;' +
-              'max-height: ' + PAPER_H + 'px !important;' +
-              'page-break-after: avoid !important;' +
-              'break-after: avoid !important;' +
-              'page-break-inside: avoid !important;' +
-              'break-inside: avoid !important;' +
-            '}' +
-          '}';
-        document.head.appendChild(printStyleEl);
+      var clone = pageEl.cloneNode(true);
 
-        // Build print wrapper
-        var wrapper = document.createElement('div');
-        wrapper.id = 'aog-print-wrapper';
-        wrapper.style.cssText =
-          'position: fixed !important;' +
-          'top: 0 !important;' +
-          'left: 0 !important;' +
-          'width: ' + PAPER_W + 'px !important;' +
-          'height: ' + PAPER_H + 'px !important;' +
-          'margin: 0 !important;' +
-          'padding: 0 !important;' +
-          'background: #FFFFFF !important;' +
-          'display: flex !important;' +
-          'align-items: center !important;' +
-          'justify-content: center !important;' +
-          'z-index: 100000 !important;';
-
-        var imgEl = document.createElement('img');
-        imgEl.src = imgDataUrl;
-        imgEl.alt = 'Estimate';
-        imgEl.style.cssText =
-          'display: block !important;' +
-          'width: ' + Math.floor(displayW) + 'px !important;' +
-          'height: ' + Math.floor(displayH) + 'px !important;' +
-          'margin: 0 !important;' +
-          'padding: 0 !important;' +
-          'border: 0 !important;';
-        wrapper.appendChild(imgEl);
-
-        // Lock html/body to paper dimensions
-        document.documentElement.setAttribute('style',
-          'margin:0 !important; padding:0 !important; background:#FFFFFF !important;');
-        document.body.setAttribute('style',
-          'margin:0 !important; padding:0 !important; background:#FFFFFF !important;' +
-          'width:' + PAPER_W + 'px !important; height:' + PAPER_H + 'px !important;' +
-          'overflow:hidden !important;');
-
-        // Swap to print view
-        document.body.innerHTML = '';
-        document.body.appendChild(wrapper);
-
-        // Wait for image to decode/load before printing — otherwise
-        // iOS may print a blank page if the data URL hasn't been
-        // decoded into the layout yet.
-        function doPrintWhenReady() {
-          window.addEventListener('afterprint', restore);
-          setTimeout(restore, 30000);
-          try {
-            nativePrint();
-          } catch (e) {
-            restore();
-          }
-        }
-
-        if (imgEl.complete && imgEl.naturalWidth > 0) {
-          doPrintWhenReady();
+      var liveInputs = pageEl.querySelectorAll('input, textarea, select');
+      var cloneInputs = clone.querySelectorAll('input, textarea, select');
+      liveInputs.forEach(function(liveEl, i) {
+        var cloneEl = cloneInputs[i];
+        if (!cloneEl) return;
+        if (liveEl.type === 'checkbox' || liveEl.type === 'radio') {
+          if (liveEl.checked) cloneEl.setAttribute('checked', 'checked');
+          else cloneEl.removeAttribute('checked');
+        } else if (liveEl.tagName === 'TEXTAREA') {
+          cloneEl.textContent = liveEl.value;
         } else {
-          imgEl.onload = doPrintWhenReady;
-          imgEl.onerror = function() { restore(); };
-          // Fallback timer in case onload never fires
-          setTimeout(function() {
-            if (!restored) doPrintWhenReady();
-          }, 1500);
+          cloneEl.setAttribute('value', liveEl.value);
         }
-      }, function(err) {
-        alert('Could not generate print preview: ' + err.message);
-      }, { loadingMessage: '⏳ Preparing print preview...' });
+      });
+
+      // ★ Compute the right zoom NOW based on the page's actual rendered height.
+      //   This guarantees a single-page PDF on iOS Safari regardless of how
+      //   tall the form has grown.
+      var dynamicZoom = computePrintZoom();
+      var dynamicCSS  = buildPrintCSS(dynamicZoom);
+
+      win.document.open();
+      win.document.write(
+        '<!DOCTYPE html><html><head>' +
+        '<meta charset="UTF-8">' +
+        '<base href="' + location.href + '">' +
+        '<title>Print</title>' +
+        existingStyles +
+        '<style>' + dynamicCSS + '</style>' +
+        '</head><body>' +
+        clone.outerHTML +
+        '</body></html>'
+      );
+      win.document.close();
+
+      win.onload = function() {
+        win.focus();
+        setTimeout(function() {
+          win.print();
+          setTimeout(function() {
+            try { win.close(); } catch (e) {}
+          }, 1000);
+        }, 300);
+      };
     };
   }
 })();
