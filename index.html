@@ -2289,7 +2289,69 @@ function getFormData() {
 
   return data;
 }
+// ===== PRINT OPTIMIZATION VARIABLES =====
+var PAPER_W_PX = 816;      // 8.5in at 96 DPI
+var PAPER_H_PX = 1056;     // 11in at 96 DPI
+var PAGE_NATURAL_W = 1050; // Your form's natural width
+var PRINT_SCALE = { x: 1, y: 1 };
 
+// ===== PRINT MODE FUNCTIONS =====
+function calculateStretchScale() {
+  var page = document.getElementById('page');
+  if (!page) return { x: 1, y: 1 };
+
+  var contentW = page.offsetWidth || PAGE_NATURAL_W;
+  var contentH = page.scrollHeight;
+
+  var scaleX = PAPER_W_PX / contentW;
+  var scaleY = PAPER_H_PX / contentH;
+  var scale = Math.min(scaleX, scaleY, 1); // Don't upscale
+
+  return { x: scale, y: scale };
+}
+
+function enterPrintMode() {
+  var page = document.getElementById('page');
+  if (!page) return { x: 1, y: 1 };
+
+  PRINT_SCALE = calculateStretchScale();
+  
+  console.log('Entering print mode:', PRINT_SCALE);
+  
+  page.style.transform = 'scale(' + PRINT_SCALE.x + ', ' + PRINT_SCALE.y + ')';
+  page.style.transformOrigin = 'top left';
+  page.style.margin = '0';
+  page.style.padding = '0';
+
+  return PRINT_SCALE;
+}
+
+function exitPrintMode() {
+  var page = document.getElementById('page');
+  if (!page) return;
+
+  page.style.transform = 'scale(1, 1)';
+  page.style.transformOrigin = 'top left';
+  
+  console.log('Exited print mode');
+}
+
+// ===== PRINT EVENT LISTENERS =====
+window.addEventListener('beforeprint', function() {
+  if (!isIOS()) {
+    enterPrintMode();
+  }
+});
+
+window.addEventListener('afterprint', function() {
+  if (!isIOS()) {
+    exitPrintMode();
+  }
+});
+
+function isIOS() {
+  return /iPad|iPhone|iPod/.test(navigator.userAgent);
+}
 // ────────────────────────────────────────────────────────────────
 // FORM ACTIONS (PRINT, IMAGE, EMAIL, CLEAR)
 // ────────────────────────────────────────────────────────────────
@@ -2324,8 +2386,19 @@ function closePdfModal() {
 
 function confirmPdfPrint() {
   closePdfModal();
-  nativePrint();
+  
+  console.log('=== PRINT DEBUG ===');
+  var page = document.getElementById('page');
+  if (page) {
+    console.log('Page width:', page.offsetWidth);
+    console.log('Page height:', page.scrollHeight);
+    console.log('Scale:', PRINT_SCALE);
+  }
+  console.log('==================');
+  
+  window.print();
 }
+
 
 function openImageModal() {
   if (!validateForm()) return;
