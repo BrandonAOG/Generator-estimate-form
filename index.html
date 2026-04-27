@@ -2538,17 +2538,28 @@ document.addEventListener('click', function(e) {
       margin: 0 !important;
     }
     
+    html {
+      overflow: hidden !important;
+    }
+    
     body { 
       margin: 0 !important; 
       padding: 0 !important; 
       width: 100% !important;
-      zoom: 0.55;  /* Shrink to fit page */
+      height: 100% !important;
+      overflow: hidden !important;
+      transform: translateZ(0) !important;
+      -webkit-transform: translateZ(0) !important;
     }
     
     .page { 
       width: 100% !important; 
       max-width: 100% !important;
       border: 5px solid #D97706 !important;
+      transform: translateZ(0) !important;
+      -webkit-transform: translateZ(0) !important;
+      zoom: 0.95 !important;
+      -webkit-zoom: 0.95 !important;
     }
     
     .toolbar, #offline-banner { 
@@ -2558,20 +2569,20 @@ document.addEventListener('click', function(e) {
 
   /* Apply CSS when print starts (iOS only) */
   window.addEventListener('beforeprint', function() {
-    if (!isIOS) return;  /* Changed from !isMobile to !isIOS */
+    if (!isIOS) return;
     var styleEl = document.getElementById('mobile-print-styles');
     if (styleEl) styleEl.innerHTML = PRINT_CSS;
   });
 
   /* Remove CSS when print ends (iOS only) */
   window.addEventListener('afterprint', function() {
-    if (!isIOS) return;  /* Changed from !isMobile to !isIOS */
+    if (!isIOS) return;
     var styleEl = document.getElementById('mobile-print-styles');
     if (styleEl) styleEl.innerHTML = '';
   });
 
   /* Override window.print() for Safari on iOS only */
-  if (isIOS && isSafari) {  /* Changed from isMobile && isSafari to isIOS && isSafari */
+  if (isIOS && isSafari) {
     window.print = function() {
       var pageEl = document.querySelector('.page');
       if (!pageEl) return;
@@ -2609,6 +2620,7 @@ document.addEventListener('click', function(e) {
       win.document.write(
         '<!DOCTYPE html><html><head>' +
         '<meta charset="UTF-8">' +
+        '<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">' +
         '<title>Print</title>' +
         existingStyles +
         '<style>' + PRINT_CSS + '</style>' +
@@ -2618,15 +2630,31 @@ document.addEventListener('click', function(e) {
       );
       win.document.close();
 
-      /* Print when window loads */
+      /* Print when window loads with proper reflow */
       win.onload = function() {
         win.focus();
+        
+        /* Force reflow to trigger proper zoom calculation */
         setTimeout(function() {
+          try {
+            var pageEl = win.document.querySelector('.page');
+            if (pageEl) {
+              /* Trigger reflow */
+              void pageEl.offsetHeight;
+              /* Force Safari to recalculate */
+              pageEl.style.zoom = '0.96';
+              void pageEl.offsetHeight;
+              pageEl.style.zoom = '0.95';
+              void pageEl.offsetHeight;
+            }
+          } catch (e) {}
+          
           win.print();
+          
           setTimeout(function() {
             try { win.close(); } catch (e) {}
           }, 1000);
-        }, 300);
+        }, 500);  /* Increased timeout for reflow */
       };
     };
   }
