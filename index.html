@@ -1864,26 +1864,45 @@ function saveImageFromModal() {
   loadingDiv.textContent = '⏳ Generating image...';
   document.body.appendChild(loadingDiv);
   
-  // Measure the page's true content dimensions including the footer.
-  // On iOS Safari, scrollHeight alone can fall short by a few pixels
-  // when flex containers haven't fully laid out, clipping the footer's
-  // border-top line. We use the bounding rect + a small padding buffer
-  // to guarantee the footer is fully captured.
+  // Measure the page's true content dimensions. On iOS Safari, the .page
+  // uses min-height: 100vh which makes its scrollHeight equal to the
+  // viewport height — NOT the actual content height. So we measure by
+  // summing the heights of the page's direct children (header + content
+  // + footer), which gives us the real content size even when the
+  // viewport-bound min-height is shrinking the reported page height.
   var pageRect = page.getBoundingClientRect();
+  
+  function measureContentHeight(pageEl) {
+    // Try summing children first (works around min-height:100vh issue)
+    var children = pageEl.children;
+    if (children && children.length > 0) {
+      var lastChild = children[children.length - 1];
+      var lastRect = lastChild.getBoundingClientRect();
+      var firstRect = children[0].getBoundingClientRect();
+      var bottomOfLast = lastRect.bottom - firstRect.top;
+      if (bottomOfLast > 0) return Math.ceil(bottomOfLast);
+    }
+    return 0;
+  }
+  
+  var measuredFromChildren = measureContentHeight(page);
   var contentH = Math.max(
     page.scrollHeight,
     page.offsetHeight,
-    Math.ceil(pageRect.height)
+    Math.ceil(pageRect.height),
+    measuredFromChildren
   );
   var contentW = Math.max(
     page.scrollWidth,
     page.offsetWidth,
     Math.ceil(pageRect.width)
   );
-  // Pad a few pixels at the bottom so the footer's border-top line and
-  // any sub-pixel bleed are fully captured.
-  var CAPTURE_PAD_BOTTOM = 8;
-  var captureH = contentH + CAPTURE_PAD_BOTTOM;
+  // Pad pixels at the bottom AND top so the footer's border-top line and
+  // any sub-pixel bleed are fully captured. Top pad ensures the page's
+  // top border-edge isn't trimmed either.
+  var CAPTURE_PAD_TOP = 4;
+  var CAPTURE_PAD_BOTTOM = 12;
+  var captureH = contentH + CAPTURE_PAD_TOP + CAPTURE_PAD_BOTTOM;
 
   html2canvas(page, {
     scale: 2,
@@ -1895,7 +1914,7 @@ function saveImageFromModal() {
     windowWidth:  contentW,
     windowHeight: captureH,
     x: 0,
-    y: 0,
+    y: -CAPTURE_PAD_TOP,
     allowTaint: true,
     imageTimeout: 15000,
     removeContainer: true,
@@ -1972,21 +1991,17 @@ function saveImageFromModal() {
         m.style.display = 'none';
       });
 
-      // Footer-clip fix: the .page has min-height:100vh by default, which
-      // on iOS Safari can cause the flex layout to leave the footer floating
-      // below the viewport when html2canvas measures it. Force the cloned
-      // page to be content-fit and ensure the footer is fully visible
-      // (including its 1px border-top line which was getting cut on mobile).
+      // Footer-clip fix: relax the .page min-height: 100vh so the page
+      // collapses to content-fit (otherwise on iOS Safari the page can
+      // be taller than its visible content, putting the footer below
+      // where html2canvas captures). CRITICAL: do NOT change `display`
+      // — the page uses flex column to stack header / content / footer,
+      // and switching to block destroys the layout (header, sides, and
+      // footer disappear). Just relax the min-height constraint.
       var clonedPage = clonedDoc.getElementById('page');
       if (clonedPage) {
         clonedPage.style.minHeight = '0';
-        clonedPage.style.height    = 'auto';
-        clonedPage.style.display   = 'block';
-      }
-      var clonedFooter = clonedDoc.querySelector('.footer');
-      if (clonedFooter) {
-        // Make sure the footer's border-top isn't right at the canvas edge
-        clonedFooter.style.marginBottom = '2px';
+        // Leave height/display alone so flex column layout is preserved
       }
     }
   }).then(function(canvas) {
@@ -2283,8 +2298,10 @@ document.addEventListener('click', function(e) {
         }
       });
 
-      // Compute initial zoom from the parent window as a starting estimate.
-      // The print window will re-measure inside its own context for accuracy.
+      // Compute the right zoom from the parent window. The stable
+      // rounding (Math.floor to 2 decimals) plus the 24px SAFETY buffer
+      // in computePrintZoom() ensure the same value comes back across
+      // repeat invocations, so the print is consistent.
       var dynamicZoom = computePrintZoom();
       var dynamicCSS  = buildPrintCSS(dynamicZoom);
 
@@ -2295,68 +2312,27 @@ document.addEventListener('click', function(e) {
         '<base href="' + location.href + '">' +
         '<title>Print</title>' +
         existingStyles +
-        '<style id="dynamic-zoom-style">' + dynamicCSS + '</style>' +
+        '<style>' + dynamicCSS + '</style>' +
         '</head><body>' +
         clone.outerHTML +
         '</body></html>'
       );
       win.document.close();
 
-      // Re-measure inside the new window so we account for its actual
-      // rendered layout (which can differ slightly from the parent due
-      // to viewport meta inheritance, font loading, etc.). This is the
-      // critical fix for "first print fits, second print overflows":
-      // every invocation re-measures in the freshly loaded print window.
-      function recomputeAndPrint() {
-        try {
-          // Strip the zoom style so we measure the natural layout
-          var styleEl = win.document.getElementById('dynamic-zoom-style');
-          var pageInWin = win.document.querySelector('.page');
-          if (styleEl && pageInWin) {
-            styleEl.innerHTML = '';
-            // Force layout
-            void pageInWin.offsetHeight;
-
-            var PAPER_W = 816, PAPER_H = 1056, SAFETY = 24;
-            var nw = pageInWin.scrollWidth  || pageInWin.offsetWidth  || 1050;
-            var nh = pageInWin.scrollHeight || pageInWin.offsetHeight || 1400;
-            var zX = (PAPER_W - SAFETY) / nw;
-            var zY = (PAPER_H - SAFETY) / nh;
-            var z  = Math.min(zX, zY);
-            if (!isFinite(z) || z <= 0) z = FALLBACK_ZOOM;
-            if (z > 1) z = 1;
-            // Round DOWN to 2 decimals so repeat invocations are stable
-            z = Math.floor(z * 100) / 100;
-            if (z < 0.30) z = 0.30;
-            // Re-apply the style with the freshly measured zoom
-            styleEl.innerHTML = buildPrintCSS(z);
-            // Force layout again before printing
-            void pageInWin.offsetHeight;
-          }
-        } catch (e) { /* fall through with original zoom */ }
-
-        win.focus();
-        win.print();
-        setTimeout(function() {
-          try { win.close(); } catch (e) {}
-        }, 1000);
-      }
-
+      // Simple, reliable print invocation. Earlier versions waited for
+      // document.fonts.ready, but on iOS Safari that Promise can fail to
+      // resolve when fonts are inherited from the parent's already-loaded
+      // cache, leaving win.print() never called and the user staring at
+      // an open tab with no print preview. A short setTimeout is the
+      // most reliable trigger across all iOS Safari versions.
       win.onload = function() {
-        // Wait for fonts to finish loading inside the print window so the
-        // measurement reflects the real printed layout. Without this, the
-        // first print uses cached fonts (smaller scrollHeight) and the
-        // second uses freshly loaded fonts (slightly larger scrollHeight),
-        // producing inconsistent zoom values.
-        var fontsReady = (win.document.fonts && win.document.fonts.ready)
-                          ? win.document.fonts.ready
-                          : Promise.resolve();
-        fontsReady.then(function() {
-          // Extra delay so iOS Safari fully settles input/textarea heights
-          setTimeout(recomputeAndPrint, 350);
-        }, function() {
-          setTimeout(recomputeAndPrint, 350);
-        });
+        win.focus();
+        setTimeout(function() {
+          try { win.print(); } catch (e) {}
+          setTimeout(function() {
+            try { win.close(); } catch (e) {}
+          }, 1000);
+        }, 400);
       };
     };
   }
