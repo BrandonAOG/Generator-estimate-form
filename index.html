@@ -2718,6 +2718,12 @@ document.addEventListener('DOMContentLoaded', function() {
     };
   }
 })();
+  // DIAGNOSTIC: Confirm override is active
+console.log('isMobile:', isMobile);
+console.log('isDesktopSafari:', isDesktopSafari);
+console.log('isSafari:', isSafari);
+console.log('window.print overridden?', window.print.toString().includes('pageEl'));
+
 </script>
 
 </script>
