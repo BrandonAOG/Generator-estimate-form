@@ -2643,8 +2643,18 @@ document.addEventListener('click', function(e) {
     );
     win.document.close();
 
-    win.onload = function() {
+        win.onload = function() {
       win.focus();
+      
+      // ✅ Physically shrink the page width to fit on 1 page
+      var printPageEl = win.document.querySelector('.page');
+      if (printPageEl) {
+        printPageEl.style.width = '550px'; // 55% of ~1000px
+        printPageEl.style.maxWidth = '550px';
+        // Force reflow
+        void printPageEl.offsetHeight;
+      }
+      
       setTimeout(function() {
         win.print();
         setTimeout(function() {
@@ -2652,8 +2662,7 @@ document.addEventListener('click', function(e) {
         }, 1000);
       }, 300);
     };
-  };
-})();
+
 
 
 // ────────────────────────────────────────────────────────────────
