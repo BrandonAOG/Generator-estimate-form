@@ -1705,6 +1705,7 @@ var nativePrint = window.print.bind(window);
 if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
   document.body.classList.add('is-mobile-device');
 }
+
 var MAPBOX_TOKEN = 'pk.eyJ1IjoicHJvamVjdHdyYXBwZXIiLCJhIjoiY201d2k1eHU3MDAwajJrbzU2a2c5dW40NSJ9.WJlNJ4o5CqBhWpHKMKOzIQ';
 var DRAFT_KEY = 'aog_estimate_draft';
 
@@ -1849,29 +1850,23 @@ class FormValidator {
     const value = el.value.trim();
     const errors = [];
 
-    // Required validation
     if (rules.required && !value) {
       errors.push(rules.message || `${fieldId} is required`);
     }
 
-    // Only check other validations if field has value
     if (value) {
-      // Min length
       if (rules.minLength && value.length < rules.minLength) {
         errors.push(`Must be at least ${rules.minLength} characters`);
       }
 
-      // Max length
       if (rules.maxLength && value.length > rules.maxLength) {
         errors.push(`Must be no more than ${rules.maxLength} characters`);
       }
 
-      // Pattern
       if (rules.pattern && !rules.pattern.test(value)) {
         errors.push(rules.message || `Invalid ${fieldId} format`);
       }
 
-      // Numeric min/max
       if (!isNaN(value)) {
         const num = parseFloat(value);
         if (rules.min !== undefined && num < rules.min) {
@@ -1883,7 +1878,6 @@ class FormValidator {
       }
     }
 
-    // Update error tracking
     if (errors.length > 0) {
       this.errors[fieldId] = errors;
     } else {
@@ -1912,7 +1906,6 @@ class FormValidator {
   }
 
   updateFieldUI(el, isValid) {
-    // Remove old error indicator
     const wrapper = el.parentElement;
     const oldError = wrapper?.querySelector('.field-error');
     if (oldError) oldError.remove();
@@ -1924,7 +1917,6 @@ class FormValidator {
       el.style.borderBottomColor = '#DC2626';
       el.style.boxShadow = '0 2px 0 0 rgba(220,38,38,0.3), 0 0 12px rgba(220,38,38,0.08)';
 
-      // Add error message
       if (wrapper && this.errors[el.id]) {
         const errorMsg = document.createElement('div');
         errorMsg.className = 'field-error';
@@ -2068,7 +2060,6 @@ class FormValidator {
 
     document.body.appendChild(modal);
 
-    // Scroll to first error field
     const firstErrorId = Object.keys(this.errors)[0];
     if (firstErrorId) {
       const el = document.getElementById(firstErrorId);
@@ -2084,7 +2075,6 @@ class FormValidator {
   }
 }
 
-// Create global validator instance
 const validator = new FormValidator();
 
 // ────────────────────────────────────────────────────────────────
@@ -2095,17 +2085,14 @@ function setupFieldValidation() {
     const el = document.getElementById(fieldId);
     if (!el) return;
 
-    // Validate on blur
     el.addEventListener('blur', function() {
       validator.validateField(fieldId);
     });
 
-    // Clear error on focus
     el.addEventListener('focus', function() {
       validator.clearFieldUI(this);
     });
 
-    // Real-time validation for common fields
     if (['email', 'phone', 'sqft'].includes(fieldId)) {
       let debounceTimer;
       el.addEventListener('input', function() {
@@ -2119,112 +2106,14 @@ function setupFieldValidation() {
 }
 
 // ────────────────────────────────────────────────────────────────
-// UPDATED FORM FUNCTIONS
+// FORM VALIDATION & DATA
 // ────────────────────────────────────────────────────────────────
-
 function validateForm() {
   if (!validator.validateAllRequired()) {
     validator.showErrorModal();
     return false;
   }
   return true;
-}
-
-function printPDF() {
-  if (!validateForm()) return;
-
-  var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-  var isAndroid = /Android/i.test(navigator.userAgent);
-  var modal = document.getElementById('pdfModal');
-  var instr = document.getElementById('pdfInstructions');
-
-  if (!modal || !instr) {
-    window.print();
-    return;
-  }
-
-  if (isIOS) {
-    instr.innerHTML = "<b style='color:#FFB300'>1.</b> Tap CONTINUE to open Print preview<br><b style='color:#FFB300'>2.</b> <span style='color:#FFB300'>PINCH-ZOOM OUT</span> on the page thumbnail<br><b style='color:#FFB300'>3.</b> Tap the Share icon (top right)<br><b style='color:#FFB300'>4.</b> Tap <span style='color:#FFB300'>'Save to Files'</span>";
-  } else if (isAndroid) {
-    instr.innerHTML = "<b style='color:#FFB300'>1.</b> Tap CONTINUE to open Print preview<br><b style='color:#FFB300'>2.</b> Change Printer to <span style='color:#FFB300'>'Save as PDF'</span><br><b style='color:#FFB300'>3.</b> Tap the download icon";
-  } else {
-    instr.innerHTML = "<b style='color:#FFB300'>1.</b> Click CONTINUE to open Print dialog<br><b style='color:#FFB300'>2.</b> Set Destination to <span style='color:#FFB300'>'Save as PDF'</span><br><b style='color:#FFB300'>3.</b> Click Save";
-  }
-
-  modal.style.display = 'flex';
-}
-
-function openImageModal() {
-  if (!validateForm()) return;
-  var modal = document.getElementById('imageModal');
-  if (modal) modal.style.display = 'flex';
-}
-
-function sendEmail() {
-  if (!validateForm()) return;
-
-  var data = getFormData();
-  var name = data.name || '';
-  var emailTo = data.email || '';
-  var addr1 = data.address || '';
-  var addr2 = data.address2 || '';
-  var address = addr1 + (addr2 ? ', ' + addr2 : '');
-  var phone = data.phone || '';
-  var sqft = data.sqft || '';
-  var estDate = data.est_date || '';
-  var estimator = data.estimator || '';
-
-  var subject = 'Generator Installation Estimate — ' + name;
-  var lines = [
-    'Dear ' + name + ',',
-    '',
-    'Thank you for the opportunity to provide you with a generator installation estimate.',
-    '',
-    '--- ESTIMATE DETAILS ---',
-    'Customer: ' + name,
-    'Address: ' + address,
-    'Phone: ' + phone,
-    'Sq. Footage: ' + sqft + ' SF',
-    'Estimate Date: ' + estDate,
-    'Estimator: ' + estimator,
-    '',
-    'Please reply to this email or call us if you have any questions.',
-    '',
-    'Best regards,',
-    'Always On Generators'
-  ];
-
-  var mailtoLink = 'mailto:' + encodeURIComponent(emailTo) + 
-                   '?subject=' + encodeURIComponent(subject) + 
-                   '&body=' + encodeURIComponent(lines.join('\n'));
-
-  window.location.href = mailtoLink;
-}
-
-// ────────────────────────────────────────────────────────────────
-// FORM ACTIONS
-// ────────────────────────────────────────────────────────────────
-function clearForm() {
-  if (!confirm('Clear all fields?')) return;
-
-  document.querySelectorAll('input[type="text"],input[type="email"],input[type="tel"],input[type="date"],input[type="number"],textarea').forEach(function(el) {
-    el.value = '';
-  });
-
-  document.querySelectorAll('input[type="checkbox"],input[type="radio"]').forEach(function(el) {
-    el.checked = false;
-  });
-
-  var s = document.getElementById('sqft-status');
-  if (s) s.textContent = '';
-
-  var gpsStatus = document.getElementById('gps-status');
-  if (gpsStatus) {
-    gpsStatus.style.display = 'none';
-    gpsStatus.textContent = '';
-  }
-
-  localStorage.removeItem(DRAFT_KEY);
 }
 
 function getFormData() {
@@ -2248,8 +2137,9 @@ function getFormData() {
 }
 
 // ────────────────────────────────────────────────────────────────
-// PDF PRINT (SINGLE VERSION)
+// FORM ACTIONS (PRINT, IMAGE, EMAIL, CLEAR)
 // ────────────────────────────────────────────────────────────────
+
 function printPDF() {
   if (!validateForm()) return;
 
@@ -2259,7 +2149,7 @@ function printPDF() {
   var instr = document.getElementById('pdfInstructions');
 
   if (!modal || !instr) {
-    window.print();
+    nativePrint();
     return;
   }
 
@@ -2274,13 +2164,15 @@ function printPDF() {
   modal.style.display = 'flex';
 }
 
-function confirmPdfPrint() {
+function closePdfModal() {
   document.getElementById('pdfModal').style.display = 'none';
+}
+
+function confirmPdfPrint() {
+  closePdfModal();
   nativePrint();
 }
-// ────────────────────────────────────────────────────────────────
-// IMAGE EXPORT (SINGLE VERSION)
-// ────────────────────────────────────────────────────────────────
+
 function openImageModal() {
   if (!validateForm()) return;
   var modal = document.getElementById('imageModal');
@@ -2320,8 +2212,6 @@ function saveImageFromModal() {
     removeContainer: true,
 
     onclone: function(clonedDoc, clonedElement) {
-
-      // Fix ALL currentColor references anywhere in the document first
       clonedDoc.querySelectorAll('*').forEach(function(el) {
         if (el.getAttribute('stroke') === 'currentColor') el.setAttribute('stroke', '#D97706');
         if (el.getAttribute('fill') === 'currentColor') el.setAttribute('fill', '#D97706');
@@ -2344,15 +2234,6 @@ function saveImageFromModal() {
           svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
         }
 
-        var svgStroke = svg.getAttribute('stroke');
-        var svgFill = svg.getAttribute('fill');
-        var svgStrokeWidth = svg.getAttribute('stroke-width');
-        var svgStrokeLinecap = svg.getAttribute('stroke-linecap');
-        var svgStrokeLinejoin = svg.getAttribute('stroke-linejoin');
-
-        if (svgStroke === 'currentColor') svgStroke = computedColor;
-        if (svgFill === 'currentColor') svgFill = computedColor;
-
         var shapes = svg.querySelectorAll('path, polyline, polygon, line, rect, circle, ellipse, text');
         
         shapes.forEach(function(el) {
@@ -2362,39 +2243,17 @@ function saveImageFromModal() {
           if (el.getAttribute('fill') === 'currentColor') {
             el.setAttribute('fill', computedColor);
           }
-          if (svgStroke && !el.hasAttribute('stroke')) el.setAttribute('stroke', svgStroke);
-          if (svgFill && !el.hasAttribute('fill')) el.setAttribute('fill', svgFill);
-          if (svgStrokeWidth && !el.hasAttribute('stroke-width')) el.setAttribute('stroke-width', svgStrokeWidth);
-          if (svgStrokeLinecap && !el.hasAttribute('stroke-linecap')) el.setAttribute('stroke-linecap', svgStrokeLinecap);
-          if (svgStrokeLinejoin && !el.hasAttribute('stroke-linejoin')) el.setAttribute('stroke-linejoin', svgStrokeLinejoin);
-          if (!el.hasAttribute('fill') && el.tagName.toLowerCase() !== 'text') {
+          if (!el.getAttribute('fill') && el.tagName.toLowerCase() !== 'text') {
             el.setAttribute('fill', 'none');
           }
         });
-       var shapes = svg.querySelectorAll('path, polyline, polygon, line, rect, circle, ellipse, text');
 
-shapes.forEach(function(el) {
-  if (el.getAttribute('stroke') === 'currentColor' || !el.getAttribute('stroke')) {
-    el.setAttribute('stroke', '#D97706');
-  }
-  if (el.getAttribute('fill') === 'currentColor') {
-    el.setAttribute('fill', '#D97706');
-  }
-  if (!el.getAttribute('stroke-width')) el.setAttribute('stroke-width', svgStrokeWidth || '2');
-  if (!el.getAttribute('stroke-linecap')) el.setAttribute('stroke-linecap', svgStrokeLinecap || 'round');
-  if (!el.getAttribute('stroke-linejoin')) el.setAttribute('stroke-linejoin', svgStrokeLinejoin || 'round');
-  if (!el.hasAttribute('fill') && el.tagName.toLowerCase() !== 'text') {
-    el.setAttribute('fill', 'none');
-  }
-});
-
-// Also fix stroke on the SVG's direct children (path with stroke on itself)
-svg.querySelectorAll('[stroke="currentColor"]').forEach(function(el) {
-  el.setAttribute('stroke', '#D97706');
-});
-svg.querySelectorAll('[fill="currentColor"]').forEach(function(el) {
-  el.setAttribute('fill', '#D97706');
-});
+        svg.querySelectorAll('[stroke="currentColor"]').forEach(function(el) {
+          el.setAttribute('stroke', '#D97706');
+        });
+        svg.querySelectorAll('[fill="currentColor"]').forEach(function(el) {
+          el.setAttribute('fill', '#D97706');
+        });
       });
 
       var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -2459,9 +2318,6 @@ svg.querySelectorAll('[fill="currentColor"]').forEach(function(el) {
   });
 }
 
-// ────────────────────────────────────────────────────────────────
-// EMAIL (SINGLE VERSION)
-// ────────────────────────────────────────────────────────────────
 function sendEmail() {
   if (!validateForm()) return;
 
@@ -2503,6 +2359,29 @@ function sendEmail() {
   window.location.href = mailtoLink;
 }
 
+function clearForm() {
+  if (!confirm('Clear all fields?')) return;
+
+  document.querySelectorAll('input[type="text"],input[type="email"],input[type="tel"],input[type="date"],input[type="number"],textarea').forEach(function(el) {
+    el.value = '';
+  });
+
+  document.querySelectorAll('input[type="checkbox"],input[type="radio"]').forEach(function(el) {
+    el.checked = false;
+  });
+
+  var s = document.getElementById('sqft-status');
+  if (s) s.textContent = '';
+
+  var gpsStatus = document.getElementById('gps-status');
+  if (gpsStatus) {
+    gpsStatus.style.display = 'none';
+    gpsStatus.textContent = '';
+  }
+
+  localStorage.removeItem(DRAFT_KEY);
+}
+
 // ────────────────────────────────────────────────────────────────
 // MODAL CLICK-OUTSIDE CLOSE
 // ────────────────────────────────────────────────────────────────
@@ -2511,159 +2390,12 @@ document.addEventListener('click', function(e) {
   var imageModal = document.getElementById('imageModal');
 
   if (pdfModal && e.target === pdfModal) {
-    pdfModal.style.display = 'none';
+    closePdfModal();
   }
   if (imageModal && e.target === imageModal) {
-    imageModal.style.display = 'none';
+    closeImageModal();
   }
 });
-
-// ────────────────────────────────────────────────────────────────
-// MOBILE PRINT OPTIMIZATION
-// ────────────────────────────────────────────────────────────────
-(function() {
-  'use strict';
-
-  var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-  var isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
-              || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-
-  var PRINT_CSS = `
-    @page { 
-      size: letter portrait; 
-      margin: 0 !important;
-    }
-    @page :first { margin: 0 !important; }
-    @page :left  { margin: 0 !important; }
-    @page :right { margin: 0 !important; }
-
-    html { 
-      margin: 0 !important; 
-      padding: 0 !important;
-      background: #FFFFFF !important;
-    }
-    body { 
-      margin: 0 !important; 
-      padding: 0 !important; 
-      width: 100% !important;
-      zoom: 0.55;
-      background: #FFFFFF !important;
-      -webkit-print-color-adjust: exact !important;
-      print-color-adjust: exact !important;
-    }
-    .page { 
-      width: 100% !important; 
-      max-width: 100% !important; 
-      margin: 0 !important; 
-      padding: 0 !important; 
-      border: 5px solid #D97706 !important;
-      box-shadow: none !important;
-    }
-    .toolbar, #offline-banner, #pdfModal, #imageModal { 
-      display: none !important; 
-    }
-    .header  { padding: 4px 16px !important; min-height: 0 !important; }
-    .content { padding: 4px 8px  !important; }
-    .footer  { padding: 4px 16px !important; }
-    .section, .top-grid, .flood-bar, .gas-appliances-box { 
-      page-break-inside: avoid !important; 
-      break-inside: avoid !important; 
-    }
-  `;
-
-  function applyPrintStyles() {
-    if (!isMobile) return;
-    var styleEl = document.getElementById('mobile-print-styles');
-    if (styleEl) styleEl.innerHTML = PRINT_CSS;
-  }
-
-  function clearPrintStyles() {
-    if (!isMobile) return;
-    var styleEl = document.getElementById('mobile-print-styles');
-    if (styleEl) styleEl.innerHTML = '';
-  }
-
-  // Always attach — needed for offline mode on ALL browsers
-  window.addEventListener('beforeprint', applyPrintStyles);
-  window.addEventListener('afterprint', clearPrintStyles);
-
-  // ✅ Only override window.print on iOS (iPhone/iPad)
-  if (!isIOS) return;
-
-  window.print = function() {
-    var pageEl = document.querySelector('.page');
-    if (!pageEl) {
-      console.warn('No .page element found to print.');
-      return;
-    }
-
-    var existingStyles = Array.from(
-      document.querySelectorAll('link[rel="stylesheet"], style')
-    ).map(function(el) {
-      if (el.id === 'mobile-print-styles') return '';
-      return el.outerHTML;
-    }).join('\n');
-
-    var win = window.open('', '_blank');
-    if (!win) {
-      alert('Please allow pop-ups to print.');
-      return;
-    }
-
-    // Bake live input values into the clone before serializing
-    var clone = pageEl.cloneNode(true);
-
-    // Text inputs, textareas, selects
-    var liveInputs = pageEl.querySelectorAll('input, textarea, select');
-    var cloneInputs = clone.querySelectorAll('input, textarea, select');
-    liveInputs.forEach(function(liveEl, i) {
-      var cloneEl = cloneInputs[i];
-      if (!cloneEl) return;
-      if (liveEl.type === 'checkbox' || liveEl.type === 'radio') {
-        if (liveEl.checked) cloneEl.setAttribute('checked', 'checked');
-        else cloneEl.removeAttribute('checked');
-      } else if (liveEl.tagName === 'TEXTAREA') {
-        cloneEl.textContent = liveEl.value;
-      } else {
-        cloneEl.setAttribute('value', liveEl.value);
-      }
-    });
-
-    win.document.open();
-    win.document.write(
-      '<!DOCTYPE html><html><head>' +
-      '<meta charset="UTF-8">' +
-      '<base href="' + location.href + '">' +
-      '<title>Print</title>' +
-      existingStyles +
-      '<style>' + PRINT_CSS + '</style>' +
-      '</head><body>' +
-      clone.outerHTML +
-      '</body></html>'
-    );
-    win.document.close();
-
-        win.onload = function() {
-      win.focus();
-      
-      // ✅ Physically shrink the page width to fit on 1 page
-      var printPageEl = win.document.querySelector('.page');
-      if (printPageEl) {
-        printPageEl.style.width = '550px'; // 55% of ~1000px
-        printPageEl.style.maxWidth = '550px';
-        // Force reflow
-        void printPageEl.offsetHeight;
-      }
-      
-      setTimeout(function() {
-        win.print();
-        setTimeout(function() {
-          try { win.close(); } catch (e) {}
-        }, 1000);
-      }, 300);
-    };
-
-
 
 // ────────────────────────────────────────────────────────────────
 // ADDRESS AUTOCOMPLETE
@@ -2699,7 +2431,6 @@ function setupAddressAutocomplete() {
             li.textContent = f.place_name;
             li.addEventListener('mousedown', function(e) {
               e.preventDefault();
-              // Split into street and city/state/zip
               var parts = f.place_name.split(',');
               input.value = parts[0].trim();
               var rest = parts.slice(1).join(',').trim();
@@ -2716,14 +2447,12 @@ function setupAddressAutocomplete() {
     }, 300);
   });
 
-  // Close on click outside
   document.addEventListener('click', function(e) {
     if (!input.contains(e.target) && !list.contains(e.target)) {
       list.classList.remove('open');
     }
   });
 
-  // Keyboard navigation
   input.addEventListener('keydown', function(e) {
     var items = list.querySelectorAll('li');
     var active = list.querySelector('li.active');
@@ -2781,13 +2510,11 @@ function setupGpsButton() {
             if (data && data.address) {
               var a = data.address;
 
-              // Build street line
               var street = '';
               if (a.house_number && a.road) street = a.house_number + ' ' + a.road;
               else if (a.road) street = a.road;
               else street = data.display_name.split(',')[0];
 
-              // Build city, state zip line
               var city  = a.city || a.town || a.village || a.county || '';
               var state = a.state || '';
               var zip   = a.postcode || '';
@@ -2823,8 +2550,10 @@ function setupGpsButton() {
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
   });
-}// ────────────────────────────────────────────────────────────────
-// INITIALIZATION (SINGLE VERSION)
+}
+
+// ────────────────────────────────────────────────────────────────
+// INITIALIZATION
 // ────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function() {
   var todayInput = document.getElementById('today');
@@ -2838,13 +2567,11 @@ document.addEventListener('DOMContentLoaded', function() {
     document.body.classList.add('offline');
   }
 
-  if (typeof setupAddressAutocomplete === 'function') setupAddressAutocomplete();
-  if (typeof setupGpsButton === 'function') setupGpsButton();
-  if (typeof setupFieldValidation === 'function') setupFieldValidation();
-
+  setupAddressAutocomplete();
+  setupGpsButton();
+  setupFieldValidation();
   restoreDraft();
 });
-
 </script>
 
 </body>
