@@ -2307,107 +2307,112 @@ function saveImageFromModal() {
   loadingDiv.textContent = '⏳ Generating image...';
   document.body.appendChild(loadingDiv);
   
-  html2canvas(page, {
-    scale: 2,
+  // Clone the page for rendering
+  var clone = page.cloneNode(true);
+  
+  // Bake input values into clone
+  var liveInputs = page.querySelectorAll('input, textarea, select');
+  var cloneInputs = clone.querySelectorAll('input, textarea, select');
+  liveInputs.forEach(function(liveEl, i) {
+    var cloneEl = cloneInputs[i];
+    if (!cloneEl) return;
+    if (liveEl.type === 'checkbox' || liveEl.type === 'radio') {
+      cloneEl.checked = liveEl.checked;
+    } else {
+      cloneEl.value = liveEl.value;
+    }
+  });
+  
+  // Convert SVGs to solid colored paths (better mobile rendering)
+  var svgs = clone.querySelectorAll('svg');
+  svgs.forEach(function(svg) {
+    var computedColor = '#D97706';
+    try {
+      if (svg.parentElement) {
+        var parentStyle = window.getComputedStyle(svg.parentElement);
+        computedColor = parentStyle.color || '#D97706';
+      }
+    } catch (e) {}
+
+    // Set SVG namespace
+    if (!svg.getAttribute('xmlns')) {
+      svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+    }
+
+    // Process all SVG children
+    var shapes = svg.querySelectorAll('*');
+    shapes.forEach(function(el) {
+      // Force stroke/fill colors
+      if (el.getAttribute('stroke') === 'currentColor' || !el.getAttribute('stroke')) {
+        el.setAttribute('stroke', computedColor);
+      }
+      if (el.getAttribute('fill') === 'currentColor') {
+        el.setAttribute('fill', computedColor);
+      }
+      if (el.tagName.toLowerCase() !== 'text' && !el.getAttribute('fill')) {
+        el.setAttribute('fill', 'none');
+      }
+      
+      // Boost stroke width on mobile
+      var currentWidth = parseFloat(el.getAttribute('stroke-width')) || 2;
+      el.setAttribute('stroke-width', currentWidth * 1.8);
+      
+      // Ensure linecap/linejoin
+      if (!el.getAttribute('stroke-linecap')) el.setAttribute('stroke-linecap', 'round');
+      if (!el.getAttribute('stroke-linejoin')) el.setAttribute('stroke-linejoin', 'round');
+    });
+  });
+  
+  // Simplify the clone for rendering
+  clone.querySelectorAll('.toolbar, #offline-banner, #pdfModal, #imageModal').forEach(function(el) {
+    el.style.display = 'none';
+  });
+  
+  // Create temporary container
+  var tempContainer = document.createElement('div');
+  tempContainer.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:1050px;background:#FFFFFF;';
+  tempContainer.appendChild(clone);
+  document.body.appendChild(tempContainer);
+  
+  // Render with higher scale for better quality
+  html2canvas(tempContainer, {
+    scale: window.devicePixelRatio * 2,
     useCORS: true,
     backgroundColor: '#FFFFFF',
     logging: false,
-    windowHeight: page.scrollHeight,
+    windowHeight: clone.scrollHeight,
     allowTaint: true,
-    imageTimeout: 15000,
-    removeContainer: true,
-    
-    onclone: function(clonedDoc, clonedElement) {
-      var svgs = clonedDoc.querySelectorAll('svg');
-      
-      svgs.forEach(function(svg) {
-        var parent = svg.parentElement;
-        var computedColor = '#D97706';
-        
-        try {
-          if (parent) {
-            var parentStyle = clonedDoc.defaultView.getComputedStyle(parent);
-            computedColor = parentStyle.color || '#D97706';
-          }
-        } catch (e) {}
-
-        if (!svg.getAttribute('xmlns')) {
-          svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-        }
-
-        var svgStroke = svg.getAttribute('stroke');
-        var svgFill = svg.getAttribute('fill');
-        var svgStrokeWidth = svg.getAttribute('stroke-width');
-        var svgStrokeLinecap = svg.getAttribute('stroke-linecap');
-        var svgStrokeLinejoin = svg.getAttribute('stroke-linejoin');
-
-        if (svgStroke === 'currentColor') svgStroke = computedColor;
-        if (svgFill === 'currentColor') svgFill = computedColor;
-
-        var shapes = svg.querySelectorAll('path, polyline, polygon, line, rect, circle, ellipse, text');
-        
-        shapes.forEach(function(el) {
-          if (el.getAttribute('stroke') === 'currentColor') {
-            el.setAttribute('stroke', computedColor);
-          }
-          if (el.getAttribute('fill') === 'currentColor') {
-            el.setAttribute('fill', computedColor);
-          }
-          if (svgStroke && !el.hasAttribute('stroke')) el.setAttribute('stroke', svgStroke);
-          if (svgFill && !el.hasAttribute('fill')) el.setAttribute('fill', svgFill);
-          if (svgStrokeWidth && !el.hasAttribute('stroke-width')) el.setAttribute('stroke-width', svgStrokeWidth);
-          if (svgStrokeLinecap && !el.hasAttribute('stroke-linecap')) el.setAttribute('stroke-linecap', svgStrokeLinecap);
-          if (svgStrokeLinejoin && !el.hasAttribute('stroke-linejoin')) el.setAttribute('stroke-linejoin', svgStrokeLinejoin);
-          if (!el.hasAttribute('fill') && el.tagName.toLowerCase() !== 'text') {
-            el.setAttribute('fill', 'none');
-          }
-        });
-      });
-
-      var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-      if (isIOS) {
-        var allPaths = clonedDoc.querySelectorAll('svg path');
-        allPaths.forEach(function(p) {
-          var original = parseFloat(p.getAttribute('stroke-width')) || 2;
-          p.setAttribute('stroke-width', original * 2.2);
-          p.setAttribute('stroke', '#b86a05');
-        });
-      }
-
-      var inputs = clonedDoc.querySelectorAll('input, textarea');
-      inputs.forEach(function(input) {
-        if (!input.value) input.setAttribute('placeholder', '');
-      });
-
-      var allHeaders = clonedDoc.querySelectorAll('.section-header, .col-label');
-      allHeaders.forEach(function(h) {
-        h.style.animationPlayState = 'paused';
-      });
-
-      var modals = clonedDoc.querySelectorAll('#pdfModal, #imageModal, #offline-banner, .toolbar');
-      modals.forEach(function(m) {
-        m.style.display = 'none';
-      });
-    }
+    imageTimeout: 20000,
+    removeContainer: false,
+    foreignObjectRendering: false
   }).then(function(canvas) {
-    document.body.removeChild(loadingDiv);
+    document.body.removeChild(tempContainer);
+    if (loadingDiv.parentNode) {
+      document.body.removeChild(loadingDiv);
+    }
     
     try {
-      var link = document.createElement('a');
-      link.download = filename;
-      link.href = canvas.toDataURL('image/jpeg', 0.95);
-
-      if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+      // Convert to JPEG with high quality
+      var jpegData = canvas.toDataURL('image/jpeg', 0.98);
+      
+      // iOS handling
+      if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
         var newTab = window.open();
         if (newTab) {
           newTab.document.write(
-            '<img src="' + link.href + '" style="max-width:100%;"/>' +
-            '<p style="font-family:sans-serif;padding:10px;">Long‑press the image and select "Save to Photos"</p>'
+            '<html><body style="margin:0;padding:0;background:#000;">' +
+            '<img src="' + jpegData + '" style="max-width:100%;width:100%;display:block;"/>' +
+            '<p style="font-family:sans-serif;padding:20px;color:#fff;text-align:center;">' +
+            'Long-press the image and select "Save to Photos"</p>' +
+            '</body></html>'
           );
-        } else {
-          link.click();
+          newTab.document.close();
         }
       } else {
+        // Standard download for Android/Desktop
+        var link = document.createElement('a');
+        link.download = filename;
+        link.href = jpegData;
         document.body.appendChild(link);
         link.click();
         setTimeout(function() {
@@ -2415,15 +2420,25 @@ function saveImageFromModal() {
         }, 100);
       }
     } catch (e) {
+      if (loadingDiv.parentNode) {
+        document.body.removeChild(loadingDiv);
+      }
       alert('Error saving image: ' + e.message);
     }
   }).catch(function(err) {
     if (loadingDiv.parentNode) {
       document.body.removeChild(loadingDiv);
     }
+    if (tempContainer.parentNode) {
+      document.body.removeChild(tempContainer);
+    }
     console.error('html2canvas error:', err);
-    alert('Error generating image: ' + err.message);
+    alert('Error generating image. Try using Print/PDF instead.');
   });
+}
+
+function closeImageModal() {
+  document.getElementById('imageModal').style.display = 'none';
 }
 
 // ────────────────────────────────────────────────────────────────
