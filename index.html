@@ -2536,30 +2536,27 @@ document.addEventListener('click', function(e) {
     
     html {
       overflow: hidden !important;
+      margin: 0 !important;
+      padding: 0 !important;
     }
     
     body { 
       margin: 0 !important; 
       padding: 0 !important; 
       width: 100% !important;
-      height: 100% !important;
-      overflow: hidden !important;
-      transform: translateZ(0) !important;
-      -webkit-transform: translateZ(0) !important;
+      height: auto !important;
+      overflow: visible !important;
+      display: flex !important;
+      justify-content: center !important;
     }
     
     .page { 
-      width: 100% !important; 
-      max-width: 100% !important;
+      width: 855px !important;
+      max-width: 855px !important;
       border: 5px solid #D97706 !important;
-      transform: translateZ(0) !important;
-      -webkit-transform: translateZ(0) !important;
-      transform-origin: top center !important;
-      transform: scale(0.88) !important;
-      -webkit-transform: scale(0.88) !important;
-      margin-top: 0 !important;
-      margin-left: auto !important;
-      margin-right: auto !important;
+      margin: 0 auto !important;
+      padding: 0 !important;
+      box-sizing: border-box !important;
     }
     
     .toolbar, #offline-banner { 
@@ -2591,6 +2588,10 @@ document.addEventListener('click', function(e) {
       }).join('\n');
 
       var clone = pageEl.cloneNode(true);
+      
+      // Get original width for scaling calculation
+      var originalWidth = pageEl.offsetWidth || 1000;
+      var scaledWidth = Math.round(originalWidth * 0.855); // 85.5%
 
       var liveInputs = pageEl.querySelectorAll('input, textarea, select');
       var cloneInputs = clone.querySelectorAll('input, textarea, select');
@@ -2630,11 +2631,10 @@ document.addEventListener('click', function(e) {
           try {
             var printPageEl = win.document.querySelector('.page');
             if (printPageEl) {
-              /* Apply scale transformation */
-              printPageEl.style.transformOrigin = 'top center';
-              printPageEl.style.transform = 'scale(0.88)';
-              printPageEl.style.webkitTransformOrigin = 'top center';
-              printPageEl.style.webkitTransform = 'scale(0.88)';
+              /* Apply 85.5% scaling via width constraint */
+              printPageEl.style.width = scaledWidth + 'px';
+              printPageEl.style.maxWidth = scaledWidth + 'px';
+              printPageEl.style.margin = '0 auto';
               void printPageEl.offsetHeight;
             }
           } catch (e) {}
