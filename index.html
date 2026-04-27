@@ -2024,7 +2024,12 @@ function closeImageModal() {
 // SAVE IMAGE
 // ────────────────────────────────────────────────────────────────
 function saveImageFromModal() {
+  if (!validateForm()) {
+    closeImageModal();
+    return;
+  }
   closeImageModal();
+
 
   var page = document.getElementById('page');
   if (!page) { alert('Error: Could not find form element'); return; }
