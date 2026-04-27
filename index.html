@@ -2528,13 +2528,6 @@ document.addEventListener('click', function(e) {
   var isSafari = /Safari/i.test(navigator.userAgent) &&
                  !/Chrome|CriOS|FxiOS|EdgiOS/i.test(navigator.userAgent);
 
-  /* ⚙️ ZOOM CONFIGURATION - 88% PERFECT SIZE */
-  var CONFIG = {
-    primaryZoom: 0.88,      /* Perfect print size */
-    triggerZoom: 0.89,      /* Reflow trigger */
-    enableReflow: true
-  };
-
   var PRINT_CSS = `
     @page { 
       size: letter portrait; 
@@ -2561,8 +2554,12 @@ document.addEventListener('click', function(e) {
       border: 5px solid #D97706 !important;
       transform: translateZ(0) !important;
       -webkit-transform: translateZ(0) !important;
-      zoom: 0.88 !important;
-      -webkit-zoom: 0.88 !important;
+      transform-origin: top center !important;
+      transform: scale(0.88) !important;
+      -webkit-transform: scale(0.88) !important;
+      margin-top: 0 !important;
+      margin-left: auto !important;
+      margin-right: auto !important;
     }
     
     .toolbar, #offline-banner { 
@@ -2632,11 +2629,12 @@ document.addEventListener('click', function(e) {
         setTimeout(function() {
           try {
             var printPageEl = win.document.querySelector('.page');
-            if (printPageEl && CONFIG.enableReflow) {
-              /* Force reflow with trigger zoom */
-              printPageEl.style.zoom = CONFIG.triggerZoom;
-              void printPageEl.offsetHeight;
-              printPageEl.style.zoom = CONFIG.primaryZoom;
+            if (printPageEl) {
+              /* Apply scale transformation */
+              printPageEl.style.transformOrigin = 'top center';
+              printPageEl.style.transform = 'scale(0.88)';
+              printPageEl.style.webkitTransformOrigin = 'top center';
+              printPageEl.style.webkitTransform = 'scale(0.88)';
               void printPageEl.offsetHeight;
             }
           } catch (e) {}
