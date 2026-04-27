@@ -1033,7 +1033,7 @@ body.print-mode select {
    ═══════════════════════════════════════════════════════════════ */
 @media print {
   @supports (-webkit-touch-callout: none) {
-    /* iOS Safari ONLY - fit all content on 1 page, centered */
+    /* iOS Safari ONLY */
     html, body {
       width: 100% !important;
       height: 100% !important;
@@ -1052,7 +1052,20 @@ body.print-mode select {
       display: block !important;
     }
   }
+
+  /* Edge, Chrome, Firefox, Safari (non-iOS) */
+  @supports not (-webkit-touch-callout: none) {
+    .page {
+      width: 8.5in !important;
+      height: 11in !important;
+      margin: 0 auto !important;
+      padding: 0 !important;
+      box-sizing: border-box !important;
+      page-break-after: always !important;
+    }
+  }
 }
+
 
 
 
