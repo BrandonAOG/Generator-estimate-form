@@ -50,6 +50,7 @@ body {
   margin: 0 auto;
 }
 
+
 .page {
   max-width: 1050px;
   margin: 0 auto;
@@ -1601,44 +1602,52 @@ function enterPrintMode() {
   document.body.classList.add('print-mode');
 
   if (isIOSSafari()) {
-    // ── iOS: swap viewport + physical reflow to 816px ────────────
     _iosSavedStyles = {
-      htmlCssText:  document.documentElement.style.cssText,
-      bodyCssText:  document.body.style.cssText,
-      pageCssText:  page.style.cssText,
-      viewport:     viewMeta ? viewMeta.getAttribute('content') : null
+      htmlCssText: document.documentElement.style.cssText,
+      bodyCssText: document.body.style.cssText,
+      pageCssText: page.style.cssText,
+      viewport:    viewMeta ? viewMeta.getAttribute('content') : null
     };
 
-    // Swap the viewport so iOS print engine measures 816px
+    // Swap viewport FIRST — this is what tells iOS the page is 816px wide
     if (viewMeta) {
-      viewMeta.setAttribute('content', 'width=816px, initial-scale=1.0');
+      viewMeta.setAttribute('content',
+        'width=816px, initial-scale=1.0, viewport-fit=cover');
     }
 
+    // Override the 1050px body width that CSS sets
     document.documentElement.style.cssText =
-      'width:816px!important;max-width:816px!important;min-width:816px!important;' +
-      'margin:0!important;padding:0!important;overflow:hidden!important;';
+      'width:816px!important;max-width:816px!important;min-width:0!important;' +
+      'margin:0!important;padding:0!important;overflow:hidden!important;background:#fff!important;';
 
     document.body.style.cssText =
-      'width:816px!important;max-width:816px!important;min-width:816px!important;' +
-      'margin:0!important;padding:0!important;overflow:hidden!important;';
+      'width:816px!important;max-width:816px!important;min-width:0!important;' +
+      'margin:0!important;padding:0!important;overflow:hidden!important;background:#fff!important;';
 
     page.style.cssText =
-      'width:816px!important;max-width:816px!important;min-width:816px!important;' +
+      'width:816px!important;max-width:816px!important;min-width:0!important;' +
       'position:relative!important;top:0!important;left:0!important;' +
       'margin:0!important;padding:0!important;box-sizing:border-box!important;' +
       'transform:none!important;box-shadow:none!important;' +
       'min-height:0!important;height:auto!important;overflow:visible!important;';
 
+    // Two reflows: viewport swap + style application
+    void page.offsetWidth;
     void page.offsetHeight;
 
-    return { scaleX: IOS_SCALE, scaleY: IOS_SCALE, naturalW: 816, naturalH: page.scrollHeight };
+    return {
+      scaleX:  IOS_SCALE,
+      scaleY:  IOS_SCALE,
+      naturalW: 816,
+      naturalH: page.scrollHeight
+    };
 
   } else {
-    // ── Desktop / Android: transform scale ───────────────────────
+    // Desktop / Android — unchanged, transform scale works fine
     _iosSavedStyles = null;
     var info = calculateUniformScale();
 
-    page.style.transform       = 'scale(' + info.scaleX + ', ' + info.scaleY + ')';
+    page.style.transform       = 'scale(' + info.scaleX + ',' + info.scaleY + ')';
     page.style.transformOrigin = '0 0';
     page.style.width           = PAGE_NATURAL_W + 'px';
     page.style.position        = 'absolute';
@@ -1651,6 +1660,7 @@ function enterPrintMode() {
     return info;
   }
 }
+
 
 // ════════════════════════════════════════════════════════════════
 //  exitPrintMode
@@ -1974,18 +1984,19 @@ function confirmPdfPrint() { document.getElementById('pdfModal').style.display =
 function doPrint() {
   enterPrintMode();
 
-  // iOS needs extra time after viewport swap for the layout engine to settle
-  var delay = isIOSSafari() ? 400 : 0;
+  // iOS needs 600ms for viewport swap to fully reflow before print dialog
+  var delay = isIOSSafari() ? 600 : 0;
 
   setTimeout(function() {
     requestAnimationFrame(function() {
       requestAnimationFrame(function() {
         try { nativePrint(); } catch(e) { console.error('Print error:', e); }
-        setTimeout(exitPrintMode, 2000);
+        setTimeout(exitPrintMode, 2500);
       });
     });
   }, delay);
 }
+
 
 window.addEventListener('afterprint', exitPrintMode);
 
