@@ -2000,8 +2000,15 @@ function closePdfModal() {
 
 function confirmPdfPrint() {
   document.getElementById('pdfModal').style.display = 'none';
-  doPrint();
+  // Mobile gets its own isolated print window; desktop uses doPrint() untouched
+  if (window._mobilePrintOverride &&
+      /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+    window._mobilePrintOverride();
+  } else {
+    doPrint(); // Desktop — completely unchanged
+  }
 }
+
 
 // The unified print routine. Same on every device.
 function doPrint() {
@@ -2411,144 +2418,132 @@ document.addEventListener('DOMContentLoaded', function() {
   if (typeof setupFieldValidation === 'function') setupFieldValidation();
   restoreDraft();
 });
-  // ════════════════════════════════════════════════════════════════
-  //  MOBILE PRINT OPTIMIZATION
+    // ════════════════════════════════════════════════════════════════
+  //  MOBILE PRINT OPTIMIZATION (iOS + Android only — desktop untouched)
   // ════════════════════════════════════════════════════════════════
   (function() {
     'use strict';
 
-    var isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
-                || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    var ua        = navigator.userAgent;
+    var isIOS     = /iPhone|iPad|iPod/i.test(ua);
+    var isAndroid = /Android/i.test(ua);
+    var isMobile  = isIOS || isAndroid;
 
-    var isDesktopSafari = /Safari/i.test(navigator.userAgent)
-                       && !/Chrome|CriOS|FxiOS|EdgiOS|Mobile/i.test(navigator.userAgent);
+    // ── Desktop: do absolutely nothing ──
+    if (!isMobile) return;
 
-    var PRINT_CSS = `
-      @page { 
-        size: letter portrait; 
-        margin: 0 !important;
-      }
-      @page :first { margin: 0 !important; }
-      @page :left  { margin: 0 !important; }
-      @page :right { margin: 0 !important; }
-
-      html { 
-        margin: 0 !important; 
-        padding: 0 !important;
-        background: #FFFFFF !important;
-      }
-      body { 
-        margin: 0 !important; 
-        padding: 0 !important; 
-        width: 100% !important;
-        zoom: 0.55;
-        background: #FFFFFF !important;
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-      }
-      .page { 
-        width: 100% !important; 
-        max-width: 100% !important; 
-        margin: 0 !important; 
-        padding: 0 !important; 
-        border: 5px solid #D97706 !important;
-        box-shadow: none !important;
-      }
-      .toolbar, #offline-banner, #pdfModal, #imageModal { 
-        display: none !important; 
-      }
-      .header  { padding: 4px 16px !important; min-height: 0 !important; }
-      .content { padding: 4px 8px  !important; }
-      .footer  { padding: 4px 16px !important; }
-      .section, .top-grid, .flood-bar, .gas-appliances-box { 
-        page-break-inside: avoid !important; 
-        break-inside: avoid !important; 
-      }
-    `;
-
-    function applyPrintStyles() {
-      if (!isMobile) return;
-      var styleEl = document.getElementById('mobile-print-styles');
-      if (styleEl) styleEl.innerHTML = PRINT_CSS;
+    // ── Measure the true natural page height so we know exact zoom ──
+    function calcZoom() {
+      var pageEl = document.getElementById('page');
+      if (!pageEl) return 0.55;
+      var prev = pageEl.style.transform;
+      pageEl.style.transform = 'none';
+      void pageEl.offsetHeight;
+      var naturalH = pageEl.scrollHeight;
+      pageEl.style.transform = prev;
+      var scaleX = 816  / 1050;
+      var scaleY = 1056 / naturalH;
+      return Math.min(scaleX, scaleY);
     }
 
-    function clearPrintStyles() {
-      if (!isMobile) return;
-      var styleEl = document.getElementById('mobile-print-styles');
-      if (styleEl) styleEl.innerHTML = '';
+    // ── Bake live input values into a cloned element ──
+    function bakeValues(liveRoot, cloneRoot) {
+      var liveEls  = liveRoot.querySelectorAll('input, textarea, select');
+      var cloneEls = cloneRoot.querySelectorAll('input, textarea, select');
+      liveEls.forEach(function(liveEl, i) {
+        var cloneEl = cloneEls[i];
+        if (!cloneEl) return;
+        if (liveEl.type === 'checkbox' || liveEl.type === 'radio') {
+          if (liveEl.checked) cloneEl.setAttribute('checked', 'checked');
+          else cloneEl.removeAttribute('checked');
+        } else if (liveEl.tagName === 'TEXTAREA') {
+          cloneEl.textContent = liveEl.value;
+        } else {
+          cloneEl.setAttribute('value', liveEl.value);
+        }
+      });
     }
 
-    window.addEventListener('beforeprint', applyPrintStyles);
-    window.addEventListener('afterprint', clearPrintStyles);
+    // ── Open a clean isolated print window ──
+    function mobilePrint() {
+      var pageEl = document.getElementById('page');
+      if (!pageEl) return;
 
-    if (!isMobile || isDesktopSafari) return;
+      var zoom = calcZoom();
 
-    var isSafari = /Safari/i.test(navigator.userAgent)
-                && !/Chrome|CriOS|FxiOS|EdgiOS/i.test(navigator.userAgent);
+      var existingStyles = Array.from(
+        document.querySelectorAll('link[rel="stylesheet"], style')
+      ).map(function(el) { return el.outerHTML; }).join('\n');
 
-    if (isSafari) {
-      window.print = function() {
-        var pageEl = document.querySelector('.page');
-        if (!pageEl) {
-          console.warn('No .page element found to print.');
-          return;
-        }
+      var win = window.open('', '_blank');
+      if (!win) { alert('Please allow pop-ups to print.'); return; }
 
-        var existingStyles = Array.from(
-          document.querySelectorAll('link[rel="stylesheet"], style')
-        ).map(function(el) {
-          if (el.id === 'mobile-print-styles') return '';
-          return el.outerHTML;
-        }).join('\n');
+      var clone = pageEl.cloneNode(true);
+      bakeValues(pageEl, clone);
 
-        var win = window.open('', '_blank');
-        if (!win) {
-          alert('Please allow pop-ups to print.');
-          return;
-        }
+      // Remove UI overlays from clone
+      ['#toolbar', '#offline-banner', '#pdfModal', '#imageModal',
+       '#address-suggestions', '#gps-status', '.gps-btn'
+      ].forEach(function(sel) {
+        var el = clone.querySelector(sel);
+        if (el) el.remove();
+      });
 
-        var clone = pageEl.cloneNode(true);
-        var liveInputs = pageEl.querySelectorAll('input, textarea, select');
-        var cloneInputs = clone.querySelectorAll('input, textarea, select');
-        
-        liveInputs.forEach(function(liveEl, i) {
-          var cloneEl = cloneInputs[i];
-          if (!cloneEl) return;
-          if (liveEl.type === 'checkbox' || liveEl.type === 'radio') {
-            if (liveEl.checked) cloneEl.setAttribute('checked', 'checked');
-            else cloneEl.removeAttribute('checked');
-          } else if (liveEl.tagName === 'TEXTAREA') {
-            cloneEl.textContent = liveEl.value;
-          } else {
-            cloneEl.setAttribute('value', liveEl.value);
-          }
-        });
+      var printCSS = [
+        '@page { size: 8.5in 11in portrait; margin: 0; }',
+        '* { -webkit-print-color-adjust: exact !important;',
+        '    print-color-adjust: exact !important; }',
+        'html, body {',
+        '  margin: 0 !important; padding: 0 !important;',
+        '  width: 816px !important; height: 1056px !important;',
+        '  overflow: hidden !important; background: #fff !important;',
+        '}',
+        '.page {',
+        '  width: 1050px !important;',
+        '  transform: scale(' + zoom + ') !important;',
+        '  transform-origin: 0 0 !important;',
+        '  position: absolute !important;',
+        '  top: 0 !important; left: 0 !important;',
+        '  margin: 0 !important; padding: 0 !important;',
+        '  box-shadow: none !important;',
+        '  border: 2px solid #D97706 !important;',
+        '  min-height: 0 !important;',
+        '}',
+        'input::placeholder, textarea::placeholder {',
+        '  color: transparent !important; }'
+      ].join('\n');
 
-        win.document.open();
-        win.document.write(
-          '<!DOCTYPE html><html><head>' +
-          '<meta charset="UTF-8">' +
-          '<base href="' + location.href + '">' +
-          '<title>Print</title>' +
-          existingStyles +
-          '<style>' + PRINT_CSS + '</style>' +
-          '</head><body>' +
-          clone.outerHTML +
-          '</body></html>'
-        );
-        win.document.close();
+      win.document.open();
+      win.document.write(
+        '<!DOCTYPE html><html><head>' +
+        '<meta charset="UTF-8">' +
+        '<meta name="viewport" content="width=816">' +
+        '<base href="' + location.href + '">' +
+        '<title>Estimate</title>' +
+        existingStyles +
+        '<style>' + printCSS + '</style>' +
+        '</head><body>' +
+        clone.outerHTML +
+        '</body></html>'
+      );
+      win.document.close();
 
-        win.onload = function() {
-          win.focus();
+      win.onload = function() {
+        win.focus();
+        setTimeout(function() {
+          win.print();
           setTimeout(function() {
-            win.print();
-            setTimeout(function() {
-              try { win.close(); } catch (e) {}
-            }, 1000);
-          }, 300);
-        };
+            try { win.close(); } catch(e) {}
+          }, 1000);
+        }, 400);
       };
     }
+
+    // ── Store override so confirmPdfPrint() can reach it ──
+    window._mobilePrintOverride = mobilePrint;
+
+  })();
+
   })();
 </script>
 
