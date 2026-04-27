@@ -2054,12 +2054,8 @@ document.addEventListener('click', function(e) {
   if (pdfModal && e.target === pdfModal) pdfModal.style.display = 'none';
   if (imageModal && e.target === imageModal) imageModal.style.display = 'none';
 });
-
 // ════════════════════════════════════════════════════════════════
-// ▼▼▼ MOBILE SAFARI ISOLATED-WINDOW PRINT (UNTOUCHED) ▼▼▼
-// This is your known-good iOS Safari print path. It overrides
-// window.print() ONLY on mobile Safari (iPhone/iPad). Every other
-// browser uses the native print path with the stretch logic above.
+// ▼▼▼ MOBILE SAFARI ISOLATED-WINDOW PRINT (FIXED) ▼▼▼
 // ════════════════════════════════════════════════════════════════
 (function() {
   'use strict';
@@ -2122,21 +2118,13 @@ document.addEventListener('click', function(e) {
     }
   `;
 
-  // Default fallback zoom in case measurement fails. Used for the
-  // beforeprint listener path (when a user invokes browser print menu
-  // directly instead of clicking our Print button).
   var FALLBACK_ZOOM = 0.55;
 
-  // Calculate the zoom factor needed to fit the page on a single
-  // letter-sized sheet. Returns a number like 0.55, 0.62, etc.
-  // Both axes are checked — whichever scale is more restrictive wins.
   function computePrintZoom() {
     var pageEl = document.querySelector('.page');
     if (!pageEl) return FALLBACK_ZOOM;
-    // Letter paper at 96dpi
     var PAPER_W = 816;
     var PAPER_H = 1056;
-    // Small safety margin so the page never overflows by 1px due to rounding
     var MARGIN  = 4;
 
     var naturalW = pageEl.scrollWidth  || pageEl.offsetWidth  || 1050;
@@ -2146,7 +2134,6 @@ document.addEventListener('click', function(e) {
     var zY = (PAPER_H - MARGIN) / naturalH;
     var z  = Math.min(zX, zY);
 
-    // Clamp to sane bounds
     if (!isFinite(z) || z <= 0) return FALLBACK_ZOOM;
     if (z > 1) z = 1;
     return z;
@@ -2156,7 +2143,6 @@ document.addEventListener('click', function(e) {
     return PRINT_CSS_TEMPLATE.replace('__ZOOM__', String(zoom));
   }
 
-  // Static fallback for the beforeprint hook path
   var PRINT_CSS = buildPrintCSS(FALLBACK_ZOOM);
 
   function applyPrintStyles() {
@@ -2174,7 +2160,6 @@ document.addEventListener('click', function(e) {
   window.addEventListener('beforeprint', applyPrintStyles);
   window.addEventListener('afterprint', clearPrintStyles);
 
-  // Only override window.print on mobile Safari, never desktop, never Android
   if (!isMobile || isDesktopSafari) return;
 
   var isSafari = /Safari/i.test(navigator.userAgent)
@@ -2218,11 +2203,89 @@ document.addEventListener('click', function(e) {
         }
       });
 
+      // ★ FIX: Compute zoom BEFORE creating the window to ensure proper scaling
+      var dynamicZoom = computePrintZoom();
+      var dynamicCSS  = buildPrintCSS(dynamicZoom);
+
+      // Add a safety margin to prevent overflow
+      dynamicCSS += `
+        .page {
+          max-height: 1056px !important;
+          overflow: hidden !important;
+        }
+      `;
+
+      win.document.open();
+      win.document.write(
+        '<!DOCTYPE html><html><head>' +
+        '<meta charset="UTF-8">' +
+        '<base href="' + location.href + '">' +
+        '<title>Print</title>' +
+        existingStyles +
+        '<style>' + dynamicCSS + '</style>' +
+        '</head><body>' +
+        clone.outerHTML +
+        '</body></html>'
+      );
+      win.document.close();
+
+      // ★ FIX: Use DOMContentLoaded instead of load for faster printing
+      win.document.addEventListener('DOMContentLoaded', function() {
+        win.focus();
+        // Small delay to ensure styles are applied
+        setTimeout(function() {
+          win.print();
+          setTimeout(function() {
+            try { win.close(); } catch (e) {}
+          }, 1000);
+        }, 200);
+      });
+
+      // Fallback in case DOMContentLoaded doesn't fire
+      win.onload = function() {
+        win.focus();
+        setTimeout(function() {
+          win.print();
+          setTimeout(function() {
+            try { win.close(); } catch (e) {}
+          }, 1000);
+        }, 200);
+      };
+    };
+  }
+})();
+
       // ★ Compute the right zoom NOW based on the page's actual rendered height.
       //   This guarantees a single-page PDF on iOS Safari regardless of how
       //   tall the form has grown.
       var dynamicZoom = computePrintZoom();
       var dynamicCSS  = buildPrintCSS(dynamicZoom);
+dynamicCSS += `
+  .page {
+    max-height: 1056px !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+  }
+  .content {
+    padding: 2px 6px !important;
+  }
+  .header {
+    padding: 2px 12px !important;
+  }
+  .footer {
+    padding: 2px 12px !important;
+  }
+  .section-body {
+    padding: 4px 8px !important;
+  }
+  input, textarea, select {
+    font-size: 0.75rem !important;
+    min-height: 28px !important;
+  }
+  label {
+    font-size: 0.55rem !important;
+  }
+`;
 
       win.document.open();
       win.document.write(
