@@ -1698,12 +1698,11 @@ Customer Info
 <!-- ▲▲▲ END IMAGE MODAL ▲▲▲ -->
 
 <script>
-
+var nativePrint = window.print.bind(window);
 
 if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
   document.body.classList.add('is-mobile-device');
 }
-
 
 var MAPBOX_TOKEN = 'pk.eyJ1IjoicHJvamVjdHdyYXBwZXIiLCJhIjoiY201d2k1eHU3MDAwajJrbzU2a2c5dW40NSJ9.WJlNJ4o5CqBhWpHKMKOzIQ';
 var DRAFT_KEY = 'aog_estimate_draft';
@@ -1981,127 +1980,22 @@ function clearForm() {
 // ────────────────────────────────────────────────────────────────
 // PDF PRINT
 // ────────────────────────────────────────────────────────────────
-function nativePrint() {
-  var style = document.createElement('style');
-  style.id = 'print-style';
-  style.innerHTML = `
-    @media print {
-      * {
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-        color-adjust: exact !important;
-      }
-
-      html, body {
-        width: 100% !important;
-        height: auto !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        overflow: visible !important;
-        background: white !important;
-      }
-
-      body * {
-        visibility: hidden;
-      }
-
-      #page, #page * {
-        visibility: visible;
-      }
-
-      #page {
-        position: absolute !important;
-        top: 0 !important;
-        left: 0 !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        margin: 0 auto !important;
-        padding: 10px !important;
-        transform: none !important;
-        transform-origin: top left !important;
-        box-shadow: none !important;
-        border: none !important;
-        overflow: visible !important;
-      }
-
-      #page input,
-      #page select,
-      #page textarea {
-        border: 1px solid #ccc !important;
-        background: white !important;
-        -webkit-appearance: none !important;
-        appearance: none !important;
-      }
-
-      button,
-      .modal,
-      #imageModal,
-      #errorModal,
-      #pdfModal,
-      .mapboxgl-ctrl,
-      #suggestions,
-      #addressSuggestions {
-        display: none !important;
-      }
-
-      .section,
-      .form-group,
-      table,
-      tr {
-        page-break-inside: avoid !important;
-      }
-
-      h1, h2, h3, h4 {
-        page-break-after: avoid !important;
-      }
-
-      @page {
-        size: letter portrait;
-        margin: 0.5in;
-      }
-    }
-  `;
-
-  document.head.appendChild(style);
-
-  // Android needs longer delay to render before print dialog
-  var delay = /Android/i.test(navigator.userAgent) ? 600 : 300;
-
-  setTimeout(function() {
-    window.print();
-    setTimeout(function() {
-      var el = document.getElementById('print-style');
-      if (el) el.parentNode.removeChild(el);
-    }, 2000);
-  }, delay);
-}
 function printPDF() {
-  var modal = document.getElementById('pdfModal');
-  var instructions = document.getElementById('pdfInstructions');
-  
-  var isAndroid = /Android/i.test(navigator.userAgent);
+  if (!validateForm()) return;
   var isIOS     = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-  var isChrome  = /Chrome/i.test(navigator.userAgent);
-  var isSafari  = /Safari/i.test(navigator.userAgent) && !isChrome;
+  var isAndroid = /Android/i.test(navigator.userAgent);
+  var modal = document.getElementById('pdfModal');
+  var instr = document.getElementById('pdfInstructions');
+  if (!modal || !instr) { nativePrint(); return; }
 
-  var msg = '';
-
-  if (isAndroid && isChrome) {
-    msg = '1. Tap CONTINUE below\n2. In the print dialog, tap the destination\n3. Select "Save as PDF"\n4. Tap Save';
-  } else if (isIOS && isSafari) {
-    msg = '1. Tap CONTINUE below\n2. Tap the Share icon\n3. Select "Print" then pinch-zoom outward\n   on the preview to save as PDF';
-  } else if (isIOS && isChrome) {
-    msg = '1. Tap CONTINUE below\n2. In the print dialog select "Save as PDF"';
+  if (isIOS) {
+    instr.innerHTML = "<b style='color:#FFB300'>1.</b> Tap CONTINUE to open Print preview<br><b style='color:#FFB300'>2.</b> <span style='color:#FFB300'>PINCH-ZOOM OUT</span> on the page thumbnail<br><b style='color:#FFB300'>3.</b> Tap the Share icon (top right)<br><b style='color:#FFB300'>4.</b> Tap <span style='color:#FFB300'>'Save to Files'</span>";
+  } else if (isAndroid) {
+    instr.innerHTML = "<b style='color:#FFB300'>1.</b> Tap CONTINUE to open Print preview<br><b style='color:#FFB300'>2.</b> Change Printer to <span style='color:#FFB300'>'Save as PDF'</span><br><b style='color:#FFB300'>3.</b> Tap the download icon";
   } else {
-    msg = '1. Click CONTINUE below\n2. In the print dialog, set\n   Destination → "Save as PDF"\n3. Click Save';
+    instr.innerHTML = "<b style='color:#FFB300'>1.</b> Click CONTINUE to open Print dialog<br><b style='color:#FFB300'>2.</b> Set Destination to <span style='color:#FFB300'>'Save as PDF'</span><br><b style='color:#FFB300'>3.</b> Click Save";
   }
-
-  if (instructions) {
-    instructions.style.whiteSpace = 'pre-line';
-    instructions.textContent = msg;
-  }
-
-  if (modal) modal.style.display = 'flex';
+  modal.style.display = 'flex';
 }
 
 function confirmPdfPrint() {
