@@ -1864,12 +1864,38 @@ function saveImageFromModal() {
   loadingDiv.textContent = '⏳ Generating image...';
   document.body.appendChild(loadingDiv);
   
+  // Measure the page's true content dimensions including the footer.
+  // On iOS Safari, scrollHeight alone can fall short by a few pixels
+  // when flex containers haven't fully laid out, clipping the footer's
+  // border-top line. We use the bounding rect + a small padding buffer
+  // to guarantee the footer is fully captured.
+  var pageRect = page.getBoundingClientRect();
+  var contentH = Math.max(
+    page.scrollHeight,
+    page.offsetHeight,
+    Math.ceil(pageRect.height)
+  );
+  var contentW = Math.max(
+    page.scrollWidth,
+    page.offsetWidth,
+    Math.ceil(pageRect.width)
+  );
+  // Pad a few pixels at the bottom so the footer's border-top line and
+  // any sub-pixel bleed are fully captured.
+  var CAPTURE_PAD_BOTTOM = 8;
+  var captureH = contentH + CAPTURE_PAD_BOTTOM;
+
   html2canvas(page, {
     scale: 2,
     useCORS: true,
     backgroundColor: '#FFFFFF',
     logging: false,
-    windowHeight: page.scrollHeight,
+    width: contentW,
+    height: captureH,
+    windowWidth:  contentW,
+    windowHeight: captureH,
+    x: 0,
+    y: 0,
     allowTaint: true,
     imageTimeout: 15000,
     removeContainer: true,
@@ -1945,6 +1971,23 @@ function saveImageFromModal() {
       modals.forEach(function(m) {
         m.style.display = 'none';
       });
+
+      // Footer-clip fix: the .page has min-height:100vh by default, which
+      // on iOS Safari can cause the flex layout to leave the footer floating
+      // below the viewport when html2canvas measures it. Force the cloned
+      // page to be content-fit and ensure the footer is fully visible
+      // (including its 1px border-top line which was getting cut on mobile).
+      var clonedPage = clonedDoc.getElementById('page');
+      if (clonedPage) {
+        clonedPage.style.minHeight = '0';
+        clonedPage.style.height    = 'auto';
+        clonedPage.style.display   = 'block';
+      }
+      var clonedFooter = clonedDoc.querySelector('.footer');
+      if (clonedFooter) {
+        // Make sure the footer's border-top isn't right at the canvas edge
+        clonedFooter.style.marginBottom = '2px';
+      }
     }
   }).then(function(canvas) {
     document.body.removeChild(loadingDiv);
