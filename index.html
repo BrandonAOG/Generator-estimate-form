@@ -2528,65 +2528,45 @@ document.addEventListener('click', function(e) {
   var isSafari = /Safari/i.test(navigator.userAgent) &&
                  !/Chrome|CriOS|FxiOS|EdgiOS/i.test(navigator.userAgent);
 
-  /* Use width-based scaling instead of zoom */
+  /* ⚙️ ZOOM CONFIGURATION - ADJUST THESE */
+  var CONFIG = {
+    primaryZoom: 0.90,      /* Main zoom level */
+    triggerZoom: 0.91,      /* Reflow trigger (usually 0.01 higher) */
+    enableReflow: true      /* Set to false to disable reflow trick */
+  };
+
   var PRINT_CSS = `
-    @media print {
-      @page {
-        size: letter portrait;
-        margin: 0 !important;
-      }
-
-      * {
-        margin: 0 !important;
-        padding: 0 !important;
-        border-width: 1px !important;
-      }
-
-      html {
-        width: 100vw !important;
-        height: 100vh !important;
-        overflow: hidden !important;
-      }
-
-      body {
-        width: 100vw !important;
-        height: 100vh !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        overflow: hidden !important;
-      }
-
-      .page {
-        /* Force letter-size width (8.5 inches = 816px at 96dpi) */
-        width: 816px !important;
-        max-width: 816px !important;
-        min-width: 816px !important;
-        
-        /* Fixed height for letter (11 inches = 1056px at 96dpi) */
-        height: 1056px !important;
-        max-height: 1056px !important;
-        
-        margin: 0 auto !important;
-        padding: 20px !important;
-        box-sizing: border-box !important;
-        
-        /* No zoom - use actual dimensions */
-        zoom: 1 !important;
-        transform: none !important;
-        
-        display: block !important;
-        overflow: hidden !important;
-        page-break-after: avoid !important;
-      }
-
-      .toolbar, #offline-banner {
-        display: none !important;
-      }
-
-      /* Scale content inside page proportionally */
-      .page * {
-        page-break-inside: avoid !important;
-      }
+    @page { 
+      size: letter portrait; 
+      margin: 0 !important;
+    }
+    
+    html {
+      overflow: hidden !important;
+    }
+    
+    body { 
+      margin: 0 !important; 
+      padding: 0 !important; 
+      width: 100% !important;
+      height: 100% !important;
+      overflow: hidden !important;
+      transform: translateZ(0) !important;
+      -webkit-transform: translateZ(0) !important;
+    }
+    
+    .page { 
+      width: 100% !important; 
+      max-width: 100% !important;
+      border: 5px solid #D97706 !important;
+      transform: translateZ(0) !important;
+      -webkit-transform: translateZ(0) !important;
+      zoom: ${CONFIG.primaryZoom} !important;
+      -webkit-zoom: ${CONFIG.primaryZoom} !important;
+    }
+    
+    .toolbar, #offline-banner { 
+      display: none !important;
     }
   `;
 
@@ -2615,7 +2595,6 @@ document.addEventListener('click', function(e) {
 
       var clone = pageEl.cloneNode(true);
 
-      /* Copy form values */
       var liveInputs = pageEl.querySelectorAll('input, textarea, select');
       var cloneInputs = clone.querySelectorAll('input, textarea, select');
       liveInputs.forEach(function(liveEl, i) {
@@ -2637,7 +2616,7 @@ document.addEventListener('click', function(e) {
       win.document.write(
         '<!DOCTYPE html><html><head>' +
         '<meta charset="UTF-8">' +
-        '<meta name="viewport" content="width=816px, initial-scale=1.0, user-scalable=no">' +
+        '<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">' +
         '<title>Print</title>' +
         existingStyles +
         '<style>' + PRINT_CSS + '</style>' +
@@ -2650,17 +2629,14 @@ document.addEventListener('click', function(e) {
       win.onload = function() {
         win.focus();
         
-        /* Delay to allow viewport calculation */
         setTimeout(function() {
           try {
             var printPageEl = win.document.querySelector('.page');
-            if (printPageEl) {
-              /* Force immediate reflow without zoom changes */
+            if (printPageEl && CONFIG.enableReflow) {
+              /* Force reflow with trigger zoom */
+              printPageEl.style.zoom = CONFIG.triggerZoom;
               void printPageEl.offsetHeight;
-              
-              /* Ensure it's locked at letter size */
-              printPageEl.style.width = '816px';
-              printPageEl.style.maxWidth = '816px';
+              printPageEl.style.zoom = CONFIG.primaryZoom;
               void printPageEl.offsetHeight;
             }
           } catch (e) {}
@@ -2670,7 +2646,7 @@ document.addEventListener('click', function(e) {
           setTimeout(function() {
             try { win.close(); } catch (e) {}
           }, 1000);
-        }, 600);  /* Increased timeout */
+        }, 500);
       };
     };
   }
