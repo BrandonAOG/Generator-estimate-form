@@ -2524,14 +2524,17 @@ document.addEventListener('click', function(e) {
 (function() {
   'use strict';
 
-  /* Detect if device is iOS (iPhone or iPad) */
   var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-
-  /* Detect if Safari (needs special handling) */
   var isSafari = /Safari/i.test(navigator.userAgent) &&
                  !/Chrome|CriOS|FxiOS|EdgiOS/i.test(navigator.userAgent);
 
-  /* Special print CSS for iOS */
+  /* ⚙️ ZOOM CONFIGURATION - ADJUST THESE */
+  var CONFIG = {
+    primaryZoom: 0.95,      /* Main zoom level */
+    triggerZoom: 0.96,      /* Reflow trigger (usually 0.01 higher) */
+    enableReflow: true      /* Set to false to disable reflow trick */
+  };
+
   var PRINT_CSS = `
     @page { 
       size: letter portrait; 
@@ -2558,46 +2561,40 @@ document.addEventListener('click', function(e) {
       border: 5px solid #D97706 !important;
       transform: translateZ(0) !important;
       -webkit-transform: translateZ(0) !important;
-      zoom: 0.95 !important;
-      -webkit-zoom: 0.95 !important;
+      zoom: ${CONFIG.primaryZoom} !important;
+      -webkit-zoom: ${CONFIG.primaryZoom} !important;
     }
     
     .toolbar, #offline-banner { 
-      display: none !important;  /* Hide buttons */
+      display: none !important;
     }
   `;
 
-  /* Apply CSS when print starts (iOS only) */
   window.addEventListener('beforeprint', function() {
     if (!isIOS) return;
     var styleEl = document.getElementById('mobile-print-styles');
     if (styleEl) styleEl.innerHTML = PRINT_CSS;
   });
 
-  /* Remove CSS when print ends (iOS only) */
   window.addEventListener('afterprint', function() {
     if (!isIOS) return;
     var styleEl = document.getElementById('mobile-print-styles');
     if (styleEl) styleEl.innerHTML = '';
   });
 
-  /* Override window.print() for Safari on iOS only */
   if (isIOS && isSafari) {
     window.print = function() {
       var pageEl = document.querySelector('.page');
       if (!pageEl) return;
 
-      /* Get all stylesheets */
       var existingStyles = Array.from(
         document.querySelectorAll('link[rel="stylesheet"], style')
       ).map(function(el) {
         return el.outerHTML;
       }).join('\n');
 
-      /* Clone form */
       var clone = pageEl.cloneNode(true);
 
-      /* Fill in form values from live inputs */
       var liveInputs = pageEl.querySelectorAll('input, textarea, select');
       var cloneInputs = clone.querySelectorAll('input, textarea, select');
       liveInputs.forEach(function(liveEl, i) {
@@ -2614,7 +2611,6 @@ document.addEventListener('click', function(e) {
         }
       });
 
-      /* Open new window with printable version */
       var win = window.open('', '_blank');
       win.document.open();
       win.document.write(
@@ -2630,22 +2626,18 @@ document.addEventListener('click', function(e) {
       );
       win.document.close();
 
-      /* Print when window loads with proper reflow */
       win.onload = function() {
         win.focus();
         
-        /* Force reflow to trigger proper zoom calculation */
         setTimeout(function() {
           try {
-            var pageEl = win.document.querySelector('.page');
-            if (pageEl) {
-              /* Trigger reflow */
-              void pageEl.offsetHeight;
-              /* Force Safari to recalculate */
-              pageEl.style.zoom = '0.96';
-              void pageEl.offsetHeight;
-              pageEl.style.zoom = '0.95';
-              void pageEl.offsetHeight;
+            var printPageEl = win.document.querySelector('.page');
+            if (printPageEl && CONFIG.enableReflow) {
+              /* Force reflow with trigger zoom */
+              printPageEl.style.zoom = CONFIG.triggerZoom;
+              void printPageEl.offsetHeight;
+              printPageEl.style.zoom = CONFIG.primaryZoom;
+              void printPageEl.offsetHeight;
             }
           } catch (e) {}
           
@@ -2654,7 +2646,7 @@ document.addEventListener('click', function(e) {
           setTimeout(function() {
             try { win.close(); } catch (e) {}
           }, 1000);
-        }, 500);  /* Increased timeout for reflow */
+        }, 500);
       };
     };
   }
