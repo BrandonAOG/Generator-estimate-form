@@ -1025,46 +1025,6 @@ body.print-mode select {
   label { color: #6B7280 !important; }
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   🔥 iOS SAFARI PRINT PREVIEW FIX (APPLIED LAST VIA CASCADE)
-   This MUST come AFTER the main @media print block.
-   It forces 816px width BEFORE the transform scale is applied,
-   preventing iOS Safari from laying out at 1050px.
-   ═══════════════════════════════════════════════════════════════ */
-@media print {
-  @supports (-webkit-touch-callout: none) {
-    /* iOS Safari ONLY */
-    html, body {
-      width: 100% !important;
-      height: 100% !important;
-      margin: 0 !important;
-      padding: 0 !important;
-    }
-    
-    .page {
-      width: 100% !important;
-      height: auto !important;
-      margin: 0 auto !important;
-      padding: 0 !important;
-      transform: scale(0.60) !important;
-      transform-origin: top center !important;
-      box-sizing: border-box !important;
-      display: block !important;
-    }
-  }
-
-  /* Edge, Chrome, Firefox, Safari (non-iOS) */
-  @supports not (-webkit-touch-callout: none) {
-    .page {
-      width: 8.5in !important;
-      height: 11in !important;
-      margin: 0 auto !important;
-      padding: 0 !important;
-      box-sizing: border-box !important;
-      page-break-after: always !important;
-    }
-  }
-}
 
 
 
