@@ -2730,7 +2730,15 @@ function setupGpsButton() {
     );
   });
 }
-
+// iOS-only print zoom — shrinks print output to 85% so the form fits on one page
+(function() {
+  var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  if (!isIOS) return;
+  
+  var iosPrintStyle = document.createElement('style');
+  iosPrintStyle.textContent = '@media print { body { zoom: 0.85 !important; } }';
+  document.head.appendChild(iosPrintStyle);
+})();
 // ────────────────────────────────────────────────────────────────
 // INITIALIZATION
 // ────────────────────────────────────────────────────────────────
