@@ -1698,6 +1698,46 @@ Customer Info
   </div>
 </div>
 <!-- ▲▲▲ END IMAGE MODAL ▲▲▲ -->
+// ============================================
+// MOBILE PRINT OPTIMIZATION (SAFE VERSION)
+// ============================================
+var PRINT_CSS = `
+  @media print {
+    * { margin: 0; padding: 0; }
+    body { margin: 0; padding: 0; zoom: 0.55; }
+    .page { width: 8.5in; height: 11in; margin: 0; padding: 0; page-break-after: avoid; }
+    .toolbar, #pdfModal, #imageModal, #offline-banner { display: none !important; }
+    input, textarea { border: none; background: none; }
+  }
+`;
+
+// Inject print CSS
+var styleEl = document.createElement('style');
+styleEl.textContent = PRINT_CSS;
+document.head.appendChild(styleEl);
+
+// Bind native print safely AFTER CSS is ready
+var nativePrint = window.print.bind(window);
+
+// Add beforeprint listener for iOS optimization
+window.addEventListener('beforeprint', function() {
+  console.log('[AOG] Print dialog opened');
+  // Optional: Add any last-minute adjustments here
+  document.querySelectorAll('input, textarea').forEach(function(el) {
+    if (el.value) {
+      el.style.color = '#000';
+      el.style.backgroundColor = 'transparent';
+    }
+  });
+});
+
+window.addEventListener('afterprint', function() {
+  console.log('[AOG] Print dialog closed');
+});
+
+if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+  document.body.classList.add('is-mobile-device');
+}
 
 <script>
 var nativePrint = window.print.bind(window);
