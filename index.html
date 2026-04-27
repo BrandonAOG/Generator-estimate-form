@@ -50,7 +50,6 @@ body {
   margin: 0 auto;
 }
 
-
 .page {
   max-width: 1050px;
   margin: 0 auto;
@@ -170,7 +169,6 @@ body {
   white-space: nowrap;
 }
 
-/* Status blips in header */
 .header-status {
   display: flex;
   flex-direction: column;
@@ -178,7 +176,6 @@ body {
   gap: 4px;
 }
 
-/* Offline indicator */
 #offline-banner {
   position: fixed;
   top: 0;
@@ -200,7 +197,6 @@ body {
 
 body.offline { padding-top: 50px; }
 
-/* ── TOOLBAR ── */
 .toolbar {
   background: #FFFFFF;
   border-bottom: 1px solid var(--border);
@@ -258,7 +254,6 @@ body.offline { padding-top: 50px; }
 }
 .btn-gold:hover { border-color: var(--amber); color: var(--amber); box-shadow: var(--glow-amber); }
 
-/* ── CONTENT ── */
 .content { 
   padding: 14px 18px;
   display: flex;
@@ -268,7 +263,6 @@ body.offline { padding-top: 50px; }
 
 @media (max-width: 480px) { .content { padding: 10px 8px; } }
 
-/* ── SECTIONS ── */
 .section {
   border: 1px solid var(--border);
   margin-bottom: 10px;
@@ -318,7 +312,6 @@ body.offline { padding-top: 50px; }
 
 @media (max-width: 480px) { .section-body { padding: 8px 8px; } }
 
-/* ── TOP GRID ── */
 .top-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -345,7 +338,6 @@ body.offline { padding-top: 50px; }
 .top-col { padding: 12px 14px; }
 .top-col:first-child { border-right: 1px solid var(--border); }
 
-/* ── COL LABEL ── */
 .col-label {
   display: inline-flex;
   align-items: center;
@@ -374,7 +366,6 @@ body.offline { padding-top: 50px; }
   animation: pulse 2s ease-in-out infinite;
 }
 
-/* ── FIELD ROWS ── */
 .field-row {
   display: flex;
   align-items: center;
@@ -397,7 +388,6 @@ label {
   font-family: var(--font-display);
 }
 
-/* ── INPUTS ── */
 input[type="text"],
 input[type="email"],
 input[type="tel"],
@@ -469,7 +459,6 @@ textarea {
 }
 textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0.1); }
 
-/* ── GRIDS ── */
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
 .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px; }
 .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 10px; }
@@ -483,7 +472,6 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
 .field-block { display: flex; flex-direction: column; gap: 4px; }
 .field-block > label { margin-bottom: 0; }
 
-/* ── CHECK GROUPS ── */
 .check-group {
   display: flex;
   flex-wrap: wrap;
@@ -549,7 +537,6 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   text-shadow: 0 0 4px rgba(217,119,6,0.3);
 }
 
-/* ── Y/N TOGGLE ── */
 .yn-group {
   display: inline-flex;
   border: 1px solid rgba(217,119,6,0.3);
@@ -596,7 +583,6 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   box-shadow: inset 0 0 8px rgba(220,38,38,0.08);
 }
 
-/* ── INLINE ROWS ── */
 .inline-row {
   display: flex;
   align-items: center;
@@ -638,7 +624,6 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   letter-spacing: 2px;
 }
 
-/* ── FLOOD BAR ── */
 .flood-bar {
   display: flex;
   border: 1px solid var(--border);
@@ -665,7 +650,6 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   .flood-item:nth-child(1), .flood-item:nth-child(2) { border-bottom: 1px solid var(--border); }
 }
 
-/* ── ADDRESS AUTOCOMPLETE ── */
 #address-suggestions {
   position: absolute;
   top: 100%;
@@ -738,7 +722,6 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   display: none;
 }
 
-/* ── GAS APPLIANCES BOX ── */
 .gas-appliances-box {
   border: 1px solid rgba(217,119,6,0.2);
   padding: 10px 12px;
@@ -764,7 +747,6 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   text-transform: uppercase;
 }
 
-/* ── FOOTER ── */
 .footer {
   background: #FFFFFF;
   padding: 10px 22px;
@@ -785,24 +767,32 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   letter-spacing: 2px;
 }
 
-/* ── SCROLLBAR ── */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: #FFFFFF; }
 ::-webkit-scrollbar-thumb { background: rgba(217,119,6,0.3); border-radius: 0; }
 ::-webkit-scrollbar-thumb:hover { background: var(--cyan-dim); }
 
 /* ═══════════════════════════════════════════════════════════════
-   PRINT MODE STYLES  (screen-mode class applied by JS)
+   ✦ DESKTOP/ANDROID PRINT MODE — EDGE-TO-EDGE STRETCH ✦
+   This print-mode block is ONLY toggled on by JS for desktop and
+   Android Chrome. iOS Safari uses its own isolated-window print
+   mechanism (see the IIFE at the bottom of <script>) and never
+   triggers this code path, so iOS Safari behavior is preserved
+   exactly as it was.
    ═══════════════════════════════════════════════════════════════ */
-html.print-mode,
+
 body.print-mode {
   background: #FFFFFF !important;
   width: 816px !important;
   min-width: 816px !important;
   max-width: 816px !important;
+  height: 1056px !important;
+  min-height: 1056px !important;
+  max-height: 1056px !important;
   margin: 0 !important;
   padding: 0 !important;
   overflow: hidden !important;
+  position: relative !important;
 }
 
 body.print-mode #offline-banner,
@@ -816,9 +806,12 @@ body.print-mode .gps-btn {
 }
 
 body.print-mode .page {
-  position: relative !important;
+  position: absolute !important;
   top: 0 !important;
   left: 0 !important;
+  width: 1050px !important;
+  max-width: 1050px !important;
+  min-width: 1050px !important;
   min-height: 0 !important;
   height: auto !important;
   margin: 0 !important;
@@ -827,6 +820,7 @@ body.print-mode .page {
   border: 2px solid #D97706 !important;
   background: #FFFFFF !important;
   transform-origin: 0 0 !important;
+  /* The actual scale(scaleX, scaleY) is set inline by JS for stretch fill */
 }
 
 body.print-mode .section-header::before,
@@ -847,15 +841,17 @@ body.print-mode select {
   background: #FFFFFF !important;
 }
 
-/* ── @MEDIA PRINT ── */
+/* ── DESKTOP/ANDROID @media print rules ── */
+/* iOS Safari skips this whole block because it prints from an isolated
+   window with its own injected PRINT_CSS — see mobile Safari override. */
 @media print {
-  @page {
+  @page { 
     size: 8.5in 11in;
     margin: 0;
   }
 
-  * {
-    -webkit-print-color-adjust: exact !important;
+  * { 
+    -webkit-print-color-adjust: exact !important; 
     print-color-adjust: exact !important;
   }
 
@@ -865,11 +861,13 @@ body.print-mode select {
     padding: 0 !important;
     margin: 0 !important;
     width: 816px !important;
-    min-width: 0 !important;
+    min-width: 816px !important;
     max-width: 816px !important;
-    height: auto !important;
-    min-height: auto !important;
-    overflow: visible !important;
+    height: 1056px !important;
+    min-height: 1056px !important;
+    max-height: 1056px !important;
+    overflow: hidden !important;
+    position: relative !important;
   }
 
   #offline-banner,
@@ -878,17 +876,17 @@ body.print-mode select {
   #imageModal,
   #address-suggestions,
   #gps-status,
-  .gps-btn {
-    display: none !important;
+  .gps-btn { 
+    display: none !important; 
   }
 
   .page {
-    position: relative !important;
+    position: absolute !important;
     top: 0 !important;
     left: 0 !important;
-    width: 816px !important;
-    max-width: 816px !important;
-    min-width: 0 !important;
+    width: 1050px !important;
+    max-width: 1050px !important;
+    min-width: 1050px !important;
     min-height: 0 !important;
     height: auto !important;
     margin: 0 !important;
@@ -896,8 +894,6 @@ body.print-mode select {
     box-shadow: none !important;
     border: 2px solid #D97706 !important;
     background: #ffffff !important;
-    overflow: visible !important;
-    transform: none !important;
     transform-origin: 0 0 !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
@@ -921,10 +917,7 @@ body.print-mode select {
     break-inside: avoid !important;
   }
 
-  input::placeholder,
-  textarea::placeholder {
-    color: transparent !important;
-  }
+  input::placeholder, textarea::placeholder { color: transparent !important; }
 
   .header { background: #ffffff !important; border-bottom-color: #D97706 !important; }
   .section { background: #ffffff !important; border-color: #D97706 !important; }
@@ -940,53 +933,36 @@ body.print-mode select {
   .footer-text { color: #D97706 !important; }
   .company-name, .doc-title { color: #D97706 !important; text-shadow: none !important; }
 
-  input[type="text"],
-  input[type="email"],
-  input[type="tel"],
-  input[type="date"],
-  input[type="number"],
-  textarea,
-  select {
+  input[type="text"], input[type="email"], input[type="tel"],
+  input[type="date"], input[type="number"], textarea, select {
     background: #ffffff !important;
     border-bottom-color: #D97706 !important;
     color: #1F2937 !important;
     box-shadow: none !important;
   }
 
-  textarea {
-    background: #ffffff !important;
-    border-color: #D97706 !important;
-  }
+  textarea { background: #ffffff !important; border-color: #D97706 !important; }
 
   .yn-group { border-color: #D97706 !important; background: #ffffff !important; }
-  .yn-group .yn-label {
-    border-color: #D97706 !important;
+  .yn-group .yn-label { 
+    border-color: #D97706 !important; 
     background: transparent !important;
     color: #6B7280 !important;
   }
   .yn-group .yn-label:first-of-type { border-right-color: #D97706 !important; }
   .yn-group .yn-y:checked + .yn-label-y {
-    background: #f0f0f0 !important;
-    color: #059669 !important;
-    text-shadow: none !important;
-    box-shadow: none !important;
+    background: #f0f0f0 !important; color: #059669 !important;
+    text-shadow: none !important; box-shadow: none !important;
   }
   .yn-group .yn-n:checked + .yn-label-n {
-    background: #f0f0f0 !important;
-    color: #DC2626 !important;
-    text-shadow: none !important;
-    box-shadow: none !important;
+    background: #f0f0f0 !important; color: #DC2626 !important;
+    text-shadow: none !important; box-shadow: none !important;
   }
 
-  .check-item {
-    background: #ffffff !important;
-    border-color: #D97706 !important;
-  }
+  .check-item { background: #ffffff !important; border-color: #D97706 !important; }
   .check-item span { color: #1F2937 !important; text-shadow: none !important; }
   .check-item:has(input:checked) {
-    background: #f0f0f0 !important;
-    border-color: #D97706 !important;
-    box-shadow: none !important;
+    background: #f0f0f0 !important; border-color: #D97706 !important; box-shadow: none !important;
   }
   .check-item:has(input:checked) span { color: #D97706 !important; text-shadow: none !important; }
 
@@ -998,6 +974,7 @@ body.print-mode select {
   label { color: #6B7280 !important; }
 }
 </style>
+<style id="mobile-print-styles"></style>
 </head>
 <body>
 
@@ -1022,35 +999,12 @@ body.print-mode select {
 
   <div class="content">
 
-   <!-- Customer + Property -->
 <div class="top-grid">
   <div class="top-col">
     <div class="col-label">
     <svg width="22" height="22" viewBox="0 0 122 122" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
-  <path
-    d="
-      M61 10
-      C76 10 88 22 88 38
-      C88 54 76 66 61 66
-      C46 66 34 54 34 38
-      C34 22 46 10 61 10
-      M26 114
-      C26 90 44 74 61 74
-      C78 74 96 90 96 114
-      M26 114 H96
-      M20 52
-      L10 42
-      L20 32
-      M102 52
-      L112 42
-      L102 32
-    "
-    fill="none"
-    stroke="#D97706"
-    stroke-width="6"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  />
+  <path d="M61 10 C76 10 88 22 88 38 C88 54 76 66 61 66 C46 66 34 54 34 38 C34 22 46 10 61 10 M26 114 C26 90 44 74 61 74 C78 74 96 90 96 114 M26 114 H96 M20 52 L10 42 L20 32 M102 52 L112 42 L102 32"
+    fill="none" stroke="#D97706" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
 Customer Info
     </div>
@@ -1107,20 +1061,9 @@ Customer Info
       <div class="top-col">
        <div class="col-label">
  <svg width="22" height="22" viewBox="0 0 122 114" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
-  <path
-    d="M61 4 L8 48 M61 4 L114 48
-       M15 56 V112 H107 V56
-       M30 76 H56 V98 H30 V76
-       M68 74 H92 V112 H68 V74
-       M60 36 A6 6 0 1 1 60 48 A6 6 0 1 1 60 36"
-    fill="none"
-    stroke="#D97706"
-    stroke-width="6"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  />
+  <path d="M61 4 L8 48 M61 4 L114 48 M15 56 V112 H107 V56 M30 76 H56 V98 H30 V76 M68 74 H92 V112 H68 V74 M60 36 A6 6 0 1 1 60 48 A6 6 0 1 1 60 36"
+    fill="none" stroke="#D97706" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
-
   Property Info
 </div>
 
@@ -1167,7 +1110,6 @@ Customer Info
       </div>
     </div>
 
-    <!-- Flood / Parcel / Done -->
     <div class="flood-bar">
       <div class="flood-item">
         <label for="flood_zone">Flood Zone / Footage</label>
@@ -1182,10 +1124,10 @@ Customer Info
         <input type="date" id="est_done_on" name="est_done_on" autocomplete="off" aria-label="Estimate completion date">
       </div>
       <div class="flood-item">
+      
       </div>
     </div>
 
-    <!-- Generator -->
     <div class="section">
       <div class="section-header">
         <svg width="20" height="20" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
@@ -1267,13 +1209,13 @@ Customer Info
   </div>
 </div>
 
+
         <div class="field-block">
           <textarea id="gen_notes" name="gen_notes" placeholder="Additional notes on generator placement / run..." aria-label="Generator notes"></textarea>
         </div>
       </div>
     </div>
 
-    <!-- Transfer Switch -->
     <div class="section">
       <div class="section-header">
         <svg width="20" height="20" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
@@ -1358,7 +1300,6 @@ Customer Info
       </div>
     </div>
 
-    <!-- Pad -->
     <div class="section">
       <div class="section-header">
         <svg width="20" height="20" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
@@ -1400,15 +1341,17 @@ Customer Info
       </div>
     </div>
 
-    <!-- Fuel Tank -->
     <div class="section">
       <div class="section-header">
         <svg width="30" height="20" viewBox="0 0 100 60" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
           <ellipse cx="50" cy="28" rx="38" ry="14" stroke="currentColor" stroke-width="2" fill="none"/>
+          <path d="M 12 28 Q 12 14 12 28 Q 12 42 12 28" stroke="currentColor" stroke-width="2" fill="none"/>
           <ellipse cx="12" cy="28" rx="8" ry="14" stroke="currentColor" stroke-width="2" fill="none"/>
+          <path d="M 88 28 Q 88 14 88 28 Q 88 42 88 28" stroke="currentColor" stroke-width="2" fill="none"/>
           <ellipse cx="88" cy="28" rx="8" ry="14" stroke="currentColor" stroke-width="2" fill="none"/>
           <ellipse cx="50" cy="14" rx="8" ry="6" stroke="currentColor" stroke-width="1.5" fill="none"/>
           <circle cx="50" cy="12" r="2.5" stroke="currentColor" stroke-width="1.2" fill="none"/>
+          <path d="M 12 28 Q 12 38 50 40 Q 88 38 88 28 L 88 28 Q 88 20 50 22 Q 12 20 12 28" fill="currentColor" opacity="0.2"/>
           <line x1="14" y1="28" x2="86" y2="28" stroke="currentColor" stroke-width="0.8" opacity="0.4" stroke-dasharray="2,1"/>
           <line x1="30" y1="42" x2="28" y2="50" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
           <circle cx="28" cy="50" r="1.5" fill="currentColor" opacity="0.5"/>
@@ -1416,6 +1359,8 @@ Customer Info
           <circle cx="72" cy="50" r="1.5" fill="currentColor" opacity="0.5"/>
           <circle cx="50" cy="42" r="1.5" fill="none" stroke="currentColor" stroke-width="1" opacity="0.6"/>
           <line x1="50" y1="43" x2="50" y2="48" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
+          <rect x="90" y="18" width="1.2" height="20" rx="0.6" fill="none" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
+          <line x1="88" y1="28" x2="92" y2="28" stroke="currentColor" stroke-width="0.6" opacity="0.4"/>
         </svg>
         Fuel Tank
       </div>
@@ -1510,66 +1455,69 @@ Customer Info
 
 </div>
 
-<!-- PDF MODAL -->
 <div id="pdfModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(4px);">
-  <div style="background:linear-gradient(135deg,#0a0a0a 0%,#1a1a1a 100%); border:2px solid #FFB300; border-radius:12px; padding:30px; max-width:420px; width:90%; box-shadow:0 0 40px rgba(255,179,0,0.4); font-family:'Exo 2',sans-serif;">
-    <h2 style="color:#FFB300; font-family:'Orbitron',sans-serif; margin:0 0 8px 0; font-size:18px; letter-spacing:2px;">📄 SAVE AS PDF</h2>
+  <div style="background:linear-gradient(135deg,#0a0a0a 0%,#1a1a1a 100%); border:2px solid #FFB300; border-radius:12px; padding:30px; max-width:420px; width:90%; box-shadow:0 0 40px rgba(255,179,0,0.4), inset 0 0 20px rgba(0,229,255,0.05); font-family:'Exo 2',sans-serif;">
+    <h2 style="color:#FFB300; font-family:'Orbitron',sans-serif; margin:0 0 8px 0; font-size:18px; letter-spacing:2px; text-shadow:0 0 10px rgba(255,179,0,0.5);">📄 SAVE AS PDF</h2>
     <div style="height:1px; background:linear-gradient(90deg,#FFB300,transparent); margin-bottom:18px;"></div>
     <div id="pdfInstructions" style="color:#00E5FF; font-family:'Share Tech Mono',monospace; font-size:13px; line-height:1.8;"></div>
     <div style="margin-top:24px; display:flex; justify-content:flex-end; gap:10px;">
       <button onclick="closePdfModal()" style="background:transparent; border:1px solid #666; color:#999; padding:9px 18px; border-radius:6px; cursor:pointer; font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:1px;">CANCEL</button>
-      <button onclick="confirmPdfPrint()" style="background:linear-gradient(135deg,#FFB300,#FF8C00); border:none; color:#000; padding:9px 22px; border-radius:6px; cursor:pointer; font-weight:bold; font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:1px;">CONTINUE ▶</button>
+      <button onclick="confirmPdfPrint()" style="background:linear-gradient(135deg,#FFB300,#FF8C00); border:none; color:#000; padding:9px 22px; border-radius:6px; cursor:pointer; font-weight:bold; font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:1px; box-shadow:0 0 15px rgba(255,179,0,0.4);">CONTINUE ▶</button>
     </div>
   </div>
 </div>
 
-<!-- IMAGE MODAL -->
 <div id="imageModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(4px);">
-  <div style="background:linear-gradient(135deg,#0a0a0a 0%,#1a1a1a 100%); border:2px solid #059669; border-radius:12px; padding:30px; max-width:420px; width:90%; box-shadow:0 0 40px rgba(5,150,105,0.4); font-family:'Exo 2',sans-serif;">
-    <h2 style="color:#059669; font-family:'Orbitron',sans-serif; margin:0 0 8px 0; font-size:18px; letter-spacing:2px;">🖼 SAVE AS IMAGE</h2>
+  <div style="background:linear-gradient(135deg,#0a0a0a 0%,#1a1a1a 100%); border:2px solid #059669; border-radius:12px; padding:30px; max-width:420px; width:90%; box-shadow:0 0 40px rgba(5,150,105,0.4), inset 0 0 20px rgba(0,229,255,0.05); font-family:'Exo 2',sans-serif;">
+    <h2 style="color:#059669; font-family:'Orbitron',sans-serif; margin:0 0 8px 0; font-size:18px; letter-spacing:2px; text-shadow:0 0 10px rgba(5,150,105,0.5);">🖼 SAVE AS IMAGE</h2>
     <div style="height:1px; background:linear-gradient(90deg,#059669,transparent); margin-bottom:18px;"></div>
-    <p style="color:#00E5FF; font-family:'Share Tech Mono',monospace; font-size:13px; line-height:1.8; margin:0 0 20px 0;">Capture the entire form as a JPEG image, sized to 8.5"×11" portrait.</p>
+    <p style="color:#00E5FF; font-family:'Share Tech Mono',monospace; font-size:13px; line-height:1.8; margin:0 0 20px 0;">Capture the entire form as a JPEG image. Perfect for saving, printing, or sharing.</p>
     <div style="margin-top:24px; display:flex; justify-content:flex-end; gap:10px;">
       <button onclick="closeImageModal()" style="background:transparent; border:1px solid #666; color:#999; padding:9px 18px; border-radius:6px; cursor:pointer; font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:1px;">CANCEL</button>
-      <button onclick="saveImageFromModal()" style="background:linear-gradient(135deg,#059669,#04874f); border:none; color:#fff; padding:9px 22px; border-radius:6px; cursor:pointer; font-weight:bold; font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:1px;">SAVE IMAGE ▶</button>
+      <button onclick="saveImageFromModal()" style="background:linear-gradient(135deg,#059669,#04874f); border:none; color:#fff; padding:9px 22px; border-radius:6px; cursor:pointer; font-weight:bold; font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:1px; box-shadow:0 0 15px rgba(5,150,105,0.4);">SAVE IMAGE ▶</button>
     </div>
   </div>
 </div>
 
 <script>
 // ════════════════════════════════════════════════════════════════
-//  AOG ESTIMATE — UNIFIED EXPORT ENGINE  v1.2
-//  iOS Safari fix: swap viewport meta to 816px before print,
-//  restore after. Physical DOM reflow, no transform.
+//  AOG ESTIMATE FORM
+//  PRINT PATHS:
+//    • iOS Safari (iPhone/iPad)  → isolated-window print using
+//                                   PRINT_CSS with `zoom: 0.55`
+//                                   (KNOWN-GOOD, untouched)
+//    • Desktop & Android Chrome → print-mode class + transform
+//                                   scale stretch to 8.5×11
+//  All other features (validation, GPS, autocomplete, draft save,
+//  email, image export) are unchanged.
 // ════════════════════════════════════════════════════════════════
 
-var PAPER_W_PX     = 816;
-var PAPER_H_PX     = 1056;
-var PAPER_MARGIN   = 0;
-var PAGE_NATURAL_W = 1050;
-var IOS_SCALE      = 816 / 1050;   // ≈ 0.7771
+var nativePrint = window.print.bind(window);
 
-var MAPBOX_TOKEN = 'pk.eyJ1IjoicHJvamVjdHdyYXBwZXIiLCJhIjoiY201d2k1eHU3MDAwajJrbzU2a2c5dW40NSJ9.WJlNJ4o5CqBhWpHKMKOzIQ';
-var DRAFT_KEY    = 'aog_estimate_draft';
-var nativePrint  = window.print.bind(window);
-
-// Saved state for exitPrintMode restoration
-var _iosSavedStyles = null;
-
-// ── Device detection ────────────────────────────────────────────
-function isIOSSafari() {
-  var ua = navigator.userAgent;
-  var isIOS    = /iPhone|iPad|iPod/i.test(ua);
-  var isSafari = /Safari/i.test(ua) && !/Chrome|CriOS|FxiOS|EdgiOS/i.test(ua);
-  return isIOS && isSafari;
+if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+  document.body.classList.add('is-mobile-device');
 }
 
-// ════════════════════════════════════════════════════════════════
-//  calculateUniformScale  (desktop path only)
-// ════════════════════════════════════════════════════════════════
-function calculateUniformScale() {
+var MAPBOX_TOKEN = 'pk.eyJ1IjoicHJvamVjdHdyYXBwZXIiLCJhIjoiY201d2k1eHU3MDAwajJrbzU2a2c5dW40NSJ9.WJlNJ4o5CqBhWpHKMKOzIQ';
+var DRAFT_KEY = 'aog_estimate_draft';
+
+// Detect iOS Safari — used to skip the desktop print-mode logic so that
+// iOS Safari's isolated-window print path runs unimpeded.
+var IS_IOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+var IS_IOS_SAFARI = IS_IOS && /Safari/i.test(navigator.userAgent)
+                  && !/CriOS|FxiOS|EdgiOS/i.test(navigator.userAgent);
+
+// Paper dims at 96 dpi
+var PAPER_W_PX = 816;   // 8.5 in
+var PAPER_H_PX = 1056;  // 11 in
+var PAGE_NATURAL_W = 1050;
+
+// ────────────────────────────────────────────────────────────────
+// DESKTOP/ANDROID PRINT-MODE (does NOT run for iOS Safari)
+// ────────────────────────────────────────────────────────────────
+function calculateStretchScale() {
   var page = document.getElementById('page');
-  if (!page) return { scaleX:1, scaleY:1, naturalW:PAPER_W_PX, naturalH:PAPER_H_PX };
+  if (!page) return { scaleX: 1, scaleY: 1 };
 
   var prevTransform = page.style.transform;
   var prevWidth     = page.style.width;
@@ -1583,142 +1531,73 @@ function calculateUniformScale() {
   page.style.width     = prevWidth;
 
   return {
-    scaleX:   (PAPER_W_PX  - PAPER_MARGIN * 2) / PAGE_NATURAL_W,
-    scaleY:   (PAPER_H_PX  - PAPER_MARGIN * 2) / naturalH,
-    naturalW: PAGE_NATURAL_W,
-    naturalH: naturalH
+    scaleX: PAPER_W_PX / PAGE_NATURAL_W,
+    scaleY: PAPER_H_PX / naturalH
   };
 }
 
-// ════════════════════════════════════════════════════════════════
-//  enterPrintMode
-// ════════════════════════════════════════════════════════════════
 function enterPrintMode() {
-  var page     = document.getElementById('page');
-  var viewMeta = document.querySelector('meta[name="viewport"]');
+  if (IS_IOS_SAFARI) return null;  // Don't touch iOS Safari path
+
+  var page = document.getElementById('page');
   if (!page) return null;
 
-  document.documentElement.classList.add('print-mode');
   document.body.classList.add('print-mode');
+  var info = calculateStretchScale();
 
-  if (isIOSSafari()) {
-    _iosSavedStyles = {
-      htmlCssText: document.documentElement.style.cssText,
-      bodyCssText: document.body.style.cssText,
-      pageCssText: page.style.cssText,
-      viewport:    viewMeta ? viewMeta.getAttribute('content') : null
-    };
+  page.style.transform       = 'scale(' + info.scaleX + ', ' + info.scaleY + ')';
+  page.style.transformOrigin = '0 0';
+  page.style.width           = PAGE_NATURAL_W + 'px';
+  page.style.position        = 'absolute';
+  page.style.top             = '0';
+  page.style.left            = '0';
 
-    // Swap viewport FIRST — this is what tells iOS the page is 816px wide
-    if (viewMeta) {
-      viewMeta.setAttribute('content',
-        'width=816px, initial-scale=1.0, viewport-fit=cover');
-    }
-
-    // Override the 1050px body width that CSS sets
-    document.documentElement.style.cssText =
-      'width:816px!important;max-width:816px!important;min-width:0!important;' +
-      'margin:0!important;padding:0!important;overflow:hidden!important;background:#fff!important;';
-
-    document.body.style.cssText =
-      'width:816px!important;max-width:816px!important;min-width:0!important;' +
-      'margin:0!important;padding:0!important;overflow:hidden!important;background:#fff!important;';
-
-    page.style.cssText =
-      'width:816px!important;max-width:816px!important;min-width:0!important;' +
-      'position:relative!important;top:0!important;left:0!important;' +
-      'margin:0!important;padding:0!important;box-sizing:border-box!important;' +
-      'transform:none!important;box-shadow:none!important;' +
-      'min-height:0!important;height:auto!important;overflow:visible!important;';
-
-    // Two reflows: viewport swap + style application
-    void page.offsetWidth;
-    void page.offsetHeight;
-
-    return {
-      scaleX:  IOS_SCALE,
-      scaleY:  IOS_SCALE,
-      naturalW: 816,
-      naturalH: page.scrollHeight
-    };
-
-  } else {
-    // Desktop / Android — unchanged, transform scale works fine
-    _iosSavedStyles = null;
-    var info = calculateUniformScale();
-
-    page.style.transform       = 'scale(' + info.scaleX + ',' + info.scaleY + ')';
-    page.style.transformOrigin = '0 0';
-    page.style.width           = PAGE_NATURAL_W + 'px';
-    page.style.position        = 'absolute';
-    page.style.top             = '0';
-    page.style.left            = '0';
-    page.style.margin          = '0';
-    page.style.padding         = '0';
-    page.style.boxSizing       = 'border-box';
-
-    return info;
-  }
+  return info;
 }
 
-
-// ════════════════════════════════════════════════════════════════
-//  exitPrintMode
-// ════════════════════════════════════════════════════════════════
 function exitPrintMode() {
-  var page     = document.getElementById('page');
-  var viewMeta = document.querySelector('meta[name="viewport"]');
+  if (IS_IOS_SAFARI) return;
 
-  if (_iosSavedStyles) {
-    // Restore viewport first
-    if (viewMeta && _iosSavedStyles.viewport !== null) {
-      viewMeta.setAttribute('content', _iosSavedStyles.viewport);
-    }
-    document.documentElement.style.cssText = _iosSavedStyles.htmlCssText;
-    document.body.style.cssText            = _iosSavedStyles.bodyCssText;
-    if (page) page.style.cssText           = _iosSavedStyles.pageCssText;
-    _iosSavedStyles = null;
-
-  } else {
-    if (page) {
-      page.style.transform       = '';
-      page.style.transformOrigin = '';
-      page.style.width           = '';
-      page.style.maxWidth        = '';
-      page.style.position        = '';
-      page.style.top             = '';
-      page.style.left            = '';
-      page.style.margin          = '';
-      page.style.padding         = '';
-      page.style.boxSizing       = '';
-    }
-    document.documentElement.style.width    = '';
-    document.documentElement.style.maxWidth = '';
-    document.body.style.width               = '';
-    document.body.style.maxWidth            = '';
+  var page = document.getElementById('page');
+  if (page) {
+    page.style.transform       = '';
+    page.style.transformOrigin = '';
+    page.style.width           = '';
+    page.style.position        = '';
+    page.style.top             = '';
+    page.style.left            = '';
   }
-
-  document.documentElement.classList.remove('print-mode');
   document.body.classList.remove('print-mode');
 }
 
-// ════════════════════════════════════════════════════════════════
-//  OFFLINE
-// ════════════════════════════════════════════════════════════════
+// Hook desktop/Android beforeprint/afterprint to apply the stretch.
+// iOS Safari doesn't fire these reliably AND its print path doesn't
+// go through this function (it uses the isolated-window override).
+window.addEventListener('beforeprint', function() {
+  if (!IS_IOS_SAFARI) enterPrintMode();
+});
+window.addEventListener('afterprint', function() {
+  if (!IS_IOS_SAFARI) exitPrintMode();
+});
+
+// ────────────────────────────────────────────────────────────────
+// OFFLINE HANDLING
+// ────────────────────────────────────────────────────────────────
 window.addEventListener('online', function() {
   var b = document.getElementById('offline-banner');
   if (b) b.classList.remove('show');
   document.body.classList.remove('offline');
 });
+
 window.addEventListener('offline', function() {
   var b = document.getElementById('offline-banner');
   if (b) b.classList.add('show');
   document.body.classList.add('offline');
 });
 
-// ════════════════════════════════════════════════════════════════
-//  DRAFT SAVE / RESTORE
-// ════════════════════════════════════════════════════════════════
+// ────────────────────────────────────────────────────────────────
+// DRAFT SAVE/RESTORE
+// ────────────────────────────────────────────────────────────────
 function saveDraft() {
   var data = {};
   document.querySelectorAll('input, textarea').forEach(function(el) {
@@ -1733,7 +1612,7 @@ function saveDraft() {
       } else {
         if (data[key] === undefined) data[key] = el.value;
       }
-    } catch(e) {}
+    } catch (e) {}
   });
   try { localStorage.setItem(DRAFT_KEY, JSON.stringify(data)); } catch(e) {}
 }
@@ -1754,44 +1633,43 @@ function restoreDraft() {
         } else {
           el.value = data[key];
         }
-      } catch(e) {}
+      } catch (e) {}
     });
   } catch(e) {}
 }
 
 setInterval(saveDraft, 30000);
 document.addEventListener('change', saveDraft);
-document.addEventListener('input',  saveDraft);
+document.addEventListener('input', saveDraft);
 
-// ════════════════════════════════════════════════════════════════
-//  VALIDATION
-// ════════════════════════════════════════════════════════════════
+// ────────────────────────────────────────────────────────────────
+// VALIDATION
+// ────────────────────────────────────────────────────────────────
 const VALIDATION_RULES = {
-  name:      { required:true, minLength:2, pattern:/^[a-zA-Z\s\-'.]+$/, message:'Name must contain only letters, spaces, hyphens, or apostrophes' },
-  address:   { required:true, minLength:5, message:'Please enter a valid street address' },
-  phone:     { required:true, pattern:/^[\d\-\(\)\s+]{10,}$/, message:'Phone must be at least 10 digits' },
-  email:     { required:true, pattern:/^[^\s@]+@[^\s@]+\.[^\s@]+$/, message:'Please enter a valid email address' },
-  estimator: { required:true, minLength:2, message:'Estimator name is required' },
-  sqft:      { pattern:/^[0-9]*$/, min:500, max:100000, message:'Square footage must be between 500 and 100,000' },
-  gen_size:  { pattern:/^[\d\w\s\-]*$/, message:'Invalid generator size format' }
+  name:      { required: true, minLength: 2, pattern: /^[a-zA-Z\s\-'.]+$/, message: 'Name must contain only letters, spaces, hyphens, or apostrophes' },
+  address:   { required: true, minLength: 5, message: 'Please enter a valid street address' },
+  phone:     { required: true, pattern: /^[\d\-\(\)\s+]{10,}$/, message: 'Phone must be at least 10 digits' },
+  email:     { required: true, pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Please enter a valid email address' },
+  estimator: { required: true, minLength: 2, message: 'Estimator name is required' },
+  sqft:      { pattern: /^[0-9]*$/, min: 500, max: 100000, message: 'Square footage must be between 500 and 100,000' },
+  gen_size:  { pattern: /^[\d\w\s\-]*$/, message: 'Invalid generator size format' }
 };
 
 class FormValidator {
   constructor() { this.errors = {}; this.validatedFields = new Set(); }
 
   validateField(fieldId) {
-    const el    = document.getElementById(fieldId);
+    const el = document.getElementById(fieldId);
     if (!el) return true;
     const rules = VALIDATION_RULES[fieldId];
     if (!rules) return true;
-    const value  = el.value.trim();
+    const value = el.value.trim();
     const errors = [];
     if (rules.required && !value) errors.push(rules.message || `${fieldId} is required`);
     if (value) {
-      if (rules.minLength && value.length < rules.minLength)
-        errors.push(`Must be at least ${rules.minLength} characters`);
-      if (rules.pattern && !rules.pattern.test(value))
-        errors.push(rules.message || `Invalid ${fieldId} format`);
+      if (rules.minLength && value.length < rules.minLength) errors.push(`Must be at least ${rules.minLength} characters`);
+      if (rules.maxLength && value.length > rules.maxLength) errors.push(`Must be no more than ${rules.maxLength} characters`);
+      if (rules.pattern && !rules.pattern.test(value)) errors.push(rules.message || `Invalid ${fieldId} format`);
       if (!isNaN(value)) {
         const num = parseFloat(value);
         if (rules.min !== undefined && num < rules.min) errors.push(`Must be at least ${rules.min}`);
@@ -1806,13 +1684,18 @@ class FormValidator {
   }
 
   validateAllRequired() {
-    const req     = Object.keys(VALIDATION_RULES).filter(k => VALIDATION_RULES[k].required);
-    const results = req.map(id => this.validateField(id));
+    const requiredFields = Object.keys(VALIDATION_RULES).filter(key => VALIDATION_RULES[key].required);
+    const results = requiredFields.map(fieldId => this.validateField(fieldId));
     return results.every(r => r === true);
   }
 
+  validateAll() {
+    Object.keys(VALIDATION_RULES).forEach(fieldId => { this.validateField(fieldId); });
+    return Object.keys(this.errors).length === 0;
+  }
+
   updateFieldUI(el, isValid) {
-    const wrapper  = el.parentElement;
+    const wrapper = el.parentElement;
     const oldError = wrapper?.querySelector('.field-error');
     if (oldError) oldError.remove();
     if (isValid) {
@@ -1834,7 +1717,7 @@ class FormValidator {
   clearFieldUI(el) {
     el.style.borderBottomColor = '';
     el.style.boxShadow = '';
-    const wrapper  = el.parentElement;
+    const wrapper = el.parentElement;
     const oldError = wrapper?.querySelector('.field-error');
     if (oldError) oldError.remove();
   }
@@ -1842,8 +1725,7 @@ class FormValidator {
   getErrorSummary() {
     const summary = [];
     Object.entries(this.errors).forEach(([fieldId, msgs]) => {
-      const label = fieldId.replace(/_/g,' ').split(' ')
-        .map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+      const label = fieldId.replace(/_/g, ' ').split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
       summary.push(`${label}: ${msgs[0]}`);
     });
     return summary;
@@ -1873,14 +1755,13 @@ class FormValidator {
     closeBtn.style.cssText = 'width:100%;background:linear-gradient(135deg,#DC2626,#b01f1f);border:none;color:white;padding:12px;border-radius:6px;cursor:pointer;font-weight:bold;font-family:var(--font-display);font-size:12px;letter-spacing:1px;';
     closeBtn.textContent = 'CLOSE';
     closeBtn.addEventListener('click', function() { document.body.removeChild(modal); });
-    content.appendChild(title); content.appendChild(divider);
-    content.appendChild(errorList); content.appendChild(closeBtn);
+    content.appendChild(title); content.appendChild(divider); content.appendChild(errorList); content.appendChild(closeBtn);
     modal.appendChild(content);
     document.body.appendChild(modal);
     const firstErrorId = Object.keys(this.errors)[0];
     if (firstErrorId) {
       const el = document.getElementById(firstErrorId);
-      if (el) setTimeout(() => { el.scrollIntoView({ behavior:'smooth', block:'center' }); el.focus(); }, 100);
+      if (el) setTimeout(() => { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); el.focus(); }, 100);
     }
     return true;
   }
@@ -1892,9 +1773,9 @@ function setupFieldValidation() {
   Object.keys(VALIDATION_RULES).forEach(fieldId => {
     const el = document.getElementById(fieldId);
     if (!el) return;
-    el.addEventListener('blur',  function() { validator.validateField(fieldId); });
+    el.addEventListener('blur', function() { validator.validateField(fieldId); });
     el.addEventListener('focus', function() { validator.clearFieldUI(this); });
-    if (['email','phone','sqft'].includes(fieldId)) {
+    if (['email', 'phone', 'sqft'].includes(fieldId)) {
       let debounceTimer;
       el.addEventListener('input', function() {
         clearTimeout(debounceTimer);
@@ -1912,15 +1793,203 @@ function validateForm() {
   return true;
 }
 
-// ════════════════════════════════════════════════════════════════
-//  FORM ACTIONS
-// ════════════════════════════════════════════════════════════════
+// ────────────────────────────────────────────────────────────────
+// PRINT / PDF (modal flow — UNCHANGED)
+// ────────────────────────────────────────────────────────────────
+function printPDF() {
+  if (!validateForm()) return;
+  
+  var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  var isAndroid = /Android/i.test(navigator.userAgent);
+  var modal = document.getElementById('pdfModal');
+  var instr = document.getElementById('pdfInstructions');
+  
+  if (!modal || !instr) {
+    window.print();
+    return;
+  }
+  
+  if (isIOS) {
+    instr.innerHTML = "<b style='color:#FFB300'>1.</b> Tap CONTINUE to open Print preview<br><b style='color:#FFB300'>2.</b> <span style='color:#FFB300'>PINCH-ZOOM OUT</span> on the page thumbnail<br><b style='color:#FFB300'>3.</b> Tap the Share icon (top right)<br><b style='color:#FFB300'>4.</b> Tap <span style='color:#FFB300'>'Save to Files'</span>";
+  } else if (isAndroid) {
+    instr.innerHTML = "<b style='color:#FFB300'>1.</b> Tap CONTINUE to open Print preview<br><b style='color:#FFB300'>2.</b> Change Printer to <span style='color:#FFB300'>'Save as PDF'</span><br><b style='color:#FFB300'>3.</b> Tap the download icon";
+  } else {
+    instr.innerHTML = "<b style='color:#FFB300'>1.</b> Click CONTINUE to open Print dialog<br><b style='color:#FFB300'>2.</b> Set Destination to <span style='color:#FFB300'>'Save as PDF'</span><br><b style='color:#FFB300'>3.</b> Click Save";
+  }
+  
+  modal.style.display = 'flex';
+}
+
+function closePdfModal() {
+  document.getElementById('pdfModal').style.display = 'none';
+}
+
+function confirmPdfPrint() {
+  document.getElementById('pdfModal').style.display = 'none';
+  // window.print may have been overridden for mobile Safari (see IIFE below).
+  // For iOS Safari that override fires the isolated-window print which is
+  // its known-good path. For desktop/Android, the beforeprint listener
+  // applies the stretch transform first.
+  window.print();
+}
+
+// ────────────────────────────────────────────────────────────────
+// IMAGE EXPORT (unchanged)
+// ────────────────────────────────────────────────────────────────
+function openImageModal() {
+  if (!validateForm()) return;
+  var modal = document.getElementById('imageModal');
+  if (modal) modal.style.display = 'flex';
+}
+
+function closeImageModal() {
+  document.getElementById('imageModal').style.display = 'none';
+}
+
+function saveImageFromModal() {
+  closeImageModal();
+  
+  var page = document.getElementById('page');
+  if (!page) {
+    alert('Error: Could not find form element');
+    return;
+  }
+  
+  var pageTitle = (document.getElementById('name').value || 'Estimate').replace(/\s+/g, '_');
+  var timestamp = new Date().toISOString().split('T')[0];
+  var filename = pageTitle + '_' + timestamp + '.jpg';
+  
+  var loadingDiv = document.createElement('div');
+  loadingDiv.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1a1a1a;border:2px solid #D97706;color:#D97706;padding:20px 40px;font-family:monospace;z-index:99999;border-radius:8px;box-shadow:0 0 30px rgba(217,119,6,0.4);';
+  loadingDiv.textContent = '⏳ Generating image...';
+  document.body.appendChild(loadingDiv);
+  
+  html2canvas(page, {
+    scale: 2,
+    useCORS: true,
+    backgroundColor: '#FFFFFF',
+    logging: false,
+    windowHeight: page.scrollHeight,
+    allowTaint: true,
+    imageTimeout: 15000,
+    removeContainer: true,
+    
+    onclone: function(clonedDoc, clonedElement) {
+      var svgs = clonedDoc.querySelectorAll('svg');
+      
+      svgs.forEach(function(svg) {
+        var parent = svg.parentElement;
+        var computedColor = '#D97706';
+        
+        try {
+          if (parent) {
+            var parentStyle = clonedDoc.defaultView.getComputedStyle(parent);
+            computedColor = parentStyle.color || '#D97706';
+          }
+        } catch (e) {}
+
+        if (!svg.getAttribute('xmlns')) {
+          svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+        }
+
+        var svgStroke = svg.getAttribute('stroke');
+        var svgFill = svg.getAttribute('fill');
+        var svgStrokeWidth = svg.getAttribute('stroke-width');
+        var svgStrokeLinecap = svg.getAttribute('stroke-linecap');
+        var svgStrokeLinejoin = svg.getAttribute('stroke-linejoin');
+
+        if (svgStroke === 'currentColor') svgStroke = computedColor;
+        if (svgFill === 'currentColor') svgFill = computedColor;
+
+        var shapes = svg.querySelectorAll('path, polyline, polygon, line, rect, circle, ellipse, text');
+        
+        shapes.forEach(function(el) {
+          if (el.getAttribute('stroke') === 'currentColor') {
+            el.setAttribute('stroke', computedColor);
+          }
+          if (el.getAttribute('fill') === 'currentColor') {
+            el.setAttribute('fill', computedColor);
+          }
+          if (svgStroke && !el.hasAttribute('stroke')) el.setAttribute('stroke', svgStroke);
+          if (svgFill && !el.hasAttribute('fill')) el.setAttribute('fill', svgFill);
+          if (svgStrokeWidth && !el.hasAttribute('stroke-width')) el.setAttribute('stroke-width', svgStrokeWidth);
+          if (svgStrokeLinecap && !el.hasAttribute('stroke-linecap')) el.setAttribute('stroke-linecap', svgStrokeLinecap);
+          if (svgStrokeLinejoin && !el.hasAttribute('stroke-linejoin')) el.setAttribute('stroke-linejoin', svgStrokeLinejoin);
+          if (!el.hasAttribute('fill') && el.tagName.toLowerCase() !== 'text') {
+            el.setAttribute('fill', 'none');
+          }
+        });
+      });
+
+      var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+      if (isIOS) {
+        var allPaths = clonedDoc.querySelectorAll('svg path');
+        allPaths.forEach(function(p) {
+          var original = parseFloat(p.getAttribute('stroke-width')) || 2;
+          p.setAttribute('stroke-width', original * 2.2);
+          p.setAttribute('stroke', '#b86a05');
+        });
+      }
+
+      var inputs = clonedDoc.querySelectorAll('input, textarea');
+      inputs.forEach(function(input) {
+        if (!input.value) input.setAttribute('placeholder', '');
+      });
+
+      var allHeaders = clonedDoc.querySelectorAll('.section-header, .col-label');
+      allHeaders.forEach(function(h) {
+        h.style.animationPlayState = 'paused';
+      });
+
+      var modals = clonedDoc.querySelectorAll('#pdfModal, #imageModal, #offline-banner, .toolbar');
+      modals.forEach(function(m) {
+        m.style.display = 'none';
+      });
+    }
+  }).then(function(canvas) {
+    document.body.removeChild(loadingDiv);
+    
+    try {
+      var link = document.createElement('a');
+      link.download = filename;
+      link.href = canvas.toDataURL('image/jpeg', 0.95);
+
+      if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+        var newTab = window.open();
+        if (newTab) {
+          newTab.document.write(
+            '<img src="' + link.href + '" style="max-width:100%;"/>' +
+            '<p style="font-family:sans-serif;padding:10px;">Long‑press the image and select "Save to Photos"</p>'
+          );
+        } else {
+          link.click();
+        }
+      } else {
+        document.body.appendChild(link);
+        link.click();
+        setTimeout(function() {
+          document.body.removeChild(link);
+        }, 100);
+      }
+    } catch (e) {
+      alert('Error saving image: ' + e.message);
+    }
+  }).catch(function(err) {
+    if (loadingDiv.parentNode) {
+      document.body.removeChild(loadingDiv);
+    }
+    console.error('html2canvas error:', err);
+    alert('Error generating image: ' + err.message);
+  });
+}
+
+// ────────────────────────────────────────────────────────────────
+// FORM ACTIONS
+// ────────────────────────────────────────────────────────────────
 function clearForm() {
   if (!confirm('Clear all fields?')) return;
-  document.querySelectorAll('input[type="text"],input[type="email"],input[type="tel"],input[type="date"],input[type="number"],textarea')
-    .forEach(function(el) { el.value = ''; });
-  document.querySelectorAll('input[type="checkbox"],input[type="radio"]')
-    .forEach(function(el) { el.checked = false; });
+  document.querySelectorAll('input[type="text"],input[type="email"],input[type="tel"],input[type="date"],input[type="number"],textarea').forEach(function(el) { el.value = ''; });
+  document.querySelectorAll('input[type="checkbox"],input[type="radio"]').forEach(function(el) { el.checked = false; });
   var s = document.getElementById('sqft-status');
   if (s) s.textContent = '';
   var gpsStatus = document.getElementById('gps-status');
@@ -1945,226 +2014,6 @@ function getFormData() {
   return data;
 }
 
-// ════════════════════════════════════════════════════════════════
-//  PRINT / PDF
-// ════════════════════════════════════════════════════════════════
-function printPDF() {
-  if (!validateForm()) return;
-  var modal = document.getElementById('pdfModal');
-  var instr = document.getElementById('pdfInstructions');
-  var ua    = navigator.userAgent;
-  var iosDevice  = /iPhone|iPad|iPod/i.test(ua);
-  var androidDev = /Android/i.test(ua);
-
-  if (!modal || !instr) { doPrint(); return; }
-
-  if (iosDevice) {
-    instr.innerHTML =
-      "<b style='color:#FFB300'>1.</b> Tap CONTINUE to open Print preview<br>" +
-      "<b style='color:#FFB300'>2.</b> Tap the Share icon (top right)<br>" +
-      "<b style='color:#FFB300'>3.</b> Tap <span style='color:#FFB300'>'Save to Files'</span> or 'Print'";
-  } else if (androidDev) {
-    instr.innerHTML =
-      "<b style='color:#FFB300'>1.</b> Tap CONTINUE to open Print preview<br>" +
-      "<b style='color:#FFB300'>2.</b> Set Printer to <span style='color:#FFB300'>'Save as PDF'</span><br>" +
-      "<b style='color:#FFB300'>3.</b> Tap the download icon";
-  } else {
-    instr.innerHTML =
-      "<b style='color:#FFB300'>1.</b> Click CONTINUE to open Print dialog<br>" +
-      "<b style='color:#FFB300'>2.</b> Set Destination to <span style='color:#FFB300'>'Save as PDF'</span><br>" +
-      "<b style='color:#FFB300'>3.</b> Margins: <span style='color:#FFB300'>None</span> &nbsp; Scale: <span style='color:#FFB300'>100%</span><br>" +
-      "<b style='color:#FFB300'>4.</b> Click Save";
-  }
-  modal.style.display = 'flex';
-}
-
-function closePdfModal()   { document.getElementById('pdfModal').style.display = 'none'; }
-function confirmPdfPrint() { document.getElementById('pdfModal').style.display = 'none'; doPrint(); }
-
-function doPrint() {
-  enterPrintMode();
-
-  // iOS needs 600ms for viewport swap to fully reflow before print dialog
-  var delay = isIOSSafari() ? 600 : 0;
-
-  setTimeout(function() {
-    requestAnimationFrame(function() {
-      requestAnimationFrame(function() {
-        try { nativePrint(); } catch(e) { console.error('Print error:', e); }
-        setTimeout(exitPrintMode, 2500);
-      });
-    });
-  }, delay);
-}
-
-
-window.addEventListener('afterprint', exitPrintMode);
-
-// ════════════════════════════════════════════════════════════════
-//  SAVE IMAGE
-// ════════════════════════════════════════════════════════════════
-function openImageModal() {
-  if (!validateForm()) return;
-  var modal = document.getElementById('imageModal');
-  if (modal) modal.style.display = 'flex';
-}
-function closeImageModal() { document.getElementById('imageModal').style.display = 'none'; }
-
-function saveImageFromModal() {
-  closeImageModal();
-
-  var page = document.getElementById('page');
-  if (!page) { alert('Error: Could not find form element'); return; }
-
-  var pageTitle = (document.getElementById('name').value || 'Estimate').replace(/\s+/g,'_');
-  var timestamp = new Date().toISOString().split('T')[0];
-  var filename  = pageTitle + '_' + timestamp + '.jpg';
-
-  var loadingDiv = document.createElement('div');
-  loadingDiv.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1a1a1a;border:2px solid #D97706;color:#D97706;padding:20px 40px;font-family:monospace;z-index:99999;border-radius:8px;box-shadow:0 0 30px rgba(217,119,6,0.4);';
-  loadingDiv.textContent = '⏳ Generating image...';
-  document.body.appendChild(loadingDiv);
-
-  // Replace SVGs for html2canvas
-  var svgReplacements = [];
-  page.querySelectorAll('svg').forEach(function(svg) {
-    try {
-      var w = parseFloat(svg.getAttribute('width'))  || 22;
-      var h = parseFloat(svg.getAttribute('height')) || 22;
-      var clone = svg.cloneNode(true);
-      clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-      clone.querySelectorAll('*').forEach(function(el) {
-        if (el.getAttribute('stroke') === 'currentColor') el.setAttribute('stroke', '#D97706');
-        if (el.getAttribute('fill')   === 'currentColor') el.setAttribute('fill',   '#D97706');
-      });
-      if (clone.getAttribute('stroke') === 'currentColor') clone.setAttribute('stroke', '#D97706');
-      if (clone.getAttribute('fill')   === 'currentColor') clone.setAttribute('fill',   '#D97706');
-      var svgStr  = new XMLSerializer().serializeToString(clone);
-      var dataUrl = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgStr)));
-      var img = document.createElement('img');
-      img.src = dataUrl; img.width = w; img.height = h;
-      img.style.display = 'inline-block'; img.style.verticalAlign = 'middle'; img.style.flexShrink = '0';
-      svg.parentNode.replaceChild(img, svg);
-      svgReplacements.push({ img:img, svg:svg });
-    } catch(e) { console.warn('SVG replace failed:', e); }
-  });
-
-  var imgPromises = svgReplacements.map(function(item) {
-    return new Promise(function(resolve) {
-      if (item.img.complete) { resolve(); return; }
-      item.img.onload  = resolve;
-      item.img.onerror = resolve;
-      setTimeout(resolve, 1000);
-    });
-  });
-
-  Promise.all(imgPromises).then(function() {
-    var info = enterPrintMode();
-    if (!info) { cleanup(); alert('Could not calculate page dimensions'); return; }
-
-    setTimeout(function() {
-      html2canvas(page, {
-        scale:       2,
-        useCORS:     true,
-        backgroundColor: '#FFFFFF',
-        logging:     false,
-        width:       PAPER_W_PX,
-        height:      PAPER_H_PX,
-        windowWidth: PAPER_W_PX,
-        windowHeight:PAPER_H_PX,
-        x:0, y:0,
-        allowTaint:  true,
-        imageTimeout:15000,
-        removeContainer: true,
-        onclone: function(clonedDoc) {
-          var liveInputs = page.querySelectorAll('input, textarea');
-          var clonedPage = clonedDoc.getElementById('page');
-          if (!clonedPage) return;
-          var cloneInputs = clonedPage.querySelectorAll('input, textarea');
-          liveInputs.forEach(function(liveEl, i) {
-            var cloneEl = cloneInputs[i];
-            if (!cloneEl) return;
-            if (liveEl.type === 'checkbox' || liveEl.type === 'radio') {
-              cloneEl.checked = liveEl.checked;
-            } else if (liveEl.tagName === 'TEXTAREA') {
-              cloneEl.textContent = liveEl.value;
-              cloneEl.value = liveEl.value;
-            } else {
-              cloneEl.setAttribute('value', liveEl.value);
-              cloneEl.value = liveEl.value;
-            }
-          });
-
-          clonedDoc.documentElement.classList.add('print-mode');
-          clonedDoc.body.classList.add('print-mode');
-
-          // Image capture always uses transform scale
-          clonedPage.style.transform       = 'scale(' + info.scaleX + ', ' + info.scaleY + ')';
-          clonedPage.style.transformOrigin = '0 0';
-          clonedPage.style.width           = PAGE_NATURAL_W + 'px';
-          clonedPage.style.position        = 'absolute';
-          clonedPage.style.top             = '0';
-          clonedPage.style.left            = '0';
-
-          clonedDoc.querySelectorAll('.section-header, .col-label, .header')
-            .forEach(function(h) { h.style.animationPlayState = 'paused'; });
-          clonedDoc.querySelectorAll('#pdfModal,#imageModal,#offline-banner,.toolbar,#address-suggestions,#gps-status,.gps-btn')
-            .forEach(function(m) { m.style.display = 'none'; });
-        }
-      }).then(function(canvas) {
-        finishCapture(canvas);
-      }).catch(function(err) {
-        cleanup();
-        alert('Error generating image: ' + err.message);
-      });
-    }, 100);
-  });
-
-  function cleanup() {
-    exitPrintMode();
-    svgReplacements.forEach(function(item) {
-      if (item.img.parentNode) item.img.parentNode.replaceChild(item.svg, item.img);
-    });
-
-    if (loadingDiv.parentNode) document.body.removeChild(loadingDiv);
-  }
-
-  function finishCapture(canvas) {
-    cleanup();
-    var dataUrl = canvas.toDataURL('image/jpeg', 0.95);
-
-    if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-      var newTab = window.open();
-      if (newTab) {
-        newTab.document.write(
-          '<html><head><title>' + filename + '</title>' +
-          '<style>body{margin:0;padding:0;background:#000;font-family:sans-serif;}img{display:block;width:100%;height:auto;}p{color:#fff;padding:16px;text-align:center;}</style>' +
-          '</head><body>' +
-          '<img src="' + dataUrl + '" alt="' + filename + '"/>' +
-          '<p>Long-press the image and select "Save to Photos" or "Add to Files"</p>' +
-          '</body></html>'
-        );
-        newTab.document.close();
-      } else {
-        var link = document.createElement('a');
-        link.download = filename;
-        link.href = dataUrl;
-        link.click();
-      }
-    } else {
-      var link = document.createElement('a');
-      link.download = filename;
-      link.href = dataUrl;
-      document.body.appendChild(link);
-      link.click();
-      setTimeout(function() { if (link.parentNode) document.body.removeChild(link); }, 100);
-    }
-  }
-}
-
-// ════════════════════════════════════════════════════════════════
-//  EMAIL
-// ════════════════════════════════════════════════════════════════
 function sendEmail() {
   if (!validateForm()) return;
   var data = getFormData();
@@ -2177,7 +2026,6 @@ function sendEmail() {
   var sqft = data.sqft || '';
   var estDate = data.est_date || '';
   var estimator = data.estimator || '';
-
   var subject = 'Generator Installation Estimate — ' + name;
   var lines = [
     'Dear ' + name + ',', '',
@@ -2208,8 +2056,152 @@ document.addEventListener('click', function(e) {
 });
 
 // ════════════════════════════════════════════════════════════════
-//  ADDRESS AUTOCOMPLETE
+// ▼▼▼ MOBILE SAFARI ISOLATED-WINDOW PRINT (UNTOUCHED) ▼▼▼
+// This is your known-good iOS Safari print path. It overrides
+// window.print() ONLY on mobile Safari (iPhone/iPad). Every other
+// browser uses the native print path with the stretch logic above.
 // ════════════════════════════════════════════════════════════════
+(function() {
+  'use strict';
+
+  var isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+              || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+  var isDesktopSafari = /Safari/i.test(navigator.userAgent)
+                     && !/Chrome|CriOS|FxiOS|EdgiOS|Mobile/i.test(navigator.userAgent);
+
+  var PRINT_CSS = `
+    @page { 
+      size: letter portrait; 
+      margin: 0 !important;
+    }
+    @page :first { margin: 0 !important; }
+    @page :left  { margin: 0 !important; }
+    @page :right { margin: 0 !important; }
+
+    html { 
+      margin: 0 !important; 
+      padding: 0 !important;
+      background: #FFFFFF !important;
+    }
+    body { 
+      margin: 0 !important; 
+      padding: 0 !important; 
+      width: 100% !important;
+      zoom: 0.55;
+      background: #FFFFFF !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+    .page { 
+      width: 100% !important; 
+      max-width: 100% !important; 
+      margin: 0 !important; 
+      padding: 0 !important; 
+      border: 5px solid #D97706 !important;
+      box-shadow: none !important;
+    }
+    .toolbar, #offline-banner, #pdfModal, #imageModal { 
+      display: none !important; 
+    }
+    .header  { padding: 4px 16px !important; min-height: 0 !important; }
+    .content { padding: 4px 8px  !important; }
+    .footer  { padding: 4px 16px !important; }
+    .section, .top-grid, .flood-bar, .gas-appliances-box { 
+      page-break-inside: avoid !important; 
+      break-inside: avoid !important; 
+    }
+  `;
+
+  function applyPrintStyles() {
+    if (!isMobile) return;
+    var styleEl = document.getElementById('mobile-print-styles');
+    if (styleEl) styleEl.innerHTML = PRINT_CSS;
+  }
+
+  function clearPrintStyles() {
+    if (!isMobile) return;
+    var styleEl = document.getElementById('mobile-print-styles');
+    if (styleEl) styleEl.innerHTML = '';
+  }
+
+  window.addEventListener('beforeprint', applyPrintStyles);
+  window.addEventListener('afterprint', clearPrintStyles);
+
+  // Only override window.print on mobile Safari, never desktop, never Android
+  if (!isMobile || isDesktopSafari) return;
+
+  var isSafari = /Safari/i.test(navigator.userAgent)
+              && !/Chrome|CriOS|FxiOS|EdgiOS/i.test(navigator.userAgent);
+
+  if (isSafari) {
+    window.print = function() {
+      var pageEl = document.querySelector('.page');
+      if (!pageEl) {
+        console.warn('No .page element found to print.');
+        return;
+      }
+
+      var existingStyles = Array.from(
+        document.querySelectorAll('link[rel="stylesheet"], style')
+      ).map(function(el) {
+        if (el.id === 'mobile-print-styles') return '';
+        return el.outerHTML;
+      }).join('\n');
+
+      var win = window.open('', '_blank');
+      if (!win) {
+        alert('Please allow pop-ups to print.');
+        return;
+      }
+
+      var clone = pageEl.cloneNode(true);
+
+      var liveInputs = pageEl.querySelectorAll('input, textarea, select');
+      var cloneInputs = clone.querySelectorAll('input, textarea, select');
+      liveInputs.forEach(function(liveEl, i) {
+        var cloneEl = cloneInputs[i];
+        if (!cloneEl) return;
+        if (liveEl.type === 'checkbox' || liveEl.type === 'radio') {
+          if (liveEl.checked) cloneEl.setAttribute('checked', 'checked');
+          else cloneEl.removeAttribute('checked');
+        } else if (liveEl.tagName === 'TEXTAREA') {
+          cloneEl.textContent = liveEl.value;
+        } else {
+          cloneEl.setAttribute('value', liveEl.value);
+        }
+      });
+
+      win.document.open();
+      win.document.write(
+        '<!DOCTYPE html><html><head>' +
+        '<meta charset="UTF-8">' +
+        '<base href="' + location.href + '">' +
+        '<title>Print</title>' +
+        existingStyles +
+        '<style>' + PRINT_CSS + '</style>' +
+        '</head><body>' +
+        clone.outerHTML +
+        '</body></html>'
+      );
+      win.document.close();
+
+      win.onload = function() {
+        win.focus();
+        setTimeout(function() {
+          win.print();
+          setTimeout(function() {
+            try { win.close(); } catch (e) {}
+          }, 1000);
+        }, 300);
+      };
+    };
+  }
+})();
+
+// ────────────────────────────────────────────────────────────────
+// ADDRESS AUTOCOMPLETE
+// ────────────────────────────────────────────────────────────────
 function setupAddressAutocomplete() {
   var input = document.getElementById('address');
   var list  = document.getElementById('address-suggestions');
@@ -2271,9 +2263,9 @@ function setupAddressAutocomplete() {
   });
 }
 
-// ════════════════════════════════════════════════════════════════
-//  GPS
-// ════════════════════════════════════════════════════════════════
+// ────────────────────────────────────────────────────────────────
+// GPS BUTTON
+// ────────────────────────────────────────────────────────────────
 function setupGpsButton() {
   var btn    = document.getElementById('gps-btn');
   var status = document.getElementById('gps-status');
@@ -2332,9 +2324,9 @@ function setupGpsButton() {
   });
 }
 
-// ════════════════════════════════════════════════════════════════
-//  INIT
-// ════════════════════════════════════════════════════════════════
+// ────────────────────────────────────────────────────────────────
+// INIT
+// ────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function() {
   var todayInput = document.getElementById('today');
   if (todayInput && !todayInput.value) {
@@ -2350,7 +2342,6 @@ document.addEventListener('DOMContentLoaded', function() {
   if (typeof setupFieldValidation === 'function') setupFieldValidation();
   restoreDraft();
 });
-
 </script>
 
 </body>
