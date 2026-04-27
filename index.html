@@ -2088,7 +2088,7 @@ document.addEventListener('click', function(e) {
       overflow: hidden !important;
     }
     body { 
-      margin: 0 !important; 
+      margin: 0 auto !important;        /* horizontal auto-center */
       padding: 0 !important; 
       width: 100% !important;
       height: 100% !important;
@@ -2097,11 +2097,17 @@ document.addEventListener('click', function(e) {
       overflow: hidden !important;
       -webkit-print-color-adjust: exact !important;
       print-color-adjust: exact !important;
+      /* Use flex to center the zoomed page horizontally within the sheet.
+         Without this, CSS zoom on a wider-than-paper element leaves the
+         result hugging the left edge of the paper. */
+      display: flex !important;
+      justify-content: center !important;
+      align-items: flex-start !important;
     }
     .page { 
       width: 100% !important; 
       max-width: 100% !important; 
-      margin: 0 !important; 
+      margin: 0 auto !important;        /* center inside body */
       padding: 0 !important; 
       border: 5px solid #D97706 !important;
       box-shadow: none !important;
@@ -2128,27 +2134,43 @@ document.addEventListener('click', function(e) {
   var FALLBACK_ZOOM = 0.55;
 
   // Calculate the zoom factor needed to fit the page on a single
-  // letter-sized sheet. Returns a number like 0.55, 0.62, etc.
-  // Both axes are checked — whichever scale is more restrictive wins.
+  // letter-sized sheet. Returns a stable 2-decimal value like 0.55, 0.62,
+  // 0.70 — both axes are checked, the more restrictive wins, and we
+  // ALWAYS round DOWN so repeated calls produce the same result even if
+  // scrollHeight drifts by 1-2px between calls (which it does on iOS Safari
+  // when web fonts finish loading or input heights settle).
   function computePrintZoom() {
     var pageEl = document.querySelector('.page');
     if (!pageEl) return FALLBACK_ZOOM;
     // Letter paper at 96dpi
     var PAPER_W = 816;
     var PAPER_H = 1056;
-    // Small safety margin so the page never overflows by 1px due to rounding
-    var MARGIN  = 4;
+    // Larger safety buffer to absorb iOS Safari measurement drift between
+    // page loads. Without this, a repeated print can return a tiny bit
+    // higher zoom and overflow onto a second page.
+    var SAFETY = 24;  // ~3% of letter height — more than enough for drift
 
     var naturalW = pageEl.scrollWidth  || pageEl.offsetWidth  || 1050;
     var naturalH = pageEl.scrollHeight || pageEl.offsetHeight || 1400;
 
-    var zX = (PAPER_W - MARGIN) / naturalW;
-    var zY = (PAPER_H - MARGIN) / naturalH;
+    // Add the same safety buffer to the measurement side so the zoom
+    // we pick is a little smaller than strictly required.
+    var zX = (PAPER_W - SAFETY) / naturalW;
+    var zY = (PAPER_H - SAFETY) / naturalH;
     var z  = Math.min(zX, zY);
 
     // Clamp to sane bounds
     if (!isFinite(z) || z <= 0) return FALLBACK_ZOOM;
     if (z > 1) z = 1;
+
+    // Round DOWN to 2 decimal places for stability. Math.floor(z * 100) / 100
+    // means 0.687 -> 0.68, 0.692 -> 0.69, etc. — repeat runs return the same
+    // number even if z shifts by a fraction of a percent.
+    z = Math.floor(z * 100) / 100;
+
+    // Final guard: never exceed FALLBACK_ZOOM if the form is so short
+    // that we'd somehow round up (defensive only).
+    if (z < 0.30) z = 0.30;
     return z;
   }
 
@@ -2218,9 +2240,8 @@ document.addEventListener('click', function(e) {
         }
       });
 
-      // ★ Compute the right zoom NOW based on the page's actual rendered height.
-      //   This guarantees a single-page PDF on iOS Safari regardless of how
-      //   tall the form has grown.
+      // Compute initial zoom from the parent window as a starting estimate.
+      // The print window will re-measure inside its own context for accuracy.
       var dynamicZoom = computePrintZoom();
       var dynamicCSS  = buildPrintCSS(dynamicZoom);
 
@@ -2231,21 +2252,68 @@ document.addEventListener('click', function(e) {
         '<base href="' + location.href + '">' +
         '<title>Print</title>' +
         existingStyles +
-        '<style>' + dynamicCSS + '</style>' +
+        '<style id="dynamic-zoom-style">' + dynamicCSS + '</style>' +
         '</head><body>' +
         clone.outerHTML +
         '</body></html>'
       );
       win.document.close();
 
-      win.onload = function() {
+      // Re-measure inside the new window so we account for its actual
+      // rendered layout (which can differ slightly from the parent due
+      // to viewport meta inheritance, font loading, etc.). This is the
+      // critical fix for "first print fits, second print overflows":
+      // every invocation re-measures in the freshly loaded print window.
+      function recomputeAndPrint() {
+        try {
+          // Strip the zoom style so we measure the natural layout
+          var styleEl = win.document.getElementById('dynamic-zoom-style');
+          var pageInWin = win.document.querySelector('.page');
+          if (styleEl && pageInWin) {
+            styleEl.innerHTML = '';
+            // Force layout
+            void pageInWin.offsetHeight;
+
+            var PAPER_W = 816, PAPER_H = 1056, SAFETY = 24;
+            var nw = pageInWin.scrollWidth  || pageInWin.offsetWidth  || 1050;
+            var nh = pageInWin.scrollHeight || pageInWin.offsetHeight || 1400;
+            var zX = (PAPER_W - SAFETY) / nw;
+            var zY = (PAPER_H - SAFETY) / nh;
+            var z  = Math.min(zX, zY);
+            if (!isFinite(z) || z <= 0) z = FALLBACK_ZOOM;
+            if (z > 1) z = 1;
+            // Round DOWN to 2 decimals so repeat invocations are stable
+            z = Math.floor(z * 100) / 100;
+            if (z < 0.30) z = 0.30;
+            // Re-apply the style with the freshly measured zoom
+            styleEl.innerHTML = buildPrintCSS(z);
+            // Force layout again before printing
+            void pageInWin.offsetHeight;
+          }
+        } catch (e) { /* fall through with original zoom */ }
+
         win.focus();
+        win.print();
         setTimeout(function() {
-          win.print();
-          setTimeout(function() {
-            try { win.close(); } catch (e) {}
-          }, 1000);
-        }, 300);
+          try { win.close(); } catch (e) {}
+        }, 1000);
+      }
+
+      win.onload = function() {
+        // Wait for fonts to finish loading inside the print window so the
+        // measurement reflects the real printed layout. Without this, the
+        // first print uses cached fonts (smaller scrollHeight) and the
+        // second uses freshly loaded fonts (slightly larger scrollHeight),
+        // producing inconsistent zoom values.
+        var fontsReady = (win.document.fonts && win.document.fonts.ready)
+                          ? win.document.fonts.ready
+                          : Promise.resolve();
+        fontsReady.then(function() {
+          // Extra delay so iOS Safari fully settles input/textarea heights
+          setTimeout(recomputeAndPrint, 350);
+        }, function() {
+          setTimeout(recomputeAndPrint, 350);
+        });
       };
     };
   }
