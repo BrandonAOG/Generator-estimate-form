@@ -845,26 +845,42 @@ body.print-mode select {
 /* iOS Safari skips this whole block because it prints from an isolated
    window with its own injected PRINT_CSS — see mobile Safari override. */
 @media print {
-  @page { 
-    size: letter portrait;
-    margin: 0;
-  }
-
-  * { 
-    -webkit-print-color-adjust: exact !important; 
-    print-color-adjust: exact !important;
-  }
-
   body {
-    background: #ffffff !important;
-    background-image: none !important;
-    padding: 0 !important;
     margin: 0 !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    overflow: hidden !important;
-    position: relative !important;
+    padding: 0 !important;
+    background: white !important;
+    overflow: visible !important;
   }
+
+  .page {
+    width: 816px !important;
+    height: 1056px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: white !important;
+    transform-origin: top left !important;
+    /* Remove any max-width constraints */
+    max-width: none !important;
+  }
+
+  .print-btn, .navbar, footer {
+    display: none !important;
+  }
+}
+
+/* Print mode for desktop/Android */
+body.print-mode {
+  width: 816px !important;
+  overflow: visible !important;
+}
+
+body.print-mode .page {
+  transform: none !important;
+  width: 816px !important;
+}
+
 
   html, body {
     width: 100% !important;
@@ -1513,25 +1529,29 @@ var PAGE_NATURAL_W = 1050;
 // DESKTOP/ANDROID PRINT-MODE (does NOT run for iOS Safari)
 // ────────────────────────────────────────────────────────────────
 function calculateStretchScale() {
-  var page = document.getElementById('page');
-  if (!page) return { scaleX: 1, scaleY: 1 };
+  const page = document.querySelector('.page');
+  if (!page) return 1;
 
-  var prevTransform = page.style.transform;
-  var prevWidth     = page.style.width;
-  page.style.transform = 'none';
-  page.style.width     = PAGE_NATURAL_W + 'px';
-  void page.offsetHeight;
+  const pageRect = page.getBoundingClientRect();
+  
+  // In print mode, stretch to fill 8.5" x 11" (816px x 1056px)
+  // accounting for print margins
+  const printableWidth = 816;  // 8.5" at 96dpi
+  const printableHeight = 1056; // 11" at 96dpi
 
-  var naturalH = page.scrollHeight;
+  // Get actual rendered dimensions
+  const actualWidth = pageRect.width;
+  const actualHeight = pageRect.height;
 
-  page.style.transform = prevTransform;
-  page.style.width     = prevWidth;
+  // Calculate stretch factor to fill the page
+  const scaleX = printableWidth / actualWidth;
+  const scaleY = printableHeight / actualHeight;
 
-  return {
-    scaleX: PAPER_W_PX / PAGE_NATURAL_W,
-    scaleY: PAPER_H_PX / naturalH
-  };
+  // Use the smaller scale to maintain aspect ratio
+  // But for print, we want to slightly favor width to eliminate left gaps
+  return scaleX * 0.98; // 0.98 accounts for print margins
 }
+
 
 function enterPrintMode() {
   if (IS_IOS_SAFARI) return null;  // Don't touch iOS Safari path
