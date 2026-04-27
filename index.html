@@ -2311,10 +2311,12 @@ function calculateStretchScale() {
 }
 
 function enterPrintMode() {
-  var page = document.getElementById('page');
-  if (!page) return { x: 1, y: 1 };
+  if (IS_IOS_SAFARI) return null;  // Don't touch iOS Safari path
 
-  PRINT_SCALE = calculateStretchScale();
+  var page = document.getElementById('page');
+  if (!page) return null;
+
+  PRINT_SCALE = calculateStretchScale();  // ← MOVED HERE (inside the function)
   
   console.log('Entering print mode:', PRINT_SCALE);
   
