@@ -930,7 +930,16 @@ body.print-mode select {
   .col-label::before { background: #D97706 !important; box-shadow: none !important; }
   .flood-bar { background: #ffffff !important; border-color: #D97706 !important; }
   .flood-item { border-color: #D97706 !important; background: #ffffff !important; }
-  .footer { background: #ffffff !important; border-top-color: #D97706 !important; }
+  
+  /* Add this rule to ensure footer border is visible */
+  .footer { 
+    background: #ffffff !important; 
+    border-top-color: #D97706 !important;
+    border-bottom: 1px solid #D97706 !important;
+    padding-bottom: 10px !important;
+    margin-bottom: 0 !important;
+  }
+  
   .footer-text { color: #D97706 !important; }
   .company-name, .doc-title { color: #D97706 !important; text-shadow: none !important; }
 
@@ -974,6 +983,7 @@ body.print-mode select {
 
   label { color: #6B7280 !important; }
 }
+
 </style>
 <style id="mobile-print-styles"></style>
 </head>
