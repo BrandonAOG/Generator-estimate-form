@@ -792,21 +792,8 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
 ::-webkit-scrollbar-thumb:hover { background: var(--cyan-dim); }
 
 /* ═══════════════════════════════════════════════════════════════
-   ✦ UNIFIED PRINT MODE ✦
-   When body.print-mode is set, the page is locked to exact 
-   8.5"x11" dimensions and scaled to fit. Same dimensions used
-   for both print AND html2canvas image export = identical output.
-
-   iOS SAFARI FIX: We MUST use position:absolute with explicit pixel
-   dimensions, because iOS Safari's print engine respects the layout
-   box of positioned elements but ignores `transform` scaling when
-   determining page bleed. Without this, content drifts off the right
-   edge because iOS lays out at the natural 1050px width and only
-   then scales — overflowing the 816px paper.
+   PRINT MODE STYLES
    ═══════════════════════════════════════════════════════════════ */
-
-/* Letter paper dimensions at 96dpi: 816 x 1056 px */
-/* The .page natural width is 1050px - we apply X/Y stretch */
 
 html.print-mode,
 body.print-mode {
@@ -833,14 +820,15 @@ body.print-mode .gps-btn {
   display: none !important;
 }
 
+/* 
+  Desktop path: JS sets transform:scale(scaleX,scaleY) inline.
+  iOS path: JS sets width:816px + font-size:77.7% — NO transform.
+  Both paths: .page is position:absolute top:0 left:0
+*/
 body.print-mode .page {
-  /* Pin to top-left of paper so iOS cannot drift it */
   position: absolute !important;
   top: 0 !important;
   left: 0 !important;
-  width: 1050px !important;
-  max-width: 1050px !important;
-  min-width: 1050px !important;
   min-height: 0 !important;
   height: auto !important;
   margin: 0 !important;
@@ -849,7 +837,6 @@ body.print-mode .page {
   border: 2px solid #D97706 !important;
   background: #FFFFFF !important;
   transform-origin: 0 0 !important;
-  /* The actual scale(scaleX, scaleY) is set inline via JS */
 }
 
 /* Pause animations during capture */
@@ -864,39 +851,42 @@ body.print-mode .header::after {
   display: none !important;
 }
 
-/* Hide focus glows during capture */
 body.print-mode input,
 body.print-mode textarea,
 body.print-mode select {
   box-shadow: none !important;
   background: #FFFFFF !important;
 }
-/* ── PRINT ── */
+
+/* ── @MEDIA PRINT ── */
 @media print {
-  @page { 
+  @page {
     size: 8.5in 11in;
     margin: 0;
   }
 
-  * { 
-    -webkit-print-color-adjust: exact !important; 
+  * {
+    -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
 
   html, body {
-  background: #ffffff !important;
-  background-image: none !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  width: 816px !important;
-  min-width: 816px !important;
-  max-width: 816px !important;
-  height: auto !important;
-  min-height: auto !important;  /* ← REMOVE min-height constraint */
-  overflow: visible !important;
-  position: relative !important;
-}
-
+    background: #ffffff !important;
+    background-image: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 816px !important;
+    min-width: 816px !important;
+    max-width: 816px !important;
+    height: auto !important;
+    min-height: auto !important;
+    overflow: visible !important;
+    /* 
+      iOS Safari: font-size is set inline by JS to 77.7% to compensate
+      for the reflow from 1050px → 816px. This rule does not override
+      that because the inline style has higher specificity.
+    */
+  }
 
   #offline-banner,
   .toolbar,
@@ -904,16 +894,22 @@ body.print-mode select {
   #imageModal,
   #address-suggestions,
   #gps-status,
-  .gps-btn { 
-    display: none !important; 
+  .gps-btn {
+    display: none !important;
   }
 
   .page {
     position: absolute !important;
     top: 0 !important;
     left: 0 !important;
-    width: 816px !important;
-    max-width: 816px !important;
+    /*
+      Desktop: width stays 1050px and JS transform:scale() shrinks it to fit.
+      iOS Safari: JS already reflowed the DOM to 816px — width:816px is set
+      inline, which overrides this 1050px rule (inline > stylesheet).
+      So this rule safely handles both paths.
+    */
+    width: 1050px !important;
+    max-width: 1050px !important;
     min-width: 816px !important;
     min-height: 0 !important;
     height: auto !important;
@@ -923,7 +919,6 @@ body.print-mode select {
     border: 2px solid #D97706 !important;
     background: #ffffff !important;
     overflow: visible !important;
-
     transform-origin: 0 0 !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
@@ -947,12 +942,11 @@ body.print-mode select {
     break-inside: avoid !important;
   }
 
-  input::placeholder, 
-  textarea::placeholder { 
-    color: transparent !important; 
+  input::placeholder,
+  textarea::placeholder {
+    color: transparent !important;
   }
 
-  /* Force colors to print */
   .header { background: #ffffff !important; border-bottom-color: #D97706 !important; }
   .section { background: #ffffff !important; border-color: #D97706 !important; }
   .section-header { background: #f5f5f5 !important; color: #D97706 !important; border-bottom-color: #D97706 !important; }
@@ -967,12 +961,12 @@ body.print-mode select {
   .footer-text { color: #D97706 !important; }
   .company-name, .doc-title { color: #D97706 !important; text-shadow: none !important; }
 
-  input[type="text"], 
-  input[type="email"], 
+  input[type="text"],
+  input[type="email"],
   input[type="tel"],
-  input[type="date"], 
-  input[type="number"], 
-  textarea, 
+  input[type="date"],
+  input[type="number"],
+  textarea,
   select {
     background: #ffffff !important;
     border-bottom-color: #D97706 !important;
@@ -980,14 +974,14 @@ body.print-mode select {
     box-shadow: none !important;
   }
 
-  textarea { 
+  textarea {
     background: #ffffff !important;
     border-color: #D97706 !important;
   }
 
   .yn-group { border-color: #D97706 !important; background: #ffffff !important; }
-  .yn-group .yn-label { 
-    border-color: #D97706 !important; 
+  .yn-group .yn-label {
+    border-color: #D97706 !important;
     background: transparent !important;
     color: #6B7280 !important;
   }
@@ -1005,7 +999,7 @@ body.print-mode select {
     box-shadow: none !important;
   }
 
-  .check-item { 
+  .check-item {
     background: #ffffff !important;
     border-color: #D97706 !important;
   }
@@ -1024,12 +1018,6 @@ body.print-mode select {
 
   label { color: #6B7280 !important; }
 }
-
-
-
-
-
-
 </style>
 </head>
 <body>
@@ -1549,13 +1537,9 @@ Customer Info
 <!-- ▼▼▼ PDF SAVE MODAL ▼▼▼ -->
 <div id="pdfModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(4px);">
   <div style="background:linear-gradient(135deg,#0a0a0a 0%,#1a1a1a 100%); border:2px solid #FFB300; border-radius:12px; padding:30px; max-width:420px; width:90%; box-shadow:0 0 40px rgba(255,179,0,0.4), inset 0 0 20px rgba(0,229,255,0.05); font-family:'Exo 2',sans-serif;">
-    
     <h2 style="color:#FFB300; font-family:'Orbitron',sans-serif; margin:0 0 8px 0; font-size:18px; letter-spacing:2px; text-shadow:0 0 10px rgba(255,179,0,0.5);">📄 SAVE AS PDF</h2>
-    
     <div style="height:1px; background:linear-gradient(90deg,#FFB300,transparent); margin-bottom:18px;"></div>
-    
     <div id="pdfInstructions" style="color:#00E5FF; font-family:'Share Tech Mono',monospace; font-size:13px; line-height:1.8;"></div>
-    
     <div style="margin-top:24px; display:flex; justify-content:flex-end; gap:10px;">
       <button onclick="closePdfModal()" style="background:transparent; border:1px solid #666; color:#999; padding:9px 18px; border-radius:6px; cursor:pointer; font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:1px;">CANCEL</button>
       <button onclick="confirmPdfPrint()" style="background:linear-gradient(135deg,#FFB300,#FF8C00); border:none; color:#000; padding:9px 22px; border-radius:6px; cursor:pointer; font-weight:bold; font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:1px; box-shadow:0 0 15px rgba(255,179,0,0.4);">CONTINUE ▶</button>
@@ -1566,13 +1550,9 @@ Customer Info
 <!-- ▼▼▼ IMAGE SAVE MODAL ▼▼▼ -->
 <div id="imageModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(4px);">
   <div style="background:linear-gradient(135deg,#0a0a0a 0%,#1a1a1a 100%); border:2px solid #059669; border-radius:12px; padding:30px; max-width:420px; width:90%; box-shadow:0 0 40px rgba(5,150,105,0.4), inset 0 0 20px rgba(0,229,255,0.05); font-family:'Exo 2',sans-serif;">
-    
     <h2 style="color:#059669; font-family:'Orbitron',sans-serif; margin:0 0 8px 0; font-size:18px; letter-spacing:2px; text-shadow:0 0 10px rgba(5,150,105,0.5);">🖼 SAVE AS IMAGE</h2>
-    
     <div style="height:1px; background:linear-gradient(90deg,#059669,transparent); margin-bottom:18px;"></div>
-    
     <p style="color:#00E5FF; font-family:'Share Tech Mono',monospace; font-size:13px; line-height:1.8; margin:0 0 20px 0;">Capture the entire form as a JPEG image, sized to 8.5"×11" portrait. Identical to the printed PDF.</p>
-    
     <div style="margin-top:24px; display:flex; justify-content:flex-end; gap:10px;">
       <button onclick="closeImageModal()" style="background:transparent; border:1px solid #666; color:#999; padding:9px 18px; border-radius:6px; cursor:pointer; font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:1px;">CANCEL</button>
       <button onclick="saveImageFromModal()" style="background:linear-gradient(135deg,#059669,#04874f); border:none; color:#fff; padding:9px 22px; border-radius:6px; cursor:pointer; font-weight:bold; font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:1px; box-shadow:0 0 15px rgba(5,150,105,0.4);">SAVE IMAGE ▶</button>
@@ -1582,74 +1562,74 @@ Customer Info
 
 <script>
 // ════════════════════════════════════════════════════════════════
-//  AOG ESTIMATE - UNIFIED EXPORT ENGINE
-//  All print/save outputs use the SAME scale calculation,
-//  guaranteeing identical 8.5"×11" portrait output across:
-//    • macOS Safari/Chrome    • Windows Chrome/Edge/Firefox
-//    • iOS Safari (iPhone/iPad)    • Android Chrome
-//  Functions: Print/PDF, Save Image
+//  AOG ESTIMATE - UNIFIED EXPORT ENGINE  v1.1
+//  iOS Safari fix: physical DOM reflow to 816px instead of
+//  transform scale (which iOS print engine ignores).
 // ════════════════════════════════════════════════════════════════
 
-// ── PAPER CONSTANTS ──────────────────────────────────────────────
-// 8.5" x 11" at 96 DPI = 816 x 1056 px
-// We use a small inner margin so the orange border is visible
-var PAPER_W_PX   = 816;   // 8.5 inches
-var PAPER_H_PX   = 1056;  // 11 inches
-var PAPER_MARGIN = 0;     // Inner margin (the page border is the edge)
-var PAGE_NATURAL_W = 1050; // The .page natural width
+var PAPER_W_PX     = 816;
+var PAPER_H_PX     = 1056;
+var PAPER_MARGIN   = 0;
+var PAGE_NATURAL_W = 1050;
+
+// Scale factor for iOS reflow: 816 / 1050
+var IOS_SCALE = 816 / 1050;  // ≈ 0.7771
 
 var MAPBOX_TOKEN = 'pk.eyJ1IjoicHJvamVjdHdyYXBwZXIiLCJhIjoiY201d2k1eHU3MDAwajJrbzU2a2c5dW40NSJ9.WJlNJ4o5CqBhWpHKMKOzIQ';
 var DRAFT_KEY = 'aog_estimate_draft';
 
-// Save the original native print before anyone overrides it
 var nativePrint = window.print.bind(window);
+
+// Storage for inline styles saved before iOS reflow, so we can restore them
+var _iosSavedStyles = null;
 
 if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
   document.body.classList.add('is-mobile-device');
 }
 
+// ── Device detection ─────────────────────────────────────────────
+function isIOSSafari() {
+  var ua = navigator.userAgent;
+  var isIOS    = /iPhone|iPad|iPod/i.test(ua);
+  var isSafari = /Safari/i.test(ua) && !/Chrome|CriOS|FxiOS|EdgiOS/i.test(ua);
+  return isIOS && isSafari;
+}
+
 // ════════════════════════════════════════════════════════════════
-//  CORE: Calculate independent X and Y scales — STRETCH-TO-FILL
-//  Returns scaleX and scaleY so the .page fills 8.5"×11" edge-to-edge
-//  (no whitespace, even if the form's natural aspect ratio differs).
+//  CORE: Calculate independent X/Y scales (desktop path only)
 // ════════════════════════════════════════════════════════════════
 function calculateUniformScale() {
   var page = document.getElementById('page');
   if (!page) return { scaleX: 1, scaleY: 1, naturalW: PAPER_W_PX, naturalH: PAPER_H_PX };
 
-  // Snapshot current natural dimensions of the page (with all content)
-  // Temporarily strip transforms to measure
   var prevTransform = page.style.transform;
   var prevWidth     = page.style.width;
   page.style.transform = 'none';
   page.style.width     = PAGE_NATURAL_W + 'px';
-
-  // Force layout to settle
   void page.offsetHeight;
 
   var naturalW = PAGE_NATURAL_W;
   var naturalH = page.scrollHeight;
 
-  // Restore (will be re-applied below)
   page.style.transform = prevTransform;
   page.style.width     = prevWidth;
 
-  // Independent X and Y scales — stretch to fill BOTH dimensions edge-to-edge
   var scaleX = (PAPER_W_PX - PAPER_MARGIN * 2) / naturalW;
   var scaleY = (PAPER_H_PX - PAPER_MARGIN * 2) / naturalH;
 
-  return {
-    scaleX: scaleX,
-    scaleY: scaleY,
-    naturalW: naturalW,
-    naturalH: naturalH,
-    scaledW: naturalW * scaleX,
-    scaledH: naturalH * scaleY
-  };
+  return { scaleX: scaleX, scaleY: scaleY, naturalW: naturalW, naturalH: naturalH };
 }
 
 // ════════════════════════════════════════════════════════════════
-//  CORE: Apply / remove the print-mode lock
+//  CORE: enterPrintMode
+//
+//  iOS Safari path  → physical reflow to 816px
+//    iOS print engine measures the DOM layout box, not the visual
+//    transform box. A 1050px element with scale(0.777) still prints
+//    as 1050px wide — overflowing to a second page. We must set the
+//    actual CSS width to 816px and scale font sizes down to match.
+//
+//  Desktop / Android path → transform scale (unchanged)
 // ════════════════════════════════════════════════════════════════
 function enterPrintMode() {
   var page = document.getElementById('page');
@@ -1658,67 +1638,95 @@ function enterPrintMode() {
   document.documentElement.classList.add('print-mode');
   document.body.classList.add('print-mode');
 
-  var info = calculateUniformScale();
+  if (isIOSSafari()) {
+    // ── iOS Safari: reflow DOM to 816px ──────────────────────────
+    // Save every inline style we are about to overwrite so exitPrintMode
+    // can restore them exactly (avoids visual glitches after dialog closes).
+    _iosSavedStyles = {
+      htmlCssText:  document.documentElement.style.cssText,
+      bodyCssText:  document.body.style.cssText,
+      pageCssText:  page.style.cssText
+    };
 
-  // Detect iOS Safari
-  var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-  var isSafari = /Safari/i.test(navigator.userAgent) && !/Chrome|CriOS|FxiOS|EdgiOS/i.test(navigator.userAgent);
-  var isIOSSafari = isIOS && isSafari;
+    // Clamp html + body to exactly 816px, kill all margins/padding
+    document.documentElement.style.cssText =
+      'width:816px!important;max-width:816px!important;min-width:816px!important;' +
+      'margin:0!important;padding:0!important;overflow:hidden!important;';
 
-  if (isIOSSafari) {
-    // iOS Safari ONLY: constrain width before transform to prevent 2-page layout
-    document.documentElement.style.width = '816px';
-    document.documentElement.style.maxWidth = '816px';
-    document.body.style.width = '816px';
-    document.body.style.maxWidth = '816px';
-    page.style.width = '816px';
-    page.style.maxWidth = '816px';
-    page.style.transform = 'scale(' + info.scaleX + ', ' + info.scaleY + ')';
-    page.style.transformOrigin = '0 0';
-    page.style.position = 'absolute';
-    page.style.top = '0';
-    page.style.left = '0';
-    page.style.margin = '0';
-    page.style.padding = '0';
-    console.log('iOS Safari mode: 816px width + scale');
+    // Scale font-size proportionally so text density matches the 1050px layout.
+    // 816 / 1050 = 77.71%
+    document.body.style.cssText =
+      'width:816px!important;max-width:816px!important;min-width:816px!important;' +
+      'margin:0!important;padding:0!important;overflow:hidden!important;' +
+      'font-size:' + (IOS_SCALE * 100).toFixed(4) + '%!important;';
+
+    // Set the page div itself to 816px, clear any transform
+    page.style.cssText =
+      'width:816px!important;max-width:816px!important;min-width:816px!important;' +
+      'position:absolute!important;top:0!important;left:0!important;' +
+      'margin:0!important;padding:0!important;box-sizing:border-box!important;' +
+      'transform:none!important;box-shadow:none!important;' +
+      'min-height:0!important;height:auto!important;overflow:visible!important;';
+
+    // Force reflow so iOS print engine sees the updated layout before print dialog
+    void page.offsetHeight;
+
+    return { scaleX: IOS_SCALE, scaleY: IOS_SCALE, naturalW: 816, naturalH: page.scrollHeight };
+
   } else {
-    // Desktop: unchanged
-    page.style.transform = 'scale(' + info.scaleX + ', ' + info.scaleY + ')';
-    page.style.transformOrigin = '0 0';
-    page.style.width = PAGE_NATURAL_W + 'px';
-    page.style.position = 'absolute';
-    page.style.top = '0';
-    page.style.left = '0';
-    page.style.margin = '0';
-    page.style.padding = '0';
-    page.style.boxSizing = 'border-box';
-  }
+    // ── Desktop / Android: transform scale ───────────────────────
+    _iosSavedStyles = null;
+    var info = calculateUniformScale();
 
-  return info;
+    page.style.transform       = 'scale(' + info.scaleX + ', ' + info.scaleY + ')';
+    page.style.transformOrigin = '0 0';
+    page.style.width           = PAGE_NATURAL_W + 'px';
+    page.style.position        = 'absolute';
+    page.style.top             = '0';
+    page.style.left            = '0';
+    page.style.margin          = '0';
+    page.style.padding         = '0';
+    page.style.boxSizing       = 'border-box';
+
+    return info;
+  }
 }
 
+// ════════════════════════════════════════════════════════════════
+//  CORE: exitPrintMode — restore everything saved by enterPrintMode
+// ════════════════════════════════════════════════════════════════
 function exitPrintMode() {
   var page = document.getElementById('page');
-  if (page) {
-    page.style.transform = '';
-    page.style.transformOrigin = '';
-    page.style.width = '';
-    page.style.maxWidth = '';
-    page.style.position = '';
-    page.style.top = '';
-    page.style.left = '';
-    page.style.margin = '';
-    page.style.padding = '';
+
+  if (_iosSavedStyles) {
+    // Restore the exact inline styles that were present before we clamped them
+    document.documentElement.style.cssText = _iosSavedStyles.htmlCssText;
+    document.body.style.cssText            = _iosSavedStyles.bodyCssText;
+    if (page) page.style.cssText           = _iosSavedStyles.pageCssText;
+    _iosSavedStyles = null;
+  } else {
+    // Desktop restore
+    if (page) {
+      page.style.transform       = '';
+      page.style.transformOrigin = '';
+      page.style.width           = '';
+      page.style.maxWidth        = '';
+      page.style.position        = '';
+      page.style.top             = '';
+      page.style.left            = '';
+      page.style.margin          = '';
+      page.style.padding         = '';
+      page.style.boxSizing       = '';
+    }
+    document.documentElement.style.width    = '';
+    document.documentElement.style.maxWidth = '';
+    document.body.style.width               = '';
+    document.body.style.maxWidth            = '';
   }
-  // Clean up iOS Safari width constraints
-  document.documentElement.style.width = '';
-  document.documentElement.style.maxWidth = '';
-  document.body.style.width = '';
-  document.body.style.maxWidth = '';
+
   document.documentElement.classList.remove('print-mode');
   document.body.classList.remove('print-mode');
 }
-
 
 // ════════════════════════════════════════════════════════════════
 //  OFFLINE HANDLING
@@ -1959,28 +1967,23 @@ function getFormData() {
 }
 
 // ════════════════════════════════════════════════════════════════
-//  ▼▼▼  PRINT / PDF  ▼▼▼
-//  Single unified path for ALL platforms (macOS, Windows, iOS, Android).
-//  Locks page to 8.5×11 with the calculated scale, then calls native print.
+//  PRINT / PDF
 // ════════════════════════════════════════════════════════════════
 function printPDF() {
   if (!validateForm()) return;
   var modal = document.getElementById('pdfModal');
   var instr = document.getElementById('pdfInstructions');
   var ua = navigator.userAgent;
-  var isIOS = /iPhone|iPad|iPod/i.test(ua);
-  var isAndroid = /Android/i.test(ua);
+  var iosDevice  = /iPhone|iPad|iPod/i.test(ua);
+  var androidDev = /Android/i.test(ua);
 
-  if (!modal || !instr) {
-    doPrint();
-    return;
-  }
+  if (!modal || !instr) { doPrint(); return; }
 
-  if (isIOS) {
+  if (iosDevice) {
     instr.innerHTML = "<b style='color:#FFB300'>1.</b> Tap CONTINUE to open Print preview<br>" +
                       "<b style='color:#FFB300'>2.</b> Tap the Share icon (top right)<br>" +
                       "<b style='color:#FFB300'>3.</b> Tap <span style='color:#FFB300'>'Save to Files'</span> or 'Print'";
-  } else if (isAndroid) {
+  } else if (androidDev) {
     instr.innerHTML = "<b style='color:#FFB300'>1.</b> Tap CONTINUE to open Print preview<br>" +
                       "<b style='color:#FFB300'>2.</b> Set Printer to <span style='color:#FFB300'>'Save as PDF'</span><br>" +
                       "<b style='color:#FFB300'>3.</b> Tap the download icon";
@@ -1990,7 +1993,6 @@ function printPDF() {
                       "<b style='color:#FFB300'>3.</b> Margins: <span style='color:#FFB300'>None</span> &nbsp; Scale: <span style='color:#FFB300'>100%</span><br>" +
                       "<b style='color:#FFB300'>4.</b> Click Save";
   }
-
   modal.style.display = 'flex';
 }
 
@@ -2003,12 +2005,12 @@ function confirmPdfPrint() {
   doPrint();
 }
 
-// The unified print routine. Same on every device.
 function doPrint() {
-  // 1. Enter print-mode (locks to 8.5×11, applies scale transform)
+  // Step 1: enter print mode (iOS = reflow, desktop = scale transform)
   enterPrintMode();
 
-  // 2. Wait one frame so the browser applies styles before opening dialog
+  // Step 2: wait two animation frames so the browser paints the new layout
+  //         before the print dialog opens
   requestAnimationFrame(function() {
     requestAnimationFrame(function() {
       try {
@@ -2016,22 +2018,17 @@ function doPrint() {
       } catch(e) {
         console.error('Print error:', e);
       }
-
-      // 3. Exit print mode after a short delay
-      // (afterprint event isn't reliable on iOS Safari)
+      // Step 3: restore layout after dialog closes
+      // afterprint fires on desktop; setTimeout is the iOS fallback
       setTimeout(exitPrintMode, 1500);
     });
   });
 }
 
-// Also restore on the standard afterprint event (desktop)
 window.addEventListener('afterprint', exitPrintMode);
 
 // ════════════════════════════════════════════════════════════════
-//  ▼▼▼  SAVE IMAGE  ▼▼▼
-//  Uses the EXACT same scale calculation as Print, then captures
-//  the result with html2canvas at 8.5×11 paper dimensions.
-//  The output JPEG matches the printed PDF pixel-for-pixel layout.
+//  SAVE IMAGE
 // ════════════════════════════════════════════════════════════════
 function openImageModal() {
   if (!validateForm()) return;
@@ -2053,13 +2050,12 @@ function saveImageFromModal() {
   var timestamp = new Date().toISOString().split('T')[0];
   var filename  = pageTitle + '_' + timestamp + '.jpg';
 
-  // Loading indicator
   var loadingDiv = document.createElement('div');
   loadingDiv.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1a1a1a;border:2px solid #D97706;color:#D97706;padding:20px 40px;font-family:monospace;z-index:99999;border-radius:8px;box-shadow:0 0 30px rgba(217,119,6,0.4);';
   loadingDiv.textContent = '⏳ Generating image...';
   document.body.appendChild(loadingDiv);
 
-  // Replace SVGs with base64 img tags so html2canvas can capture them reliably
+  // Replace SVGs with base64 img tags for html2canvas compatibility
   var svgReplacements = [];
   page.querySelectorAll('svg').forEach(function(svg) {
     try {
@@ -2097,36 +2093,24 @@ function saveImageFromModal() {
   });
 
   Promise.all(imgPromises).then(function() {
-    // ★ KEY: Apply the SAME print mode + scale used for printing
     var info = enterPrintMode();
-    if (!info) {
-      cleanup();
-      alert('Could not calculate page dimensions');
-      return;
-    }
+    if (!info) { cleanup(); alert('Could not calculate page dimensions'); return; }
 
-    // Give browser time to apply transform
     setTimeout(function() {
-      // Capture the page wrapper at exact 8.5×11 paper dimensions
-      // The page element is scaled, so we capture using bounding rect math:
-      // Capture at scale=2 for high-DPI image, but constrain to paper dims.
       html2canvas(page, {
         scale: 2,
         useCORS: true,
         backgroundColor: '#FFFFFF',
         logging: false,
-        // Capture exactly the paper dimensions — the scaled page fills them
         width:  PAPER_W_PX,
         height: PAPER_H_PX,
         windowWidth:  PAPER_W_PX,
         windowHeight: PAPER_H_PX,
-        // Lock the canvas viewport to paper size
         x: 0, y: 0,
         allowTaint: true,
         imageTimeout: 15000,
         removeContainer: true,
         onclone: function(clonedDoc) {
-          // Bake input values into clone
           var liveInputs  = page.querySelectorAll('input, textarea');
           var clonedPage  = clonedDoc.getElementById('page');
           if (!clonedPage) return;
@@ -2145,25 +2129,24 @@ function saveImageFromModal() {
             }
           });
 
-          // Make sure clone has print-mode applied to html AND body
           clonedDoc.documentElement.classList.add('print-mode');
           clonedDoc.body.classList.add('print-mode');
 
-          // Apply the same scale + positioning to the cloned page
-          clonedPage.style.transform       = 'scale(' + info.scaleX + ', ' + info.scaleY + ')';
+          // Always use transform scale for image capture (html2canvas handles it)
+          var scaleX = info.scaleX;
+          var scaleY = info.scaleY;
+          clonedPage.style.transform       = 'scale(' + scaleX + ', ' + scaleY + ')';
           clonedPage.style.transformOrigin = '0 0';
           clonedPage.style.width           = PAGE_NATURAL_W + 'px';
           clonedPage.style.position        = 'absolute';
           clonedPage.style.top             = '0';
           clonedPage.style.left            = '0';
 
-          // Pause animations
           clonedDoc.querySelectorAll('.section-header, .col-label, .header').forEach(function(h) {
             h.style.animationPlayState = 'paused';
           });
 
-          // Hide UI overlays
-          clonedDoc.querySelectorAll('#pdfModal, #imageModal, #offline-banner, .toolbar, #address-suggestions, #gps-status, .gps-btn').forEach(function(m) {
+          clonedDoc.querySelectorAll('#pdfModal,#imageModal,#offline-banner,.toolbar,#address-suggestions,#gps-status,.gps-btn').forEach(function(m) {
             m.style.display = 'none';
           });
         }
@@ -2186,15 +2169,13 @@ function saveImageFromModal() {
 
   function finishCapture(canvas) {
     cleanup();
-
     var dataUrl = canvas.toDataURL('image/jpeg', 0.95);
 
     if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-      // iOS: open in new tab so user can long-press → Save to Photos
       var newTab = window.open();
       if (newTab) {
         newTab.document.write(
-          '<html><head><title>' + filename + '</title>' + 
+          '<html><head><title>' + filename + '</title>' +
           '<style>body{margin:0;padding:0;background:#000;font-family:sans-serif;}img{display:block;width:100%;height:auto;}p{color:#fff;padding:16px;text-align:center;}</style>' +
           '</head><body>' +
           '<img src="' + dataUrl + '" alt="' + filename + '"/>' +
@@ -2203,22 +2184,18 @@ function saveImageFromModal() {
         );
         newTab.document.close();
       } else {
-        // Fallback if popups blocked
         var link = document.createElement('a');
         link.download = filename;
         link.href = dataUrl;
         link.click();
       }
     } else {
-      // Desktop + Android: direct download
       var link = document.createElement('a');
       link.download = filename;
       link.href = dataUrl;
       document.body.appendChild(link);
       link.click();
-      setTimeout(function() {
-        if (link.parentNode) document.body.removeChild(link);
-      }, 100);
+      setTimeout(function() { if (link.parentNode) document.body.removeChild(link); }, 100);
     }
   }
 }
