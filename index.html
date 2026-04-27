@@ -1530,31 +1530,36 @@ var PAGE_NATURAL_W = 1050;
 // ────────────────────────────────────────────────────────────────
 function calculateStretchScale() {
   const page = document.querySelector('.page');
-  if (!page) return 1;
+  if (!page) return { scaleX: 1, scaleY: 1 };
 
   const pageRect = page.getBoundingClientRect();
   
-  // In print mode, stretch to fill 8.5" x 11" (816px x 1056px)
-  // accounting for print margins
-  const printableWidth = 816;  // 8.5" at 96dpi
+  // Paper dimensions at 96 dpi
+  const printableWidth = 816;   // 8.5" at 96dpi
   const printableHeight = 1056; // 11" at 96dpi
 
   // Get actual rendered dimensions
-  const actualWidth = pageRect.width;
-  const actualHeight = pageRect.height;
+  const actualWidth = pageRect.width || 1050;
+  const actualHeight = pageRect.height || 1400;
 
-  // Calculate stretch factor to fill the page
+  // Calculate stretch factor to fill the page EXACTLY
   const scaleX = printableWidth / actualWidth;
   const scaleY = printableHeight / actualHeight;
 
-  // Use the smaller scale to maintain aspect ratio
-  // But for print, we want to slightly favor width to eliminate left gaps
-  return scaleX * 0.98; // 0.98 accounts for print margins
+  // Return as object with both scales
+  return {
+    scaleX: scaleX,
+    scaleY: scaleY,
+    // Use the LARGER scale (not smaller) so it fills the page
+    // and we don't get gaps. The page will overflow slightly,
+    // which is OK—the print preview will crop it to the page boundary.
+    combined: Math.max(scaleX, scaleY)
+  };
 }
 
 
 function enterPrintMode() {
-  if (IS_IOS_SAFARI) return null;  // Don't touch iOS Safari path
+  if (IS_IOS_SAFARI) return null;
 
   var page = document.getElementById('page');
   if (!page) return null;
@@ -1571,6 +1576,7 @@ function enterPrintMode() {
 
   return info;
 }
+
 
 function exitPrintMode() {
   if (IS_IOS_SAFARI) return;
