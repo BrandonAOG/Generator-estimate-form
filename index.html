@@ -2285,10 +2285,6 @@ function openImageModal() {
   if (modal) modal.style.display = 'flex';
 }
 
-function closeImageModal() {
-  document.getElementById('imageModal').style.display = 'none';
-}
-
 function saveImageFromModal() {
   closeImageModal();
   
@@ -2306,18 +2302,56 @@ function saveImageFromModal() {
   loadingDiv.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1a1a1a;border:2px solid #D97706;color:#D97706;padding:20px 40px;font-family:monospace;z-index:99999;border-radius:8px;box-shadow:0 0 30px rgba(217,119,6,0.4);';
   loadingDiv.textContent = '⏳ Generating image...';
   document.body.appendChild(loadingDiv);
-  
+
+  // ── Snapshot the true rendered dimensions BEFORE any style changes ──
+  var fullW = page.scrollWidth;
+  var fullH = page.scrollHeight;
+
+  // ── Temporarily force the page to render at full width so html2canvas
+  //    can see every pixel (including the right border that gets clipped
+  //    when the viewport is narrower than 1050 px on mobile) ──
+  var prevBodyWidth      = document.body.style.width;
+  var prevBodyMinWidth   = document.body.style.minWidth;
+  var prevBodyOverflow   = document.body.style.overflow;
+  var prevPageWidth      = page.style.width;
+  var prevPageMaxWidth   = page.style.maxWidth;
+  var prevPageOverflow   = page.style.overflow;
+
+  document.body.style.width     = fullW + 'px';
+  document.body.style.minWidth  = fullW + 'px';
+  document.body.style.overflow  = 'visible';
+  page.style.width              = fullW + 'px';
+  page.style.maxWidth           = 'none';
+  page.style.overflow           = 'visible';
+
   html2canvas(page, {
     scale: 2,
     useCORS: true,
     backgroundColor: '#FFFFFF',
     logging: false,
-    windowHeight: page.scrollHeight,
+    width:  fullW,
+    height: fullH,
+    windowWidth:  fullW,
+    windowHeight: fullH,
+    scrollX: 0,
+    scrollY: 0,
+    x: 0,
+    y: 0,
     allowTaint: true,
     imageTimeout: 15000,
     removeContainer: true,
-    
+
     onclone: function(clonedDoc, clonedElement) {
+
+      // ── Make the cloned element fill its own document exactly ──
+      clonedElement.style.width    = fullW + 'px';
+      clonedElement.style.maxWidth = 'none';
+      clonedElement.style.overflow = 'visible';
+      clonedDoc.body.style.width   = fullW + 'px';
+      clonedDoc.body.style.margin  = '0';
+      clonedDoc.body.style.padding = '0';
+      clonedDoc.body.style.overflow = 'visible';
+
       var svgs = clonedDoc.querySelectorAll('svg');
       
       svgs.forEach(function(svg) {
@@ -2335,28 +2369,24 @@ function saveImageFromModal() {
           svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
         }
 
-        var svgStroke = svg.getAttribute('stroke');
-        var svgFill = svg.getAttribute('fill');
-        var svgStrokeWidth = svg.getAttribute('stroke-width');
-        var svgStrokeLinecap = svg.getAttribute('stroke-linecap');
+        var svgStroke     = svg.getAttribute('stroke');
+        var svgFill       = svg.getAttribute('fill');
+        var svgStrokeWidth    = svg.getAttribute('stroke-width');
+        var svgStrokeLinecap  = svg.getAttribute('stroke-linecap');
         var svgStrokeLinejoin = svg.getAttribute('stroke-linejoin');
 
         if (svgStroke === 'currentColor') svgStroke = computedColor;
-        if (svgFill === 'currentColor') svgFill = computedColor;
+        if (svgFill   === 'currentColor') svgFill   = computedColor;
 
         var shapes = svg.querySelectorAll('path, polyline, polygon, line, rect, circle, ellipse, text');
         
         shapes.forEach(function(el) {
-          if (el.getAttribute('stroke') === 'currentColor') {
-            el.setAttribute('stroke', computedColor);
-          }
-          if (el.getAttribute('fill') === 'currentColor') {
-            el.setAttribute('fill', computedColor);
-          }
-          if (svgStroke && !el.hasAttribute('stroke')) el.setAttribute('stroke', svgStroke);
-          if (svgFill && !el.hasAttribute('fill')) el.setAttribute('fill', svgFill);
-          if (svgStrokeWidth && !el.hasAttribute('stroke-width')) el.setAttribute('stroke-width', svgStrokeWidth);
-          if (svgStrokeLinecap && !el.hasAttribute('stroke-linecap')) el.setAttribute('stroke-linecap', svgStrokeLinecap);
+          if (el.getAttribute('stroke') === 'currentColor') el.setAttribute('stroke', computedColor);
+          if (el.getAttribute('fill')   === 'currentColor') el.setAttribute('fill',   computedColor);
+          if (svgStroke     && !el.hasAttribute('stroke'))        el.setAttribute('stroke',        svgStroke);
+          if (svgFill       && !el.hasAttribute('fill'))          el.setAttribute('fill',          svgFill);
+          if (svgStrokeWidth    && !el.hasAttribute('stroke-width'))    el.setAttribute('stroke-width',    svgStrokeWidth);
+          if (svgStrokeLinecap  && !el.hasAttribute('stroke-linecap'))  el.setAttribute('stroke-linecap',  svgStrokeLinecap);
           if (svgStrokeLinejoin && !el.hasAttribute('stroke-linejoin')) el.setAttribute('stroke-linejoin', svgStrokeLinejoin);
           if (!el.hasAttribute('fill') && el.tagName.toLowerCase() !== 'text') {
             el.setAttribute('fill', 'none');
@@ -2374,23 +2404,36 @@ function saveImageFromModal() {
         });
       }
 
+      // Clear placeholders on empty inputs for a clean look
       var inputs = clonedDoc.querySelectorAll('input, textarea');
       inputs.forEach(function(input) {
         if (!input.value) input.setAttribute('placeholder', '');
       });
 
+      // Stop pulsing animations
       var allHeaders = clonedDoc.querySelectorAll('.section-header, .col-label');
       allHeaders.forEach(function(h) {
         h.style.animationPlayState = 'paused';
       });
 
+      // Hide UI chrome that shouldn't appear in the image
       var modals = clonedDoc.querySelectorAll('#pdfModal, #imageModal, #offline-banner, .toolbar');
       modals.forEach(function(m) {
         m.style.display = 'none';
       });
     }
+
   }).then(function(canvas) {
-    document.body.removeChild(loadingDiv);
+
+    // ── Restore original styles immediately after capture ──
+    document.body.style.width    = prevBodyWidth;
+    document.body.style.minWidth = prevBodyMinWidth;
+    document.body.style.overflow = prevBodyOverflow;
+    page.style.width    = prevPageWidth;
+    page.style.maxWidth = prevPageMaxWidth;
+    page.style.overflow = prevPageOverflow;
+
+    if (loadingDiv.parentNode) document.body.removeChild(loadingDiv);
     
     try {
       var link = document.createElement('a');
@@ -2411,20 +2454,29 @@ function saveImageFromModal() {
         document.body.appendChild(link);
         link.click();
         setTimeout(function() {
-          document.body.removeChild(link);
+          if (link.parentNode) document.body.removeChild(link);
         }, 100);
       }
     } catch (e) {
       alert('Error saving image: ' + e.message);
     }
+
   }).catch(function(err) {
-    if (loadingDiv.parentNode) {
-      document.body.removeChild(loadingDiv);
-    }
+
+    // ── Always restore styles even on error ──
+    document.body.style.width    = prevBodyWidth;
+    document.body.style.minWidth = prevBodyMinWidth;
+    document.body.style.overflow = prevBodyOverflow;
+    page.style.width    = prevPageWidth;
+    page.style.maxWidth = prevPageMaxWidth;
+    page.style.overflow = prevPageOverflow;
+
+    if (loadingDiv.parentNode) document.body.removeChild(loadingDiv);
     console.error('html2canvas error:', err);
     alert('Error generating image: ' + err.message);
   });
 }
+
 
 // ────────────────────────────────────────────────────────────────
 // EMAIL (SINGLE VERSION)
