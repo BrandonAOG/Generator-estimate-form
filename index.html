@@ -2255,65 +2255,7 @@ document.addEventListener('click', function(e) {
   }
 })();
 
-      // ★ Compute the right zoom NOW based on the page's actual rendered height.
-      //   This guarantees a single-page PDF on iOS Safari regardless of how
-      //   tall the form has grown.
-      var dynamicZoom = computePrintZoom();
-      var dynamicCSS  = buildPrintCSS(dynamicZoom);
-dynamicCSS += `
-  .page {
-    max-height: 1056px !important;
-    overflow: hidden !important;
-    padding: 0 !important;
-  }
-  .content {
-    padding: 2px 6px !important;
-  }
-  .header {
-    padding: 2px 12px !important;
-  }
-  .footer {
-    padding: 2px 12px !important;
-  }
-  .section-body {
-    padding: 4px 8px !important;
-  }
-  input, textarea, select {
-    font-size: 0.75rem !important;
-    min-height: 28px !important;
-  }
-  label {
-    font-size: 0.55rem !important;
-  }
-`;
-
-      win.document.open();
-      win.document.write(
-        '<!DOCTYPE html><html><head>' +
-        '<meta charset="UTF-8">' +
-        '<base href="' + location.href + '">' +
-        '<title>Print</title>' +
-        existingStyles +
-        '<style>' + dynamicCSS + '</style>' +
-        '</head><body>' +
-        clone.outerHTML +
-        '</body></html>'
-      );
-      win.document.close();
-
-      win.onload = function() {
-        win.focus();
-        setTimeout(function() {
-          win.print();
-          setTimeout(function() {
-            try { win.close(); } catch (e) {}
-          }, 1000);
-        }, 300);
-      };
-    };
-  }
-})();
-
+      
 // ────────────────────────────────────────────────────────────────
 // ADDRESS AUTOCOMPLETE
 // ────────────────────────────────────────────────────────────────
