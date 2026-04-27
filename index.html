@@ -2730,14 +2730,32 @@ function setupGpsButton() {
     );
   });
 }
-// iOS-only print zoom — shrinks print output to 85% so the form fits on one page
+// iOS-only print zoom + force layout refresh on print
+// iOS Safari uses a stale layout snapshot the first time print preview
+// opens — this forces it to re-measure so 0.85 zoom takes effect on
+// the very first preview, no manual scale-tweaking needed.
 (function() {
   var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
   if (!isIOS) return;
-  
+
+  // Inject the @media print zoom rule
   var iosPrintStyle = document.createElement('style');
+  iosPrintStyle.id = 'ios-print-zoom';
   iosPrintStyle.textContent = '@media print { body { zoom: 0.60 !important; } }';
   document.head.appendChild(iosPrintStyle);
+
+  // Force iOS Safari to re-flow the layout right before print fires.
+  // This is what mimics the manual "drop to 99% and back to 100%" trick.
+  window.addEventListener('beforeprint', function() {
+    // Toggle a tiny zoom change on the body to invalidate Safari's cached
+    // layout, then revert it within the same paint cycle so users don't
+    // see anything change visually.
+    document.body.style.zoom = '0.999';
+    // Force the browser to actually compute the new layout
+    void document.body.offsetHeight;
+    // Revert immediately
+    document.body.style.zoom = '';
+  });
 })();
 // ────────────────────────────────────────────────────────────────
 // INITIALIZATION
