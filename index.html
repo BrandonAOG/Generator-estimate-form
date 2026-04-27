@@ -65,7 +65,6 @@ body {
   min-height: 100vh;
 }
 
-/* Corner accents */
 .page::before, .page::after {
   content: '';
   position: absolute;
@@ -94,7 +93,6 @@ body {
   .page-corner-bl, .page-corner-br { display: none; }
 }
 
-/* ── HEADER ── */
 .header {
   background: #FFFFFF;
   padding: 8px 32px;
@@ -169,7 +167,6 @@ body {
   white-space: nowrap;
 }
 
-/* Status blips in header */
 .header-status {
   display: flex;
   flex-direction: column;
@@ -177,7 +174,6 @@ body {
   gap: 4px;
 }
 
-/* Offline indicator */
 #offline-banner {
   position: fixed;
   top: 0;
@@ -196,10 +192,8 @@ body {
 }
 
 #offline-banner.show { display: block; }
-
 body.offline { padding-top: 50px; }
 
-/* ── TOOLBAR ── */
 .toolbar {
   background: #FFFFFF;
   border-bottom: 1px solid var(--border);
@@ -257,7 +251,6 @@ body.offline { padding-top: 50px; }
 }
 .btn-gold:hover { border-color: var(--amber); color: var(--amber); box-shadow: var(--glow-amber); }
 
-/* ── CONTENT ── */
 .content { 
   padding: 14px 18px;
   display: flex;
@@ -267,7 +260,6 @@ body.offline { padding-top: 50px; }
 
 @media (max-width: 480px) { .content { padding: 10px 8px; } }
 
-/* ── SECTIONS ── */
 .section {
   border: 1px solid var(--border);
   margin-bottom: 10px;
@@ -317,7 +309,6 @@ body.offline { padding-top: 50px; }
 
 @media (max-width: 480px) { .section-body { padding: 8px 8px; } }
 
-/* ── TOP GRID ── */
 .top-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -344,7 +335,6 @@ body.offline { padding-top: 50px; }
 .top-col { padding: 12px 14px; }
 .top-col:first-child { border-right: 1px solid var(--border); }
 
-/* ── COL LABEL ── */
 .col-label {
   display: inline-flex;
   align-items: center;
@@ -373,7 +363,6 @@ body.offline { padding-top: 50px; }
   animation: pulse 2s ease-in-out infinite;
 }
 
-/* ── FIELD ROWS ── */
 .field-row {
   display: flex;
   align-items: center;
@@ -396,7 +385,6 @@ label {
   font-family: var(--font-display);
 }
 
-/* ── INPUTS ── */
 input[type="text"],
 input[type="email"],
 input[type="tel"],
@@ -433,7 +421,6 @@ input::placeholder, textarea::placeholder {
   opacity: 1;
 }
 
-/* PRINT: Hide placeholders for clean exports */
 @media print {
   input::placeholder, textarea::placeholder { 
     color: transparent !important; 
@@ -469,7 +456,6 @@ textarea {
 }
 textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0.1); }
 
-/* ── GRIDS ── */
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
 .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px; }
 .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 10px; }
@@ -483,7 +469,6 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
 .field-block { display: flex; flex-direction: column; gap: 4px; }
 .field-block > label { margin-bottom: 0; }
 
-/* ── CHECK GROUPS ── */
 .check-group {
   display: flex;
   flex-wrap: wrap;
@@ -549,7 +534,6 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   text-shadow: 0 0 4px rgba(217,119,6,0.3);
 }
 
-/* ── Y/N TOGGLE ── */
 .yn-group {
   display: inline-flex;
   border: 1px solid rgba(217,119,6,0.3);
@@ -596,7 +580,6 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   box-shadow: inset 0 0 8px rgba(220,38,38,0.08);
 }
 
-/* ── INLINE ROWS ── */
 .inline-row {
   display: flex;
   align-items: center;
@@ -638,7 +621,6 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   letter-spacing: 2px;
 }
 
-/* ── FLOOD BAR ── */
 .flood-bar {
   display: flex;
   border: 1px solid var(--border);
@@ -665,7 +647,6 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   .flood-item:nth-child(1), .flood-item:nth-child(2) { border-bottom: 1px solid var(--border); }
 }
 
-/* ── ADDRESS AUTOCOMPLETE ── */
 #address-suggestions {
   position: absolute;
   top: 100%;
@@ -738,7 +719,6 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   display: none;
 }
 
-/* ── GAS APPLIANCES BOX ── */
 .gas-appliances-box {
   border: 1px solid rgba(217,119,6,0.2);
   padding: 10px 12px;
@@ -764,7 +744,6 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   text-transform: uppercase;
 }
 
-/* ── FOOTER ── */
 .footer {
   background: #FFFFFF;
   padding: 10px 22px;
@@ -785,13 +764,11 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   letter-spacing: 2px;
 }
 
-/* ── SCROLLBAR ── */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: #FFFFFF; }
 ::-webkit-scrollbar-thumb { background: rgba(217,119,6,0.3); border-radius: 0; }
 ::-webkit-scrollbar-thumb:hover { background: var(--cyan-dim); }
 
-/* ── PRINT ── */
 @media print {
   @page { 
     size: letter portrait; 
@@ -834,42 +811,40 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   .section-header::before { animation: none !important; }
 
   .header {
-  background: #ffffff !important;
-  border-bottom-color: #D97706 !important;
-  page-break-after: avoid;
-  break-after: avoid;
-  padding: 6px 20px !important;
-  min-height: auto !important;
-  height: auto !important;
-  margin: 0 !important;
+    background: #ffffff !important;
+    border-bottom-color: #D97706 !important;
+    page-break-after: avoid;
+    break-after: avoid;
+    padding: 6px 20px !important;
+    min-height: auto !important;
+    height: auto !important;
+    margin: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+  }
 
-  display: flex !important;        /* centers children horizontally */
-  align-items: center !important;  /* centers children vertically */
-}
+  .header-logo {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px;
+  }
 
-.header-logo {
-  display: flex !important;
-  align-items: center !important;
-  gap: 10px;
-}
+  .logo-img {
+    width: 45px !important;
+    height: 45px !important;
+  }
 
-.logo-img {
-  width: 45px !important;
-  height: 45px !important;
-}
+  .company-name {
+    font-size: 1rem !important;
+    color: #D97706 !important;
+    text-shadow: none !important;
+  }
 
-.company-name {
-  font-size: 1rem !important;
-  color: #D97706 !important;
-  text-shadow: none !important;
-}
-
-.doc-title {
-  color: #D97706 !important;
-  text-shadow: none !important;
-  font-size: 1rem !important;
-}
-
+  .doc-title {
+    color: #D97706 !important;
+    text-shadow: none !important;
+    font-size: 1rem !important;
+  }
 
   .content { 
     padding: 6px 10px !important; 
@@ -935,7 +910,6 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
     background: #D97706 !important;
     box-shadow: none !important;
   }
-
 
   .flood-bar {
     background: #ffffff !important;
@@ -1099,7 +1073,6 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
 </head>
 <body>
 
-<!-- Offline indicator banner -->
 <div id="offline-banner">⚠️ YOU ARE OFFLINE — Your data will be auto-saved locally</div>
 
 <div class="page" id="page">
@@ -1127,46 +1100,18 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
     <div class="col-label">
     <svg width="22" height="22" viewBox="0 0 122 122" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
   <path
-    d="
-      M61 10
-      C76 10 88 22 88 38
-      C88 54 76 66 61 66
-      C46 66 34 54 34 38
-      C34 22 46 10 61 10
-      M26 114
-      C26 90 44 74 61 74
-      C78 74 96 90 96 114
-      M26 114 H96
-      M20 52
-      L10 42
-      L20 32
-      M102 52
-      L112 42
-      L102 32
-    "
-    fill="none"
-    stroke="#D97706"
-    stroke-width="6"
-    stroke-linecap="round"
-    stroke-linejoin="round"
+    d="M61 10 C76 10 88 22 88 38 C88 54 76 66 61 66 C46 66 34 54 34 38 C34 22 46 10 61 10
+       M26 114 C26 90 44 74 61 74 C78 74 96 90 96 114 M26 114 H96
+       M20 52 L10 42 L20 32 M102 52 L112 42 L102 32"
+    fill="none" stroke="#D97706" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"
   />
 </svg>
-
-
-
-
-
-
-
-
 Customer Info
-
     </div>
 
     <div class="field-row">
       <label for="name">Name</label>
       <input type="text" id="name" name="name" required class="long" placeholder="Full name" autocomplete="name" aria-label="Customer name">
-
     </div>
 
     <div class="field-row">
@@ -1175,10 +1120,10 @@ Customer Info
         <input type="text" id="address" name="address" required class="long" placeholder="Start typing address..." autocomplete="off" autocorrect="off" autocapitalize="words" spellcheck="false" aria-label="Street address">
         <button class="gps-btn" title="Use my current location" id="gps-btn" type="button" aria-label="Get location from GPS">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-  <circle cx="12" cy="12" r="3"/>
-  <path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>
-  <circle cx="12" cy="12" r="8" stroke-dasharray="2 4"/>
-</svg>
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>
+            <circle cx="12" cy="12" r="8" stroke-dasharray="2 4"/>
+          </svg>
         </button>
         <ul id="address-suggestions" aria-label="Address suggestions"></ul>
       </div>
@@ -1209,73 +1154,62 @@ Customer Info
     <div class="field-row">
       <label for="today">Today's Date</label>
       <input type="date" id="today" name="today" required class="med" autocomplete="off" aria-label="Today's date">
-
     </div>
   </div>
 
+  <div class="top-col">
+    <div class="col-label">
+      <svg width="22" height="22" viewBox="0 0 122 114" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+        <path
+          d="M61 4 L8 48 M61 4 L114 48 M15 56 V112 H107 V56 M30 76 H56 V98 H30 V76 M68 74 H92 V112 H68 V74 M60 36 A6 6 0 1 1 60 48 A6 6 0 1 1 60 36"
+          fill="none" stroke="#D97706" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"
+        />
+      </svg>
+      Property Info
+    </div>
 
-      <div class="top-col">
-       <div class="col-label">
- <svg width="22" height="22" viewBox="0 0 122 114" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
-  <path
-    d="M61 4 L8 48 M61 4 L114 48
-       M15 56 V112 H107 V56
-       M30 76 H56 V98 H30 V76
-       M68 74 H92 V112 H68 V74
-       M60 36 A6 6 0 1 1 60 48 A6 6 0 1 1 60 36"
-    fill="none"
-    stroke="#D97706"
-    stroke-width="6"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  />
-</svg>
-
-  Property Info
-</div>
-
-        <div class="field-row">
-          <label for="referral">How did you hear about us?</label>
-          <input type="text" id="referral" name="referral" class="long" autocomplete="off" aria-label="Referral source">
-        </div>
-        <div class="field-row">
-          <label for="sqft">Sq. Footage</label>
-          <input type="number" id="sqft" name="sqft" class="med" placeholder="e.g. 2000" inputmode="numeric" autocomplete="off" aria-label="Square footage">
-          <label style="margin-left:2px;">SF</label>
-          <span id="sqft-status" style="font-size:0.68rem;color:var(--text-muted);margin-left:4px;"></span>
-        </div>
-        <div class="field-row">
-          <label for="gas">Natural Gas / Propane</label>
-          <input type="text" id="gas" name="gas" class="long" autocomplete="off" aria-label="Natural gas or propane">
-        </div>
-        <div class="field-row">
-          <label for="financing">Financing</label>
-          <input type="text" id="financing" name="financing" class="long" autocomplete="off" aria-label="Financing option">
-        </div>
-        <div class="field-row">
-          <label>Property Survey?</label>
-          <div class="yn-group">
-            <input type="radio" name="survey" id="survey_y" value="Y" class="yn-y">
-            <label class="yn-label yn-label-y" for="survey_y">Y</label>
-            <input type="radio" name="survey" id="survey_n" value="N" class="yn-n">
-            <label class="yn-label yn-label-n" for="survey_n">N</label>
-          </div>
-        </div>
-
-        <hr class="divider">
-
-        <div class="field-row">
-          <label for="est_date">Estimate Date</label>
-          <input type="date" id="est_date" name="est_date" class="med" autocomplete="off" aria-label="Estimate date">
-          <label for="est_time">Time</label>
-          <input type="text" id="est_time" name="est_time" class="short" placeholder="10-11" autocomplete="off" aria-label="Estimate time">
-        </div>
-        <div class="field-row">
-          <label for="estimator">Estimator</label>
-          <input type="text" id="estimator" name="estimator" required class="long" autocomplete="off" aria-label="Estimator name">
-        </div>
+    <div class="field-row">
+      <label for="referral">How did you hear about us?</label>
+      <input type="text" id="referral" name="referral" class="long" autocomplete="off" aria-label="Referral source">
+    </div>
+    <div class="field-row">
+      <label for="sqft">Sq. Footage</label>
+      <input type="number" id="sqft" name="sqft" class="med" placeholder="e.g. 2000" inputmode="numeric" autocomplete="off" aria-label="Square footage">
+      <label style="margin-left:2px;">SF</label>
+      <span id="sqft-status" style="font-size:0.68rem;color:var(--text-muted);margin-left:4px;"></span>
+    </div>
+    <div class="field-row">
+      <label for="gas">Natural Gas / Propane</label>
+      <input type="text" id="gas" name="gas" class="long" autocomplete="off" aria-label="Natural gas or propane">
+    </div>
+    <div class="field-row">
+      <label for="financing">Financing</label>
+      <input type="text" id="financing" name="financing" class="long" autocomplete="off" aria-label="Financing option">
+    </div>
+    <div class="field-row">
+      <label>Property Survey?</label>
+      <div class="yn-group">
+        <input type="radio" name="survey" id="survey_y" value="Y" class="yn-y">
+        <label class="yn-label yn-label-y" for="survey_y">Y</label>
+        <input type="radio" name="survey" id="survey_n" value="N" class="yn-n">
+        <label class="yn-label yn-label-n" for="survey_n">N</label>
       </div>
     </div>
+
+    <hr class="divider">
+
+    <div class="field-row">
+      <label for="est_date">Estimate Date</label>
+      <input type="date" id="est_date" name="est_date" class="med" autocomplete="off" aria-label="Estimate date">
+      <label for="est_time">Time</label>
+      <input type="text" id="est_time" name="est_time" class="short" placeholder="10-11" autocomplete="off" aria-label="Estimate time">
+    </div>
+    <div class="field-row">
+      <label for="estimator">Estimator</label>
+      <input type="text" id="estimator" name="estimator" required class="long" autocomplete="off" aria-label="Estimator name">
+    </div>
+  </div>
+</div>
 
     <!-- Flood / Parcel / Done -->
     <div class="flood-bar">
@@ -1291,20 +1225,15 @@ Customer Info
         <label for="est_done_on">Estimate Done On</label>
         <input type="date" id="est_done_on" name="est_done_on" autocomplete="off" aria-label="Estimate completion date">
       </div>
-      <div class="flood-item">
-      
-      </div>
+      <div class="flood-item"></div>
     </div>
 
     <!-- Generator -->
     <div class="section">
       <div class="section-header">
         <svg width="20" height="20" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
-          <!-- Main engine block (rectangular) -->
           <rect x="15" y="30" width="50" height="35" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
-          <!-- Engine head (top section) -->
           <rect x="18" y="28" width="44" height="8" rx="1" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.7"/>
-          <!-- Cylinder cooling fins (vertical lines on side) -->
           <line x1="20" y1="33" x2="20" y2="60" stroke="currentColor" stroke-width="0.6" opacity="0.5"/>
           <line x1="24" y1="33" x2="24" y2="60" stroke="currentColor" stroke-width="0.6" opacity="0.5"/>
           <line x1="28" y1="33" x2="28" y2="60" stroke="currentColor" stroke-width="0.6" opacity="0.5"/>
@@ -1316,30 +1245,22 @@ Customer Info
           <line x1="52" y1="33" x2="52" y2="60" stroke="currentColor" stroke-width="0.6" opacity="0.5"/>
           <line x1="56" y1="33" x2="56" y2="60" stroke="currentColor" stroke-width="0.6" opacity="0.5"/>
           <line x1="60" y1="33" x2="60" y2="60" stroke="currentColor" stroke-width="0.6" opacity="0.5"/>
-          <!-- Air intake/carburetor on top -->
           <rect x="35" y="22" width="10" height="6" rx="1" stroke="currentColor" stroke-width="1.2" fill="none"/>
           <circle cx="40" cy="25" r="1.5" fill="none" stroke="currentColor" stroke-width="0.8"/>
-          <!-- Spark plug -->
           <line x1="68" y1="32" x2="72" y2="28" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
           <circle cx="72" cy="28" r="1.2" fill="currentColor" opacity="0.3"/>
-          <!-- Alternator/Generator head (right side circular) -->
           <circle cx="78" cy="48" r="12" stroke="currentColor" stroke-width="2" fill="none"/>
-          <!-- Alternator cooling fan vents (inside circle) -->
           <line x1="72" y1="48" x2="84" y2="48" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
           <line x1="78" y1="42" x2="78" y2="54" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
           <line x1="72" y1="42" x2="84" y2="54" stroke="currentColor" stroke-width="0.6" opacity="0.4"/>
           <line x1="84" y1="42" x2="72" y2="54" stroke="currentColor" stroke-width="0.6" opacity="0.4"/>
-          <!-- Coupling between engine and alternator -->
           <line x1="65" y1="46" x2="68" y2="48" stroke="currentColor" stroke-width="1.5"/>
           <line x1="65" y1="50" x2="68" y2="48" stroke="currentColor" stroke-width="1.5"/>
           <circle cx="65" cy="48" r="1" fill="currentColor" opacity="0.3"/>
-          <!-- Muffler (exhaust on back top) -->
           <rect x="8" y="26" width="4" height="8" rx="1" stroke="currentColor" stroke-width="1" fill="none" opacity="0.7"/>
           <line x1="10" y1="26" x2="8" y2="22" stroke="currentColor" stroke-width="0.8" stroke-linecap="round" opacity="0.6"/>
-          <!-- Engine mounting feet (bottom) -->
           <rect x="22" y="64" width="6" height="4" rx="0.5" fill="none" stroke="currentColor" stroke-width="1" opacity="0.6"/>
           <rect x="48" y="64" width="6" height="4" rx="0.5" fill="none" stroke="currentColor" stroke-width="1" opacity="0.6"/>
-          <!-- Power output terminals (right side bottom) -->
           <circle cx="82" cy="60" r="1.5" fill="none" stroke="currentColor" stroke-width="1" opacity="0.7"/>
           <circle cx="82" cy="65" r="1.5" fill="none" stroke="currentColor" stroke-width="1" opacity="0.7"/>
           <line x1="80" y1="60" x2="78" y2="60" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
@@ -1349,46 +1270,45 @@ Customer Info
       </div>
 
       <div class="section-body">
-       <div class="inline-row">
-  <label for="gen_size">Size</label>
-  <input type="text" id="gen_size" name="gen_size" placeholder="22kW" autocomplete="off" style="width:80px;min-width:80px;" aria-label="Generator size">
-  <span class="inline-label" style="margin-left:6px;">Placement</span>
-  <div class="check-group">
-    <label class="check-item"><input type="checkbox" name="placement" value="Right" aria-label="Right placement"><span>Right</span></label>
-    <label class="check-item"><input type="checkbox" name="placement" value="Left" aria-label="Left placement"><span>Left</span></label>
-    <label class="check-item"><input type="checkbox" name="placement" value="Back" aria-label="Back placement"><span>Back</span></label>
-  </div>
-  <span class="inline-label" style="margin-left:6px;">Seal Window</span>
-  <div class="yn-group">
-    <input type="radio" name="seal_window" id="sw_y" value="Y" class="yn-y" aria-label="Seal window yes">
-    <label class="yn-label yn-label-y" for="sw_y">Y</label>
-    <input type="radio" name="seal_window" id="sw_n" value="N" class="yn-n" aria-label="Seal window no">
-    <label class="yn-label yn-label-n" for="sw_n">N</label>
-  </div>
-</div>
+        <div class="inline-row">
+          <label for="gen_size">Size</label>
+          <input type="text" id="gen_size" name="gen_size" placeholder="22kW" autocomplete="off" style="width:80px;min-width:80px;" aria-label="Generator size">
+          <span class="inline-label" style="margin-left:6px;">Placement</span>
+          <div class="check-group">
+            <label class="check-item"><input type="checkbox" name="placement" value="Right" aria-label="Right placement"><span>Right</span></label>
+            <label class="check-item"><input type="checkbox" name="placement" value="Left" aria-label="Left placement"><span>Left</span></label>
+            <label class="check-item"><input type="checkbox" name="placement" value="Back" aria-label="Back placement"><span>Back</span></label>
+          </div>
+          <span class="inline-label" style="margin-left:6px;">Seal Window</span>
+          <div class="yn-group">
+            <input type="radio" name="seal_window" id="sw_y" value="Y" class="yn-y" aria-label="Seal window yes">
+            <label class="yn-label yn-label-y" for="sw_y">Y</label>
+            <input type="radio" name="seal_window" id="sw_n" value="N" class="yn-n" aria-label="Seal window no">
+            <label class="yn-label yn-label-n" for="sw_n">N</label>
+          </div>
+        </div>
 
-<div class="inline-row">
-  <span class="inline-label">Elec. Run Footage</span>
-  <input type="number" id="elec_run_ft" name="elec_run_ft" class="short" placeholder="ft" inputmode="numeric" autocomplete="off" aria-label="Electrical run footage">
-  <div class="check-group">
-    <label class="check-item"><input type="checkbox" name="run" value="undergrnd" aria-label="Underground electrical"><span>Under Grnd</span></label>
-    <label class="check-item"><input type="checkbox" name="run" value="abovegrnd" aria-label="Above ground electrical"><span>Above Grnd</span></label>
-    <label class="check-item"><input type="checkbox" name="run" value="attic" aria-label="Attic electrical"><span>Attic</span></label>
-  </div>
-  <span class="inline-label" style="margin-left:6px;">Wiring</span>
-  <div class="check-group">
-    <label class="check-item"><input type="checkbox" name="wiring" value="aluminum" aria-label="Aluminum wiring"><span>Aluminum</span></label>
-    <label class="check-item"><input type="checkbox" name="wiring" value="copper" aria-label="Copper wiring"><span>Copper</span></label>
-  </div>
-  <span class="inline-label">Bore</span>
-  <div class="yn-group">
-    <input type="radio" name="bore_gen" id="bore_gen_y" value="Y" class="yn-y" aria-label="Bore generator yes">
-    <label class="yn-label yn-label-y" for="bore_gen_y">Y</label>
-    <input type="radio" name="bore_gen" id="bore_gen_n" value="N" class="yn-n" aria-label="Bore generator no">
-    <label class="yn-label yn-label-n" for="bore_gen_n">N</label>
-  </div>
-</div>
-
+        <div class="inline-row">
+          <span class="inline-label">Elec. Run Footage</span>
+          <input type="number" id="elec_run_ft" name="elec_run_ft" class="short" placeholder="ft" inputmode="numeric" autocomplete="off" aria-label="Electrical run footage">
+          <div class="check-group">
+            <label class="check-item"><input type="checkbox" name="run" value="undergrnd" aria-label="Underground electrical"><span>Under Grnd</span></label>
+            <label class="check-item"><input type="checkbox" name="run" value="abovegrnd" aria-label="Above ground electrical"><span>Above Grnd</span></label>
+            <label class="check-item"><input type="checkbox" name="run" value="attic" aria-label="Attic electrical"><span>Attic</span></label>
+          </div>
+          <span class="inline-label" style="margin-left:6px;">Wiring</span>
+          <div class="check-group">
+            <label class="check-item"><input type="checkbox" name="wiring" value="aluminum" aria-label="Aluminum wiring"><span>Aluminum</span></label>
+            <label class="check-item"><input type="checkbox" name="wiring" value="copper" aria-label="Copper wiring"><span>Copper</span></label>
+          </div>
+          <span class="inline-label">Bore</span>
+          <div class="yn-group">
+            <input type="radio" name="bore_gen" id="bore_gen_y" value="Y" class="yn-y" aria-label="Bore generator yes">
+            <label class="yn-label yn-label-y" for="bore_gen_y">Y</label>
+            <input type="radio" name="bore_gen" id="bore_gen_n" value="N" class="yn-n" aria-label="Bore generator no">
+            <label class="yn-label yn-label-n" for="bore_gen_n">N</label>
+          </div>
+        </div>
 
         <div class="field-block">
           <textarea id="gen_notes" name="gen_notes" placeholder="Additional notes on generator placement / run..." aria-label="Generator notes"></textarea>
@@ -1400,28 +1320,19 @@ Customer Info
     <div class="section">
       <div class="section-header">
         <svg width="20" height="20" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
-          <!-- Left power line -->
           <line x1="10" y1="30" x2="30" y2="30" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          <!-- Right power line -->
           <line x1="70" y1="30" x2="90" y2="30" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          <!-- Switch box -->
           <rect x="35" y="20" width="30" height="40" rx="3" stroke="currentColor" stroke-width="2" fill="none"/>
-          <!-- Center divider -->
           <line x1="50" y1="20" x2="50" y2="60" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>
-          <!-- Top label (Grid) -->
           <text x="42" y="35" font-size="8" fill="currentColor" text-anchor="middle">G</text>
-          <!-- Bottom label (Gen) -->
           <text x="42" y="52" font-size="8" fill="currentColor" text-anchor="middle">G</text>
-          <!-- Output connection -->
           <line x1="50" y1="60" x2="50" y2="75" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          <!-- Arrow indicator (switched position) -->
           <path d="M58 45 L65 45 M62 42 L65 45 L62 48" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         Transfer Switch
       </div>
 
       <div class="section-body">
-
         <div class="inline-row">
           <span class="inline-label"># Elect. Panels</span>
           <input type="number" id="num_panels" name="num_panels" class="tiny" placeholder="1" inputmode="numeric" autocomplete="off" aria-label="Number of electrical panels">
@@ -1485,7 +1396,6 @@ Customer Info
             <label class="yn-label yn-label-n" for="cs_n">N</label>
           </div>
         </div>
-
       </div>
     </div>
 
@@ -1493,21 +1403,16 @@ Customer Info
     <div class="section">
       <div class="section-header">
         <svg width="20" height="20" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
-          <!-- Concrete pad top surface -->
           <rect x="15" y="20" width="70" height="50" stroke="currentColor" stroke-width="2" fill="none" rx="3"/>
-          <!-- Concrete texture (aggregate pattern) -->
           <circle cx="30" cy="35" r="2" fill="currentColor" opacity="0.4"/>
           <circle cx="50" cy="30" r="1.5" fill="currentColor" opacity="0.5"/>
           <circle cx="65" cy="40" r="2" fill="currentColor" opacity="0.4"/>
           <circle cx="35" cy="55" r="1.5" fill="currentColor" opacity="0.5"/>
           <circle cx="70" cy="55" r="2" fill="currentColor" opacity="0.4"/>
           <circle cx="25" cy="60" r="1.5" fill="currentColor" opacity="0.5"/>
-          <!-- Pad edges/shadow -->
           <line x1="15" y1="70" x2="85" y2="72" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
-          <!-- Foundation depth indicator -->
           <line x1="12" y1="20" x2="12" y2="75" stroke="currentColor" stroke-width="1" opacity="0.4" stroke-dasharray="2,2"/>
           <line x1="88" y1="20" x2="88" y2="75" stroke="currentColor" stroke-width="1" opacity="0.4" stroke-dasharray="2,2"/>
-          <!-- Anchor bolt pattern (4 corners) -->
           <circle cx="25" cy="32" r="1.5" fill="currentColor"/>
           <circle cx="75" cy="32" r="1.5" fill="currentColor"/>
           <circle cx="25" cy="60" r="1.5" fill="currentColor"/>
@@ -1540,31 +1445,19 @@ Customer Info
     <div class="section">
       <div class="section-header">
         <svg width="30" height="20" viewBox="0 0 100 60" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
-          <!-- Main horizontal cylinder body -->
           <ellipse cx="50" cy="28" rx="38" ry="14" stroke="currentColor" stroke-width="2" fill="none"/>
-          <!-- Left hemispherical end cap -->
-          <path d="M 12 28 Q 12 14 12 28 Q 12 42 12 28" stroke="currentColor" stroke-width="2" fill="none"/>
           <ellipse cx="12" cy="28" rx="8" ry="14" stroke="currentColor" stroke-width="2" fill="none"/>
-          <!-- Right hemispherical end cap -->
-          <path d="M 88 28 Q 88 14 88 28 Q 88 42 88 28" stroke="currentColor" stroke-width="2" fill="none"/>
           <ellipse cx="88" cy="28" rx="8" ry="14" stroke="currentColor" stroke-width="2" fill="none"/>
-          <!-- Top dome/fill cap -->
           <ellipse cx="50" cy="14" rx="8" ry="6" stroke="currentColor" stroke-width="1.5" fill="none"/>
           <circle cx="50" cy="12" r="2.5" stroke="currentColor" stroke-width="1.2" fill="none"/>
-          <!-- Liquid level inside (shaded area) -->
           <path d="M 12 28 Q 12 38 50 40 Q 88 38 88 28 L 88 28 Q 88 20 50 22 Q 12 20 12 28" fill="currentColor" opacity="0.2"/>
-          <!-- Liquid level line -->
           <line x1="14" y1="28" x2="86" y2="28" stroke="currentColor" stroke-width="0.8" opacity="0.4" stroke-dasharray="2,1"/>
-          <!-- Left support leg/bracket -->
           <line x1="30" y1="42" x2="28" y2="50" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
           <circle cx="28" cy="50" r="1.5" fill="currentColor" opacity="0.5"/>
-          <!-- Right support leg/bracket -->
           <line x1="70" y1="42" x2="72" y2="50" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
           <circle cx="72" cy="50" r="1.5" fill="currentColor" opacity="0.5"/>
-          <!-- Drain valve at bottom center -->
           <circle cx="50" cy="42" r="1.5" fill="none" stroke="currentColor" stroke-width="1" opacity="0.6"/>
           <line x1="50" y1="43" x2="50" y2="48" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
-          <!-- Gauge glass indicator (right side) -->
           <rect x="90" y="18" width="1.2" height="20" rx="0.6" fill="none" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
           <line x1="88" y1="28" x2="92" y2="28" stroke="currentColor" stroke-width="0.6" opacity="0.4"/>
         </svg>
@@ -1572,7 +1465,6 @@ Customer Info
       </div>
 
       <div class="section-body">
-
         <div class="inline-row" style="margin-bottom:14px;">
           <div class="check-group">
             <label class="check-item"><input type="checkbox" name="fuel_type" value="natural_gas" aria-label="Natural gas fuel"><span>Natural Gas</span></label>
@@ -1648,7 +1540,6 @@ Customer Info
           <span class="inline-label" style="margin-left:8px;">Ready/Notes</span>
           <input type="text" id="new_build_date" name="new_build_date" class="long" autocomplete="off" aria-label="New build ready date or notes">
         </div>
-
       </div>
     </div>
 
@@ -1661,121 +1552,86 @@ Customer Info
 
 </div>
 
-<!-- ▼▼▼ PDF SAVE MODAL ▼▼▼ -->
+<!-- PDF MODAL -->
 <div id="pdfModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(4px);">
   <div style="background:linear-gradient(135deg,#0a0a0a 0%,#1a1a1a 100%); border:2px solid #FFB300; border-radius:12px; padding:30px; max-width:420px; width:90%; box-shadow:0 0 40px rgba(255,179,0,0.4), inset 0 0 20px rgba(0,229,255,0.05); font-family:'Exo 2',sans-serif;">
-    
     <h2 style="color:#FFB300; font-family:'Orbitron',sans-serif; margin:0 0 8px 0; font-size:18px; letter-spacing:2px; text-shadow:0 0 10px rgba(255,179,0,0.5);">📄 SAVE AS PDF</h2>
-    
     <div style="height:1px; background:linear-gradient(90deg,#FFB300,transparent); margin-bottom:18px;"></div>
-    
     <div id="pdfInstructions" style="color:#00E5FF; font-family:'Share Tech Mono',monospace; font-size:13px; line-height:1.8;"></div>
-    
     <div style="margin-top:24px; display:flex; justify-content:flex-end; gap:10px;">
       <button onclick="closePdfModal()" style="background:transparent; border:1px solid #666; color:#999; padding:9px 18px; border-radius:6px; cursor:pointer; font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:1px;">CANCEL</button>
       <button onclick="confirmPdfPrint()" style="background:linear-gradient(135deg,#FFB300,#FF8C00); border:none; color:#000; padding:9px 22px; border-radius:6px; cursor:pointer; font-weight:bold; font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:1px; box-shadow:0 0 15px rgba(255,179,0,0.4);">CONTINUE ▶</button>
     </div>
   </div>
 </div>
-<!-- ▲▲▲ END PDF MODAL ▲▲▲ -->
 
-<!-- ▼▼▼ IMAGE SAVE MODAL ▼▼▼ -->
+<!-- IMAGE MODAL -->
 <div id="imageModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(4px);">
   <div style="background:linear-gradient(135deg,#0a0a0a 0%,#1a1a1a 100%); border:2px solid #059669; border-radius:12px; padding:30px; max-width:420px; width:90%; box-shadow:0 0 40px rgba(5,150,105,0.4), inset 0 0 20px rgba(0,229,255,0.05); font-family:'Exo 2',sans-serif;">
-    
     <h2 style="color:#059669; font-family:'Orbitron',sans-serif; margin:0 0 8px 0; font-size:18px; letter-spacing:2px; text-shadow:0 0 10px rgba(5,150,105,0.5);">🖼 SAVE AS IMAGE</h2>
-    
     <div style="height:1px; background:linear-gradient(90deg,#059669,transparent); margin-bottom:18px;"></div>
-    
     <p style="color:#00E5FF; font-family:'Share Tech Mono',monospace; font-size:13px; line-height:1.8; margin:0 0 20px 0;">Capture the entire form as a JPEG image. Perfect for saving, printing, or sharing.</p>
-    
     <div style="margin-top:24px; display:flex; justify-content:flex-end; gap:10px;">
       <button onclick="closeImageModal()" style="background:transparent; border:1px solid #666; color:#999; padding:9px 18px; border-radius:6px; cursor:pointer; font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:1px;">CANCEL</button>
       <button onclick="saveImageFromModal()" style="background:linear-gradient(135deg,#059669,#04874f); border:none; color:#fff; padding:9px 22px; border-radius:6px; cursor:pointer; font-weight:bold; font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:1px; box-shadow:0 0 15px rgba(5,150,105,0.4);">SAVE IMAGE ▶</button>
     </div>
   </div>
 </div>
-<!-- ▲▲▲ END IMAGE MODAL ▲▲▲ -->
 
 <script>
 var nativePrint = window.print.bind(window);
 
-if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-  document.body.classList.add('is-mobile-device');
-}
+// ── DEVICE DETECTION ──
+var UA = navigator.userAgent;
+var isIOS     = /iPhone|iPad|iPod/i.test(UA);
+var isAndroid = /Android/i.test(UA);
+var isMobile  = isIOS || isAndroid || /Mobi/i.test(UA);
+var isSafariDesktop = /Safari/i.test(UA) && !/Chrome|CriOS|FxiOS|EdgiOS|Mobile/i.test(UA);
+var isAndroidChrome = isAndroid && /Chrome/i.test(UA);
+
+if (isMobile) document.body.classList.add('is-mobile-device');
 
 var MAPBOX_TOKEN = 'pk.eyJ1IjoicHJvamVjdHdyYXBwZXIiLCJhIjoiY201d2k1eHU3MDAwajJrbzU2a2c5dW40NSJ9.WJlNJ4o5CqBhWpHKMKOzIQ';
 var DRAFT_KEY = 'aog_estimate_draft';
 
-// ────────────────────────────────────────────────────────────────
-// OFFLINE HANDLING
-// ────────────────────────────────────────────────────────────────
-window.addEventListener('online', function() {
-  var b = document.getElementById('offline-banner');
-  if (b) b.classList.remove('show');
-  document.body.classList.remove('offline');
-});
+// ── OFFLINE ──
+window.addEventListener('online',  function() { var b=document.getElementById('offline-banner'); if(b) b.classList.remove('show'); document.body.classList.remove('offline'); });
+window.addEventListener('offline', function() { var b=document.getElementById('offline-banner'); if(b) b.classList.add('show'); document.body.classList.add('offline'); });
 
-window.addEventListener('offline', function() {
-  var b = document.getElementById('offline-banner');
-  if (b) b.classList.add('show');
-  document.body.classList.add('offline');
-});
-
-// ────────────────────────────────────────────────────────────────
-// DRAFT SAVE / RESTORE
-// ────────────────────────────────────────────────────────────────
+// ── DRAFT SAVE / RESTORE ──
 function saveDraft() {
   var data = {};
   document.querySelectorAll('input, textarea').forEach(function(el) {
-    var key = el.id || el.name;
-    if (!key) return;
+    var key = el.id || el.name; if (!key) return;
     try {
-      if (el.type === 'checkbox') {
-        if (!data[key]) data[key] = [];
-        if (el.checked) data[key].push(el.value);
-      } else if (el.type === 'radio') {
-        if (el.checked) data[key] = el.value;
-      } else {
-        if (data[key] === undefined) data[key] = el.value;
-      }
-    } catch (e) { console.warn('Error saving field:', key); }
+      if (el.type === 'checkbox') { if (!data[key]) data[key] = []; if (el.checked) data[key].push(el.value); }
+      else if (el.type === 'radio') { if (el.checked) data[key] = el.value; }
+      else { if (data[key] === undefined) data[key] = el.value; }
+    } catch(e) {}
   });
-  try {
-    localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
-  } catch(e) {
-    if (e.name === 'QuotaExceededError') console.warn('LocalStorage quota exceeded');
-  }
+  try { localStorage.setItem(DRAFT_KEY, JSON.stringify(data)); } catch(e) {}
 }
 
 function restoreDraft() {
-  var saved = localStorage.getItem(DRAFT_KEY);
-  if (!saved) return;
+  var saved = localStorage.getItem(DRAFT_KEY); if (!saved) return;
   try {
     var data = JSON.parse(saved);
     document.querySelectorAll('input, textarea').forEach(function(el) {
-      var key = el.id || el.name;
-      if (!key || data[key] === undefined) return;
+      var key = el.id || el.name; if (!key || data[key] === undefined) return;
       try {
-        if (el.type === 'checkbox') {
-          if (Array.isArray(data[key])) el.checked = data[key].indexOf(el.value) !== -1;
-        } else if (el.type === 'radio') {
-          if (el.value === data[key]) el.checked = true;
-        } else {
-          el.value = data[key];
-        }
-      } catch (e) { console.warn('Error restoring field:', key); }
+        if (el.type === 'checkbox') { if (Array.isArray(data[key])) el.checked = data[key].indexOf(el.value) !== -1; }
+        else if (el.type === 'radio') { if (el.value === data[key]) el.checked = true; }
+        else { el.value = data[key]; }
+      } catch(e) {}
     });
-  } catch(e) { console.warn('Error restoring draft:', e); }
+  } catch(e) {}
 }
 
 setInterval(saveDraft, 30000);
 document.addEventListener('change', saveDraft);
-document.addEventListener('input', saveDraft);
+document.addEventListener('input',  saveDraft);
 
-// ────────────────────────────────────────────────────────────────
-// VALIDATION
-// ────────────────────────────────────────────────────────────────
+// ── VALIDATION ──
 var VALIDATION_RULES = {
   name:      { required: true, minLength: 2, pattern: /^[a-zA-Z\s\-'.]+$/, message: 'Name must contain only letters, spaces, hyphens, or apostrophes' },
   address:   { required: true, minLength: 5, message: 'Please enter a valid street address' },
@@ -1787,24 +1643,15 @@ var VALIDATION_RULES = {
 };
 
 var FormValidator = (function() {
-  function FormValidator() {
-    this.errors = {};
-    this.validatedFields = new Set();
-  }
+  function FormValidator() { this.errors = {}; this.validatedFields = new Set(); }
 
   FormValidator.prototype.validateField = function(fieldId) {
-    var el = document.getElementById(fieldId);
-    if (!el) return true;
-    var rules = VALIDATION_RULES[fieldId];
-    if (!rules) return true;
-    var value = el.value.trim();
-    var errors = [];
-
+    var el = document.getElementById(fieldId); if (!el) return true;
+    var rules = VALIDATION_RULES[fieldId]; if (!rules) return true;
+    var value = el.value.trim(); var errors = [];
     if (rules.required && !value) errors.push(rules.message || (fieldId + ' is required'));
-
     if (value) {
       if (rules.minLength && value.length < rules.minLength) errors.push('Must be at least ' + rules.minLength + ' characters');
-      if (rules.maxLength && value.length > rules.maxLength) errors.push('Must be no more than ' + rules.maxLength + ' characters');
       if (rules.pattern && !rules.pattern.test(value)) errors.push(rules.message || ('Invalid ' + fieldId + ' format'));
       if (!isNaN(value)) {
         var num = parseFloat(value);
@@ -1812,10 +1659,7 @@ var FormValidator = (function() {
         if (rules.max !== undefined && num > rules.max) errors.push('Must be no more than ' + rules.max);
       }
     }
-
-    if (errors.length > 0) this.errors[fieldId] = errors;
-    else delete this.errors[fieldId];
-
+    if (errors.length > 0) this.errors[fieldId] = errors; else delete this.errors[fieldId];
     this.updateFieldUI(el, errors.length === 0);
     this.validatedFields.add(fieldId);
     return errors.length === 0;
@@ -1823,15 +1667,14 @@ var FormValidator = (function() {
 
   FormValidator.prototype.validateAllRequired = function() {
     var self = this;
-    var requiredFields = Object.keys(VALIDATION_RULES).filter(function(k) { return VALIDATION_RULES[k].required; });
-    return requiredFields.map(function(f) { return self.validateField(f); }).every(function(r) { return r === true; });
+    var req = Object.keys(VALIDATION_RULES).filter(function(k) { return VALIDATION_RULES[k].required; });
+    return req.map(function(f) { return self.validateField(f); }).every(function(r) { return r === true; });
   };
 
   FormValidator.prototype.updateFieldUI = function(el, isValid) {
     var wrapper = el.parentElement;
     var oldError = wrapper && wrapper.querySelector('.field-error');
     if (oldError) oldError.remove();
-
     if (isValid) {
       el.style.borderBottomColor = '#059669';
       el.style.boxShadow = '0 2px 0 0 rgba(5,150,105,0.3), 0 0 12px rgba(5,150,105,0.08)';
@@ -1865,23 +1708,16 @@ var FormValidator = (function() {
   };
 
   FormValidator.prototype.showErrorModal = function() {
-    var errors = this.getErrorSummary();
-    if (errors.length === 0) return false;
-
-    var self = this;
+    var errors = this.getErrorSummary(); if (errors.length === 0) return false;
     var modal = document.createElement('div');
     modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;z-index:99999;backdrop-filter:blur(4px);';
-
     var content = document.createElement('div');
     content.style.cssText = 'background:linear-gradient(135deg,#1a1a1a 0%,#0a0a0a 100%);border:2px solid #DC2626;border-radius:12px;padding:30px;max-width:500px;width:90%;box-shadow:0 0 40px rgba(220,38,38,0.4);font-family:var(--font-body);';
-
     var title = document.createElement('h2');
-    title.style.cssText = 'color:#DC2626;font-family:var(--font-display);margin:0 0 16px 0;font-size:18px;letter-spacing:2px;text-shadow:0 0 10px rgba(220,38,38,0.5);';
+    title.style.cssText = 'color:#DC2626;font-family:var(--font-display);margin:0 0 16px 0;font-size:18px;letter-spacing:2px;';
     title.textContent = '⚠ VALIDATION ERRORS';
-
     var divider = document.createElement('div');
     divider.style.cssText = 'height:1px;background:linear-gradient(90deg,#DC2626,transparent);margin-bottom:16px;';
-
     var errorList = document.createElement('ul');
     errorList.style.cssText = 'list-style:none;padding:0;margin:0 0 20px 0;';
     errors.forEach(function(error) {
@@ -1890,24 +1726,14 @@ var FormValidator = (function() {
       li.textContent = '• ' + error;
       errorList.appendChild(li);
     });
-
     var closeBtn = document.createElement('button');
-    closeBtn.style.cssText = 'width:100%;background:linear-gradient(135deg,#DC2626,#b01f1f);border:none;color:white;padding:12px;border-radius:6px;cursor:pointer;font-weight:bold;font-family:var(--font-display);font-size:12px;letter-spacing:1px;box-shadow:0 0 15px rgba(220,38,38,0.4);';
+    closeBtn.style.cssText = 'width:100%;background:linear-gradient(135deg,#DC2626,#b01f1f);border:none;color:white;padding:12px;border-radius:6px;cursor:pointer;font-weight:bold;font-family:var(--font-display);font-size:12px;letter-spacing:1px;';
     closeBtn.textContent = 'CLOSE';
     closeBtn.addEventListener('click', function() { document.body.removeChild(modal); });
-
-    content.appendChild(title);
-    content.appendChild(divider);
-    content.appendChild(errorList);
-    content.appendChild(closeBtn);
-    modal.appendChild(content);
-    document.body.appendChild(modal);
-
+    content.appendChild(title); content.appendChild(divider); content.appendChild(errorList); content.appendChild(closeBtn);
+    modal.appendChild(content); document.body.appendChild(modal);
     var firstErrorId = Object.keys(this.errors)[0];
-    if (firstErrorId) {
-      var el = document.getElementById(firstErrorId);
-      if (el) setTimeout(function() { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); el.focus(); }, 100);
-    }
+    if (firstErrorId) { var el = document.getElementById(firstErrorId); if (el) setTimeout(function() { el.scrollIntoView({ behavior:'smooth', block:'center' }); el.focus(); }, 100); }
     return true;
   };
 
@@ -1916,82 +1742,84 @@ var FormValidator = (function() {
 
 var validator = new FormValidator();
 
-// ────────────────────────────────────────────────────────────────
-// REAL-TIME FIELD VALIDATION SETUP
-// ────────────────────────────────────────────────────────────────
 function setupFieldValidation() {
   Object.keys(VALIDATION_RULES).forEach(function(fieldId) {
-    var el = document.getElementById(fieldId);
-    if (!el) return;
+    var el = document.getElementById(fieldId); if (!el) return;
     el.addEventListener('blur', function() { validator.validateField(fieldId); });
     el.addEventListener('focus', function() { validator.clearFieldUI(this); });
     if (['email','phone','sqft'].indexOf(fieldId) !== -1) {
       var debounceTimer;
-      el.addEventListener('input', function() {
-        clearTimeout(debounceTimer);
-        debounceTimer = setTimeout(function() { validator.validateField(fieldId); }, 600);
-      });
+      el.addEventListener('input', function() { clearTimeout(debounceTimer); debounceTimer = setTimeout(function() { validator.validateField(fieldId); }, 600); });
     }
   });
 }
 
 function validateForm() {
-  if (!validator.validateAllRequired()) {
-    validator.showErrorModal();
-    return false;
-  }
+  if (!validator.validateAllRequired()) { validator.showErrorModal(); return false; }
   return true;
 }
 
-// ────────────────────────────────────────────────────────────────
-// FORM DATA HELPER
-// ────────────────────────────────────────────────────────────────
 function getFormData() {
   var data = {};
   document.querySelectorAll('input, textarea, select').forEach(function(el) {
-    var key = el.id || el.name;
-    if (!key) return;
-    if (el.type === 'checkbox') {
-      if (!data[key]) data[key] = [];
-      if (el.checked) data[key].push(el.value);
-    } else if (el.type === 'radio') {
-      if (el.checked) data[key] = el.value;
-    } else {
-      if (data[key] === undefined) data[key] = el.value;
-    }
+    var key = el.id || el.name; if (!key) return;
+    if (el.type === 'checkbox') { if (!data[key]) data[key] = []; if (el.checked) data[key].push(el.value); }
+    else if (el.type === 'radio') { if (el.checked) data[key] = el.value; }
+    else { if (data[key] === undefined) data[key] = el.value; }
   });
   return data;
 }
 
-// ────────────────────────────────────────────────────────────────
-// CLEAR FORM
-// ────────────────────────────────────────────────────────────────
 function clearForm() {
   if (!confirm('Clear all fields?')) return;
   document.querySelectorAll('input[type="text"],input[type="email"],input[type="tel"],input[type="date"],input[type="number"],textarea').forEach(function(el) { el.value = ''; });
   document.querySelectorAll('input[type="checkbox"],input[type="radio"]').forEach(function(el) { el.checked = false; });
-  var s = document.getElementById('sqft-status');
-  if (s) s.textContent = '';
-  var gpsStatus = document.getElementById('gps-status');
-  if (gpsStatus) { gpsStatus.style.display = 'none'; gpsStatus.textContent = ''; }
+  var s = document.getElementById('sqft-status'); if (s) s.textContent = '';
+  var g = document.getElementById('gps-status'); if (g) { g.style.display='none'; g.textContent=''; }
   localStorage.removeItem(DRAFT_KEY);
 }
 
-// ────────────────────────────────────────────────────────────────
-// PDF PRINT
-// ────────────────────────────────────────────────────────────────
+// ── PDF PRINT ──
+// Android-specific print CSS — injected on beforeprint, cleared on afterprint
+var ANDROID_PRINT_CSS = [
+  '@page { size: letter portrait; margin: 0 !important; }',
+  'html, body { margin:0!important; padding:0!important; background:#fff!important; -webkit-print-color-adjust:exact!important; print-color-adjust:exact!important; }',
+  'body { zoom: 0.52 !important; width: 100% !important; }',
+  '.page { width:100%!important; max-width:100%!important; margin:0!important; padding:0!important; border:3px solid #D97706!important; box-shadow:none!important; display:block!important; }',
+  '.toolbar, #offline-banner, #pdfModal, #imageModal, #gps-btn, #gps-status, #address-suggestions { display:none!important; }',
+  '.header { padding:5px 16px!important; min-height:0!important; display:flex!important; align-items:center!important; }',
+  '.company-name { color:#D97706!important; text-shadow:none!important; font-size:0.9rem!important; }',
+  '.doc-title { color:#D97706!important; text-shadow:none!important; font-size:0.9rem!important; }',
+  '.content { padding:5px 8px!important; display:block!important; }',
+  '.section, .top-grid, .flood-bar, .gas-appliances-box { page-break-inside:avoid!important; break-inside:avoid!important; border-color:#D97706!important; }',
+  '.section-header { background:#f5f5f5!important; color:#D97706!important; border-bottom-color:#D97706!important; text-shadow:none!important; padding:3px 10px!important; }',
+  '.section-header::before { animation:none!important; background:#D97706!important; box-shadow:none!important; }',
+  '.col-label { background:#f5f5f5!important; border-color:#D97706!important; color:#D97706!important; text-shadow:none!important; }',
+  '.col-label::before { animation:none!important; background:#D97706!important; box-shadow:none!important; }',
+  'input, textarea { background:#fff!important; border-bottom-color:#D97706!important; color:#1F2937!important; min-height:auto!important; font-size:0.75rem!important; padding:1px 2px!important; }',
+  '.yn-group { border-color:#D97706!important; }',
+  '.yn-group .yn-label { min-height:auto!important; padding:0 8px!important; color:#6B7280!important; font-size:0.55rem!important; }',
+  '.check-item { min-height:auto!important; border-color:#D97706!important; background:#fff!important; padding:1px 4px 1px 3px!important; }',
+  '.check-item span { color:#1F2937!important; text-shadow:none!important; font-size:0.52rem!important; }',
+  '.check-item:has(input:checked) { background:#f0f0f0!important; }',
+  '.check-item:has(input:checked) span { color:#D97706!important; }',
+  '.footer { border-top-color:#D97706!important; padding:5px 10px!important; display:block!important; }',
+  '.footer-text { color:#D97706!important; }',
+  'label { color:#6B7280!important; font-size:0.52rem!important; }',
+  '.divider { border-top-color:#D97706!important; margin:3px 0!important; }',
+  '#address { padding-right:6px!important; }'
+].join('\n');
+
 function printPDF() {
   if (!validateForm()) return;
-  var isIOS     = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-  var isAndroid = /Android/i.test(navigator.userAgent);
-  var modal = document.getElementById('pdfModal');
-  var instr = document.getElementById('pdfInstructions');
+  var modal  = document.getElementById('pdfModal');
+  var instr  = document.getElementById('pdfInstructions');
   if (!modal || !instr) { nativePrint(); return; }
 
   if (isIOS) {
     instr.innerHTML = "<b style='color:#FFB300'>1.</b> Tap CONTINUE to open Print preview<br><b style='color:#FFB300'>2.</b> <span style='color:#FFB300'>PINCH-ZOOM OUT</span> on the page thumbnail<br><b style='color:#FFB300'>3.</b> Tap the Share icon (top right)<br><b style='color:#FFB300'>4.</b> Tap <span style='color:#FFB300'>'Save to Files'</span>";
   } else if (isAndroid) {
-    instr.innerHTML = "<b style='color:#FFB300'>1.</b> Tap CONTINUE to open Print preview<br><b style='color:#FFB300'>2.</b> Change Printer to <span style='color:#FFB300'>'Save as PDF'</span><br><b style='color:#FFB300'>3.</b> Tap the download icon";
+    instr.innerHTML = "<b style='color:#FFB300'>1.</b> Tap CONTINUE — the form will prepare for print<br><b style='color:#FFB300'>2.</b> When the print dialog opens, tap the dropdown at the top and select <span style='color:#FFB300'>'Save as PDF'</span><br><b style='color:#FFB300'>3.</b> Tap the <span style='color:#FFB300'>PDF button / Save</span> to download";
   } else {
     instr.innerHTML = "<b style='color:#FFB300'>1.</b> Click CONTINUE to open Print dialog<br><b style='color:#FFB300'>2.</b> Set Destination to <span style='color:#FFB300'>'Save as PDF'</span><br><b style='color:#FFB300'>3.</b> Click Save";
   }
@@ -2000,36 +1828,35 @@ function printPDF() {
 
 function confirmPdfPrint() {
   document.getElementById('pdfModal').style.display = 'none';
-  nativePrint();
-}
 
-function closePdfModal() {
-  document.getElementById('pdfModal').style.display = 'none';
-}
-
-// ────────────────────────────────────────────────────────────────
-// IMAGE MODAL  — no validation gate on open
-// ────────────────────────────────────────────────────────────────
-function openImageModal() {
-  var modal = document.getElementById('imageModal');
-  if (modal) modal.style.display = 'flex';
-}
-
-function closeImageModal() {
-  var modal = document.getElementById('imageModal');
-  if (modal) modal.style.display = 'none';
-}
-
-// ────────────────────────────────────────────────────────────────
-// SAVE IMAGE
-// ────────────────────────────────────────────────────────────────
-function saveImageFromModal() {
-  if (!validateForm()) {
-    closeImageModal();
-    return;
+  if (isAndroid) {
+    // Inject Android-specific print CSS, wait for repaint, then print
+    var styleEl = document.getElementById('mobile-print-styles');
+    if (styleEl) styleEl.innerHTML = ANDROID_PRINT_CSS;
+    // Slight delay so Chrome re-renders before print dialog opens
+    setTimeout(function() {
+      nativePrint();
+      // Clean up after print dialog closes
+      setTimeout(function() {
+        var s = document.getElementById('mobile-print-styles');
+        if (s) s.innerHTML = '';
+      }, 2000);
+    }, 120);
+  } else {
+    nativePrint();
   }
-  closeImageModal();
+}
 
+function closePdfModal() { document.getElementById('pdfModal').style.display = 'none'; }
+
+// ── IMAGE MODAL ──
+function openImageModal()  { var m=document.getElementById('imageModal'); if(m) m.style.display='flex'; }
+function closeImageModal() { var m=document.getElementById('imageModal'); if(m) m.style.display='none'; }
+
+// ── SAVE IMAGE ──
+function saveImageFromModal() {
+  if (!validateForm()) { closeImageModal(); return; }
+  closeImageModal();
 
   var page = document.getElementById('page');
   if (!page) { alert('Error: Could not find form element'); return; }
@@ -2039,21 +1866,25 @@ function saveImageFromModal() {
   var filename  = pageTitle + '_' + timestamp + '.jpg';
 
   var loadingDiv = document.createElement('div');
-  loadingDiv.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1a1a1a;border:2px solid #D97706;color:#D97706;padding:20px 40px;font-family:monospace;z-index:99999;border-radius:8px;box-shadow:0 0 30px rgba(217,119,6,0.4);';
-  loadingDiv.textContent = '⏳ Generating image...';
+  loadingDiv.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1a1a1a;border:2px solid #D97706;color:#D97706;padding:20px 40px;font-family:monospace;z-index:99999;border-radius:8px;box-shadow:0 0 30px rgba(217,119,6,0.4);text-align:center;';
+  loadingDiv.innerHTML = '⏳ Generating image...<br><small style="color:#9CA3AF;font-size:11px;margin-top:6px;display:block;">This may take a few seconds</small>';
   document.body.appendChild(loadingDiv);
 
-  // Capture true dimensions before any style changes
-  var fullW = page.scrollWidth;
+  // ── Android-specific: scroll to top first, capture full document ──
+  if (isAndroid) {
+    window.scrollTo(0, 0);
+  }
+
+  var fullW = Math.max(page.scrollWidth, page.offsetWidth, 1050);
   var fullH = page.scrollHeight;
 
-  // Temporarily expand so the right border is not clipped on narrow viewports
-  var prevBodyWidth    = document.body.style.width;
-  var prevBodyMinWidth = document.body.style.minWidth;
-  var prevBodyOverflow = document.body.style.overflow;
-  var prevPageWidth    = page.style.width;
-  var prevPageMaxWidth = page.style.maxWidth;
-  var prevPageOverflow = page.style.overflow;
+  // Temporarily expand body/page so nothing clips
+  var prevBodyW   = document.body.style.width;
+  var prevBodyMin = document.body.style.minWidth;
+  var prevBodyOvf = document.body.style.overflow;
+  var prevPageW   = page.style.width;
+  var prevPageMax = page.style.maxWidth;
+  var prevPageOvf = page.style.overflow;
 
   document.body.style.width    = fullW + 'px';
   document.body.style.minWidth = fullW + 'px';
@@ -2063,17 +1894,23 @@ function saveImageFromModal() {
   page.style.overflow = 'visible';
 
   function restoreStyles() {
-    document.body.style.width    = prevBodyWidth;
-    document.body.style.minWidth = prevBodyMinWidth;
-    document.body.style.overflow = prevBodyOverflow;
-    page.style.width    = prevPageWidth;
-    page.style.maxWidth = prevPageMaxWidth;
-    page.style.overflow = prevPageOverflow;
+    document.body.style.width    = prevBodyW;
+    document.body.style.minWidth = prevBodyMin;
+    document.body.style.overflow = prevBodyOvf;
+    page.style.width    = prevPageW;
+    page.style.maxWidth = prevPageMax;
+    page.style.overflow = prevPageOvf;
   }
 
-  html2canvas(page, {
-    scale: 2,
+  // On Android, recalculate height after style expansion
+  if (isAndroid) {
+    fullH = page.scrollHeight;
+  }
+
+  var captureOptions = {
+    scale: isAndroid ? 1.5 : 2,   // Android: lower scale avoids OOM on large pages
     useCORS: true,
+    allowTaint: true,
     backgroundColor: '#FFFFFF',
     logging: false,
     width:       fullW,
@@ -2084,9 +1921,10 @@ function saveImageFromModal() {
     scrollY: 0,
     x: 0,
     y: 0,
-    allowTaint: true,
-    imageTimeout: 15000,
+    imageTimeout: 20000,
     removeContainer: true,
+    // Android Chrome needs this OFF — foreignObject rendering causes blank captures
+    foreignObjectRendering: false,
 
     onclone: function(clonedDoc, clonedElement) {
       clonedElement.style.width    = fullW + 'px';
@@ -2100,38 +1938,49 @@ function saveImageFromModal() {
       // Resolve currentColor on all SVGs
       clonedDoc.querySelectorAll('svg').forEach(function(svg) {
         var computedColor = '#D97706';
-        try {
-          if (svg.parentElement) {
-            computedColor = clonedDoc.defaultView.getComputedStyle(svg.parentElement).color || '#D97706';
-          }
-        } catch(e) {}
+        try { if (svg.parentElement) computedColor = clonedDoc.defaultView.getComputedStyle(svg.parentElement).color || '#D97706'; } catch(e) {}
         if (!svg.getAttribute('xmlns')) svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-
-        var svgStroke  = svg.getAttribute('stroke');
-        var svgFill    = svg.getAttribute('fill');
-        var svgSW      = svg.getAttribute('stroke-width');
-        var svgSLC     = svg.getAttribute('stroke-linecap');
-        var svgSLJ     = svg.getAttribute('stroke-linejoin');
+        var svgStroke = svg.getAttribute('stroke'); var svgFill = svg.getAttribute('fill');
+        var svgSW = svg.getAttribute('stroke-width'); var svgSLC = svg.getAttribute('stroke-linecap'); var svgSLJ = svg.getAttribute('stroke-linejoin');
         if (svgStroke === 'currentColor') svgStroke = computedColor;
         if (svgFill   === 'currentColor') svgFill   = computedColor;
-
         svg.querySelectorAll('path,polyline,polygon,line,rect,circle,ellipse,text').forEach(function(el) {
           if (el.getAttribute('stroke') === 'currentColor') el.setAttribute('stroke', computedColor);
           if (el.getAttribute('fill')   === 'currentColor') el.setAttribute('fill',   computedColor);
-          if (svgStroke && !el.hasAttribute('stroke'))       el.setAttribute('stroke', svgStroke);
-          if (svgFill   && !el.hasAttribute('fill'))         el.setAttribute('fill',   svgFill);
-          if (svgSW  && !el.hasAttribute('stroke-width'))    el.setAttribute('stroke-width',    svgSW);
-          if (svgSLC && !el.hasAttribute('stroke-linecap'))  el.setAttribute('stroke-linecap',  svgSLC);
+          if (svgStroke && !el.hasAttribute('stroke'))    el.setAttribute('stroke',          svgStroke);
+          if (svgFill   && !el.hasAttribute('fill'))      el.setAttribute('fill',            svgFill);
+          if (svgSW  && !el.hasAttribute('stroke-width')) el.setAttribute('stroke-width',    svgSW);
+          if (svgSLC && !el.hasAttribute('stroke-linecap')) el.setAttribute('stroke-linecap', svgSLC);
           if (svgSLJ && !el.hasAttribute('stroke-linejoin')) el.setAttribute('stroke-linejoin', svgSLJ);
           if (!el.hasAttribute('fill') && el.tagName.toLowerCase() !== 'text') el.setAttribute('fill', 'none');
         });
       });
 
-      // iOS path boost
-      if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-        clonedDoc.querySelectorAll('svg path').forEach(function(p) {
-          p.setAttribute('stroke-width', (parseFloat(p.getAttribute('stroke-width')) || 2) * 2.2);
-          p.setAttribute('stroke', '#b86a05');
+      // Android: explicitly set background on all major containers
+      if (isAndroid) {
+        clonedDoc.querySelectorAll('.section,.top-grid,.flood-bar,.top-col,.section-body,.gas-appliances-box,.header,.footer,.content').forEach(function(el) {
+          el.style.backgroundColor = '#ffffff';
+        });
+        // Force-convert CSS variable colors to actual hex for Android Chrome
+        clonedDoc.querySelectorAll('.section-header').forEach(function(el) {
+          el.style.backgroundColor = '#f8f8f8';
+          el.style.color = '#D97706';
+        });
+        clonedDoc.querySelectorAll('.col-label').forEach(function(el) {
+          el.style.backgroundColor = '#f8f8f8';
+          el.style.color = '#D97706';
+          el.style.borderLeftColor = '#D97706';
+        });
+        clonedDoc.querySelectorAll('.check-item').forEach(function(el) {
+          el.style.borderColor = 'rgba(217,119,6,0.25)';
+        });
+        clonedDoc.querySelectorAll('label, .inline-label').forEach(function(el) {
+          el.style.color = '#6B7280';
+        });
+        clonedDoc.querySelectorAll('input, textarea').forEach(function(el) {
+          el.style.backgroundColor = '#ffffff';
+          el.style.color = '#1F2937';
+          el.style.borderBottomColor = 'rgba(217,119,6,0.25)';
         });
       }
 
@@ -2150,25 +1999,56 @@ function saveImageFromModal() {
         m.style.display = 'none';
       });
     }
+  };
 
-  }).then(function(canvas) {
+  html2canvas(page, captureOptions).then(function(canvas) {
     restoreStyles();
     if (loadingDiv.parentNode) document.body.removeChild(loadingDiv);
 
-    var link = document.createElement('a');
-    link.download = filename;
-    link.href = canvas.toDataURL('image/jpeg', 0.95);
+    var jpegData = canvas.toDataURL('image/jpeg', 0.92);
 
-    if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+    if (isAndroid) {
+      // Android Chrome: open image in new tab — user can long-press → "Download image"
+      var newTab = window.open('', '_blank');
+      if (newTab) {
+        newTab.document.write(
+          '<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1">' +
+          '<title>' + filename + '</title>' +
+          '<style>body{margin:0;background:#111;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;min-height:100vh;padding:12px;}' +
+          'img{max-width:100%;border:1px solid #444;}' +
+          'p{color:#FFB300;font-family:sans-serif;font-size:14px;margin:12px 0;text-align:center;}' +
+          'a.dl{display:inline-block;margin-top:10px;padding:10px 22px;background:#D97706;color:#000;font-weight:bold;font-family:sans-serif;border-radius:6px;text-decoration:none;}</style></head>' +
+          '<body>' +
+          '<p>Long-press the image and tap <strong>"Download image"</strong><br>— or use the button below —</p>' +
+          '<a class="dl" href="' + jpegData + '" download="' + filename + '">⬇ Download Image</a>' +
+          '<br><br><img src="' + jpegData + '" alt="Estimate"/>' +
+          '</body></html>'
+        );
+        newTab.document.close();
+      } else {
+        // Pop-up blocked fallback: try direct download
+        var link = document.createElement('a');
+        link.download = filename;
+        link.href = jpegData;
+        document.body.appendChild(link);
+        link.click();
+        setTimeout(function() { if (link.parentNode) document.body.removeChild(link); }, 100);
+      }
+
+    } else if (isIOS) {
       var newTab = window.open();
       if (newTab) {
-        newTab.document.write('<img src="' + link.href + '" style="max-width:100%;"/><p style="font-family:sans-serif;padding:10px;">Long‑press the image and select "Save to Photos"</p>');
+        newTab.document.write('<img src="' + jpegData + '" style="max-width:100%;"/><p style="font-family:sans-serif;padding:10px;">Long-press the image and select "Save to Photos"</p>');
       } else {
-        link.click();
+        var link = document.createElement('a'); link.download = filename; link.href = jpegData;
+        document.body.appendChild(link); link.click();
+        setTimeout(function() { if (link.parentNode) document.body.removeChild(link); }, 100);
       }
+
     } else {
-      document.body.appendChild(link);
-      link.click();
+      // Desktop
+      var link = document.createElement('a'); link.download = filename; link.href = jpegData;
+      document.body.appendChild(link); link.click();
       setTimeout(function() { if (link.parentNode) document.body.removeChild(link); }, 100);
     }
 
@@ -2176,188 +2056,98 @@ function saveImageFromModal() {
     restoreStyles();
     if (loadingDiv.parentNode) document.body.removeChild(loadingDiv);
     console.error('html2canvas error:', err);
-    alert('Error generating image: ' + err.message);
+    alert('Error generating image: ' + err.message + '\n\nTip: Try the Print / PDF option instead.');
   });
 }
 
-// ────────────────────────────────────────────────────────────────
-// SEND EMAIL
-// ────────────────────────────────────────────────────────────────
+// ── SEND EMAIL ──
 function sendEmail() {
   if (!validateForm()) return;
-  var data      = getFormData();
-  var name      = data.name      || '';
-  var emailTo   = data.email     || '';
-  var address   = (data.address  || '') + (data.address2 ? ', ' + data.address2 : '');
-  var phone     = data.phone     || '';
-  var sqft      = data.sqft      || '';
-  var estDate   = data.est_date  || '';
-  var estimator = data.estimator || '';
-
+  var data = getFormData();
+  var name = data.name||''; var emailTo = data.email||''; var address = (data.address||'')+(data.address2?', '+data.address2:'');
+  var phone = data.phone||''; var sqft = data.sqft||''; var estDate = data.est_date||''; var estimator = data.estimator||'';
   var subject = 'Generator Installation Estimate — ' + name;
-  var body = [
-    'Dear ' + name + ',',
-    '',
-    'Thank you for the opportunity to provide you with a generator installation estimate.',
-    '',
-    '--- ESTIMATE DETAILS ---',
-    'Customer: '    + name,
-    'Address: '     + address,
-    'Phone: '       + phone,
-    'Sq. Footage: ' + sqft + ' SF',
-    'Estimate Date: '+ estDate,
-    'Estimator: '   + estimator,
-    '',
-    'Please reply to this email or call us if you have any questions.',
-    '',
-    'Best regards,',
-    'Always On Generators'
-  ].join('\n');
-
-  window.location.href = 'mailto:' + encodeURIComponent(emailTo) +
-    '?subject=' + encodeURIComponent(subject) +
-    '&body='    + encodeURIComponent(body);
+  var body = ['Dear ' + name + ',', '', 'Thank you for the opportunity to provide you with a generator installation estimate.', '', '--- ESTIMATE DETAILS ---',
+    'Customer: '+name, 'Address: '+address, 'Phone: '+phone, 'Sq. Footage: '+sqft+' SF', 'Estimate Date: '+estDate, 'Estimator: '+estimator,
+    '', 'Please reply to this email or call us if you have any questions.', '', 'Best regards,', 'Always On Generators'].join('\n');
+  window.location.href = 'mailto:'+encodeURIComponent(emailTo)+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
 }
 
-// ────────────────────────────────────────────────────────────────
-// MODAL CLICK-OUTSIDE CLOSE
-// ────────────────────────────────────────────────────────────────
+// ── MODAL CLICK-OUTSIDE CLOSE ──
 document.addEventListener('click', function(e) {
-  var pdfModal   = document.getElementById('pdfModal');
-  var imageModal = document.getElementById('imageModal');
-  if (pdfModal   && e.target === pdfModal)   pdfModal.style.display   = 'none';
-  if (imageModal && e.target === imageModal) imageModal.style.display = 'none';
+  var pm=document.getElementById('pdfModal'); var im=document.getElementById('imageModal');
+  if (pm && e.target===pm) pm.style.display='none';
+  if (im && e.target===im) im.style.display='none';
 });
 
-// ────────────────────────────────────────────────────────────────
-// MOBILE PRINT OPTIMIZATION
-// ────────────────────────────────────────────────────────────────
+// ── MOBILE PRINT — iOS Safari pop-out window ──
 (function() {
   'use strict';
-  var isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
-              || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-  var isDesktopSafari = /Safari/i.test(navigator.userAgent)
-                     && !/Chrome|CriOS|FxiOS|EdgiOS|Mobile/i.test(navigator.userAgent);
+  if (!isIOS) return;
+  var isSafariMobile = /Safari/i.test(UA) && !/Chrome|CriOS|FxiOS|EdgiOS/i.test(UA);
+  if (!isSafariMobile) return;
 
-  var PRINT_CSS = [
+  var IOS_PRINT_CSS = [
     '@page { size: letter portrait; margin: 0 !important; }',
-    '@page :first { margin: 0 !important; }',
-    '@page :left  { margin: 0 !important; }',
-    '@page :right { margin: 0 !important; }',
     'html { margin:0!important; padding:0!important; background:#FFFFFF!important; }',
     'body { margin:0!important; padding:0!important; width:100%!important; zoom:0.55; background:#FFFFFF!important; -webkit-print-color-adjust:exact!important; print-color-adjust:exact!important; }',
     '.page { width:100%!important; max-width:100%!important; margin:0!important; padding:0!important; border:5px solid #D97706!important; box-shadow:none!important; }',
     '.toolbar, #offline-banner, #pdfModal, #imageModal { display:none!important; }',
-    '.header  { padding:4px 16px!important; min-height:0!important; }',
-    '.content { padding:4px 8px!important; }',
-    '.footer  { padding:4px 16px!important; }',
     '.section, .top-grid, .flood-bar, .gas-appliances-box { page-break-inside:avoid!important; break-inside:avoid!important; }'
   ].join('\n');
 
-  function applyPrintStyles() {
-    if (!isMobile) return;
-    var s = document.getElementById('mobile-print-styles');
-    if (s) s.innerHTML = PRINT_CSS;
-  }
-  function clearPrintStyles() {
-    if (!isMobile) return;
-    var s = document.getElementById('mobile-print-styles');
-    if (s) s.innerHTML = '';
-  }
-
-  window.addEventListener('beforeprint', applyPrintStyles);
-  window.addEventListener('afterprint',  clearPrintStyles);
-
-  if (!isMobile || isDesktopSafari) return;
-
-  var isSafari = /Safari/i.test(navigator.userAgent) && !/Chrome|CriOS|FxiOS|EdgiOS/i.test(navigator.userAgent);
-  if (!isSafari) return;
-
   window.print = function() {
-    var pageEl = document.querySelector('.page');
-    if (!pageEl) { console.warn('No .page element found.'); return; }
-
+    var pageEl = document.querySelector('.page'); if (!pageEl) return;
     var existingStyles = Array.from(document.querySelectorAll('link[rel="stylesheet"], style'))
-      .map(function(el) { return el.id === 'mobile-print-styles' ? '' : el.outerHTML; })
-      .join('\n');
-
+      .map(function(el) { return el.id === 'mobile-print-styles' ? '' : el.outerHTML; }).join('\n');
     var win = window.open('', '_blank');
     if (!win) { alert('Please allow pop-ups to print.'); return; }
-
     var clone = pageEl.cloneNode(true);
-    var liveInputs  = pageEl.querySelectorAll('input, textarea, select');
+    var liveInputs = pageEl.querySelectorAll('input, textarea, select');
     var cloneInputs = clone.querySelectorAll('input, textarea, select');
     liveInputs.forEach(function(liveEl, i) {
-      var cloneEl = cloneInputs[i];
-      if (!cloneEl) return;
+      var cloneEl = cloneInputs[i]; if (!cloneEl) return;
       if (liveEl.type === 'checkbox' || liveEl.type === 'radio') {
-        if (liveEl.checked) cloneEl.setAttribute('checked', 'checked');
-        else cloneEl.removeAttribute('checked');
-      } else if (liveEl.tagName === 'TEXTAREA') {
-        cloneEl.textContent = liveEl.value;
-      } else {
-        cloneEl.setAttribute('value', liveEl.value);
-      }
+        if (liveEl.checked) cloneEl.setAttribute('checked','checked'); else cloneEl.removeAttribute('checked');
+      } else if (liveEl.tagName === 'TEXTAREA') { cloneEl.textContent = liveEl.value; }
+      else { cloneEl.setAttribute('value', liveEl.value); }
     });
-
     win.document.open();
-    win.document.write(
-      '<!DOCTYPE html><html><head>' +
-      '<meta charset="UTF-8">' +
-      '<base href="' + location.href + '">' +
-      '<title>Print</title>' +
-      existingStyles +
-      '<style>' + PRINT_CSS + '</style>' +
-      '</head><body>' +
-      clone.outerHTML +
-      '</body></html>'
-    );
+    win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><base href="'+location.href+'"><title>Print</title>'+existingStyles+'<style>'+IOS_PRINT_CSS+'</style></head><body>'+clone.outerHTML+'</body></html>');
     win.document.close();
-
-    win.onload = function() {
-      win.focus();
-      setTimeout(function() {
-        win.print();
-        setTimeout(function() { try { win.close(); } catch(e) {} }, 1000);
-      }, 300);
-    };
+    win.onload = function() { win.focus(); setTimeout(function() { win.print(); setTimeout(function() { try { win.close(); } catch(e) {} }, 1000); }, 300); };
   };
 })();
 
-// ────────────────────────────────────────────────────────────────
-// ADDRESS AUTOCOMPLETE
-// ────────────────────────────────────────────────────────────────
-function setupAddressAutocomplete() {
-  var input = document.getElementById('address');
-  var list  = document.getElementById('address-suggestions');
-  if (!input || !list) return;
+// Android: inject/clear print CSS via beforeprint/afterprint
+if (isAndroid) {
+  window.addEventListener('beforeprint', function() {
+    var s = document.getElementById('mobile-print-styles'); if (s) s.innerHTML = ANDROID_PRINT_CSS;
+  });
+  window.addEventListener('afterprint', function() {
+    var s = document.getElementById('mobile-print-styles'); if (s) s.innerHTML = '';
+  });
+}
 
+// ── ADDRESS AUTOCOMPLETE ──
+function setupAddressAutocomplete() {
+  var input = document.getElementById('address'); var list = document.getElementById('address-suggestions');
+  if (!input || !list) return;
   var debounce;
   input.addEventListener('input', function() {
-    clearTimeout(debounce);
-    var q = input.value.trim();
-    if (q.length < 3) { list.classList.remove('open'); return; }
-
+    clearTimeout(debounce); var q = input.value.trim(); if (q.length < 3) { list.classList.remove('open'); return; }
     debounce = setTimeout(function() {
-      fetch('https://api.mapbox.com/geocoding/v5/mapbox.places/' +
-            encodeURIComponent(q) +
-            '.json?access_token=' + MAPBOX_TOKEN +
-            '&country=US&types=address&autocomplete=true&limit=5')
+      fetch('https://api.mapbox.com/geocoding/v5/mapbox.places/'+encodeURIComponent(q)+'.json?access_token='+MAPBOX_TOKEN+'&country=US&types=address&autocomplete=true&limit=5')
         .then(function(r) { return r.json(); })
         .then(function(data) {
           list.innerHTML = '';
           if (!data.features || !data.features.length) { list.classList.remove('open'); return; }
           data.features.forEach(function(f) {
-            var li = document.createElement('li');
-            li.textContent = f.place_name;
+            var li = document.createElement('li'); li.textContent = f.place_name;
             li.addEventListener('mousedown', function(e) {
-              e.preventDefault();
-              var parts = f.place_name.split(',');
-              input.value = parts[0].trim();
-              var addr2 = document.getElementById('address2');
-              if (addr2) addr2.value = parts.slice(1).join(',').trim();
-              list.classList.remove('open');
-              list.innerHTML = '';
+              e.preventDefault(); var parts = f.place_name.split(','); input.value = parts[0].trim();
+              var addr2 = document.getElementById('address2'); if (addr2) addr2.value = parts.slice(1).join(',').trim();
+              list.classList.remove('open'); list.innerHTML = '';
             });
             list.appendChild(li);
           });
@@ -2366,111 +2156,63 @@ function setupAddressAutocomplete() {
         .catch(function() { list.classList.remove('open'); });
     }, 300);
   });
-
-  document.addEventListener('click', function(e) {
-    if (!input.contains(e.target) && !list.contains(e.target)) list.classList.remove('open');
-  });
-
+  document.addEventListener('click', function(e) { if (!input.contains(e.target) && !list.contains(e.target)) list.classList.remove('open'); });
   input.addEventListener('keydown', function(e) {
-    var items  = list.querySelectorAll('li');
-    var active = list.querySelector('li.active');
-    var idx    = Array.prototype.indexOf.call(items, active);
-    if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      if (active) active.classList.remove('active');
-      var next = items[idx + 1] || items[0];
-      if (next) next.classList.add('active');
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      if (active) active.classList.remove('active');
-      var prev = items[idx - 1] || items[items.length - 1];
-      if (prev) prev.classList.add('active');
-    } else if (e.key === 'Enter' && active) {
-      e.preventDefault();
-      active.dispatchEvent(new MouseEvent('mousedown'));
-    } else if (e.key === 'Escape') {
-      list.classList.remove('open');
-    }
+    var items = list.querySelectorAll('li'); var active = list.querySelector('li.active'); var idx = Array.prototype.indexOf.call(items, active);
+    if (e.key==='ArrowDown') { e.preventDefault(); if(active) active.classList.remove('active'); var next=items[idx+1]||items[0]; if(next) next.classList.add('active'); }
+    else if (e.key==='ArrowUp') { e.preventDefault(); if(active) active.classList.remove('active'); var prev=items[idx-1]||items[items.length-1]; if(prev) prev.classList.add('active'); }
+    else if (e.key==='Enter' && active) { e.preventDefault(); active.dispatchEvent(new MouseEvent('mousedown')); }
+    else if (e.key==='Escape') { list.classList.remove('open'); }
   });
 }
 
-// ────────────────────────────────────────────────────────────────
-// GPS BUTTON
-// ────────────────────────────────────────────────────────────────
+// ── GPS ──
 function setupGpsButton() {
-  var btn    = document.getElementById('gps-btn');
-  var status = document.getElementById('gps-status');
-  if (!btn) return;
-
+  var btn=document.getElementById('gps-btn'); var status=document.getElementById('gps-status'); if (!btn) return;
   btn.addEventListener('click', function() {
-    if (!navigator.geolocation) {
-      if (status) { status.textContent = 'Geolocation not supported'; status.style.display = 'block'; }
-      return;
-    }
+    if (!navigator.geolocation) { if(status){status.textContent='Geolocation not supported';status.style.display='block';} return; }
     btn.disabled = true;
-    if (status) { status.textContent = '📡 Getting location...'; status.style.display = 'block'; }
-
+    if (status) { status.textContent='📡 Getting location...'; status.style.display='block'; }
     navigator.geolocation.getCurrentPosition(
       function(pos) {
-        fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat=' +
-              pos.coords.latitude + '&lon=' + pos.coords.longitude + '&addressdetails=1',
-              { headers: { 'Accept-Language': 'en', 'User-Agent': 'AOG-Estimate-Form' } })
-          .then(function(r) { return r.json(); })
+        fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat='+pos.coords.latitude+'&lon='+pos.coords.longitude+'&addressdetails=1',
+          { headers:{'Accept-Language':'en','User-Agent':'AOG-Estimate-Form'} })
+          .then(function(r){return r.json();})
           .then(function(data) {
-            btn.disabled = false;
+            btn.disabled=false;
             if (data && data.address) {
-              var a = data.address;
-              var street = (a.house_number && a.road) ? a.house_number + ' ' + a.road
-                         : a.road || data.display_name.split(',')[0];
-              var cityLine = (a.city || a.town || a.village || a.county || '') +
-                             (a.state    ? ', ' + a.state    : '') +
-                             (a.postcode ? ' '  + a.postcode : '');
-              var addrInput  = document.getElementById('address');
-              var addr2Input = document.getElementById('address2');
-              if (addrInput)  addrInput.value  = street;
-              if (addr2Input) addr2Input.value = cityLine;
-              if (status) { status.textContent = '✓ Location found'; status.style.display = 'block'; }
+              var a=data.address;
+              var street=(a.house_number&&a.road)?a.house_number+' '+a.road:a.road||data.display_name.split(',')[0];
+              var cityLine=(a.city||a.town||a.village||a.county||'')+(a.state?', '+a.state:'')+(a.postcode?' '+a.postcode:'');
+              var ai=document.getElementById('address'); var a2=document.getElementById('address2');
+              if(ai) ai.value=street; if(a2) a2.value=cityLine;
+              if(status){status.textContent='✓ Location found';status.style.display='block';}
               saveDraft();
-              setTimeout(function() { if (status) status.style.display = 'none'; }, 3000);
-            } else {
-              if (status) { status.textContent = 'Could not find address'; status.style.display = 'block'; }
-            }
+              setTimeout(function(){if(status)status.style.display='none';},3000);
+            } else { if(status){status.textContent='Could not find address';status.style.display='block';} }
           })
-          .catch(function() {
-            btn.disabled = false;
-            if (status) { status.textContent = 'Location lookup failed'; status.style.display = 'block'; }
-          });
+          .catch(function(){btn.disabled=false;if(status){status.textContent='Location lookup failed';status.style.display='block';}});
       },
       function(err) {
-        btn.disabled = false;
-        var msgs = { 1: 'Location permission denied', 2: 'Location unavailable', 3: 'Location request timed out' };
-        if (status) { status.textContent = msgs[err.code] || 'Location error'; status.style.display = 'block'; }
+        btn.disabled=false;
+        var msgs={1:'Location permission denied',2:'Location unavailable',3:'Location request timed out'};
+        if(status){status.textContent=msgs[err.code]||'Location error';status.style.display='block';}
       },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      {enableHighAccuracy:true,timeout:10000,maximumAge:0}
     );
   });
 }
 
-// ────────────────────────────────────────────────────────────────
-// INIT
-// ────────────────────────────────────────────────────────────────
+// ── INIT ──
 document.addEventListener('DOMContentLoaded', function() {
   var todayInput = document.getElementById('today');
   if (todayInput && !todayInput.value) todayInput.value = new Date().toISOString().split('T')[0];
-
-  if (!navigator.onLine) {
-    var b = document.getElementById('offline-banner');
-    if (b) b.classList.add('show');
-    document.body.classList.add('offline');
-  }
-
+  if (!navigator.onLine) { var b=document.getElementById('offline-banner'); if(b) b.classList.add('show'); document.body.classList.add('offline'); }
   setupAddressAutocomplete();
   setupGpsButton();
   setupFieldValidation();
   restoreDraft();
 });
-
 </script>
-
 </body>
 </html>
