@@ -2528,11 +2528,11 @@ document.addEventListener('click', function(e) {
   var isSafari = /Safari/i.test(navigator.userAgent) &&
                  !/Chrome|CriOS|FxiOS|EdgiOS/i.test(navigator.userAgent);
 
-  /* ⚙️ ZOOM CONFIGURATION - OPTIMIZED FOR 87% */
+  /* ⚙️ ZOOM CONFIGURATION - 88% PERFECT SIZE */
   var CONFIG = {
-    primaryZoom: 0.87,      /* Perfect scale for iPhone 17 Pro Max */
-    triggerZoom: 0.88,      /* Reflow trigger (0.01 higher) */
-    enableReflow: true      /* Reflow trick enabled */
+    primaryZoom: 0.88,      /* Perfect print size */
+    triggerZoom: 0.89,      /* Reflow trigger */
+    enableReflow: true
   };
 
   var PRINT_CSS = `
@@ -2561,8 +2561,8 @@ document.addEventListener('click', function(e) {
       border: 5px solid #D97706 !important;
       transform: translateZ(0) !important;
       -webkit-transform: translateZ(0) !important;
-      zoom: 0.87 !important;
-      -webkit-zoom: 0.87 !important;
+      zoom: 0.88 !important;
+      -webkit-zoom: 0.88 !important;
     }
     
     .toolbar, #offline-banner { 
@@ -2651,6 +2651,7 @@ document.addEventListener('click', function(e) {
     };
   }
 })();
+
 
 // ────────────────────────────────────────────────────────────────
 // ADDRESS AUTOCOMPLETE
