@@ -879,7 +879,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
     flex: none !important;
     height: center !important;
   }
-  
+
   .section { 
     background: #ffffff !important;
     border-color: #D97706 !important;
@@ -903,7 +903,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
     padding: 5px 8px !important; 
     background: #ffffff !important;
   }
-  
+
   .top-grid {
     background: #ffffff !important;
     border-color: #D97706 !important;
@@ -913,7 +913,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   }
 
   .top-grid::before { background: none !important; }
-  
+
   .top-col { 
     padding: 5px 8px !important; 
     border-color: #D97706 !important;
@@ -1146,6 +1146,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
     "
     fill="none"
     stroke="#D97706"
+    stroke="currentColor"
     stroke-width="6"
     stroke-linecap="round"
     stroke-linejoin="round"
@@ -1183,29 +1184,29 @@ Customer Info
         <ul id="address-suggestions" aria-label="Address suggestions"></ul>
       </div>
     </div>
-    
+
     <div id="gps-status"></div>
-    
+
     <div class="field-row">
       <label></label>
       <input type="text" id="address2" name="address2" required class="long" placeholder="City, State ZIP" autocomplete="off" aria-label="City, state, and zip code">
     </div>
-    
+
     <div class="field-row">
       <label for="hoa">Community/HOA</label>
       <input type="text" id="hoa" name="hoa" class="long" autocomplete="off" aria-label="Community or HOA name">
     </div>
-    
+
     <div class="field-row">
       <label for="phone">Phone #</label>
       <input type="tel" id="phone" name="phone" required class="long" autocomplete="tel" aria-label="Phone number" pattern="[0-9\-\(\)\s]*">
     </div>
-    
+
     <div class="field-row">
       <label for="email">Best Email</label>
       <input type="email" id="email" name="email" required class="long" autocomplete="email" aria-label="Email address">
     </div>
-    
+
     <div class="field-row">
       <label for="today">Today's Date</label>
       <input type="date" id="today" name="today" required class="med" autocomplete="off" aria-label="Today's date">
@@ -1225,6 +1226,7 @@ Customer Info
        M60 36 A6 6 0 1 1 60 48 A6 6 0 1 1 60 36"
     fill="none"
     stroke="#D97706"
+    stroke="currentColor"
     stroke-width="6"
     stroke-linecap="round"
     stroke-linejoin="round"
@@ -1292,7 +1294,7 @@ Customer Info
         <input type="date" id="est_done_on" name="est_done_on" autocomplete="off" aria-label="Estimate completion date">
       </div>
       <div class="flood-item">
-      
+
       </div>
     </div>
 
@@ -1664,13 +1666,13 @@ Customer Info
 <!-- ▼▼▼ PDF SAVE MODAL ▼▼▼ -->
 <div id="pdfModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(4px);">
   <div style="background:linear-gradient(135deg,#0a0a0a 0%,#1a1a1a 100%); border:2px solid #FFB300; border-radius:12px; padding:30px; max-width:420px; width:90%; box-shadow:0 0 40px rgba(255,179,0,0.4), inset 0 0 20px rgba(0,229,255,0.05); font-family:'Exo 2',sans-serif;">
-    
+
     <h2 style="color:#FFB300; font-family:'Orbitron',sans-serif; margin:0 0 8px 0; font-size:18px; letter-spacing:2px; text-shadow:0 0 10px rgba(255,179,0,0.5);">📄 SAVE AS PDF</h2>
-    
+
     <div style="height:1px; background:linear-gradient(90deg,#FFB300,transparent); margin-bottom:18px;"></div>
-    
+
     <div id="pdfInstructions" style="color:#00E5FF; font-family:'Share Tech Mono',monospace; font-size:13px; line-height:1.8;"></div>
-    
+
     <div style="margin-top:24px; display:flex; justify-content:flex-end; gap:10px;">
       <button onclick="closePdfModal()" style="background:transparent; border:1px solid #666; color:#999; padding:9px 18px; border-radius:6px; cursor:pointer; font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:1px;">CANCEL</button>
       <button onclick="confirmPdfPrint()" style="background:linear-gradient(135deg,#FFB300,#FF8C00); border:none; color:#000; padding:9px 22px; border-radius:6px; cursor:pointer; font-weight:bold; font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:1px; box-shadow:0 0 15px rgba(255,179,0,0.4);">CONTINUE ▶</button>
@@ -1682,13 +1684,13 @@ Customer Info
 <!-- ▼▼▼ IMAGE SAVE MODAL ▼▼▼ -->
 <div id="imageModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(4px);">
   <div style="background:linear-gradient(135deg,#0a0a0a 0%,#1a1a1a 100%); border:2px solid #059669; border-radius:12px; padding:30px; max-width:420px; width:90%; box-shadow:0 0 40px rgba(5,150,105,0.4), inset 0 0 20px rgba(0,229,255,0.05); font-family:'Exo 2',sans-serif;">
-    
+
     <h2 style="color:#059669; font-family:'Orbitron',sans-serif; margin:0 0 8px 0; font-size:18px; letter-spacing:2px; text-shadow:0 0 10px rgba(5,150,105,0.5);">🖼 SAVE AS IMAGE</h2>
-    
+
     <div style="height:1px; background:linear-gradient(90deg,#059669,transparent); margin-bottom:18px;"></div>
-    
+
     <p style="color:#00E5FF; font-family:'Share Tech Mono',monospace; font-size:13px; line-height:1.8; margin:0 0 20px 0;">Capture the entire form as a JPEG image. Perfect for saving, printing, or sharing.</p>
-    
+
     <div style="margin-top:24px; display:flex; justify-content:flex-end; gap:10px;">
       <button onclick="closeImageModal()" style="background:transparent; border:1px solid #666; color:#999; padding:9px 18px; border-radius:6px; cursor:pointer; font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:1px;">CANCEL</button>
       <button onclick="saveImageFromModal()" style="background:linear-gradient(135deg,#059669,#04874f); border:none; color:#fff; padding:9px 22px; border-radius:6px; cursor:pointer; font-weight:bold; font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:1px; box-shadow:0 0 15px rgba(5,150,105,0.4);">SAVE IMAGE ▶</button>
@@ -1703,7 +1705,6 @@ var nativePrint = window.print.bind(window);
 if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
   document.body.classList.add('is-mobile-device');
 }
-
 var MAPBOX_TOKEN = 'pk.eyJ1IjoicHJvamVjdHdyYXBwZXIiLCJhIjoiY201d2k1eHU3MDAwajJrbzU2a2c5dW40NSJ9.WJlNJ4o5CqBhWpHKMKOzIQ';
 var DRAFT_KEY = 'aog_estimate_draft';
 
@@ -1723,13 +1724,15 @@ window.addEventListener('offline', function() {
 });
 
 // ────────────────────────────────────────────────────────────────
-// DRAFT SAVE / RESTORE
+// DRAFT SAVE/RESTORE
 // ────────────────────────────────────────────────────────────────
 function saveDraft() {
   var data = {};
+
   document.querySelectorAll('input, textarea').forEach(function(el) {
     var key = el.id || el.name;
     if (!key) return;
+
     try {
       if (el.type === 'checkbox') {
         if (!data[key]) data[key] = [];
@@ -1739,34 +1742,48 @@ function saveDraft() {
       } else {
         if (data[key] === undefined) data[key] = el.value;
       }
-    } catch (e) { console.warn('Error saving field:', key); }
+    } catch (e) {
+      console.warn('Error saving field:', key);
+    }
   });
+
   try {
     localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
   } catch(e) {
-    if (e.name === 'QuotaExceededError') console.warn('LocalStorage quota exceeded');
+    if (e.name === 'QuotaExceededError') {
+      console.warn('LocalStorage quota exceeded');
+    }
   }
 }
 
 function restoreDraft() {
   var saved = localStorage.getItem(DRAFT_KEY);
   if (!saved) return;
+
   try {
     var data = JSON.parse(saved);
+
     document.querySelectorAll('input, textarea').forEach(function(el) {
       var key = el.id || el.name;
       if (!key || data[key] === undefined) return;
+
       try {
         if (el.type === 'checkbox') {
-          if (Array.isArray(data[key])) el.checked = data[key].indexOf(el.value) !== -1;
+          if (Array.isArray(data[key])) {
+            el.checked = data[key].indexOf(el.value) !== -1;
+          }
         } else if (el.type === 'radio') {
           if (el.value === data[key]) el.checked = true;
         } else {
           el.value = data[key];
         }
-      } catch (e) { console.warn('Error restoring field:', key); }
+      } catch (e) {
+        console.warn('Error restoring field:', key);
+      }
     });
-  } catch(e) { console.warn('Error restoring draft:', e); }
+  } catch(e) {
+    console.warn('Error restoring draft:', e);
+  }
 }
 
 setInterval(saveDraft, 30000);
@@ -1774,62 +1791,130 @@ document.addEventListener('change', saveDraft);
 document.addEventListener('input', saveDraft);
 
 // ────────────────────────────────────────────────────────────────
-// VALIDATION
+// ENHANCED FORM VALIDATION
 // ────────────────────────────────────────────────────────────────
-var VALIDATION_RULES = {
-  name:      { required: true, minLength: 2, pattern: /^[a-zA-Z\s\-'.]+$/, message: 'Name must contain only letters, spaces, hyphens, or apostrophes' },
-  address:   { required: true, minLength: 5, message: 'Please enter a valid street address' },
-  phone:     { required: true, pattern: /^[\d\-\(\)\s+]{10,}$/, message: 'Phone must be at least 10 digits' },
-  email:     { required: true, pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Please enter a valid email address' },
-  estimator: { required: true, minLength: 2, message: 'Estimator name is required' },
-  sqft:      { pattern: /^[0-9]*$/, min: 500, max: 100000, message: 'Square footage must be between 500 and 100,000' },
-  gen_size:  { pattern: /^[\d\w\s\-]*$/, message: 'Invalid generator size format' }
+
+const VALIDATION_RULES = {
+  name: {
+    required: true,
+    minLength: 2,
+    pattern: /^[a-zA-Z\s\-'.]+$/,
+    message: 'Name must contain only letters, spaces, hyphens, or apostrophes'
+  },
+  address: {
+    required: true,
+    minLength: 5,
+    message: 'Please enter a valid street address'
+  },
+  phone: {
+    required: true,
+    pattern: /^[\d\-\(\)\s+]{10,}$/,
+    message: 'Phone must be at least 10 digits'
+  },
+  email: {
+    required: true,
+    pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+    message: 'Please enter a valid email address'
+  },
+  estimator: {
+    required: true,
+    minLength: 2,
+    message: 'Estimator name is required'
+  },
+  sqft: {
+    pattern: /^[0-9]*$/,
+    min: 500,
+    max: 100000,
+    message: 'Square footage must be between 500 and 100,000'
+  },
+  gen_size: {
+    pattern: /^[\d\w\s\-]*$/,
+    message: 'Invalid generator size format'
+  }
 };
 
-var FormValidator = (function() {
-  function FormValidator() {
+class FormValidator {
+  constructor() {
     this.errors = {};
     this.validatedFields = new Set();
   }
 
-  FormValidator.prototype.validateField = function(fieldId) {
-    var el = document.getElementById(fieldId);
+  validateField(fieldId) {
+    const el = document.getElementById(fieldId);
     if (!el) return true;
-    var rules = VALIDATION_RULES[fieldId];
+
+    const rules = VALIDATION_RULES[fieldId];
     if (!rules) return true;
-    var value = el.value.trim();
-    var errors = [];
 
-    if (rules.required && !value) errors.push(rules.message || (fieldId + ' is required'));
+    const value = el.value.trim();
+    const errors = [];
 
+    // Required validation
+    if (rules.required && !value) {
+      errors.push(rules.message || `${fieldId} is required`);
+    }
+
+    // Only check other validations if field has value
     if (value) {
-      if (rules.minLength && value.length < rules.minLength) errors.push('Must be at least ' + rules.minLength + ' characters');
-      if (rules.maxLength && value.length > rules.maxLength) errors.push('Must be no more than ' + rules.maxLength + ' characters');
-      if (rules.pattern && !rules.pattern.test(value)) errors.push(rules.message || ('Invalid ' + fieldId + ' format'));
+      // Min length
+      if (rules.minLength && value.length < rules.minLength) {
+        errors.push(`Must be at least ${rules.minLength} characters`);
+      }
+
+      // Max length
+      if (rules.maxLength && value.length > rules.maxLength) {
+        errors.push(`Must be no more than ${rules.maxLength} characters`);
+      }
+
+      // Pattern
+      if (rules.pattern && !rules.pattern.test(value)) {
+        errors.push(rules.message || `Invalid ${fieldId} format`);
+      }
+
+      // Numeric min/max
       if (!isNaN(value)) {
-        var num = parseFloat(value);
-        if (rules.min !== undefined && num < rules.min) errors.push('Must be at least ' + rules.min);
-        if (rules.max !== undefined && num > rules.max) errors.push('Must be no more than ' + rules.max);
+        const num = parseFloat(value);
+        if (rules.min !== undefined && num < rules.min) {
+          errors.push(`Must be at least ${rules.min}`);
+        }
+        if (rules.max !== undefined && num > rules.max) {
+          errors.push(`Must be no more than ${rules.max}`);
+        }
       }
     }
 
-    if (errors.length > 0) this.errors[fieldId] = errors;
-    else delete this.errors[fieldId];
+    // Update error tracking
+    if (errors.length > 0) {
+      this.errors[fieldId] = errors;
+    } else {
+      delete this.errors[fieldId];
+    }
 
     this.updateFieldUI(el, errors.length === 0);
     this.validatedFields.add(fieldId);
+
     return errors.length === 0;
-  };
+  }
 
-  FormValidator.prototype.validateAllRequired = function() {
-    var self = this;
-    var requiredFields = Object.keys(VALIDATION_RULES).filter(function(k) { return VALIDATION_RULES[k].required; });
-    return requiredFields.map(function(f) { return self.validateField(f); }).every(function(r) { return r === true; });
-  };
+  validateAllRequired() {
+    const requiredFields = Object.keys(VALIDATION_RULES)
+      .filter(key => VALIDATION_RULES[key].required);
 
-  FormValidator.prototype.updateFieldUI = function(el, isValid) {
-    var wrapper = el.parentElement;
-    var oldError = wrapper && wrapper.querySelector('.field-error');
+    const results = requiredFields.map(fieldId => this.validateField(fieldId));
+    return results.every(r => r === true);
+  }
+
+  validateAll() {
+    Object.keys(VALIDATION_RULES).forEach(fieldId => {
+      this.validateField(fieldId);
+    });
+    return Object.keys(this.errors).length === 0;
+  }
+
+  updateFieldUI(el, isValid) {
+    // Remove old error indicator
+    const wrapper = el.parentElement;
+    const oldError = wrapper?.querySelector('.field-error');
     if (oldError) oldError.remove();
 
     if (isValid) {
@@ -1838,102 +1923,204 @@ var FormValidator = (function() {
     } else {
       el.style.borderBottomColor = '#DC2626';
       el.style.boxShadow = '0 2px 0 0 rgba(220,38,38,0.3), 0 0 12px rgba(220,38,38,0.08)';
+
+      // Add error message
       if (wrapper && this.errors[el.id]) {
-        var errorMsg = document.createElement('div');
+        const errorMsg = document.createElement('div');
         errorMsg.className = 'field-error';
-        errorMsg.style.cssText = 'font-size:0.62rem;color:#DC2626;margin-top:2px;font-family:var(--font-mono);letter-spacing:0.5px;';
+        errorMsg.style.cssText = `
+          font-size: 0.62rem;
+          color: #DC2626;
+          margin-top: 2px;
+          font-family: var(--font-mono);
+          letter-spacing: 0.5px;
+        `;
         errorMsg.textContent = '✗ ' + this.errors[el.id][0];
         wrapper.appendChild(errorMsg);
       }
     }
-  };
+  }
 
-  FormValidator.prototype.clearFieldUI = function(el) {
+  clearFieldUI(el) {
     el.style.borderBottomColor = '';
     el.style.boxShadow = '';
-    var wrapper = el.parentElement;
-    var oldError = wrapper && wrapper.querySelector('.field-error');
+    const wrapper = el.parentElement;
+    const oldError = wrapper?.querySelector('.field-error');
     if (oldError) oldError.remove();
-  };
+  }
 
-  FormValidator.prototype.getErrorSummary = function() {
-    return Object.entries(this.errors).map(function(entry) {
-      var fieldId = entry[0]; var msgs = entry[1];
-      var label = fieldId.replace(/_/g,' ').split(' ').map(function(w){ return w.charAt(0).toUpperCase()+w.slice(1); }).join(' ');
-      return label + ': ' + msgs[0];
+  getErrorSummary() {
+    const summary = [];
+    Object.entries(this.errors).forEach(([fieldId, msgs]) => {
+      const label = fieldId
+        .replace(/_/g, ' ')
+        .split(' ')
+        .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+        .join(' ');
+      summary.push(`${label}: ${msgs[0]}`);
     });
-  };
+    return summary;
+  }
 
-  FormValidator.prototype.showErrorModal = function() {
-    var errors = this.getErrorSummary();
+  showErrorModal() {
+    const errors = this.getErrorSummary();
     if (errors.length === 0) return false;
 
-    var self = this;
-    var modal = document.createElement('div');
-    modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;z-index:99999;backdrop-filter:blur(4px);';
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9998;
+      backdrop-filter: blur(4px);
+    `;
 
-    var content = document.createElement('div');
-    content.style.cssText = 'background:linear-gradient(135deg,#1a1a1a 0%,#0a0a0a 100%);border:2px solid #DC2626;border-radius:12px;padding:30px;max-width:500px;width:90%;box-shadow:0 0 40px rgba(220,38,38,0.4);font-family:var(--font-body);';
+    const content = document.createElement('div');
+    content.style.cssText = `
+      background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+      border: 2px solid #DC2626;
+      border-radius: 12px;
+      padding: 30px;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 0 40px rgba(220,38,38,0.4), inset 0 0 20px rgba(0,229,255,0.05);
+      font-family: var(--font-body);
+    `;
 
-    var title = document.createElement('h2');
-    title.style.cssText = 'color:#DC2626;font-family:var(--font-display);margin:0 0 16px 0;font-size:18px;letter-spacing:2px;text-shadow:0 0 10px rgba(220,38,38,0.5);';
+    const title = document.createElement('h2');
+    title.style.cssText = `
+      color: #DC2626;
+      font-family: var(--font-display);
+      margin: 0 0 16px 0;
+      font-size: 18px;
+      letter-spacing: 2px;
+      text-shadow: 0 0 10px rgba(220,38,38,0.5);
+    `;
     title.textContent = '⚠ VALIDATION ERRORS';
 
-    var divider = document.createElement('div');
-    divider.style.cssText = 'height:1px;background:linear-gradient(90deg,#DC2626,transparent);margin-bottom:16px;';
+    const divider = document.createElement('div');
+    divider.style.cssText = `
+      height: 1px;
+      background: linear-gradient(90deg, #DC2626, transparent);
+      margin-bottom: 16px;
+    `;
 
-    var errorList = document.createElement('ul');
-    errorList.style.cssText = 'list-style:none;padding:0;margin:0 0 20px 0;';
-    errors.forEach(function(error) {
-      var li = document.createElement('li');
-      li.style.cssText = 'color:#00E5FF;font-family:var(--font-mono);font-size:13px;line-height:1.6;padding:6px 0;';
+    const errorList = document.createElement('ul');
+    errorList.style.cssText = `
+      list-style: none;
+      padding: 0;
+      margin: 0 0 20px 0;
+    `;
+
+    errors.forEach(error => {
+      const li = document.createElement('li');
+      li.style.cssText = `
+        color: #00E5FF;
+        font-family: var(--font-mono);
+        font-size: 13px;
+        line-height: 1.6;
+        padding: 6px 0;
+      `;
       li.textContent = '• ' + error;
       errorList.appendChild(li);
     });
 
-    var closeBtn = document.createElement('button');
-    closeBtn.style.cssText = 'width:100%;background:linear-gradient(135deg,#DC2626,#b01f1f);border:none;color:white;padding:12px;border-radius:6px;cursor:pointer;font-weight:bold;font-family:var(--font-display);font-size:12px;letter-spacing:1px;box-shadow:0 0 15px rgba(220,38,38,0.4);';
+    const closeBtn = document.createElement('button');
+    closeBtn.style.cssText = `
+      width: 100%;
+      background: linear-gradient(135deg, #DC2626, #b01f1f);
+      border: none;
+      color: white;
+      padding: 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      font-family: var(--font-display);
+      font-size: 12px;
+      letter-spacing: 1px;
+      box-shadow: 0 0 15px rgba(220,38,38,0.4);
+      transition: all 0.2s;
+    `;
     closeBtn.textContent = 'CLOSE';
-    closeBtn.addEventListener('click', function() { document.body.removeChild(modal); });
+
+    closeBtn.addEventListener('mouseenter', function() {
+      this.style.transform = 'translateY(-2px)';
+      this.style.boxShadow = '0 0 25px rgba(220,38,38,0.6)';
+    });
+
+    closeBtn.addEventListener('mouseleave', function() {
+      this.style.transform = '';
+      this.style.boxShadow = '0 0 15px rgba(220,38,38,0.4)';
+    });
+
+    closeBtn.addEventListener('click', function() {
+      document.body.removeChild(modal);
+    });
 
     content.appendChild(title);
     content.appendChild(divider);
     content.appendChild(errorList);
     content.appendChild(closeBtn);
     modal.appendChild(content);
+
     document.body.appendChild(modal);
 
-    var firstErrorId = Object.keys(this.errors)[0];
+    // Scroll to first error field
+    const firstErrorId = Object.keys(this.errors)[0];
     if (firstErrorId) {
-      var el = document.getElementById(firstErrorId);
-      if (el) setTimeout(function() { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); el.focus(); }, 100);
+      const el = document.getElementById(firstErrorId);
+      if (el) {
+        setTimeout(() => {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          el.focus();
+        }, 100);
+      }
     }
+
     return true;
-  };
+  }
+}
 
-  return FormValidator;
-})();
-
-var validator = new FormValidator();
+// Create global validator instance
+const validator = new FormValidator();
 
 // ────────────────────────────────────────────────────────────────
-// REAL-TIME FIELD VALIDATION SETUP
+// REAL-TIME VALIDATION
 // ────────────────────────────────────────────────────────────────
 function setupFieldValidation() {
-  Object.keys(VALIDATION_RULES).forEach(function(fieldId) {
-    var el = document.getElementById(fieldId);
+  Object.keys(VALIDATION_RULES).forEach(fieldId => {
+    const el = document.getElementById(fieldId);
     if (!el) return;
-    el.addEventListener('blur', function() { validator.validateField(fieldId); });
-    el.addEventListener('focus', function() { validator.clearFieldUI(this); });
-    if (['email','phone','sqft'].indexOf(fieldId) !== -1) {
-      var debounceTimer;
+
+    // Validate on blur
+    el.addEventListener('blur', function() {
+      validator.validateField(fieldId);
+    });
+
+    // Clear error on focus
+    el.addEventListener('focus', function() {
+      validator.clearFieldUI(this);
+    });
+
+    // Real-time validation for common fields
+    if (['email', 'phone', 'sqft'].includes(fieldId)) {
+      let debounceTimer;
       el.addEventListener('input', function() {
         clearTimeout(debounceTimer);
-        debounceTimer = setTimeout(function() { validator.validateField(fieldId); }, 600);
+        debounceTimer = setTimeout(() => {
+          validator.validateField(fieldId);
+        }, 600);
       });
     }
   });
 }
+
+// ────────────────────────────────────────────────────────────────
+// UPDATED FORM FUNCTIONS
+// ────────────────────────────────────────────────────────────────
 
 function validateForm() {
   if (!validator.validateAllRequired()) {
@@ -1943,14 +2130,110 @@ function validateForm() {
   return true;
 }
 
+function printPDF() {
+  if (!validateForm()) return;
+
+  var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  var isAndroid = /Android/i.test(navigator.userAgent);
+  var modal = document.getElementById('pdfModal');
+  var instr = document.getElementById('pdfInstructions');
+
+  if (!modal || !instr) {
+    window.print();
+    return;
+  }
+
+  if (isIOS) {
+    instr.innerHTML = "<b style='color:#FFB300'>1.</b> Tap CONTINUE to open Print preview<br><b style='color:#FFB300'>2.</b> <span style='color:#FFB300'>PINCH-ZOOM OUT</span> on the page thumbnail<br><b style='color:#FFB300'>3.</b> Tap the Share icon (top right)<br><b style='color:#FFB300'>4.</b> Tap <span style='color:#FFB300'>'Save to Files'</span>";
+  } else if (isAndroid) {
+    instr.innerHTML = "<b style='color:#FFB300'>1.</b> Tap CONTINUE to open Print preview<br><b style='color:#FFB300'>2.</b> Change Printer to <span style='color:#FFB300'>'Save as PDF'</span><br><b style='color:#FFB300'>3.</b> Tap the download icon";
+  } else {
+    instr.innerHTML = "<b style='color:#FFB300'>1.</b> Click CONTINUE to open Print dialog<br><b style='color:#FFB300'>2.</b> Set Destination to <span style='color:#FFB300'>'Save as PDF'</span><br><b style='color:#FFB300'>3.</b> Click Save";
+  }
+
+  modal.style.display = 'flex';
+}
+
+function openImageModal() {
+  if (!validateForm()) return;
+  var modal = document.getElementById('imageModal');
+  if (modal) modal.style.display = 'flex';
+}
+
+function sendEmail() {
+  if (!validateForm()) return;
+
+  var data = getFormData();
+  var name = data.name || '';
+  var emailTo = data.email || '';
+  var addr1 = data.address || '';
+  var addr2 = data.address2 || '';
+  var address = addr1 + (addr2 ? ', ' + addr2 : '');
+  var phone = data.phone || '';
+  var sqft = data.sqft || '';
+  var estDate = data.est_date || '';
+  var estimator = data.estimator || '';
+
+  var subject = 'Generator Installation Estimate — ' + name;
+  var lines = [
+    'Dear ' + name + ',',
+    '',
+    'Thank you for the opportunity to provide you with a generator installation estimate.',
+    '',
+    '--- ESTIMATE DETAILS ---',
+    'Customer: ' + name,
+    'Address: ' + address,
+    'Phone: ' + phone,
+    'Sq. Footage: ' + sqft + ' SF',
+    'Estimate Date: ' + estDate,
+    'Estimator: ' + estimator,
+    '',
+    'Please reply to this email or call us if you have any questions.',
+    '',
+    'Best regards,',
+    'Always On Generators'
+  ];
+
+  var mailtoLink = 'mailto:' + encodeURIComponent(emailTo) + 
+                   '?subject=' + encodeURIComponent(subject) + 
+                   '&body=' + encodeURIComponent(lines.join('\n'));
+
+  window.location.href = mailtoLink;
+}
+
 // ────────────────────────────────────────────────────────────────
-// FORM DATA HELPER
+// FORM ACTIONS
 // ────────────────────────────────────────────────────────────────
+function clearForm() {
+  if (!confirm('Clear all fields?')) return;
+
+  document.querySelectorAll('input[type="text"],input[type="email"],input[type="tel"],input[type="date"],input[type="number"],textarea').forEach(function(el) {
+    el.value = '';
+  });
+
+  document.querySelectorAll('input[type="checkbox"],input[type="radio"]').forEach(function(el) {
+    el.checked = false;
+  });
+
+  var s = document.getElementById('sqft-status');
+  if (s) s.textContent = '';
+
+  var gpsStatus = document.getElementById('gps-status');
+  if (gpsStatus) {
+    gpsStatus.style.display = 'none';
+    gpsStatus.textContent = '';
+  }
+
+  localStorage.removeItem(DRAFT_KEY);
+}
+
 function getFormData() {
   var data = {};
+
   document.querySelectorAll('input, textarea, select').forEach(function(el) {
     var key = el.id || el.name;
     if (!key) return;
+
     if (el.type === 'checkbox') {
       if (!data[key]) data[key] = [];
       if (el.checked) data[key].push(el.value);
@@ -1960,33 +2243,25 @@ function getFormData() {
       if (data[key] === undefined) data[key] = el.value;
     }
   });
+
   return data;
 }
 
 // ────────────────────────────────────────────────────────────────
-// CLEAR FORM
-// ────────────────────────────────────────────────────────────────
-function clearForm() {
-  if (!confirm('Clear all fields?')) return;
-  document.querySelectorAll('input[type="text"],input[type="email"],input[type="tel"],input[type="date"],input[type="number"],textarea').forEach(function(el) { el.value = ''; });
-  document.querySelectorAll('input[type="checkbox"],input[type="radio"]').forEach(function(el) { el.checked = false; });
-  var s = document.getElementById('sqft-status');
-  if (s) s.textContent = '';
-  var gpsStatus = document.getElementById('gps-status');
-  if (gpsStatus) { gpsStatus.style.display = 'none'; gpsStatus.textContent = ''; }
-  localStorage.removeItem(DRAFT_KEY);
-}
-
-// ────────────────────────────────────────────────────────────────
-// PDF PRINT
+// PDF PRINT (SINGLE VERSION)
 // ────────────────────────────────────────────────────────────────
 function printPDF() {
   if (!validateForm()) return;
-  var isIOS     = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+  var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
   var isAndroid = /Android/i.test(navigator.userAgent);
   var modal = document.getElementById('pdfModal');
   var instr = document.getElementById('pdfInstructions');
-  if (!modal || !instr) { nativePrint(); return; }
+
+  if (!modal || !instr) {
+    window.print();
+    return;
+  }
 
   if (isIOS) {
     instr.innerHTML = "<b style='color:#FFB300'>1.</b> Tap CONTINUE to open Print preview<br><b style='color:#FFB300'>2.</b> <span style='color:#FFB300'>PINCH-ZOOM OUT</span> on the page thumbnail<br><b style='color:#FFB300'>3.</b> Tap the Share icon (top right)<br><b style='color:#FFB300'>4.</b> Tap <span style='color:#FFB300'>'Save to Files'</span>";
@@ -1995,6 +2270,7 @@ function printPDF() {
   } else {
     instr.innerHTML = "<b style='color:#FFB300'>1.</b> Click CONTINUE to open Print dialog<br><b style='color:#FFB300'>2.</b> Set Destination to <span style='color:#FFB300'>'Save as PDF'</span><br><b style='color:#FFB300'>3.</b> Click Save";
   }
+
   modal.style.display = 'flex';
 }
 
@@ -2002,231 +2278,244 @@ function confirmPdfPrint() {
   document.getElementById('pdfModal').style.display = 'none';
   nativePrint();
 }
-
-function closePdfModal() {
-  document.getElementById('pdfModal').style.display = 'none';
-}
-
 // ────────────────────────────────────────────────────────────────
-// IMAGE MODAL  — no validation gate on open
+// IMAGE EXPORT (SINGLE VERSION)
 // ────────────────────────────────────────────────────────────────
 function openImageModal() {
+  if (!validateForm()) return;
   var modal = document.getElementById('imageModal');
   if (modal) modal.style.display = 'flex';
 }
 
 function closeImageModal() {
-  var modal = document.getElementById('imageModal');
-  if (modal) modal.style.display = 'none';
+  document.getElementById('imageModal').style.display = 'none';
 }
 
-// ────────────────────────────────────────────────────────────────
-// SAVE IMAGE
-// ────────────────────────────────────────────────────────────────
 function saveImageFromModal() {
-  if (!validateForm()) {
-    closeImageModal();
-    return;
-  }
   closeImageModal();
 
-
   var page = document.getElementById('page');
-  if (!page) { alert('Error: Could not find form element'); return; }
+  if (!page) {
+    alert('Error: Could not find form element');
+    return;
+  }
 
   var pageTitle = (document.getElementById('name').value || 'Estimate').replace(/\s+/g, '_');
   var timestamp = new Date().toISOString().split('T')[0];
-  var filename  = pageTitle + '_' + timestamp + '.jpg';
+  var filename = pageTitle + '_' + timestamp + '.jpg';
 
   var loadingDiv = document.createElement('div');
   loadingDiv.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1a1a1a;border:2px solid #D97706;color:#D97706;padding:20px 40px;font-family:monospace;z-index:99999;border-radius:8px;box-shadow:0 0 30px rgba(217,119,6,0.4);';
   loadingDiv.textContent = '⏳ Generating image...';
   document.body.appendChild(loadingDiv);
 
-  // Capture true dimensions before any style changes
-  var fullW = page.scrollWidth;
-  var fullH = page.scrollHeight;
-
-  // Temporarily expand so the right border is not clipped on narrow viewports
-  var prevBodyWidth    = document.body.style.width;
-  var prevBodyMinWidth = document.body.style.minWidth;
-  var prevBodyOverflow = document.body.style.overflow;
-  var prevPageWidth    = page.style.width;
-  var prevPageMaxWidth = page.style.maxWidth;
-  var prevPageOverflow = page.style.overflow;
-
-  document.body.style.width    = fullW + 'px';
-  document.body.style.minWidth = fullW + 'px';
-  document.body.style.overflow = 'visible';
-  page.style.width    = fullW + 'px';
-  page.style.maxWidth = 'none';
-  page.style.overflow = 'visible';
-
-  function restoreStyles() {
-    document.body.style.width    = prevBodyWidth;
-    document.body.style.minWidth = prevBodyMinWidth;
-    document.body.style.overflow = prevBodyOverflow;
-    page.style.width    = prevPageWidth;
-    page.style.maxWidth = prevPageMaxWidth;
-    page.style.overflow = prevPageOverflow;
-  }
-
   html2canvas(page, {
     scale: 2,
     useCORS: true,
     backgroundColor: '#FFFFFF',
     logging: false,
-    width:       fullW,
-    height:      fullH,
-    windowWidth: fullW,
-    windowHeight: fullH,
-    scrollX: 0,
-    scrollY: 0,
-    x: 0,
-    y: 0,
+    windowHeight: page.scrollHeight,
     allowTaint: true,
     imageTimeout: 15000,
     removeContainer: true,
 
     onclone: function(clonedDoc, clonedElement) {
-      clonedElement.style.width    = fullW + 'px';
-      clonedElement.style.maxWidth = 'none';
-      clonedElement.style.overflow = 'visible';
-      clonedDoc.body.style.width   = fullW + 'px';
-      clonedDoc.body.style.margin  = '0';
-      clonedDoc.body.style.padding = '0';
-      clonedDoc.body.style.overflow = 'visible';
 
-      // Resolve currentColor on all SVGs
-      clonedDoc.querySelectorAll('svg').forEach(function(svg) {
-        var computedColor = '#D97706';
-        try {
-          if (svg.parentElement) {
-            computedColor = clonedDoc.defaultView.getComputedStyle(svg.parentElement).color || '#D97706';
-          }
-        } catch(e) {}
-        if (!svg.getAttribute('xmlns')) svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-
-        var svgStroke  = svg.getAttribute('stroke');
-        var svgFill    = svg.getAttribute('fill');
-        var svgSW      = svg.getAttribute('stroke-width');
-        var svgSLC     = svg.getAttribute('stroke-linecap');
-        var svgSLJ     = svg.getAttribute('stroke-linejoin');
-        if (svgStroke === 'currentColor') svgStroke = computedColor;
-        if (svgFill   === 'currentColor') svgFill   = computedColor;
-
-        svg.querySelectorAll('path,polyline,polygon,line,rect,circle,ellipse,text').forEach(function(el) {
-          if (el.getAttribute('stroke') === 'currentColor') el.setAttribute('stroke', computedColor);
-          if (el.getAttribute('fill')   === 'currentColor') el.setAttribute('fill',   computedColor);
-          if (svgStroke && !el.hasAttribute('stroke'))       el.setAttribute('stroke', svgStroke);
-          if (svgFill   && !el.hasAttribute('fill'))         el.setAttribute('fill',   svgFill);
-          if (svgSW  && !el.hasAttribute('stroke-width'))    el.setAttribute('stroke-width',    svgSW);
-          if (svgSLC && !el.hasAttribute('stroke-linecap'))  el.setAttribute('stroke-linecap',  svgSLC);
-          if (svgSLJ && !el.hasAttribute('stroke-linejoin')) el.setAttribute('stroke-linejoin', svgSLJ);
-          if (!el.hasAttribute('fill') && el.tagName.toLowerCase() !== 'text') el.setAttribute('fill', 'none');
-        });
+      // Fix ALL currentColor references anywhere in the document first
+      clonedDoc.querySelectorAll('*').forEach(function(el) {
+        if (el.getAttribute('stroke') === 'currentColor') el.setAttribute('stroke', '#D97706');
+        if (el.getAttribute('fill') === 'currentColor') el.setAttribute('fill', '#D97706');
       });
 
-      // iOS path boost
-      if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-        clonedDoc.querySelectorAll('svg path').forEach(function(p) {
-          p.setAttribute('stroke-width', (parseFloat(p.getAttribute('stroke-width')) || 2) * 2.2);
+      var svgs = clonedDoc.querySelectorAll('svg');
+
+      svgs.forEach(function(svg) {
+        var parent = svg.parentElement;
+        var computedColor = '#D97706';
+
+        try {
+          if (parent) {
+            var parentStyle = clonedDoc.defaultView.getComputedStyle(parent);
+            computedColor = parentStyle.color || '#D97706';
+          }
+        } catch (e) {}
+
+        if (!svg.getAttribute('xmlns')) {
+          svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+        }
+
+        var svgStroke = svg.getAttribute('stroke');
+        var svgFill = svg.getAttribute('fill');
+        var svgStrokeWidth = svg.getAttribute('stroke-width');
+        var svgStrokeLinecap = svg.getAttribute('stroke-linecap');
+        var svgStrokeLinejoin = svg.getAttribute('stroke-linejoin');
+
+        if (svgStroke === 'currentColor') svgStroke = computedColor;
+        if (svgFill === 'currentColor') svgFill = computedColor;
+
+        var shapes = svg.querySelectorAll('path, polyline, polygon, line, rect, circle, ellipse, text');
+        
+        shapes.forEach(function(el) {
+          if (el.getAttribute('stroke') === 'currentColor') {
+            el.setAttribute('stroke', computedColor);
+          }
+          if (el.getAttribute('fill') === 'currentColor') {
+            el.setAttribute('fill', computedColor);
+          }
+          if (svgStroke && !el.hasAttribute('stroke')) el.setAttribute('stroke', svgStroke);
+          if (svgFill && !el.hasAttribute('fill')) el.setAttribute('fill', svgFill);
+          if (svgStrokeWidth && !el.hasAttribute('stroke-width')) el.setAttribute('stroke-width', svgStrokeWidth);
+          if (svgStrokeLinecap && !el.hasAttribute('stroke-linecap')) el.setAttribute('stroke-linecap', svgStrokeLinecap);
+          if (svgStrokeLinejoin && !el.hasAttribute('stroke-linejoin')) el.setAttribute('stroke-linejoin', svgStrokeLinejoin);
+          if (!el.hasAttribute('fill') && el.tagName.toLowerCase() !== 'text') {
+            el.setAttribute('fill', 'none');
+          }
+        });
+       var shapes = svg.querySelectorAll('path, polyline, polygon, line, rect, circle, ellipse, text');
+
+shapes.forEach(function(el) {
+  if (el.getAttribute('stroke') === 'currentColor' || !el.getAttribute('stroke')) {
+    el.setAttribute('stroke', '#D97706');
+  }
+  if (el.getAttribute('fill') === 'currentColor') {
+    el.setAttribute('fill', '#D97706');
+  }
+  if (!el.getAttribute('stroke-width')) el.setAttribute('stroke-width', svgStrokeWidth || '2');
+  if (!el.getAttribute('stroke-linecap')) el.setAttribute('stroke-linecap', svgStrokeLinecap || 'round');
+  if (!el.getAttribute('stroke-linejoin')) el.setAttribute('stroke-linejoin', svgStrokeLinejoin || 'round');
+  if (!el.hasAttribute('fill') && el.tagName.toLowerCase() !== 'text') {
+    el.setAttribute('fill', 'none');
+  }
+});
+
+// Also fix stroke on the SVG's direct children (path with stroke on itself)
+svg.querySelectorAll('[stroke="currentColor"]').forEach(function(el) {
+  el.setAttribute('stroke', '#D97706');
+});
+svg.querySelectorAll('[fill="currentColor"]').forEach(function(el) {
+  el.setAttribute('fill', '#D97706');
+});
+      });
+
+      var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+      if (isIOS) {
+        var allPaths = clonedDoc.querySelectorAll('svg path');
+        allPaths.forEach(function(p) {
+          var original = parseFloat(p.getAttribute('stroke-width')) || 2;
+          p.setAttribute('stroke-width', original * 2.2);
           p.setAttribute('stroke', '#b86a05');
         });
       }
 
-      // Clear placeholder text on empty inputs
-      clonedDoc.querySelectorAll('input, textarea').forEach(function(inp) {
-        if (!inp.value) inp.setAttribute('placeholder', '');
+      var inputs = clonedDoc.querySelectorAll('input, textarea');
+      inputs.forEach(function(input) {
+        if (!input.value) input.setAttribute('placeholder', '');
       });
 
-      // Stop animations
-      clonedDoc.querySelectorAll('.section-header, .col-label').forEach(function(h) {
+      var allHeaders = clonedDoc.querySelectorAll('.section-header, .col-label');
+      allHeaders.forEach(function(h) {
         h.style.animationPlayState = 'paused';
       });
 
-      // Hide chrome
-      clonedDoc.querySelectorAll('#pdfModal,#imageModal,#offline-banner,.toolbar').forEach(function(m) {
+      var modals = clonedDoc.querySelectorAll('#pdfModal, #imageModal, #offline-banner, .toolbar');
+      modals.forEach(function(m) {
         m.style.display = 'none';
       });
     }
-
   }).then(function(canvas) {
-    restoreStyles();
-    if (loadingDiv.parentNode) document.body.removeChild(loadingDiv);
+    document.body.removeChild(loadingDiv);
 
-    var link = document.createElement('a');
-    link.download = filename;
-    link.href = canvas.toDataURL('image/jpeg', 0.95);
+    try {
+      var link = document.createElement('a');
+      link.download = filename;
+      link.href = canvas.toDataURL('image/jpeg', 0.95);
 
-    if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-      var newTab = window.open();
-      if (newTab) {
-        newTab.document.write('<img src="' + link.href + '" style="max-width:100%;"/><p style="font-family:sans-serif;padding:10px;">Long‑press the image and select "Save to Photos"</p>');
+      if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+        var newTab = window.open();
+        if (newTab) {
+          newTab.document.write(
+            '<img src="' + link.href + '" style="max-width:100%;"/>' +
+            '<p style="font-family:sans-serif;padding:10px;">Long‑press the image and select "Save to Photos"</p>'
+          );
+        } else {
+          link.click();
+        }
       } else {
+        document.body.appendChild(link);
         link.click();
+        setTimeout(function() {
+          document.body.removeChild(link);
+        }, 100);
       }
-    } else {
-      document.body.appendChild(link);
-      link.click();
-      setTimeout(function() { if (link.parentNode) document.body.removeChild(link); }, 100);
+    } catch (e) {
+      alert('Error saving image: ' + e.message);
     }
-
   }).catch(function(err) {
-    restoreStyles();
-    if (loadingDiv.parentNode) document.body.removeChild(loadingDiv);
+    if (loadingDiv.parentNode) {
+      document.body.removeChild(loadingDiv);
+    }
     console.error('html2canvas error:', err);
     alert('Error generating image: ' + err.message);
   });
 }
 
 // ────────────────────────────────────────────────────────────────
-// SEND EMAIL
+// EMAIL (SINGLE VERSION)
 // ────────────────────────────────────────────────────────────────
 function sendEmail() {
   if (!validateForm()) return;
-  var data      = getFormData();
-  var name      = data.name      || '';
-  var emailTo   = data.email     || '';
-  var address   = (data.address  || '') + (data.address2 ? ', ' + data.address2 : '');
-  var phone     = data.phone     || '';
-  var sqft      = data.sqft      || '';
-  var estDate   = data.est_date  || '';
+
+  var data = getFormData();
+  var name = data.name || '';
+  var emailTo = data.email || '';
+  var addr1 = data.address || '';
+  var addr2 = data.address2 || '';
+  var address = addr1 + (addr2 ? ', ' + addr2 : '');
+  var phone = data.phone || '';
+  var sqft = data.sqft || '';
+  var estDate = data.est_date || '';
   var estimator = data.estimator || '';
 
   var subject = 'Generator Installation Estimate — ' + name;
-  var body = [
+  var lines = [
     'Dear ' + name + ',',
     '',
     'Thank you for the opportunity to provide you with a generator installation estimate.',
     '',
     '--- ESTIMATE DETAILS ---',
-    'Customer: '    + name,
-    'Address: '     + address,
-    'Phone: '       + phone,
+    'Customer: ' + name,
+    'Address: ' + address,
+    'Phone: ' + phone,
     'Sq. Footage: ' + sqft + ' SF',
-    'Estimate Date: '+ estDate,
-    'Estimator: '   + estimator,
+    'Estimate Date: ' + estDate,
+    'Estimator: ' + estimator,
     '',
     'Please reply to this email or call us if you have any questions.',
     '',
     'Best regards,',
     'Always On Generators'
-  ].join('\n');
+  ];
 
-  window.location.href = 'mailto:' + encodeURIComponent(emailTo) +
-    '?subject=' + encodeURIComponent(subject) +
-    '&body='    + encodeURIComponent(body);
+  var mailtoLink = 'mailto:' + encodeURIComponent(emailTo) + 
+                   '?subject=' + encodeURIComponent(subject) + 
+                   '&body=' + encodeURIComponent(lines.join('\n'));
+
+  window.location.href = mailtoLink;
 }
 
 // ────────────────────────────────────────────────────────────────
 // MODAL CLICK-OUTSIDE CLOSE
 // ────────────────────────────────────────────────────────────────
 document.addEventListener('click', function(e) {
-  var pdfModal   = document.getElementById('pdfModal');
+  var pdfModal = document.getElementById('pdfModal');
   var imageModal = document.getElementById('imageModal');
-  if (pdfModal   && e.target === pdfModal)   pdfModal.style.display   = 'none';
-  if (imageModal && e.target === imageModal) imageModal.style.display = 'none';
+
+  if (pdfModal && e.target === pdfModal) {
+    pdfModal.style.display = 'none';
+  }
+  if (imageModal && e.target === imageModal) {
+    imageModal.style.display = 'none';
+  }
 });
 
 // ────────────────────────────────────────────────────────────────
@@ -2234,94 +2523,113 @@ document.addEventListener('click', function(e) {
 // ────────────────────────────────────────────────────────────────
 (function() {
   'use strict';
-  var isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
-              || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-  var isDesktopSafari = /Safari/i.test(navigator.userAgent)
-                     && !/Chrome|CriOS|FxiOS|EdgiOS|Mobile/i.test(navigator.userAgent);
 
-  var PRINT_CSS = [
-    '@page { size: letter portrait; margin: 0 !important; }',
-    '@page :first { margin: 0 !important; }',
-    '@page :left  { margin: 0 !important; }',
-    '@page :right { margin: 0 !important; }',
-    'html { margin:0!important; padding:0!important; background:#FFFFFF!important; }',
-    'body { margin:0!important; padding:0!important; width:100%!important; zoom:0.55; background:#FFFFFF!important; -webkit-print-color-adjust:exact!important; print-color-adjust:exact!important; }',
-    '.page { width:100%!important; max-width:100%!important; margin:0!important; padding:0!important; border:5px solid #D97706!important; box-shadow:none!important; }',
-    '.toolbar, #offline-banner, #pdfModal, #imageModal { display:none!important; }',
-    '.header  { padding:4px 16px!important; min-height:0!important; }',
-    '.content { padding:4px 8px!important; }',
-    '.footer  { padding:4px 16px!important; }',
-    '.section, .top-grid, .flood-bar, .gas-appliances-box { page-break-inside:avoid!important; break-inside:avoid!important; }'
-  ].join('\n');
+  /* Detect if device is iOS (iPhone or iPad) */
+  var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-  function applyPrintStyles() {
-    if (!isMobile) return;
-    var s = document.getElementById('mobile-print-styles');
-    if (s) s.innerHTML = PRINT_CSS;
-  }
-  function clearPrintStyles() {
-    if (!isMobile) return;
-    var s = document.getElementById('mobile-print-styles');
-    if (s) s.innerHTML = '';
-  }
+  /* Detect if Safari (needs special handling) */
+  var isSafari = /Safari/i.test(navigator.userAgent) &&
+                 !/Chrome|CriOS|FxiOS|EdgiOS/i.test(navigator.userAgent);
 
-  window.addEventListener('beforeprint', applyPrintStyles);
-  window.addEventListener('afterprint',  clearPrintStyles);
+  /* Special print CSS for iOS */
+  var PRINT_CSS = `
+    @page { 
+      size: letter portrait; 
+      margin: 0 !important;
+    }
+    
+    body { 
+      margin: 0 !important; 
+      padding: 0 !important; 
+      width: 100% !important;
+      zoom: 0.55;  /* Shrink to fit page */
+    }
+    
+    .page { 
+      width: 100% !important; 
+      max-width: 100% !important;
+      border: 5px solid #D97706 !important;
+    }
+    
+    .toolbar, #offline-banner { 
+      display: none !important;  /* Hide buttons */
+    }
+  `;
 
-  if (!isMobile || isDesktopSafari) return;
+  /* Apply CSS when print starts (iOS only) */
+  window.addEventListener('beforeprint', function() {
+    if (!isIOS) return;  /* Changed from !isMobile to !isIOS */
+    var styleEl = document.getElementById('mobile-print-styles');
+    if (styleEl) styleEl.innerHTML = PRINT_CSS;
+  });
 
-  var isSafari = /Safari/i.test(navigator.userAgent) && !/Chrome|CriOS|FxiOS|EdgiOS/i.test(navigator.userAgent);
-  if (!isSafari) return;
+  /* Remove CSS when print ends (iOS only) */
+  window.addEventListener('afterprint', function() {
+    if (!isIOS) return;  /* Changed from !isMobile to !isIOS */
+    var styleEl = document.getElementById('mobile-print-styles');
+    if (styleEl) styleEl.innerHTML = '';
+  });
 
-  window.print = function() {
-    var pageEl = document.querySelector('.page');
-    if (!pageEl) { console.warn('No .page element found.'); return; }
+  /* Override window.print() for Safari on iOS only */
+  if (isIOS && isSafari) {  /* Changed from isMobile && isSafari to isIOS && isSafari */
+    window.print = function() {
+      var pageEl = document.querySelector('.page');
+      if (!pageEl) return;
 
-    var existingStyles = Array.from(document.querySelectorAll('link[rel="stylesheet"], style'))
-      .map(function(el) { return el.id === 'mobile-print-styles' ? '' : el.outerHTML; })
-      .join('\n');
+      /* Get all stylesheets */
+      var existingStyles = Array.from(
+        document.querySelectorAll('link[rel="stylesheet"], style')
+      ).map(function(el) {
+        return el.outerHTML;
+      }).join('\n');
 
-    var win = window.open('', '_blank');
-    if (!win) { alert('Please allow pop-ups to print.'); return; }
+      /* Clone form */
+      var clone = pageEl.cloneNode(true);
 
-    var clone = pageEl.cloneNode(true);
-    var liveInputs  = pageEl.querySelectorAll('input, textarea, select');
-    var cloneInputs = clone.querySelectorAll('input, textarea, select');
-    liveInputs.forEach(function(liveEl, i) {
-      var cloneEl = cloneInputs[i];
-      if (!cloneEl) return;
-      if (liveEl.type === 'checkbox' || liveEl.type === 'radio') {
-        if (liveEl.checked) cloneEl.setAttribute('checked', 'checked');
-        else cloneEl.removeAttribute('checked');
-      } else if (liveEl.tagName === 'TEXTAREA') {
-        cloneEl.textContent = liveEl.value;
-      } else {
-        cloneEl.setAttribute('value', liveEl.value);
-      }
-    });
+      /* Fill in form values from live inputs */
+      var liveInputs = pageEl.querySelectorAll('input, textarea, select');
+      var cloneInputs = clone.querySelectorAll('input, textarea, select');
+      liveInputs.forEach(function(liveEl, i) {
+        var cloneEl = cloneInputs[i];
+        if (!cloneEl) return;
+        
+        if (liveEl.type === 'checkbox' || liveEl.type === 'radio') {
+          if (liveEl.checked) cloneEl.setAttribute('checked', 'checked');
+          else cloneEl.removeAttribute('checked');
+        } else if (liveEl.tagName === 'TEXTAREA') {
+          cloneEl.textContent = liveEl.value;
+        } else {
+          cloneEl.setAttribute('value', liveEl.value);
+        }
+      });
 
-    win.document.open();
-    win.document.write(
-      '<!DOCTYPE html><html><head>' +
-      '<meta charset="UTF-8">' +
-      '<base href="' + location.href + '">' +
-      '<title>Print</title>' +
-      existingStyles +
-      '<style>' + PRINT_CSS + '</style>' +
-      '</head><body>' +
-      clone.outerHTML +
-      '</body></html>'
-    );
-    win.document.close();
+      /* Open new window with printable version */
+      var win = window.open('', '_blank');
+      win.document.open();
+      win.document.write(
+        '<!DOCTYPE html><html><head>' +
+        '<meta charset="UTF-8">' +
+        '<title>Print</title>' +
+        existingStyles +
+        '<style>' + PRINT_CSS + '</style>' +
+        '</head><body>' +
+        clone.outerHTML +
+        '</body></html>'
+      );
+      win.document.close();
 
-    win.onload = function() {
-      win.focus();
-      setTimeout(function() {
-        win.print();
-        setTimeout(function() { try { win.close(); } catch(e) {} }, 1000);
-      }, 300);
+      /* Print when window loads */
+      win.onload = function() {
+        win.focus();
+        setTimeout(function() {
+          win.print();
+          setTimeout(function() {
+            try { win.close(); } catch (e) {}
+          }, 1000);
+        }, 300);
+      };
     };
-  };
+  }
 })();
 
 // ────────────────────────────────────────────────────────────────
@@ -2333,29 +2641,37 @@ function setupAddressAutocomplete() {
   if (!input || !list) return;
 
   var debounce;
+
   input.addEventListener('input', function() {
     clearTimeout(debounce);
     var q = input.value.trim();
     if (q.length < 3) { list.classList.remove('open'); return; }
 
     debounce = setTimeout(function() {
-      fetch('https://api.mapbox.com/geocoding/v5/mapbox.places/' +
-            encodeURIComponent(q) +
-            '.json?access_token=' + MAPBOX_TOKEN +
-            '&country=US&types=address&autocomplete=true&limit=5')
+      var url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/' +
+                encodeURIComponent(q) +
+                '.json?access_token=' + MAPBOX_TOKEN +
+                '&country=US&types=address&autocomplete=true&limit=5';
+
+      fetch(url)
         .then(function(r) { return r.json(); })
         .then(function(data) {
           list.innerHTML = '';
-          if (!data.features || !data.features.length) { list.classList.remove('open'); return; }
+          if (!data.features || data.features.length === 0) {
+            list.classList.remove('open');
+            return;
+          }
           data.features.forEach(function(f) {
             var li = document.createElement('li');
             li.textContent = f.place_name;
             li.addEventListener('mousedown', function(e) {
               e.preventDefault();
+              // Split into street and city/state/zip
               var parts = f.place_name.split(',');
               input.value = parts[0].trim();
+              var rest = parts.slice(1).join(',').trim();
               var addr2 = document.getElementById('address2');
-              if (addr2) addr2.value = parts.slice(1).join(',').trim();
+              if (addr2) addr2.value = rest;
               list.classList.remove('open');
               list.innerHTML = '';
             });
@@ -2367,14 +2683,18 @@ function setupAddressAutocomplete() {
     }, 300);
   });
 
+  // Close on click outside
   document.addEventListener('click', function(e) {
-    if (!input.contains(e.target) && !list.contains(e.target)) list.classList.remove('open');
+    if (!input.contains(e.target) && !list.contains(e.target)) {
+      list.classList.remove('open');
+    }
   });
 
+  // Keyboard navigation
   input.addEventListener('keydown', function(e) {
-    var items  = list.querySelectorAll('li');
+    var items = list.querySelectorAll('li');
     var active = list.querySelector('li.active');
-    var idx    = Array.prototype.indexOf.call(items, active);
+    var idx = Array.prototype.indexOf.call(items, active);
     if (e.key === 'ArrowDown') {
       e.preventDefault();
       if (active) active.classList.remove('active');
@@ -2407,31 +2727,49 @@ function setupGpsButton() {
       if (status) { status.textContent = 'Geolocation not supported'; status.style.display = 'block'; }
       return;
     }
+
     btn.disabled = true;
     if (status) { status.textContent = '📡 Getting location...'; status.style.display = 'block'; }
 
     navigator.geolocation.getCurrentPosition(
       function(pos) {
-        fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat=' +
-              pos.coords.latitude + '&lon=' + pos.coords.longitude + '&addressdetails=1',
-              { headers: { 'Accept-Language': 'en', 'User-Agent': 'AOG-Estimate-Form' } })
+        var lat = pos.coords.latitude;
+        var lng = pos.coords.longitude;
+
+        var url = 'https://nominatim.openstreetmap.org/reverse?format=json&lat=' +
+                  lat + '&lon=' + lng + '&addressdetails=1';
+
+        fetch(url, {
+          headers: { 'Accept-Language': 'en', 'User-Agent': 'AOG-Estimate-Form' }
+        })
           .then(function(r) { return r.json(); })
           .then(function(data) {
             btn.disabled = false;
             if (data && data.address) {
               var a = data.address;
-              var street = (a.house_number && a.road) ? a.house_number + ' ' + a.road
-                         : a.road || data.display_name.split(',')[0];
-              var cityLine = (a.city || a.town || a.village || a.county || '') +
-                             (a.state    ? ', ' + a.state    : '') +
-                             (a.postcode ? ' '  + a.postcode : '');
+
+              // Build street line
+              var street = '';
+              if (a.house_number && a.road) street = a.house_number + ' ' + a.road;
+              else if (a.road) street = a.road;
+              else street = data.display_name.split(',')[0];
+
+              // Build city, state zip line
+              var city  = a.city || a.town || a.village || a.county || '';
+              var state = a.state || '';
+              var zip   = a.postcode || '';
+              var cityLine = city + (state ? ', ' + state : '') + (zip ? ' ' + zip : '');
+
               var addrInput  = document.getElementById('address');
               var addr2Input = document.getElementById('address2');
               if (addrInput)  addrInput.value  = street;
               if (addr2Input) addr2Input.value = cityLine;
+
               if (status) { status.textContent = '✓ Location found'; status.style.display = 'block'; }
               saveDraft();
-              setTimeout(function() { if (status) status.style.display = 'none'; }, 3000);
+              setTimeout(function() {
+                if (status) status.style.display = 'none';
+              }, 3000);
             } else {
               if (status) { status.textContent = 'Could not find address'; status.style.display = 'block'; }
             }
@@ -2443,20 +2781,23 @@ function setupGpsButton() {
       },
       function(err) {
         btn.disabled = false;
-        var msgs = { 1: 'Location permission denied', 2: 'Location unavailable', 3: 'Location request timed out' };
-        if (status) { status.textContent = msgs[err.code] || 'Location error'; status.style.display = 'block'; }
+        var msg = 'Location error';
+        if (err.code === 1) msg = 'Location permission denied';
+        if (err.code === 2) msg = 'Location unavailable';
+        if (err.code === 3) msg = 'Location request timed out';
+        if (status) { status.textContent = msg; status.style.display = 'block'; }
       },
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
   });
-}
-
-// ────────────────────────────────────────────────────────────────
-// INIT
+}// ────────────────────────────────────────────────────────────────
+// INITIALIZATION (SINGLE VERSION)
 // ────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function() {
   var todayInput = document.getElementById('today');
-  if (todayInput && !todayInput.value) todayInput.value = new Date().toISOString().split('T')[0];
+  if (todayInput && !todayInput.value) {
+    todayInput.value = new Date().toISOString().split('T')[0];
+  }
 
   if (!navigator.onLine) {
     var b = document.getElementById('offline-banner');
@@ -2464,9 +2805,10 @@ document.addEventListener('DOMContentLoaded', function() {
     document.body.classList.add('offline');
   }
 
-  setupAddressAutocomplete();
-  setupGpsButton();
-  setupFieldValidation();
+  if (typeof setupAddressAutocomplete === 'function') setupAddressAutocomplete();
+  if (typeof setupGpsButton === 'function') setupGpsButton();
+  if (typeof setupFieldValidation === 'function') setupFieldValidation();
+
   restoreDraft();
 });
 
