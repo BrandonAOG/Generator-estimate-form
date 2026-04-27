@@ -2528,11 +2528,11 @@ document.addEventListener('click', function(e) {
   var isSafari = /Safari/i.test(navigator.userAgent) &&
                  !/Chrome|CriOS|FxiOS|EdgiOS/i.test(navigator.userAgent);
 
-  /* ⚙️ ZOOM CONFIGURATION - ADJUST THESE */
+  /* ⚙️ ZOOM CONFIGURATION - OPTIMIZED FOR 87% */
   var CONFIG = {
-    primaryZoom: 0.90,      /* Main zoom level */
-    triggerZoom: 0.91,      /* Reflow trigger (usually 0.01 higher) */
-    enableReflow: true      /* Set to false to disable reflow trick */
+    primaryZoom: 0.87,      /* Perfect scale for iPhone 17 Pro Max */
+    triggerZoom: 0.88,      /* Reflow trigger (0.01 higher) */
+    enableReflow: true      /* Reflow trick enabled */
   };
 
   var PRINT_CSS = `
@@ -2561,8 +2561,8 @@ document.addEventListener('click', function(e) {
       border: 5px solid #D97706 !important;
       transform: translateZ(0) !important;
       -webkit-transform: translateZ(0) !important;
-      zoom: ${CONFIG.primaryZoom} !important;
-      -webkit-zoom: ${CONFIG.primaryZoom} !important;
+      zoom: 0.87 !important;
+      -webkit-zoom: 0.87 !important;
     }
     
     .toolbar, #offline-banner { 
