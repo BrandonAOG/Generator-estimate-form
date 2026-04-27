@@ -1910,6 +1910,20 @@ function saveImageFromModal() {
   var originalMinHeight = page.style.minHeight;
   var originalHeight = page.style.height;
   
+  // Store original SVG styles
+  var svgOriginalStyles = [];
+  page.querySelectorAll('svg').forEach(function(svg, idx) {
+    svgOriginalStyles.push({
+      svg: svg,
+      display: svg.style.display,
+      visibility: svg.style.visibility,
+      opacity: svg.style.opacity,
+      position: svg.style.position,
+      width: svg.style.width,
+      height: svg.style.height
+    });
+  });
+  
   // Remove print-mode class if present
   document.body.classList.remove('print-mode');
   
@@ -1922,6 +1936,22 @@ function saveImageFromModal() {
   page.style.margin = '0 auto';
   page.style.minHeight = 'auto';
   page.style.height = 'auto';
+  
+  // CRITICAL: Ensure all SVGs are visible and have proper dimensions
+  page.querySelectorAll('svg').forEach(function(svg) {
+    svg.style.display = 'block';
+    svg.style.visibility = 'visible';
+    svg.style.opacity = '1';
+    svg.style.position = 'relative';
+    
+    // Force width/height if missing
+    var w = svg.getAttribute('width');
+    var h = svg.getAttribute('height');
+    if (!w || w === '0') svg.setAttribute('width', '20');
+    if (!h || h === '0') svg.setAttribute('height', '20');
+    if (!svg.style.width) svg.style.width = (w || '20') + 'px';
+    if (!svg.style.height) svg.style.height = (h || '20') + 'px';
+  });
   
   // Force reflow
   void page.offsetHeight;
@@ -1937,34 +1967,40 @@ function saveImageFromModal() {
       return;
     }
     
-    // CRITICAL: Pre-process ALL SVGs to remove currentColor and ensure valid dimensions
+    // Verify SVGs are now visible
+    console.log('SVG visibility check:');
+    page.querySelectorAll('svg').forEach(function(svg, i) {
+      console.log('SVG ' + i + ':', {
+        offsetWidth: svg.offsetWidth,
+        offsetHeight: svg.offsetHeight,
+        clientWidth: svg.clientWidth,
+        clientHeight: svg.clientHeight,
+        style_width: svg.style.width,
+        style_height: svg.style.height
+      });
+    });
+    
+    // Pre-process SVGs to remove currentColor
     var allSVGs = page.querySelectorAll('svg');
     allSVGs.forEach(function(svg) {
-      // Ensure SVG has explicit dimensions
-      if (!svg.hasAttribute('width') || svg.getAttribute('width') === '0' || svg.getAttribute('width') === '') {
-        svg.setAttribute('width', '20');
-      }
-      if (!svg.hasAttribute('height') || svg.getAttribute('height') === '0' || svg.getAttribute('height') === '') {
-        svg.setAttribute('height', '20');
-      }
-      
-      // Ensure xmlns for proper rendering
-      if (!svg.hasAttribute('xmlns')) {
-        svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-      }
-      
       // Get computed color from parent
-      var parentStyle = window.getComputedStyle(svg.parentElement);
-      var computedColor = parentStyle.color || '#D97706';
+      var parent = svg.parentElement;
+      var computedColor = '#D97706';
+      try {
+        if (parent) {
+          var parentStyle = window.getComputedStyle(parent);
+          computedColor = parentStyle.color || '#D97706';
+        }
+      } catch(e) {}
       
-      // Replace all currentColor with actual color
+      // Replace currentColor in innerHTML
       var innerHTML = svg.innerHTML;
       if (innerHTML.includes('currentColor')) {
         innerHTML = innerHTML.replace(/currentColor/g, computedColor);
         svg.innerHTML = innerHTML;
       }
       
-      // Also replace on attributes
+      // Replace on SVG attributes
       if (svg.hasAttribute('stroke') && svg.getAttribute('stroke') === 'currentColor') {
         svg.setAttribute('stroke', computedColor);
       }
@@ -1972,19 +2008,13 @@ function saveImageFromModal() {
         svg.setAttribute('fill', computedColor);
       }
       
-      // Process all child elements
-      var allElements = svg.querySelectorAll('[stroke="currentColor"], [fill="currentColor"]');
-      allElements.forEach(function(el) {
-        if (el.getAttribute('stroke') === 'currentColor') {
-          el.setAttribute('stroke', computedColor);
-        }
-        if (el.getAttribute('fill') === 'currentColor') {
-          el.setAttribute('fill', computedColor);
-        }
-      });
+      // Ensure xmlns
+      if (!svg.hasAttribute('xmlns')) {
+        svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+      }
     });
     
-    // Pre-process canvases and other problematic elements
+    // Pre-process canvases
     var problematicElements = page.querySelectorAll('canvas, iframe, video, audio');
     problematicElements.forEach(function(el) {
       el.dataset.originalWidth = el.width || el.getAttribute('width');
@@ -2008,7 +2038,7 @@ function saveImageFromModal() {
         removeContainer: true,
         foreignObjectRendering: false,
         ignoreElements: function(element) {
-          // Skip problematic elements entirely
+          // Skip problematic elements
           if (element.tagName === 'IFRAME') return true;
           if (element.tagName === 'VIDEO') return true;
           if (element.tagName === 'AUDIO') return true;
@@ -2021,33 +2051,48 @@ function saveImageFromModal() {
         },
         
         onclone: function(clonedDoc, clonedElement) {
-          // Double-check all SVGs in the clone
+          // Ensure all SVGs are visible in clone
           var clonedSVGs = clonedDoc.querySelectorAll('svg');
           clonedSVGs.forEach(function(svg) {
-            // Set explicit dimensions
+            svg.style.display = 'block';
+            svg.style.visibility = 'visible';
+            svg.style.opacity = '1';
+            svg.style.position = 'relative';
+            
+            // Set explicit dimensions in clone too
             svg.setAttribute('width', svg.getAttribute('width') || '20');
             svg.setAttribute('height', svg.getAttribute('height') || '20');
+            if (!svg.style.width) svg.style.width = (svg.getAttribute('width') || '20') + 'px';
+            if (!svg.style.height) svg.style.height = (svg.getAttribute('height') || '20') + 'px';
             svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
             
-            // Ensure all children have explicit colors (not currentColor)
+            // Ensure NO currentColor in clone
+            var innerHTML = svg.innerHTML;
+            if (innerHTML.includes('currentColor')) {
+              innerHTML = innerHTML.replace(/currentColor/g, '#D97706');
+              svg.innerHTML = innerHTML;
+            }
+            
+            // Process all children
             var allChildren = svg.querySelectorAll('*');
             allChildren.forEach(function(child) {
               var stroke = child.getAttribute('stroke');
               var fill = child.getAttribute('fill');
               
-              if (stroke === 'currentColor' || stroke === '' || !stroke) {
+              if (stroke === 'currentColor' || stroke === '') {
                 child.setAttribute('stroke', '#D97706');
               }
               if (fill === 'currentColor') {
                 child.setAttribute('fill', '#D97706');
               }
-              if (!fill && !stroke) {
+              // Ensure fills are not empty
+              if (!fill && !stroke && child.tagName.toLowerCase() !== 'text') {
                 child.setAttribute('fill', 'none');
               }
             });
           });
 
-          // Fix canvases in clone
+          // Fix canvases
           var clonedCanvases = clonedDoc.querySelectorAll('canvas');
           clonedCanvases.forEach(function(canvas) {
             if (!canvas.width || canvas.width === 0) canvas.width = 1;
@@ -2073,9 +2118,14 @@ function saveImageFromModal() {
         page.style.minHeight = originalMinHeight;
         page.style.height = originalHeight;
         
-        // Restore SVGs to original state
-        allSVGs.forEach(function(svg) {
-          // You could restore here if needed, but we're not changing display
+        // Restore SVG styles
+        svgOriginalStyles.forEach(function(item) {
+          item.svg.style.display = item.display;
+          item.svg.style.visibility = item.visibility;
+          item.svg.style.opacity = item.opacity;
+          item.svg.style.position = item.position;
+          item.svg.style.width = item.width;
+          item.svg.style.height = item.height;
         });
         
         document.body.removeChild(loadingDiv);
@@ -2116,6 +2166,16 @@ function saveImageFromModal() {
         page.style.minHeight = originalMinHeight;
         page.style.height = originalHeight;
         
+        // Restore SVG styles
+        svgOriginalStyles.forEach(function(item) {
+          item.svg.style.display = item.display;
+          item.svg.style.visibility = item.visibility;
+          item.svg.style.opacity = item.opacity;
+          item.svg.style.position = item.position;
+          item.svg.style.width = item.width;
+          item.svg.style.height = item.height;
+        });
+        
         if (loadingDiv.parentNode) {
           document.body.removeChild(loadingDiv);
         }
@@ -2126,6 +2186,7 @@ function saveImageFromModal() {
     }, 100);
   }, 150);
 }
+
 
 
 // Add this function to debug
