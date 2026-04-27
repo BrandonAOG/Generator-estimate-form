@@ -1937,26 +1937,66 @@ function saveImageFromModal() {
       return;
     }
     
-    // Pre-process the page to fix potential issues
-    var problematicElements = page.querySelectorAll('canvas, svg, iframe, video, audio');
+    // CRITICAL: Pre-process ALL SVGs to remove currentColor and ensure valid dimensions
+    var allSVGs = page.querySelectorAll('svg');
+    allSVGs.forEach(function(svg) {
+      // Ensure SVG has explicit dimensions
+      if (!svg.hasAttribute('width') || svg.getAttribute('width') === '0' || svg.getAttribute('width') === '') {
+        svg.setAttribute('width', '20');
+      }
+      if (!svg.hasAttribute('height') || svg.getAttribute('height') === '0' || svg.getAttribute('height') === '') {
+        svg.setAttribute('height', '20');
+      }
+      
+      // Ensure xmlns for proper rendering
+      if (!svg.hasAttribute('xmlns')) {
+        svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+      }
+      
+      // Get computed color from parent
+      var parentStyle = window.getComputedStyle(svg.parentElement);
+      var computedColor = parentStyle.color || '#D97706';
+      
+      // Replace all currentColor with actual color
+      var innerHTML = svg.innerHTML;
+      if (innerHTML.includes('currentColor')) {
+        innerHTML = innerHTML.replace(/currentColor/g, computedColor);
+        svg.innerHTML = innerHTML;
+      }
+      
+      // Also replace on attributes
+      if (svg.hasAttribute('stroke') && svg.getAttribute('stroke') === 'currentColor') {
+        svg.setAttribute('stroke', computedColor);
+      }
+      if (svg.hasAttribute('fill') && svg.getAttribute('fill') === 'currentColor') {
+        svg.setAttribute('fill', computedColor);
+      }
+      
+      // Process all child elements
+      var allElements = svg.querySelectorAll('[stroke="currentColor"], [fill="currentColor"]');
+      allElements.forEach(function(el) {
+        if (el.getAttribute('stroke') === 'currentColor') {
+          el.setAttribute('stroke', computedColor);
+        }
+        if (el.getAttribute('fill') === 'currentColor') {
+          el.setAttribute('fill', computedColor);
+        }
+      });
+    });
+    
+    // Pre-process canvases and other problematic elements
+    var problematicElements = page.querySelectorAll('canvas, iframe, video, audio');
     problematicElements.forEach(function(el) {
-      // Store original dimensions
       el.dataset.originalWidth = el.width || el.getAttribute('width');
       el.dataset.originalHeight = el.height || el.getAttribute('height');
       
-      // If zero dimensions, set to 1x1
-      if ((!el.width || el.width === 0) && (!el.height || el.height === 0)) {
-        if (el.tagName === 'CANVAS') {
-          el.width = 1;
-          el.height = 1;
-        } else if (el.tagName === 'SVG') {
-          el.setAttribute('width', '1');
-          el.setAttribute('height', '1');
-        }
+      if (el.tagName === 'CANVAS') {
+        if (!el.width || el.width === 0) el.width = 1;
+        if (!el.height || el.height === 0) el.height = 1;
       }
     });
     
-    // Wait a bit more for changes to apply
+    // Wait for SVG changes to be rendered
     setTimeout(function() {
       html2canvas(page, {
         scale: 2,
@@ -1968,111 +2008,59 @@ function saveImageFromModal() {
         removeContainer: true,
         foreignObjectRendering: false,
         ignoreElements: function(element) {
+          // Skip problematic elements entirely
           if (element.tagName === 'IFRAME') return true;
           if (element.tagName === 'VIDEO') return true;
           if (element.tagName === 'AUDIO') return true;
+          if (element.tagName === 'SCRIPT') return true;
+          if (element.tagName === 'STYLE') return true;
           if (element.style.display === 'none') return true;
           if (element.style.visibility === 'hidden') return true;
-          // Skip elements with zero dimensions
           if (element.offsetWidth === 0 && element.offsetHeight === 0) return true;
           return false;
         },
         
         onclone: function(clonedDoc, clonedElement) {
-          // Fix all canvases in the clone
-          var canvases = clonedDoc.querySelectorAll('canvas');
-          canvases.forEach(function(canvas) {
-            if (canvas.width === 0 || canvas.height === 0) {
-              canvas.width = 1;
-              canvas.height = 1;
-              // Fill with transparent
-              var ctx = canvas.getContext('2d');
-              ctx.clearRect(0, 0, 1, 1);
-            }
-          });
-          
-          // Fix SVGs
-          var svgs = clonedDoc.querySelectorAll('svg');
-          svgs.forEach(function(svg) {
-            var parent = svg.parentElement;
-            var computedColor = '#D97706';
+          // Double-check all SVGs in the clone
+          var clonedSVGs = clonedDoc.querySelectorAll('svg');
+          clonedSVGs.forEach(function(svg) {
+            // Set explicit dimensions
+            svg.setAttribute('width', svg.getAttribute('width') || '20');
+            svg.setAttribute('height', svg.getAttribute('height') || '20');
+            svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
             
-            try {
-              if (parent) {
-                var parentStyle = clonedDoc.defaultView.getComputedStyle(parent);
-                computedColor = parentStyle.color || '#D97706';
+            // Ensure all children have explicit colors (not currentColor)
+            var allChildren = svg.querySelectorAll('*');
+            allChildren.forEach(function(child) {
+              var stroke = child.getAttribute('stroke');
+              var fill = child.getAttribute('fill');
+              
+              if (stroke === 'currentColor' || stroke === '' || !stroke) {
+                child.setAttribute('stroke', '#D97706');
               }
-            } catch (e) {}
-
-            if (!svg.getAttribute('xmlns')) {
-              svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-            }
-            
-            // Ensure SVG has explicit dimensions
-            if (!svg.getAttribute('width') || svg.getAttribute('width') === '0') {
-              svg.setAttribute('width', '20');
-            }
-            if (!svg.getAttribute('height') || svg.getAttribute('height') === '0') {
-              svg.setAttribute('height', '20');
-            }
-
-            var svgStroke = svg.getAttribute('stroke');
-            var svgFill = svg.getAttribute('fill');
-            var svgStrokeWidth = svg.getAttribute('stroke-width');
-            var svgStrokeLinecap = svg.getAttribute('stroke-linecap');
-            var svgStrokeLinejoin = svg.getAttribute('stroke-linejoin');
-
-            if (svgStroke === 'currentColor') svgStroke = computedColor;
-            if (svgFill === 'currentColor') svgFill = computedColor;
-
-            var shapes = svg.querySelectorAll('path, polyline, polygon, line, rect, circle, ellipse, text');
-            
-            shapes.forEach(function(el) {
-              if (el.getAttribute('stroke') === 'currentColor') {
-                el.setAttribute('stroke', computedColor);
+              if (fill === 'currentColor') {
+                child.setAttribute('fill', '#D97706');
               }
-              if (el.getAttribute('fill') === 'currentColor') {
-                el.setAttribute('fill', computedColor);
-              }
-              if (svgStroke && !el.hasAttribute('stroke')) el.setAttribute('stroke', svgStroke);
-              if (svgFill && !el.hasAttribute('fill')) el.setAttribute('fill', svgFill);
-              if (svgStrokeWidth && !el.hasAttribute('stroke-width')) el.setAttribute('stroke-width', svgStrokeWidth);
-              if (svgStrokeLinecap && !el.hasAttribute('stroke-linecap')) el.setAttribute('stroke-linecap', svgStrokeLinecap);
-              if (svgStrokeLinejoin && !el.hasAttribute('stroke-linejoin')) el.setAttribute('stroke-linejoin', svgStrokeLinejoin);
-              if (!el.hasAttribute('fill') && el.tagName.toLowerCase() !== 'text') {
-                el.setAttribute('fill', 'none');
+              if (!fill && !stroke) {
+                child.setAttribute('fill', 'none');
               }
             });
           });
 
-          // iOS specific fixes
-          var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-          if (isIOS) {
-            var allPaths = clonedDoc.querySelectorAll('svg path');
-            allPaths.forEach(function(p) {
-              var original = parseFloat(p.getAttribute('stroke-width')) || 2;
-              p.setAttribute('stroke-width', original * 2.2);
-              p.setAttribute('stroke', '#b86a05');
-            });
-          }
-
-          // Fix inputs
-          var inputs = clonedDoc.querySelectorAll('input, textarea');
-          inputs.forEach(function(input) {
-            if (!input.value) input.setAttribute('placeholder', '');
+          // Fix canvases in clone
+          var clonedCanvases = clonedDoc.querySelectorAll('canvas');
+          clonedCanvases.forEach(function(canvas) {
+            if (!canvas.width || canvas.width === 0) canvas.width = 1;
+            if (!canvas.height || canvas.height === 0) canvas.height = 1;
           });
+
+          // Hide problematic elements
+          var toHide = clonedDoc.querySelectorAll('#pdfModal, #imageModal, #offline-banner, .toolbar');
+          toHide.forEach(function(el) { el.style.display = 'none'; });
 
           // Pause animations
-          var allHeaders = clonedDoc.querySelectorAll('.section-header, .col-label');
-          allHeaders.forEach(function(h) {
-            h.style.animationPlayState = 'paused';
-          });
-
-          // Hide modals and toolbars
-          var modals = clonedDoc.querySelectorAll('#pdfModal, #imageModal, #offline-banner, .toolbar');
-          modals.forEach(function(m) {
-            m.style.display = 'none';
-          });
+          var animated = clonedDoc.querySelectorAll('[style*="animation"]');
+          animated.forEach(function(el) { el.style.animationPlayState = 'paused'; });
         }
       }).then(function(canvas) {
         // Restore original styles
@@ -2085,17 +2073,9 @@ function saveImageFromModal() {
         page.style.minHeight = originalMinHeight;
         page.style.height = originalHeight;
         
-        // Restore original dimensions to problematic elements
-        problematicElements.forEach(function(el) {
-          if (el.dataset.originalWidth !== undefined) {
-            if (el.tagName === 'CANVAS') {
-              el.width = el.dataset.originalWidth;
-              el.height = el.dataset.originalHeight;
-            } else if (el.tagName === 'SVG') {
-              el.setAttribute('width', el.dataset.originalWidth);
-              el.setAttribute('height', el.dataset.originalHeight);
-            }
-          }
+        // Restore SVGs to original state
+        allSVGs.forEach(function(svg) {
+          // You could restore here if needed, but we're not changing display
         });
         
         document.body.removeChild(loadingDiv);
@@ -2136,28 +2116,17 @@ function saveImageFromModal() {
         page.style.minHeight = originalMinHeight;
         page.style.height = originalHeight;
         
-        // Restore original dimensions to problematic elements
-        problematicElements.forEach(function(el) {
-          if (el.dataset.originalWidth !== undefined) {
-            if (el.tagName === 'CANVAS') {
-              el.width = el.dataset.originalWidth;
-              el.height = el.dataset.originalHeight;
-            } else if (el.tagName === 'SVG') {
-              el.setAttribute('width', el.dataset.originalWidth);
-              el.setAttribute('height', el.dataset.originalHeight);
-            }
-          }
-        });
-        
         if (loadingDiv.parentNode) {
           document.body.removeChild(loadingDiv);
         }
         console.error('html2canvas error:', err);
+        console.error('Error details:', err.stack);
         alert('Error generating image: ' + err.message);
       });
     }, 100);
   }, 150);
 }
+
 
 // Add this function to debug
 function debugImageGeneration() {
