@@ -1033,21 +1033,25 @@ body.print-mode select {
    ═══════════════════════════════════════════════════════════════ */
 @media print {
   @supports (-webkit-touch-callout: none) {
-    /* iOS Safari ONLY - scale entire page to fit */
+    /* iOS Safari ONLY - scale and fill entire page */
     html, body {
       width: 100% !important;
       height: 100% !important;
       margin: 0 !important;
       padding: 0 !important;
+      display: flex !important;
+      justify-content: center !important;
+      align-items: flex-start !important;
     }
     
     .page {
-      width: 100% !important;
-      height: 100% !important;
+      width: 816px !important;
+      height: 1056px !important;
       margin: 0 !important;
       padding: 0 !important;
-      transform-origin: top left;
-      transform: scale(0.59) !important; /* Your magic number */
+      transform: scale(0.59) !important;
+      transform-origin: top center !important;
+      box-sizing: border-box !important;
     }
   }
 }
