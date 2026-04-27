@@ -1890,6 +1890,21 @@ function saveImageFromModal() {
   loadingDiv.textContent = '⏳ Generating image...';
   document.body.appendChild(loadingDiv);
   
+  // Save original styles
+  var originalTransform = page.style.transform;
+  var originalPosition = page.style.position;
+  var originalTop = page.style.top;
+  var originalLeft = page.style.left;
+  var originalWidth = page.style.width;
+  
+  // Temporarily remove transform and reset positioning for clean capture
+  page.style.transform = 'none';
+  page.style.position = 'relative';
+  page.style.top = 'auto';
+  page.style.left = 'auto';
+  page.style.width = '1050px';
+  page.style.margin = '0 auto';
+  
   html2canvas(page, {
     scale: 2,
     useCORS: true,
@@ -1973,6 +1988,13 @@ function saveImageFromModal() {
       });
     }
   }).then(function(canvas) {
+    // Restore original styles
+    page.style.transform = originalTransform;
+    page.style.position = originalPosition;
+    page.style.top = originalTop;
+    page.style.left = originalLeft;
+    page.style.width = originalWidth;
+    
     document.body.removeChild(loadingDiv);
     
     try {
@@ -2001,6 +2023,13 @@ function saveImageFromModal() {
       alert('Error saving image: ' + e.message);
     }
   }).catch(function(err) {
+    // Restore original styles even on error
+    page.style.transform = originalTransform;
+    page.style.position = originalPosition;
+    page.style.top = originalTop;
+    page.style.left = originalLeft;
+    page.style.width = originalWidth;
+    
     if (loadingDiv.parentNode) {
       document.body.removeChild(loadingDiv);
     }
@@ -2008,6 +2037,7 @@ function saveImageFromModal() {
     alert('Error generating image: ' + err.message);
   });
 }
+
 
 // ────────────────────────────────────────────────────────────────
 // FORM ACTIONS
