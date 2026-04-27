@@ -2323,7 +2323,7 @@ function saveImageFromModal() {
     }
   });
   
-  // Convert SVGs to solid colored paths (better mobile rendering)
+  // Convert SVGs to solid colored paths
   var svgs = clone.querySelectorAll('svg');
   svgs.forEach(function(svg) {
     var computedColor = '#D97706';
@@ -2334,15 +2334,12 @@ function saveImageFromModal() {
       }
     } catch (e) {}
 
-    // Set SVG namespace
     if (!svg.getAttribute('xmlns')) {
       svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
     }
 
-    // Process all SVG children
     var shapes = svg.querySelectorAll('*');
     shapes.forEach(function(el) {
-      // Force stroke/fill colors
       if (el.getAttribute('stroke') === 'currentColor' || !el.getAttribute('stroke')) {
         el.setAttribute('stroke', computedColor);
       }
@@ -2353,17 +2350,15 @@ function saveImageFromModal() {
         el.setAttribute('fill', 'none');
       }
       
-      // Boost stroke width on mobile
       var currentWidth = parseFloat(el.getAttribute('stroke-width')) || 2;
       el.setAttribute('stroke-width', currentWidth * 1.8);
       
-      // Ensure linecap/linejoin
       if (!el.getAttribute('stroke-linecap')) el.setAttribute('stroke-linecap', 'round');
       if (!el.getAttribute('stroke-linejoin')) el.setAttribute('stroke-linejoin', 'round');
     });
   });
   
-  // Simplify the clone for rendering
+  // Simplify the clone
   clone.querySelectorAll('.toolbar, #offline-banner, #pdfModal, #imageModal').forEach(function(el) {
     el.style.display = 'none';
   });
@@ -2374,7 +2369,7 @@ function saveImageFromModal() {
   tempContainer.appendChild(clone);
   document.body.appendChild(tempContainer);
   
-  // Render with higher scale for better quality
+  // Render with html2canvas
   html2canvas(tempContainer, {
     scale: window.devicePixelRatio * 2,
     useCORS: true,
@@ -2386,46 +2381,94 @@ function saveImageFromModal() {
     removeContainer: false,
     foreignObjectRendering: false
   }).then(function(canvas) {
-    document.body.removeChild(tempContainer);
-    if (loadingDiv.parentNode) {
-      document.body.removeChild(loadingDiv);
+    // Clean up temp container immediately
+    if (tempContainer.parentNode) {
+      document.body.removeChild(tempContainer);
     }
     
     try {
-      // Convert to JPEG with high quality
-      var jpegData = canvas.toDataURL('image/jpeg', 0.98);
-      
-      // iOS handling
-      if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
-        var newTab = window.open();
-        if (newTab) {
-          newTab.document.write(
-            '<html><body style="margin:0;padding:0;background:#000;">' +
-            '<img src="' + jpegData + '" style="max-width:100%;width:100%;display:block;"/>' +
-            '<p style="font-family:sans-serif;padding:20px;color:#fff;text-align:center;">' +
-            'Long-press the image and select "Save to Photos"</p>' +
-            '</body></html>'
-          );
-          newTab.document.close();
+      // Use toBlob for better browser compatibility
+      canvas.toBlob(function(blob) {
+        if (!blob) {
+          throw new Error('Canvas toBlob failed - blob is null');
         }
-      } else {
-        // Standard download for Android/Desktop
-        var link = document.createElement('a');
-        link.download = filename;
-        link.href = jpegData;
-        document.body.appendChild(link);
-        link.click();
-        setTimeout(function() {
+        
+        var blobUrl = URL.createObjectURL(blob);
+        var isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+        
+        if (isIOS) {
+          // iOS: open in new tab for long-press save
+          var newTab = window.open();
+          if (newTab) {
+            newTab.document.write(
+              '<html><body style="margin:0;padding:0;background:#000;">' +
+              '<img src="' + blobUrl + '" style="max-width:100%;width:100%;display:block;"/>' +
+              '<p style="font-family:sans-serif;padding:20px;color:#fff;text-align:center;">' +
+              'Long-press the image and select "Save to Photos"</p>' +
+              '</body></html>'
+            );
+            newTab.document.close();
+          }
+        } else {
+          // Android/Desktop: standard download
+          var link = document.createElement('a');
+          link.href = blobUrl;
+          link.download = filename;
+          document.body.appendChild(link);
+          link.click();
           document.body.removeChild(link);
-        }, 100);
-      }
+          
+          // Revoke blob URL after a short delay
+          setTimeout(function() {
+            URL.revokeObjectURL(blobUrl);
+          }, 1000);
+        }
+        
+        // Remove loading indicator
+        if (loadingDiv.parentNode) {
+          document.body.removeChild(loadingDiv);
+        }
+      }, 'image/jpeg', 0.95);
+      
     } catch (e) {
-      if (loadingDiv.parentNode) {
-        document.body.removeChild(loadingDiv);
+      // Fallback to toDataURL if toBlob fails
+      try {
+        var jpegData = canvas.toDataURL('image/jpeg', 0.95);
+        var isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+        
+        if (isIOS) {
+          var newTab = window.open();
+          if (newTab) {
+            newTab.document.write(
+              '<html><body style="margin:0;padding:0;background:#000;">' +
+              '<img src="' + jpegData + '" style="max-width:100%;width:100%;display:block;"/>' +
+              '<p style="font-family:sans-serif;padding:20px;color:#fff;text-align:center;">' +
+              'Long-press the image and select "Save to Photos"</p>' +
+              '</body></html>'
+            );
+            newTab.document.close();
+          }
+        } else {
+          var link = document.createElement('a');
+          link.href = jpegData;
+          link.download = filename;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+        
+        if (loadingDiv.parentNode) {
+          document.body.removeChild(loadingDiv);
+        }
+      } catch (fallbackErr) {
+        if (loadingDiv.parentNode) {
+          document.body.removeChild(loadingDiv);
+        }
+        alert('Error saving image: ' + fallbackErr.message);
       }
-      alert('Error saving image: ' + e.message);
     }
   }).catch(function(err) {
+    // Clean up on error
     if (loadingDiv.parentNode) {
       document.body.removeChild(loadingDiv);
     }
@@ -2437,9 +2480,6 @@ function saveImageFromModal() {
   });
 }
 
-function closeImageModal() {
-  document.getElementById('imageModal').style.display = 'none';
-}
 
 // ────────────────────────────────────────────────────────────────
 // EMAIL (SINGLE VERSION)
