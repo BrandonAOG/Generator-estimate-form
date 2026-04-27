@@ -2,12 +2,192 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=1050px, initial-scale=1.0, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <title>Generator Installation Estimate</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<!-- ============================================
+     MOBILE PRINT OPTIMIZATION (HEAD INJECTION)
+     ============================================ -->
+<script>
+(function() {
+  'use strict';
+
+  // ────────────────────────────────────────────────────────────────
+  // DEVICE DETECTION
+  // ────────────────────────────────────────────────────────────────
+  var IS_IOS_SAFARI = /iPad|iPhone|iPod/.test(navigator.userAgent) && 
+                      !/Chrome|Firefox|Edge/.test(navigator.userAgent);
+  var IS_MOBILE = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+  window.IS_IOS_SAFARI = IS_IOS_SAFARI;
+  window.IS_MOBILE = IS_MOBILE;
+
+  // ────────────────────────────────────────────────────────────────
+  // PAGE DIMENSIONS (US Letter)
+  // ────────────────────────────────────────────────────────────────
+  var PAPER_W_IN = 8.5;
+  var PAPER_H_IN = 11;
+  var DPI = 96;
+  var PAPER_W_PX = PAPER_W_IN * DPI;      // 816px
+  var PAPER_H_PX = PAPER_H_IN * DPI;      // 1056px
+  var PAGE_NATURAL_W = 1050;
+
+  window.PAPER_W_PX = PAPER_W_PX;
+  window.PAPER_H_PX = PAPER_H_PX;
+  window.PAGE_NATURAL_W = PAGE_NATURAL_W;
+
+  // ────────────────────────────────────────────────────────────────
+  // INJECT PRINT CSS
+  // ────────────────────────────────────────────────────────────────
+  var PRINT_CSS = `
+    @media print {
+      * { margin: 0; padding: 0; }
+      body { margin: 0; padding: 0; }
+      .page { width: 8.5in; height: 11in; margin: 0; padding: 0; page-break-after: avoid; }
+      .toolbar, #pdfModal, #imageModal, #offline-banner { display: none !important; }
+      input, textarea { border: none; background: none; }
+    }
+
+    /* Print mode stretch styles */
+    body.print-mode {
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+      background: white;
+    }
+
+    body.print-mode .page {
+      margin: 0;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+  `;
+
+  var styleEl = document.createElement('style');
+  styleEl.setAttribute('id', 'print-optimization-styles');
+  styleEl.textContent = PRINT_CSS;
+  document.head.appendChild(styleEl);
+
+  // ────────────────────────────────────────────────────────────────
+  // BIND NATIVE PRINT
+  // ────────────────────────────────────────────────────────────────
+  var nativePrint = window.print.bind(window);
+  window.nativePrint = nativePrint;
+
+  // ────────────────────────────────────────────────────────────────
+  // DESKTOP/ANDROID PRINT-MODE SCALING
+  // ────────────────────────────────────────────────────────────────
+  function calculateStretchScale() {
+    var page = document.getElementById('page');
+    if (!page) return { scaleX: 1, scaleY: 1 };
+
+    var prevTransform = page.style.transform;
+    var prevWidth     = page.style.width;
+    page.style.transform = 'none';
+    page.style.width     = PAGE_NATURAL_W + 'px';
+    void page.offsetHeight;
+
+    var naturalH = page.scrollHeight;
+
+    page.style.transform = prevTransform;
+    page.style.width     = prevWidth;
+
+    return {
+      scaleX: PAPER_W_PX / PAGE_NATURAL_W,
+      scaleY: PAPER_H_PX / naturalH
+    };
+  }
+
+  function enterPrintMode() {
+    if (IS_IOS_SAFARI) return null;  // Don't touch iOS Safari path
+
+    var page = document.getElementById('page');
+    if (!page) return null;
+
+    document.body.classList.add('print-mode');
+    var info = calculateStretchScale();
+
+    page.style.transform       = 'scale(' + info.scaleX + ', ' + info.scaleY + ')';
+    page.style.transformOrigin = '0 0';
+    page.style.width           = PAGE_NATURAL_W + 'px';
+    page.style.position        = 'absolute';
+    page.style.top             = '0';
+    page.style.left            = '0';
+
+    console.log('[AOG Print] Entered print mode: scaleX=' + info.scaleX.toFixed(3) + ', scaleY=' + info.scaleY.toFixed(3));
+
+    return info;
+  }
+
+  function exitPrintMode() {
+    if (IS_IOS_SAFARI) return;
+
+    var page = document.getElementById('page');
+    if (page) {
+      page.style.transform       = '';
+      page.style.transformOrigin = '';
+      page.style.width           = '';
+      page.style.position        = '';
+      page.style.top             = '';
+      page.style.left            = '';
+    }
+    document.body.classList.remove('print-mode');
+    console.log('[AOG Print] Exited print mode');
+  }
+
+  // ────────────────────────────────────────────────────────────────
+  // BEFOREPRINT/AFTERPRINT HOOKS
+  // ────────────────────────────────────────────────────────────────
+  window.addEventListener('beforeprint', function() {
+    console.log('[AOG] beforeprint fired (IS_IOS=' + IS_IOS_SAFARI + ')');
+    if (!IS_IOS_SAFARI) {
+      enterPrintMode();
+    } else {
+      // iOS: Apply input text color for preview
+      document.querySelectorAll('input, textarea').forEach(function(el) {
+        if (el.value) {
+          el.style.color = '#000';
+          el.style.backgroundColor = 'transparent';
+        }
+      });
+    }
+  });
+
+  window.addEventListener('afterprint', function() {
+    console.log('[AOG] afterprint fired');
+    if (!IS_IOS_SAFARI) {
+      exitPrintMode();
+    }
+  });
+
+  // ────────────────────────────────────────────────────────────────
+  // MOBILE DEVICE CLASS
+  // ────────────────────────────────────────────────────────────────
+  if (IS_MOBILE) {
+    document.documentElement.classList.add('is-mobile-device');
+  }
+})();
+<!-- ============================================
+     GLOBAL PRINT STATE (accessible to all scripts)
+     ============================================ -->
+<script>
+// Make print state available globally
+window.PRINT_SCALE = { x: 1, y: 1 };
+window.PAPER_W_PX = 816;
+window.PAPER_H_PX = 1056;
+window.PAGE_NATURAL_W = 1050;
+
+console.log('[AOG Init] Global print state initialized:', window.PRINT_SCALE);
+</script>
+
+
 <style>
 :root {
   --cyan: #D97706;
@@ -46,11 +226,12 @@ body {
   padding-bottom: env(safe-area-inset-bottom, 24px);
   -webkit-text-size-adjust: 100%;
   background-image: none;
-  }
-
+  width: 1050px;
+  margin: 0 auto;
+}
 
 .page {
-  max-width: 100%;
+  max-width: 1050px;
   margin: 0 auto;
   background: #FFFFFF;
   border: 2px solid var(--cyan);
@@ -63,7 +244,6 @@ body {
   flex-direction: column;
   min-height: 100vh;
 }
-
 
 /* Corner accents */
 .page::before, .page::after {
@@ -169,6 +349,7 @@ body {
   white-space: nowrap;
 }
 
+/* Status blips in header */
 .header-status {
   display: flex;
   flex-direction: column;
@@ -176,6 +357,7 @@ body {
   gap: 4px;
 }
 
+/* Offline indicator */
 #offline-banner {
   position: fixed;
   top: 0;
@@ -197,6 +379,7 @@ body {
 
 body.offline { padding-top: 50px; }
 
+/* ── TOOLBAR ── */
 .toolbar {
   background: #FFFFFF;
   border-bottom: 1px solid var(--border);
@@ -254,6 +437,7 @@ body.offline { padding-top: 50px; }
 }
 .btn-gold:hover { border-color: var(--amber); color: var(--amber); box-shadow: var(--glow-amber); }
 
+/* ── CONTENT ── */
 .content { 
   padding: 14px 18px;
   display: flex;
@@ -263,6 +447,7 @@ body.offline { padding-top: 50px; }
 
 @media (max-width: 480px) { .content { padding: 10px 8px; } }
 
+/* ── SECTIONS ── */
 .section {
   border: 1px solid var(--border);
   margin-bottom: 10px;
@@ -312,6 +497,7 @@ body.offline { padding-top: 50px; }
 
 @media (max-width: 480px) { .section-body { padding: 8px 8px; } }
 
+/* ── TOP GRID ── */
 .top-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -338,6 +524,7 @@ body.offline { padding-top: 50px; }
 .top-col { padding: 12px 14px; }
 .top-col:first-child { border-right: 1px solid var(--border); }
 
+/* ── COL LABEL ── */
 .col-label {
   display: inline-flex;
   align-items: center;
@@ -366,6 +553,7 @@ body.offline { padding-top: 50px; }
   animation: pulse 2s ease-in-out infinite;
 }
 
+/* ── FIELD ROWS ── */
 .field-row {
   display: flex;
   align-items: center;
@@ -388,6 +576,7 @@ label {
   font-family: var(--font-display);
 }
 
+/* ── INPUTS ── */
 input[type="text"],
 input[type="email"],
 input[type="tel"],
@@ -424,6 +613,7 @@ input::placeholder, textarea::placeholder {
   opacity: 1;
 }
 
+/* PRINT: Hide placeholders for clean exports */
 @media print {
   input::placeholder, textarea::placeholder { 
     color: transparent !important; 
@@ -459,6 +649,7 @@ textarea {
 }
 textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0.1); }
 
+/* ── GRIDS ── */
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
 .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px; }
 .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 10px; }
@@ -472,6 +663,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
 .field-block { display: flex; flex-direction: column; gap: 4px; }
 .field-block > label { margin-bottom: 0; }
 
+/* ── CHECK GROUPS ── */
 .check-group {
   display: flex;
   flex-wrap: wrap;
@@ -537,6 +729,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   text-shadow: 0 0 4px rgba(217,119,6,0.3);
 }
 
+/* ── Y/N TOGGLE ── */
 .yn-group {
   display: inline-flex;
   border: 1px solid rgba(217,119,6,0.3);
@@ -583,6 +776,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   box-shadow: inset 0 0 8px rgba(220,38,38,0.08);
 }
 
+/* ── INLINE ROWS ── */
 .inline-row {
   display: flex;
   align-items: center;
@@ -624,6 +818,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   letter-spacing: 2px;
 }
 
+/* ── FLOOD BAR ── */
 .flood-bar {
   display: flex;
   border: 1px solid var(--border);
@@ -650,6 +845,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   .flood-item:nth-child(1), .flood-item:nth-child(2) { border-bottom: 1px solid var(--border); }
 }
 
+/* ── ADDRESS AUTOCOMPLETE ── */
 #address-suggestions {
   position: absolute;
   top: 100%;
@@ -722,6 +918,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   display: none;
 }
 
+/* ── GAS APPLIANCES BOX ── */
 .gas-appliances-box {
   border: 1px solid rgba(217,119,6,0.2);
   padding: 10px 12px;
@@ -747,6 +944,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   text-transform: uppercase;
 }
 
+/* ── FOOTER ── */
 .footer {
   background: #FFFFFF;
   padding: 10px 22px;
@@ -767,230 +965,317 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   letter-spacing: 2px;
 }
 
+/* ── SCROLLBAR ── */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: #FFFFFF; }
 ::-webkit-scrollbar-thumb { background: rgba(217,119,6,0.3); border-radius: 0; }
 ::-webkit-scrollbar-thumb:hover { background: var(--cyan-dim); }
 
-/* ═══════════════════════════════════════════════════════════════
-   ✦ DESKTOP/ANDROID PRINT MODE — EDGE-TO-EDGE STRETCH ✦
-   This print-mode block is ONLY toggled on by JS for desktop and
-   Android Chrome. iOS Safari uses its own isolated-window print
-   mechanism (see the IIFE at the bottom of <script>) and never
-   triggers this code path, so iOS Safari behavior is preserved
-   exactly as it was.
-   ═══════════════════════════════════════════════════════════════ */
-
-body.print-mode {
-  background: #FFFFFF !important;
-  width: 816px !important;
-  min-width: 816px !important;
-  max-width: 816px !important;
-  height: 1056px !important;
-  min-height: 1056px !important;
-  max-height: 1056px !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  overflow: hidden !important;
-  position: relative !important;
-}
-
-body.print-mode #offline-banner,
-body.print-mode .toolbar,
-body.print-mode #pdfModal,
-body.print-mode #imageModal,
-body.print-mode #gps-status,
-body.print-mode #address-suggestions,
-body.print-mode .gps-btn {
-  display: none !important;
-}
-
-body.print-mode .page {
-  position: absolute !important;
-  top: 0 !important;
-  left: 0 !important;
-  width: 1050px !important;
-  max-width: 1050px !important;
-  min-width: 1050px !important;
-  min-height: 0 !important;
-  height: auto !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  box-shadow: none !important;
-  border: 2px solid #D97706 !important;
-  background: #FFFFFF !important;
-  transform-origin: 0 0 !important;
-  /* The actual scale(scaleX, scaleY) is set inline by JS for stretch fill */
-}
-
-body.print-mode .section-header::before,
-body.print-mode .col-label::before,
-body.print-mode .header::after {
-  animation: none !important;
-}
-
-body.print-mode .header::after {
-  background: none !important;
-  display: none !important;
-}
-
-body.print-mode input,
-body.print-mode textarea,
-body.print-mode select {
-  box-shadow: none !important;
-  background: #FFFFFF !important;
-}
-
-/* ── DESKTOP/ANDROID @media print rules ── */
-/* iOS Safari skips this whole block because it prints from an isolated
-   window with its own injected PRINT_CSS — see mobile Safari override. */
+/* ── PRINT ── */
 @media print {
+  @page { 
+    size: letter portrait; 
+    margin: 0.01in;
+    padding: 0;
+  }
+
+  * { 
+    -webkit-print-color-adjust: exact !important; 
+    print-color-adjust: exact !important;
+  }
+
   body {
-    margin: 0 !important;
-    padding: 0 !important;
-    background: white !important;
-    overflow: visible !important;
-  }
-
-  .page {
-    width: 816px !important;
-    height: 1056px !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    border: none !important;
-    box-shadow: none !important;
-    background: white !important;
-    transform-origin: top left !important;
-    /* Remove any max-width constraints */
-    max-width: none !important;
-  }
-
-  .print-btn, .navbar, footer {
-    display: none !important;
-  }
-}
-
-/* Print mode for desktop/Android */
-body.print-mode {
-  width: 816px !important;
-  overflow: visible !important;
-}
-
-body.print-mode .page {
-  transform: none !important;
-  width: 816px !important;
-}
-
-
-  html, body {
-    width: 100% !important;
-    max-width: 100% !important;
-    padding: 0 !important;
-    margin: 0 !important;
-  }
-
-  #offline-banner,
-  .toolbar,
-  #pdfModal,
-  #imageModal,
-  #address-suggestions,
-  #gps-status,
-  .gps-btn { 
-    display: none !important; 
-  }
-
-  .page {
-    width: 100% !important;
-    max-width: 100% !important;
-    transform: none !important;
-    zoom: 0.55;
-    margin: 0 auto !important;
-    padding: 0 !important;
-    box-shadow: none !important;
-    border: 2px solid #D97706 !important;
     background: #ffffff !important;
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
+    background-image: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: auto !important;
   }
 
+  #offline-banner { display: none !important; }
+
+  .page {
+    max-width: 100% !important;
+    width: 100% !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    border: 2px solid #D97706 !important;
+    min-height: auto !important;
+    display: block !important;
+    flex-direction: column !important;
+  }
+
+  .toolbar { display: none !important; }
   .page::before, .page::after,
   .page-corner-bl, .page-corner-br { display: block !important; }
-
   .header::after { display: none !important; }
-  .section-header::before,
-  .col-label::before { animation: none !important; }
+  .section-header::before { animation: none !important; }
 
-  .section,
-  .top-grid,
-  .flood-bar,
-  .gas-appliances-box,
-  .footer {
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
+  .header {
+    background: #ffffff !important;
+    border-bottom-color: #D97706 !important;
+    page-break-after: avoid;
+    break-after: avoid;
+    padding: 6px 20px !important;
+    min-height: auto !important;
+    height: auto !important;
+    margin: 0 !important;
+    display: flex !important;
+    align-items: center !important;
   }
 
-  input::placeholder, textarea::placeholder { color: transparent !important; }
+  .header-logo {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px;
+  }
 
-  .header { background: #ffffff !important; border-bottom-color: #D97706 !important; }
-  .section { background: #ffffff !important; border-color: #D97706 !important; }
-  .section-header { background: #f5f5f5 !important; color: #D97706 !important; border-bottom-color: #D97706 !important; }
-  .section-body { background: #ffffff !important; }
-  .top-grid { background: #ffffff !important; border-color: #D97706 !important; }
-  .top-col { border-color: #D97706 !important; background: #ffffff !important; }
-  .col-label { background: #f5f5f5 !important; border-color: #D97706 !important; color: #D97706 !important; }
-  .col-label::before { background: #D97706 !important; box-shadow: none !important; }
-  .flood-bar { background: #ffffff !important; border-color: #D97706 !important; }
-  .flood-item { border-color: #D97706 !important; background: #ffffff !important; }
-  .footer { background: #ffffff !important; border-top-color: #D97706 !important; }
-  .footer-text { color: #D97706 !important; }
-  .company-name, .doc-title { color: #D97706 !important; text-shadow: none !important; }
+  .logo-img {
+    width: 45px !important;
+    height: 45px !important;
+  }
 
-  input[type="text"], input[type="email"], input[type="tel"],
-  input[type="date"], input[type="number"], textarea, select {
+  .company-name {
+    font-size: 1rem !important;
+    color: #D97706 !important;
+    text-shadow: none !important;
+  }
+
+  .doc-title {
+    color: #D97706 !important;
+    text-shadow: none !important;
+    font-size: 1rem !important;
+  }
+
+  .content { 
+    padding: 6px 10px !important; 
+    background: #ffffff !important;
+    margin: 0 !important;
+    display: block !important;
+    flex: none !important;
+    height: center !important;
+  }
+
+  .section { 
+    background: #ffffff !important;
+    border-color: #D97706 !important;
+    margin-bottom: 6px !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .section::before { background: none !important; }
+
+  .section-header { 
+    padding: 3px 10px !important; 
+    background: #f5f5f5 !important;
+    color: #D97706 !important;
+    border-bottom-color: #D97706 !important;
+    text-shadow: none !important;
+    font-size: 0.65rem !important;
+  }
+
+  .section-body { 
+    padding: 5px 8px !important; 
+    background: #ffffff !important;
+  }
+
+  .top-grid {
+    background: #ffffff !important;
+    border-color: #D97706 !important;
+    margin-bottom: 6px !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .top-grid::before { background: none !important; }
+
+  .top-col { 
+    padding: 5px 8px !important; 
+    border-color: #D97706 !important;
+    background: #ffffff !important;
+  }
+
+  .col-label {
+    background: #f5f5f5 !important;
+    border-color: #D97706 !important;
+    color: #D97706 !important;
+    text-shadow: none !important;
+    font-size: 0.55rem !important;
+    padding: 2px 8px 2px 6px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .col-label::before {
+    animation: none !important;
+    background: #D97706 !important;
+    box-shadow: none !important;
+  }
+
+  .flood-bar {
+    background: #ffffff !important;
+    border-color: #D97706 !important;
+    margin-bottom: 6px !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .flood-item {
+    border-color: #D97706 !important;
+    background: #ffffff !important;
+    padding: 1px 8px !important;
+    gap: 1px !important;
+  }
+
+  .field-row { margin-bottom: 3px !important; }
+  .inline-row { margin-bottom: 4px !important; }
+  .grid-2, .grid-3, .grid-4 { margin-bottom: 4px !important; gap: 4px !important; page-break-inside: avoid; break-inside: avoid; }
+
+  label {
+    color: #6B7280 !important;
+    font-size: 0.54rem !important;
+  }
+
+  input[type="text"], 
+  input[type="email"], 
+  input[type="tel"],
+  input[type="date"], 
+  input[type="number"], 
+  textarea, 
+  select {
     background: #ffffff !important;
     border-bottom-color: #D97706 !important;
     color: #1F2937 !important;
+    min-height: auto !important;
+    height: auto !important;
+    padding: 1px 2px !important;
+    font-size: 0.78rem !important;
+  }
+
+  textarea { 
+    min-height: auto !important; 
+    height: auto !important;
+    background: #ffffff !important;
+    border-color: #D97706 !important;
+  }
+
+  .yn-group { 
+    border-color: #D97706 !important;
+    background: #ffffff !important;
+  }
+
+  .yn-group .yn-label { 
+    min-height: auto !important; 
+    height: auto !important;
+    padding: 0 8px !important; 
+    color: #6B7280 !important;
+    border-color: #D97706 !important;
+    background: transparent !important;
+    font-size: 0.58rem !important;
+  }
+
+  .yn-group .yn-label:first-of-type { 
+    border-right-color: #D97706 !important; 
+  }
+
+  .yn-group .yn-y:checked + .yn-label-y {
+    background: #f0f0f0 !important;
+    color: #059669 !important;
+    text-shadow: none !important;
     box-shadow: none !important;
   }
 
-  textarea { background: #ffffff !important; border-color: #D97706 !important; }
-
-  .yn-group { border-color: #D97706 !important; background: #ffffff !important; }
-  .yn-group .yn-label { 
-    border-color: #D97706 !important; 
-    background: transparent !important;
-    color: #6B7280 !important;
-  }
-  .yn-group .yn-label:first-of-type { border-right-color: #D97706 !important; }
-  .yn-group .yn-y:checked + .yn-label-y {
-    background: #f0f0f0 !important; color: #059669 !important;
-    text-shadow: none !important; box-shadow: none !important;
-  }
   .yn-group .yn-n:checked + .yn-label-n {
-    background: #f0f0f0 !important; color: #DC2626 !important;
-    text-shadow: none !important; box-shadow: none !important;
+    background: #f0f0f0 !important;
+    color: #DC2626 !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
   }
 
-  .check-item { background: #ffffff !important; border-color: #D97706 !important; }
-  .check-item span { color: #1F2937 !important; text-shadow: none !important; }
+  .check-item { 
+    min-height: auto !important; 
+    height: auto !important;
+    padding: 1px 4px 1px 3px !important; 
+    background: #ffffff !important;
+    border-color: #D97706 !important;
+  }
+
+  .check-item span {
+    color: #1F2937 !important;
+    text-shadow: none !important;
+    font-size: 0.56rem !important;
+  }
+
   .check-item:has(input:checked) {
-    background: #f0f0f0 !important; border-color: #D97706 !important; box-shadow: none !important;
+    background: #f0f0f0 !important;
+    border-color: #D97706 !important;
+    box-shadow: none !important;
   }
-  .check-item:has(input:checked) span { color: #D97706 !important; text-shadow: none !important; }
 
-  .gas-appliances-box { border-color: #D97706 !important; background: #ffffff !important; }
-  .gas-appliances-label { color: #6B7280 !important; }
-  .divider { border-top-color: #D97706 !important; background: #ffffff !important; }
-  .divider::before { background: #ffffff !important; color: #D97706 !important; }
+  .check-item:has(input:checked) span {
+    color: #D97706 !important;
+    text-shadow: none !important;
+  }
 
-  label { color: #6B7280 !important; }
+  .gas-appliances-box {
+    border-color: #D97706 !important;
+    background: #ffffff !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .gas-appliances-box::before {
+    background: none !important;
+  }
+
+  .gas-appliances-label {
+    color: #6B7280 !important;
+    font-size: 0.54rem !important;
+  }
+
+  .divider {
+    border-top-color: #D97706 !important;
+    background: #ffffff !important;
+    margin: 4px 0 !important;
+  }
+
+  .divider::before {
+    background: #ffffff !important;
+    color: #D97706 !important;
+    font-size: 0.54rem !important;
+  }
+
+  .footer {
+    background: #ffffff !important;
+    border-top-color: #D97706 !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    padding: 6px 10px !important;
+    font-size: 0.5rem !important;
+    margin-top: auto !important;
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: auto !important;
+    flex: none !important;
+  }
+
+  .footer-text {
+    color: #D97706 !important;
+  }
+
+  #address-suggestions, #gps-status, #gps-btn { display: none !important; }
+  #address { padding-right: 6px !important; }
+
+  #pdfModal, #imageModal { display: none !important; }
 }
-
 </style>
-<style id="mobile-print-styles"></style>
 </head>
 <body>
 
+<!-- Offline indicator banner -->
 <div id="offline-banner">⚠️ YOU ARE OFFLINE — Your data will be auto-saved locally</div>
 
 <div class="page" id="page">
@@ -1012,19 +1297,45 @@ body.print-mode .page {
 
   <div class="content">
 
+   <!-- Customer + Property -->
 <div class="top-grid">
   <div class="top-col">
     <div class="col-label">
     <svg width="22" height="22" viewBox="0 0 122 122" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
-  <path d="M61 10 C76 10 88 22 88 38 C88 54 76 66 61 66 C46 66 34 54 34 38 C34 22 46 10 61 10 M26 114 C26 90 44 74 61 74 C78 74 96 90 96 114 M26 114 H96 M20 52 L10 42 L20 32 M102 52 L112 42 L102 32"
-    fill="none" stroke="#D97706" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <path
+    d="
+      M61 10
+      C76 10 88 22 88 38
+      C88 54 76 66 61 66
+      C46 66 34 54 34 38
+      C34 22 46 10 61 10
+      M26 114
+      C26 90 44 74 61 74
+      C78 74 96 90 96 114
+      M26 114 H96
+      M20 52
+      L10 42
+      L20 32
+      M102 52
+      L112 42
+      L102 32
+    "
+    fill="none"
+    stroke="#D97706"
+    stroke="currentColor"
+    stroke-width="6"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
 </svg>
+
 Customer Info
     </div>
 
     <div class="field-row">
       <label for="name">Name</label>
       <input type="text" id="name" name="name" required class="long" placeholder="Full name" autocomplete="name" aria-label="Customer name">
+
     </div>
 
     <div class="field-row">
@@ -1041,32 +1352,33 @@ Customer Info
         <ul id="address-suggestions" aria-label="Address suggestions"></ul>
       </div>
     </div>
-    
+
     <div id="gps-status"></div>
-    
+
     <div class="field-row">
       <label></label>
       <input type="text" id="address2" name="address2" required class="long" placeholder="City, State ZIP" autocomplete="off" aria-label="City, state, and zip code">
     </div>
-    
+
     <div class="field-row">
       <label for="hoa">Community/HOA</label>
       <input type="text" id="hoa" name="hoa" class="long" autocomplete="off" aria-label="Community or HOA name">
     </div>
-    
+
     <div class="field-row">
       <label for="phone">Phone #</label>
       <input type="tel" id="phone" name="phone" required class="long" autocomplete="tel" aria-label="Phone number" pattern="[0-9\-\(\)\s]*">
     </div>
-    
+
     <div class="field-row">
       <label for="email">Best Email</label>
       <input type="email" id="email" name="email" required class="long" autocomplete="email" aria-label="Email address">
     </div>
-    
+
     <div class="field-row">
       <label for="today">Today's Date</label>
       <input type="date" id="today" name="today" required class="med" autocomplete="off" aria-label="Today's date">
+
     </div>
   </div>
 
@@ -1074,9 +1386,21 @@ Customer Info
       <div class="top-col">
        <div class="col-label">
  <svg width="22" height="22" viewBox="0 0 122 114" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
-  <path d="M61 4 L8 48 M61 4 L114 48 M15 56 V112 H107 V56 M30 76 H56 V98 H30 V76 M68 74 H92 V112 H68 V74 M60 36 A6 6 0 1 1 60 48 A6 6 0 1 1 60 36"
-    fill="none" stroke="#D97706" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <path
+    d="M61 4 L8 48 M61 4 L114 48
+       M15 56 V112 H107 V56
+       M30 76 H56 V98 H30 V76
+       M68 74 H92 V112 H68 V74
+       M60 36 A6 6 0 1 1 60 48 A6 6 0 1 1 60 36"
+    fill="none"
+    stroke="#D97706"
+    stroke="currentColor"
+    stroke-width="6"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
 </svg>
+
   Property Info
 </div>
 
@@ -1123,6 +1447,7 @@ Customer Info
       </div>
     </div>
 
+    <!-- Flood / Parcel / Done -->
     <div class="flood-bar">
       <div class="flood-item">
         <label for="flood_zone">Flood Zone / Footage</label>
@@ -1137,15 +1462,19 @@ Customer Info
         <input type="date" id="est_done_on" name="est_done_on" autocomplete="off" aria-label="Estimate completion date">
       </div>
       <div class="flood-item">
-      
+
       </div>
     </div>
 
+    <!-- Generator -->
     <div class="section">
       <div class="section-header">
         <svg width="20" height="20" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+          <!-- Main engine block (rectangular) -->
           <rect x="15" y="30" width="50" height="35" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
+          <!-- Engine head (top section) -->
           <rect x="18" y="28" width="44" height="8" rx="1" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.7"/>
+          <!-- Cylinder cooling fins (vertical lines on side) -->
           <line x1="20" y1="33" x2="20" y2="60" stroke="currentColor" stroke-width="0.6" opacity="0.5"/>
           <line x1="24" y1="33" x2="24" y2="60" stroke="currentColor" stroke-width="0.6" opacity="0.5"/>
           <line x1="28" y1="33" x2="28" y2="60" stroke="currentColor" stroke-width="0.6" opacity="0.5"/>
@@ -1157,22 +1486,30 @@ Customer Info
           <line x1="52" y1="33" x2="52" y2="60" stroke="currentColor" stroke-width="0.6" opacity="0.5"/>
           <line x1="56" y1="33" x2="56" y2="60" stroke="currentColor" stroke-width="0.6" opacity="0.5"/>
           <line x1="60" y1="33" x2="60" y2="60" stroke="currentColor" stroke-width="0.6" opacity="0.5"/>
+          <!-- Air intake/carburetor on top -->
           <rect x="35" y="22" width="10" height="6" rx="1" stroke="currentColor" stroke-width="1.2" fill="none"/>
           <circle cx="40" cy="25" r="1.5" fill="none" stroke="currentColor" stroke-width="0.8"/>
+          <!-- Spark plug -->
           <line x1="68" y1="32" x2="72" y2="28" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
           <circle cx="72" cy="28" r="1.2" fill="currentColor" opacity="0.3"/>
+          <!-- Alternator/Generator head (right side circular) -->
           <circle cx="78" cy="48" r="12" stroke="currentColor" stroke-width="2" fill="none"/>
+          <!-- Alternator cooling fan vents (inside circle) -->
           <line x1="72" y1="48" x2="84" y2="48" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
           <line x1="78" y1="42" x2="78" y2="54" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
           <line x1="72" y1="42" x2="84" y2="54" stroke="currentColor" stroke-width="0.6" opacity="0.4"/>
           <line x1="84" y1="42" x2="72" y2="54" stroke="currentColor" stroke-width="0.6" opacity="0.4"/>
+          <!-- Coupling between engine and alternator -->
           <line x1="65" y1="46" x2="68" y2="48" stroke="currentColor" stroke-width="1.5"/>
           <line x1="65" y1="50" x2="68" y2="48" stroke="currentColor" stroke-width="1.5"/>
           <circle cx="65" cy="48" r="1" fill="currentColor" opacity="0.3"/>
+          <!-- Muffler (exhaust on back top) -->
           <rect x="8" y="26" width="4" height="8" rx="1" stroke="currentColor" stroke-width="1" fill="none" opacity="0.7"/>
           <line x1="10" y1="26" x2="8" y2="22" stroke="currentColor" stroke-width="0.8" stroke-linecap="round" opacity="0.6"/>
+          <!-- Engine mounting feet (bottom) -->
           <rect x="22" y="64" width="6" height="4" rx="0.5" fill="none" stroke="currentColor" stroke-width="1" opacity="0.6"/>
           <rect x="48" y="64" width="6" height="4" rx="0.5" fill="none" stroke="currentColor" stroke-width="1" opacity="0.6"/>
+          <!-- Power output terminals (right side bottom) -->
           <circle cx="82" cy="60" r="1.5" fill="none" stroke="currentColor" stroke-width="1" opacity="0.7"/>
           <circle cx="82" cy="65" r="1.5" fill="none" stroke="currentColor" stroke-width="1" opacity="0.7"/>
           <line x1="80" y1="60" x2="78" y2="60" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
@@ -1222,23 +1559,31 @@ Customer Info
   </div>
 </div>
 
-
         <div class="field-block">
           <textarea id="gen_notes" name="gen_notes" placeholder="Additional notes on generator placement / run..." aria-label="Generator notes"></textarea>
         </div>
       </div>
     </div>
 
+    <!-- Transfer Switch -->
     <div class="section">
       <div class="section-header">
         <svg width="20" height="20" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+          <!-- Left power line -->
           <line x1="10" y1="30" x2="30" y2="30" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <!-- Right power line -->
           <line x1="70" y1="30" x2="90" y2="30" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <!-- Switch box -->
           <rect x="35" y="20" width="30" height="40" rx="3" stroke="currentColor" stroke-width="2" fill="none"/>
+          <!-- Center divider -->
           <line x1="50" y1="20" x2="50" y2="60" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>
+          <!-- Top label (Grid) -->
           <text x="42" y="35" font-size="8" fill="currentColor" text-anchor="middle">G</text>
+          <!-- Bottom label (Gen) -->
           <text x="42" y="52" font-size="8" fill="currentColor" text-anchor="middle">G</text>
+          <!-- Output connection -->
           <line x1="50" y1="60" x2="50" y2="75" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <!-- Arrow indicator (switched position) -->
           <path d="M58 45 L65 45 M62 42 L65 45 L62 48" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         Transfer Switch
@@ -1313,19 +1658,25 @@ Customer Info
       </div>
     </div>
 
+    <!-- Pad -->
     <div class="section">
       <div class="section-header">
         <svg width="20" height="20" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+          <!-- Concrete pad top surface -->
           <rect x="15" y="20" width="70" height="50" stroke="currentColor" stroke-width="2" fill="none" rx="3"/>
+          <!-- Concrete texture (aggregate pattern) -->
           <circle cx="30" cy="35" r="2" fill="currentColor" opacity="0.4"/>
           <circle cx="50" cy="30" r="1.5" fill="currentColor" opacity="0.5"/>
           <circle cx="65" cy="40" r="2" fill="currentColor" opacity="0.4"/>
           <circle cx="35" cy="55" r="1.5" fill="currentColor" opacity="0.5"/>
           <circle cx="70" cy="55" r="2" fill="currentColor" opacity="0.4"/>
           <circle cx="25" cy="60" r="1.5" fill="currentColor" opacity="0.5"/>
+          <!-- Pad edges/shadow -->
           <line x1="15" y1="70" x2="85" y2="72" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
+          <!-- Foundation depth indicator -->
           <line x1="12" y1="20" x2="12" y2="75" stroke="currentColor" stroke-width="1" opacity="0.4" stroke-dasharray="2,2"/>
           <line x1="88" y1="20" x2="88" y2="75" stroke="currentColor" stroke-width="1" opacity="0.4" stroke-dasharray="2,2"/>
+          <!-- Anchor bolt pattern (4 corners) -->
           <circle cx="25" cy="32" r="1.5" fill="currentColor"/>
           <circle cx="75" cy="32" r="1.5" fill="currentColor"/>
           <circle cx="25" cy="60" r="1.5" fill="currentColor"/>
@@ -1354,24 +1705,35 @@ Customer Info
       </div>
     </div>
 
+    <!-- Fuel Tank -->
     <div class="section">
       <div class="section-header">
         <svg width="30" height="20" viewBox="0 0 100 60" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+          <!-- Main horizontal cylinder body -->
           <ellipse cx="50" cy="28" rx="38" ry="14" stroke="currentColor" stroke-width="2" fill="none"/>
+          <!-- Left hemispherical end cap -->
           <path d="M 12 28 Q 12 14 12 28 Q 12 42 12 28" stroke="currentColor" stroke-width="2" fill="none"/>
           <ellipse cx="12" cy="28" rx="8" ry="14" stroke="currentColor" stroke-width="2" fill="none"/>
+          <!-- Right hemispherical end cap -->
           <path d="M 88 28 Q 88 14 88 28 Q 88 42 88 28" stroke="currentColor" stroke-width="2" fill="none"/>
           <ellipse cx="88" cy="28" rx="8" ry="14" stroke="currentColor" stroke-width="2" fill="none"/>
+          <!-- Top dome/fill cap -->
           <ellipse cx="50" cy="14" rx="8" ry="6" stroke="currentColor" stroke-width="1.5" fill="none"/>
           <circle cx="50" cy="12" r="2.5" stroke="currentColor" stroke-width="1.2" fill="none"/>
+          <!-- Liquid level inside (shaded area) -->
           <path d="M 12 28 Q 12 38 50 40 Q 88 38 88 28 L 88 28 Q 88 20 50 22 Q 12 20 12 28" fill="currentColor" opacity="0.2"/>
+          <!-- Liquid level line -->
           <line x1="14" y1="28" x2="86" y2="28" stroke="currentColor" stroke-width="0.8" opacity="0.4" stroke-dasharray="2,1"/>
+          <!-- Left support leg/bracket -->
           <line x1="30" y1="42" x2="28" y2="50" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
           <circle cx="28" cy="50" r="1.5" fill="currentColor" opacity="0.5"/>
+          <!-- Right support leg/bracket -->
           <line x1="70" y1="42" x2="72" y2="50" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
           <circle cx="72" cy="50" r="1.5" fill="currentColor" opacity="0.5"/>
+          <!-- Drain valve at bottom center -->
           <circle cx="50" cy="42" r="1.5" fill="none" stroke="currentColor" stroke-width="1" opacity="0.6"/>
           <line x1="50" y1="43" x2="50" y2="48" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
+          <!-- Gauge glass indicator (right side) -->
           <rect x="90" y="18" width="1.2" height="20" rx="0.6" fill="none" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
           <line x1="88" y1="28" x2="92" y2="28" stroke="currentColor" stroke-width="0.6" opacity="0.4"/>
         </svg>
@@ -1468,140 +1830,50 @@ Customer Info
 
 </div>
 
+<!-- ▼▼▼ PDF SAVE MODAL ▼▼▼ -->
 <div id="pdfModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(4px);">
   <div style="background:linear-gradient(135deg,#0a0a0a 0%,#1a1a1a 100%); border:2px solid #FFB300; border-radius:12px; padding:30px; max-width:420px; width:90%; box-shadow:0 0 40px rgba(255,179,0,0.4), inset 0 0 20px rgba(0,229,255,0.05); font-family:'Exo 2',sans-serif;">
+
     <h2 style="color:#FFB300; font-family:'Orbitron',sans-serif; margin:0 0 8px 0; font-size:18px; letter-spacing:2px; text-shadow:0 0 10px rgba(255,179,0,0.5);">📄 SAVE AS PDF</h2>
+
     <div style="height:1px; background:linear-gradient(90deg,#FFB300,transparent); margin-bottom:18px;"></div>
+
     <div id="pdfInstructions" style="color:#00E5FF; font-family:'Share Tech Mono',monospace; font-size:13px; line-height:1.8;"></div>
+
     <div style="margin-top:24px; display:flex; justify-content:flex-end; gap:10px;">
-      <button onclick="closePdfModal()" style="background:transparent; border:1px solid #666; color:#999; padding:9px 18px; border-radius:6px; cursor:pointer; font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:1px;">CANCEL</button>
-      <button onclick="confirmPdfPrint()" style="background:linear-gradient(135deg,#FFB300,#FF8C00); border:none; color:#000; padding:9px 22px; border-radius:6px; cursor:pointer; font-weight:bold; font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:1px; box-shadow:0 0 15px rgba(255,179,0,0.4);">CONTINUE ▶</button>
+      <button onclick="closePdfModal()" style="background:transparent !important; border:1px solid #666 !important; color:#999 !important; padding:9px 18px !important; border-radius:6px !important; cursor:pointer !important; font-family:'Share Tech Mono',monospace !important; font-size:12px !important; letter-spacing:1px !important; clip-path: none !important; margin: 0 !important;">CANCEL</button>
+      <button onclick="confirmPdfPrint()" style="background:linear-gradient(135deg,#FFB300,#FF8C00) !important; border:none !important; color:#000 !important; padding:9px 22px !important; border-radius:6px !important; cursor:pointer !important; font-weight:bold !important; font-family:'Share Tech Mono',monospace !important; font-size:12px !important; letter-spacing:1px !important; box-shadow:0 0 15px rgba(255,179,0,0.4) !important; clip-path: none !important; margin: 0 !important;">CONTINUE ▶</button>
     </div>
   </div>
 </div>
+<!-- ▲▲▲ END PDF MODAL ▲▲▲ -->
 
+<!-- ▼▼▼ IMAGE SAVE MODAL ▼▼▼ -->
 <div id="imageModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(4px);">
   <div style="background:linear-gradient(135deg,#0a0a0a 0%,#1a1a1a 100%); border:2px solid #059669; border-radius:12px; padding:30px; max-width:420px; width:90%; box-shadow:0 0 40px rgba(5,150,105,0.4), inset 0 0 20px rgba(0,229,255,0.05); font-family:'Exo 2',sans-serif;">
+
     <h2 style="color:#059669; font-family:'Orbitron',sans-serif; margin:0 0 8px 0; font-size:18px; letter-spacing:2px; text-shadow:0 0 10px rgba(5,150,105,0.5);">🖼 SAVE AS IMAGE</h2>
+
     <div style="height:1px; background:linear-gradient(90deg,#059669,transparent); margin-bottom:18px;"></div>
+
     <p style="color:#00E5FF; font-family:'Share Tech Mono',monospace; font-size:13px; line-height:1.8; margin:0 0 20px 0;">Capture the entire form as a JPEG image. Perfect for saving, printing, or sharing.</p>
+
     <div style="margin-top:24px; display:flex; justify-content:flex-end; gap:10px;">
-      <button onclick="closeImageModal()" style="background:transparent; border:1px solid #666; color:#999; padding:9px 18px; border-radius:6px; cursor:pointer; font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:1px;">CANCEL</button>
-      <button onclick="saveImageFromModal()" style="background:linear-gradient(135deg,#059669,#04874f); border:none; color:#fff; padding:9px 22px; border-radius:6px; cursor:pointer; font-weight:bold; font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:1px; box-shadow:0 0 15px rgba(5,150,105,0.4);">SAVE IMAGE ▶</button>
+      <button onclick="closeImageModal()" style="background:transparent !important; border:1px solid #666 !important; color:#999 !important; padding:9px 18px !important; border-radius:6px !important; cursor:pointer !important; font-family:'Share Tech Mono',monospace !important; font-size:12px !important; letter-spacing:1px !important; clip-path: none !important; margin: 0 !important;">CANCEL</button>
+      <button onclick="saveImageFromModal()" style="background:linear-gradient(135deg,#059669,#04874f) !important; border:none !important; color:#fff !important; padding:9px 22px !important; border-radius:6px !important; cursor:pointer !important; font-weight:bold !important; font-family:'Share Tech Mono',monospace !important; font-size:12px !important; letter-spacing:1px !important; box-shadow:0 0 15px rgba(5,150,105,0.4) !important; clip-path: none !important; margin: 0 !important;">SAVE IMAGE ▶</button>
     </div>
   </div>
 </div>
+<!-- ▲▲▲ END IMAGE MODAL ▲▲▲ -->
 
 <script>
-// ════════════════════════════════════════════════════════════════
-//  AOG ESTIMATE FORM
-//  PRINT PATHS:
-//    • iOS Safari (iPhone/iPad)  → isolated-window print using
-//                                   PRINT_CSS with `zoom: 0.55`
-//                                   (KNOWN-GOOD, untouched)
-//    • Desktop & Android Chrome → print-mode class + transform
-//                                   scale stretch to 8.5×11
-//  All other features (validation, GPS, autocomplete, draft save,
-//  email, image export) are unchanged.
-// ════════════════════════════════════════════════════════════════
-
-var nativePrint = window.print.bind(window);
-
+// Mobile device detection
 if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
   document.body.classList.add('is-mobile-device');
 }
 
 var MAPBOX_TOKEN = 'pk.eyJ1IjoicHJvamVjdHdyYXBwZXIiLCJhIjoiY201d2k1eHU3MDAwajJrbzU2a2c5dW40NSJ9.WJlNJ4o5CqBhWpHKMKOzIQ';
 var DRAFT_KEY = 'aog_estimate_draft';
-
-// Detect iOS Safari — used to skip the desktop print-mode logic so that
-// iOS Safari's isolated-window print path runs unimpeded.
-var IS_IOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-var IS_IOS_SAFARI = IS_IOS && /Safari/i.test(navigator.userAgent)
-                  && !/CriOS|FxiOS|EdgiOS/i.test(navigator.userAgent);
-
-// Paper dims at 96 dpi
-var PAPER_W_PX = 816;   // 8.5 in
-var PAPER_H_PX = 1056;  // 11 in
-var PAGE_NATURAL_W = 1050;
-
-// ────────────────────────────────────────────────────────────────
-// DESKTOP/ANDROID PRINT-MODE (does NOT run for iOS Safari)
-// ────────────────────────────────────────────────────────────────
-function calculateStretchScale() {
-  const page = document.querySelector('.page');
-  if (!page) return { scaleX: 1, scaleY: 1 };
-
-  const pageRect = page.getBoundingClientRect();
-  
-  // Paper dimensions at 96 dpi
-  const printableWidth = 816;   // 8.5" at 96dpi
-  const printableHeight = 1056; // 11" at 96dpi
-
-  // Get actual rendered dimensions
-  const actualWidth = pageRect.width || 1050;
-  const actualHeight = pageRect.height || 1400;
-
-  // Calculate stretch factor to fill the page EXACTLY
-  const scaleX = printableWidth / actualWidth;
-  const scaleY = printableHeight / actualHeight;
-
-  // Return as object with both scales
-  return {
-    scaleX: scaleX,
-    scaleY: scaleY,
-    // Use the LARGER scale (not smaller) so it fills the page
-    // and we don't get gaps. The page will overflow slightly,
-    // which is OK—the print preview will crop it to the page boundary.
-    combined: Math.max(scaleX, scaleY)
-  };
-}
-
-
-function enterPrintMode() {
-  if (IS_IOS_SAFARI) return null;
-
-  var page = document.getElementById('page');
-  if (!page) return null;
-
-  document.body.classList.add('print-mode');
-  var info = calculateStretchScale();
-
-  page.style.transform       = 'scale(' + info.scaleX + ', ' + info.scaleY + ')';
-  page.style.transformOrigin = '0 0';
-  page.style.width           = PAGE_NATURAL_W + 'px';
-  page.style.position        = 'absolute';
-  page.style.top             = '0';
-  page.style.left            = '0';
-
-  return info;
-}
-
-
-function exitPrintMode() {
-  if (IS_IOS_SAFARI) return;
-
-  var page = document.getElementById('page');
-  if (page) {
-    page.style.transform       = '';
-    page.style.transformOrigin = '';
-    page.style.width           = '';
-    page.style.position        = '';
-    page.style.top             = '';
-    page.style.left            = '';
-  }
-  document.body.classList.remove('print-mode');
-}
-
-// Hook desktop/Android beforeprint/afterprint to apply the stretch.
-// iOS Safari doesn't fire these reliably AND its print path doesn't
-// go through this function (it uses the isolated-window override).
-window.addEventListener('beforeprint', function() {
-  if (!IS_IOS_SAFARI) enterPrintMode();
-});
-window.addEventListener('afterprint', function() {
-  if (!IS_IOS_SAFARI) exitPrintMode();
-});
 
 // ────────────────────────────────────────────────────────────────
 // OFFLINE HANDLING
@@ -1623,9 +1895,11 @@ window.addEventListener('offline', function() {
 // ────────────────────────────────────────────────────────────────
 function saveDraft() {
   var data = {};
+
   document.querySelectorAll('input, textarea').forEach(function(el) {
     var key = el.id || el.name;
     if (!key) return;
+
     try {
       if (el.type === 'checkbox') {
         if (!data[key]) data[key] = [];
@@ -1635,30 +1909,48 @@ function saveDraft() {
       } else {
         if (data[key] === undefined) data[key] = el.value;
       }
-    } catch (e) {}
+    } catch (e) {
+      console.warn('Error saving field:', key);
+    }
   });
-  try { localStorage.setItem(DRAFT_KEY, JSON.stringify(data)); } catch(e) {}
+
+  try {
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
+  } catch(e) {
+    if (e.name === 'QuotaExceededError') {
+      console.warn('LocalStorage quota exceeded');
+    }
+  }
 }
 
 function restoreDraft() {
   var saved = localStorage.getItem(DRAFT_KEY);
   if (!saved) return;
+
   try {
     var data = JSON.parse(saved);
+
     document.querySelectorAll('input, textarea').forEach(function(el) {
       var key = el.id || el.name;
       if (!key || data[key] === undefined) return;
+
       try {
         if (el.type === 'checkbox') {
-          if (Array.isArray(data[key])) el.checked = data[key].indexOf(el.value) !== -1;
+          if (Array.isArray(data[key])) {
+            el.checked = data[key].indexOf(el.value) !== -1;
+          }
         } else if (el.type === 'radio') {
           if (el.value === data[key]) el.checked = true;
         } else {
           el.value = data[key];
         }
-      } catch (e) {}
+      } catch (e) {
+        console.warn('Error restoring field:', key);
+      }
     });
-  } catch(e) {}
+  } catch(e) {
+    console.warn('Error restoring draft:', e);
+  }
 }
 
 setInterval(saveDraft, 30000);
@@ -1666,54 +1958,116 @@ document.addEventListener('change', saveDraft);
 document.addEventListener('input', saveDraft);
 
 // ────────────────────────────────────────────────────────────────
-// VALIDATION
+// ENHANCED FORM VALIDATION
 // ────────────────────────────────────────────────────────────────
+
 const VALIDATION_RULES = {
-  name:      { required: true, minLength: 2, pattern: /^[a-zA-Z\s\-'.]+$/, message: 'Name must contain only letters, spaces, hyphens, or apostrophes' },
-  address:   { required: true, minLength: 5, message: 'Please enter a valid street address' },
-  phone:     { required: true, pattern: /^[\d\-\(\)\s+]{10,}$/, message: 'Phone must be at least 10 digits' },
-  email:     { required: true, pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Please enter a valid email address' },
-  estimator: { required: true, minLength: 2, message: 'Estimator name is required' },
-  sqft:      { pattern: /^[0-9]*$/, min: 500, max: 100000, message: 'Square footage must be between 500 and 100,000' },
-  gen_size:  { pattern: /^[\d\w\s\-]*$/, message: 'Invalid generator size format' }
+  name: {
+    required: true,
+    minLength: 2,
+    pattern: /^[a-zA-Z\s\-'.]+$/,
+    message: 'Name must contain only letters, spaces, hyphens, or apostrophes'
+  },
+  address: {
+    required: true,
+    minLength: 5,
+    message: 'Please enter a valid street address'
+  },
+  phone: {
+    required: true,
+    pattern: /^[\d\-\(\)\s+]{10,}$/,
+    message: 'Phone must be at least 10 digits'
+  },
+  email: {
+    required: true,
+    pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+    message: 'Please enter a valid email address'
+  },
+  estimator: {
+    required: true,
+    minLength: 2,
+    message: 'Estimator name is required'
+  },
+  sqft: {
+    pattern: /^[0-9]*$/,
+    min: 500,
+    max: 100000,
+    message: 'Square footage must be between 500 and 100,000'
+  },
+  gen_size: {
+    pattern: /^[\d\w\s\-]*$/,
+    message: 'Invalid generator size format'
+  }
 };
 
 class FormValidator {
-  constructor() { this.errors = {}; this.validatedFields = new Set(); }
+  constructor() {
+    this.errors = {};
+    this.validatedFields = new Set();
+  }
 
   validateField(fieldId) {
     const el = document.getElementById(fieldId);
     if (!el) return true;
+
     const rules = VALIDATION_RULES[fieldId];
     if (!rules) return true;
+
     const value = el.value.trim();
     const errors = [];
-    if (rules.required && !value) errors.push(rules.message || `${fieldId} is required`);
+
+    if (rules.required && !value) {
+      errors.push(rules.message || `${fieldId} is required`);
+    }
+
     if (value) {
-      if (rules.minLength && value.length < rules.minLength) errors.push(`Must be at least ${rules.minLength} characters`);
-      if (rules.maxLength && value.length > rules.maxLength) errors.push(`Must be no more than ${rules.maxLength} characters`);
-      if (rules.pattern && !rules.pattern.test(value)) errors.push(rules.message || `Invalid ${fieldId} format`);
+      if (rules.minLength && value.length < rules.minLength) {
+        errors.push(`Must be at least ${rules.minLength} characters`);
+      }
+
+      if (rules.maxLength && value.length > rules.maxLength) {
+        errors.push(`Must be no more than ${rules.maxLength} characters`);
+      }
+
+      if (rules.pattern && !rules.pattern.test(value)) {
+        errors.push(rules.message || `Invalid ${fieldId} format`);
+      }
+
       if (!isNaN(value)) {
         const num = parseFloat(value);
-        if (rules.min !== undefined && num < rules.min) errors.push(`Must be at least ${rules.min}`);
-        if (rules.max !== undefined && num > rules.max) errors.push(`Must be no more than ${rules.max}`);
+        if (rules.min !== undefined && num < rules.min) {
+          errors.push(`Must be at least ${rules.min}`);
+        }
+        if (rules.max !== undefined && num > rules.max) {
+          errors.push(`Must be no more than ${rules.max}`);
+        }
       }
     }
-    if (errors.length > 0) this.errors[fieldId] = errors;
-    else delete this.errors[fieldId];
+
+    if (errors.length > 0) {
+      this.errors[fieldId] = errors;
+    } else {
+      delete this.errors[fieldId];
+    }
+
     this.updateFieldUI(el, errors.length === 0);
     this.validatedFields.add(fieldId);
+
     return errors.length === 0;
   }
 
   validateAllRequired() {
-    const requiredFields = Object.keys(VALIDATION_RULES).filter(key => VALIDATION_RULES[key].required);
+    const requiredFields = Object.keys(VALIDATION_RULES)
+      .filter(key => VALIDATION_RULES[key].required);
+
     const results = requiredFields.map(fieldId => this.validateField(fieldId));
     return results.every(r => r === true);
   }
 
   validateAll() {
-    Object.keys(VALIDATION_RULES).forEach(fieldId => { this.validateField(fieldId); });
+    Object.keys(VALIDATION_RULES).forEach(fieldId => {
+      this.validateField(fieldId);
+    });
     return Object.keys(this.errors).length === 0;
   }
 
@@ -1721,16 +2075,24 @@ class FormValidator {
     const wrapper = el.parentElement;
     const oldError = wrapper?.querySelector('.field-error');
     if (oldError) oldError.remove();
+
     if (isValid) {
       el.style.borderBottomColor = '#059669';
       el.style.boxShadow = '0 2px 0 0 rgba(5,150,105,0.3), 0 0 12px rgba(5,150,105,0.08)';
     } else {
       el.style.borderBottomColor = '#DC2626';
       el.style.boxShadow = '0 2px 0 0 rgba(220,38,38,0.3), 0 0 12px rgba(220,38,38,0.08)';
+
       if (wrapper && this.errors[el.id]) {
         const errorMsg = document.createElement('div');
         errorMsg.className = 'field-error';
-        errorMsg.style.cssText = 'font-size:0.62rem;color:#DC2626;margin-top:2px;font-family:var(--font-mono);letter-spacing:0.5px;';
+        errorMsg.style.cssText = `
+          font-size: 0.62rem;
+          color: #DC2626;
+          margin-top: 2px;
+          font-family: var(--font-mono);
+          letter-spacing: 0.5px;
+        `;
         errorMsg.textContent = '✗ ' + this.errors[el.id][0];
         wrapper.appendChild(errorMsg);
       }
@@ -1748,7 +2110,11 @@ class FormValidator {
   getErrorSummary() {
     const summary = [];
     Object.entries(this.errors).forEach(([fieldId, msgs]) => {
-      const label = fieldId.replace(/_/g, ' ').split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+      const label = fieldId
+        .replace(/_/g, ' ')
+        .split(' ')
+        .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+        .join(' ');
       summary.push(`${label}: ${msgs[0]}`);
     });
     return summary;
@@ -1757,57 +2123,157 @@ class FormValidator {
   showErrorModal() {
     const errors = this.getErrorSummary();
     if (errors.length === 0) return false;
+
     const modal = document.createElement('div');
-    modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;z-index:9998;backdrop-filter:blur(4px);';
+    modal.style.cssText = `
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9998;
+      backdrop-filter: blur(4px);
+    `;
+
     const content = document.createElement('div');
-    content.style.cssText = 'background:linear-gradient(135deg,#1a1a1a 0%,#0a0a0a 100%);border:2px solid #DC2626;border-radius:12px;padding:30px;max-width:500px;width:90%;box-shadow:0 0 40px rgba(220,38,38,0.4);font-family:var(--font-body);';
+    content.style.cssText = `
+      background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+      border: 2px solid #DC2626;
+      border-radius: 12px;
+      padding: 30px;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 0 40px rgba(220,38,38,0.4), inset 0 0 20px rgba(0,229,255,0.05);
+      font-family: var(--font-body);
+    `;
+
     const title = document.createElement('h2');
-    title.style.cssText = 'color:#DC2626;font-family:var(--font-display);margin:0 0 16px 0;font-size:18px;letter-spacing:2px;';
+    title.style.cssText = `
+      color: #DC2626;
+      font-family: var(--font-display);
+      margin: 0 0 16px 0;
+      font-size: 18px;
+      letter-spacing: 2px;
+      text-shadow: 0 0 10px rgba(220,38,38,0.5);
+    `;
     title.textContent = '⚠ VALIDATION ERRORS';
+
     const divider = document.createElement('div');
-    divider.style.cssText = 'height:1px;background:linear-gradient(90deg,#DC2626,transparent);margin-bottom:16px;';
+    divider.style.cssText = `
+      height: 1px;
+      background: linear-gradient(90deg, #DC2626, transparent);
+      margin-bottom: 16px;
+    `;
+
     const errorList = document.createElement('ul');
-    errorList.style.cssText = 'list-style:none;padding:0;margin:0 0 20px 0;';
+    errorList.style.cssText = `
+      list-style: none;
+      padding: 0;
+      margin: 0 0 20px 0;
+    `;
+
     errors.forEach(error => {
       const li = document.createElement('li');
-      li.style.cssText = 'color:#00E5FF;font-family:var(--font-mono);font-size:13px;line-height:1.6;padding:6px 0;';
+      li.style.cssText = `
+        color: #00E5FF;
+        font-family: var(--font-mono);
+        font-size: 13px;
+        line-height: 1.6;
+        padding: 6px 0;
+      `;
       li.textContent = '• ' + error;
       errorList.appendChild(li);
     });
+
     const closeBtn = document.createElement('button');
-    closeBtn.style.cssText = 'width:100%;background:linear-gradient(135deg,#DC2626,#b01f1f);border:none;color:white;padding:12px;border-radius:6px;cursor:pointer;font-weight:bold;font-family:var(--font-display);font-size:12px;letter-spacing:1px;';
+    closeBtn.style.cssText = `
+      width: 100%;
+      background: linear-gradient(135deg, #DC2626, #b01f1f);
+      border: none;
+      color: white;
+      padding: 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      font-family: var(--font-display);
+      font-size: 12px;
+      letter-spacing: 1px;
+      box-shadow: 0 0 15px rgba(220,38,38,0.4);
+      transition: all 0.2s;
+    `;
     closeBtn.textContent = 'CLOSE';
-    closeBtn.addEventListener('click', function() { document.body.removeChild(modal); });
-    content.appendChild(title); content.appendChild(divider); content.appendChild(errorList); content.appendChild(closeBtn);
+
+    closeBtn.addEventListener('mouseenter', function() {
+      this.style.transform = 'translateY(-2px)';
+      this.style.boxShadow = '0 0 25px rgba(220,38,38,0.6)';
+    });
+
+    closeBtn.addEventListener('mouseleave', function() {
+      this.style.transform = '';
+      this.style.boxShadow = '0 0 15px rgba(220,38,38,0.4)';
+    });
+
+    closeBtn.addEventListener('click', function() {
+      document.body.removeChild(modal);
+    });
+
+    content.appendChild(title);
+    content.appendChild(divider);
+    content.appendChild(errorList);
+    content.appendChild(closeBtn);
     modal.appendChild(content);
+
     document.body.appendChild(modal);
+
     const firstErrorId = Object.keys(this.errors)[0];
     if (firstErrorId) {
       const el = document.getElementById(firstErrorId);
-      if (el) setTimeout(() => { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); el.focus(); }, 100);
+      if (el) {
+        setTimeout(() => {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          el.focus();
+        }, 100);
+      }
     }
+
     return true;
   }
 }
 
 const validator = new FormValidator();
 
+// ────────────────────────────────────────────────────────────────
+// REAL-TIME VALIDATION
+// ────────────────────────────────────────────────────────────────
 function setupFieldValidation() {
   Object.keys(VALIDATION_RULES).forEach(fieldId => {
     const el = document.getElementById(fieldId);
     if (!el) return;
-    el.addEventListener('blur', function() { validator.validateField(fieldId); });
-    el.addEventListener('focus', function() { validator.clearFieldUI(this); });
+
+    el.addEventListener('blur', function() {
+      validator.validateField(fieldId);
+    });
+
+    el.addEventListener('focus', function() {
+      validator.clearFieldUI(this);
+    });
+
     if (['email', 'phone', 'sqft'].includes(fieldId)) {
       let debounceTimer;
       el.addEventListener('input', function() {
         clearTimeout(debounceTimer);
-        debounceTimer = setTimeout(() => { validator.validateField(fieldId); }, 600);
+        debounceTimer = setTimeout(() => {
+          validator.validateField(fieldId);
+        }, 600);
       });
     }
   });
 }
 
+// ────────────────────────────────────────────────────────────────
+// FORM VALIDATION & DATA
+// ────────────────────────────────────────────────────────────────
 function validateForm() {
   if (!validator.validateAllRequired()) {
     validator.showErrorModal();
@@ -1816,22 +2282,42 @@ function validateForm() {
   return true;
 }
 
+function getFormData() {
+  var data = {};
+
+  document.querySelectorAll('input, textarea, select').forEach(function(el) {
+    var key = el.id || el.name;
+    if (!key) return;
+
+    if (el.type === 'checkbox') {
+      if (!data[key]) data[key] = [];
+      if (el.checked) data[key].push(el.value);
+    } else if (el.type === 'radio') {
+      if (el.checked) data[key] = el.value;
+    } else {
+      if (data[key] === undefined) data[key] = el.value;
+    }
+  });
+
+  return data;
+}
 // ────────────────────────────────────────────────────────────────
-// PRINT / PDF (modal flow — UNCHANGED)
+// FORM ACTIONS (PRINT, IMAGE, EMAIL, CLEAR)
 // ────────────────────────────────────────────────────────────────
+
 function printPDF() {
   if (!validateForm()) return;
-  
+
   var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
   var isAndroid = /Android/i.test(navigator.userAgent);
   var modal = document.getElementById('pdfModal');
   var instr = document.getElementById('pdfInstructions');
-  
+
   if (!modal || !instr) {
-    window.print();
+    nativePrint();
     return;
   }
-  
+
   if (isIOS) {
     instr.innerHTML = "<b style='color:#FFB300'>1.</b> Tap CONTINUE to open Print preview<br><b style='color:#FFB300'>2.</b> <span style='color:#FFB300'>PINCH-ZOOM OUT</span> on the page thumbnail<br><b style='color:#FFB300'>3.</b> Tap the Share icon (top right)<br><b style='color:#FFB300'>4.</b> Tap <span style='color:#FFB300'>'Save to Files'</span>";
   } else if (isAndroid) {
@@ -1839,7 +2325,7 @@ function printPDF() {
   } else {
     instr.innerHTML = "<b style='color:#FFB300'>1.</b> Click CONTINUE to open Print dialog<br><b style='color:#FFB300'>2.</b> Set Destination to <span style='color:#FFB300'>'Save as PDF'</span><br><b style='color:#FFB300'>3.</b> Click Save";
   }
-  
+
   modal.style.display = 'flex';
 }
 
@@ -1848,17 +2334,24 @@ function closePdfModal() {
 }
 
 function confirmPdfPrint() {
-  document.getElementById('pdfModal').style.display = 'none';
-  // window.print may have been overridden for mobile Safari (see IIFE below).
-  // For iOS Safari that override fires the isolated-window print which is
-  // its known-good path. For desktop/Android, the beforeprint listener
-  // applies the stretch transform first.
+  closePdfModal();
+  
+  console.log('=== PRINT DEBUG ===');
+  var page = document.getElementById('page');
+  if (page) {
+    console.log('Page width:', page.offsetWidth);
+    console.log('Page height:', page.scrollHeight);
+    var expectedScaleX = (window.PAPER_W_PX / page.offsetWidth).toFixed(3);
+    var expectedScaleY = (window.PAPER_H_PX / page.scrollHeight).toFixed(3);
+    console.log('Expected scale: scaleX=' + expectedScaleX + ', scaleY=' + expectedScaleY);
+  }
+  console.log('Current PRINT_SCALE:', window.PRINT_SCALE);
+  console.log('==================');
+  
   window.print();
 }
 
-// ────────────────────────────────────────────────────────────────
-// IMAGE EXPORT (unchanged)
-// ────────────────────────────────────────────────────────────────
+
 function openImageModal() {
   if (!validateForm()) return;
   var modal = document.getElementById('imageModal');
@@ -1871,84 +2364,44 @@ function closeImageModal() {
 
 function saveImageFromModal() {
   closeImageModal();
-  
+
   var page = document.getElementById('page');
   if (!page) {
     alert('Error: Could not find form element');
     return;
   }
-  
+
   var pageTitle = (document.getElementById('name').value || 'Estimate').replace(/\s+/g, '_');
   var timestamp = new Date().toISOString().split('T')[0];
   var filename = pageTitle + '_' + timestamp + '.jpg';
-  
+
   var loadingDiv = document.createElement('div');
   loadingDiv.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1a1a1a;border:2px solid #D97706;color:#D97706;padding:20px 40px;font-family:monospace;z-index:99999;border-radius:8px;box-shadow:0 0 30px rgba(217,119,6,0.4);';
   loadingDiv.textContent = '⏳ Generating image...';
   document.body.appendChild(loadingDiv);
-  
-  // Measure the page's true content dimensions. On iOS Safari, the .page
-  // uses min-height: 100vh which makes its scrollHeight equal to the
-  // viewport height — NOT the actual content height. So we measure by
-  // summing the heights of the page's direct children (header + content
-  // + footer), which gives us the real content size even when the
-  // viewport-bound min-height is shrinking the reported page height.
-  var pageRect = page.getBoundingClientRect();
-  
-  function measureContentHeight(pageEl) {
-    // Try summing children first (works around min-height:100vh issue)
-    var children = pageEl.children;
-    if (children && children.length > 0) {
-      var lastChild = children[children.length - 1];
-      var lastRect = lastChild.getBoundingClientRect();
-      var firstRect = children[0].getBoundingClientRect();
-      var bottomOfLast = lastRect.bottom - firstRect.top;
-      if (bottomOfLast > 0) return Math.ceil(bottomOfLast);
-    }
-    return 0;
-  }
-  
-  var measuredFromChildren = measureContentHeight(page);
-  var contentH = Math.max(
-    page.scrollHeight,
-    page.offsetHeight,
-    Math.ceil(pageRect.height),
-    measuredFromChildren
-  );
-  var contentW = Math.max(
-    page.scrollWidth,
-    page.offsetWidth,
-    Math.ceil(pageRect.width)
-  );
-  // Pad pixels at the bottom AND top so the footer's border-top line and
-  // any sub-pixel bleed are fully captured. Top pad ensures the page's
-  // top border-edge isn't trimmed either.
-  var CAPTURE_PAD_TOP = 4;
-  var CAPTURE_PAD_BOTTOM = 12;
-  var captureH = contentH + CAPTURE_PAD_TOP + CAPTURE_PAD_BOTTOM;
 
   html2canvas(page, {
     scale: 2,
     useCORS: true,
     backgroundColor: '#FFFFFF',
     logging: false,
-    width: contentW,
-    height: captureH,
-    windowWidth:  contentW,
-    windowHeight: captureH,
-    x: 0,
-    y: -CAPTURE_PAD_TOP,
+    windowHeight: page.scrollHeight,
     allowTaint: true,
     imageTimeout: 15000,
     removeContainer: true,
-    
+
     onclone: function(clonedDoc, clonedElement) {
+      clonedDoc.querySelectorAll('*').forEach(function(el) {
+        if (el.getAttribute('stroke') === 'currentColor') el.setAttribute('stroke', '#D97706');
+        if (el.getAttribute('fill') === 'currentColor') el.setAttribute('fill', '#D97706');
+      });
+
       var svgs = clonedDoc.querySelectorAll('svg');
-      
+
       svgs.forEach(function(svg) {
         var parent = svg.parentElement;
         var computedColor = '#D97706';
-        
+
         try {
           if (parent) {
             var parentStyle = clonedDoc.defaultView.getComputedStyle(parent);
@@ -1960,15 +2413,6 @@ function saveImageFromModal() {
           svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
         }
 
-        var svgStroke = svg.getAttribute('stroke');
-        var svgFill = svg.getAttribute('fill');
-        var svgStrokeWidth = svg.getAttribute('stroke-width');
-        var svgStrokeLinecap = svg.getAttribute('stroke-linecap');
-        var svgStrokeLinejoin = svg.getAttribute('stroke-linejoin');
-
-        if (svgStroke === 'currentColor') svgStroke = computedColor;
-        if (svgFill === 'currentColor') svgFill = computedColor;
-
         var shapes = svg.querySelectorAll('path, polyline, polygon, line, rect, circle, ellipse, text');
         
         shapes.forEach(function(el) {
@@ -1978,14 +2422,16 @@ function saveImageFromModal() {
           if (el.getAttribute('fill') === 'currentColor') {
             el.setAttribute('fill', computedColor);
           }
-          if (svgStroke && !el.hasAttribute('stroke')) el.setAttribute('stroke', svgStroke);
-          if (svgFill && !el.hasAttribute('fill')) el.setAttribute('fill', svgFill);
-          if (svgStrokeWidth && !el.hasAttribute('stroke-width')) el.setAttribute('stroke-width', svgStrokeWidth);
-          if (svgStrokeLinecap && !el.hasAttribute('stroke-linecap')) el.setAttribute('stroke-linecap', svgStrokeLinecap);
-          if (svgStrokeLinejoin && !el.hasAttribute('stroke-linejoin')) el.setAttribute('stroke-linejoin', svgStrokeLinejoin);
-          if (!el.hasAttribute('fill') && el.tagName.toLowerCase() !== 'text') {
+          if (!el.getAttribute('fill') && el.tagName.toLowerCase() !== 'text') {
             el.setAttribute('fill', 'none');
           }
+        });
+
+        svg.querySelectorAll('[stroke="currentColor"]').forEach(function(el) {
+          el.setAttribute('stroke', '#D97706');
+        });
+        svg.querySelectorAll('[fill="currentColor"]').forEach(function(el) {
+          el.setAttribute('fill', '#D97706');
         });
       });
 
@@ -2013,23 +2459,10 @@ function saveImageFromModal() {
       modals.forEach(function(m) {
         m.style.display = 'none';
       });
-
-      // Footer-clip fix: relax the .page min-height: 100vh so the page
-      // collapses to content-fit (otherwise on iOS Safari the page can
-      // be taller than its visible content, putting the footer below
-      // where html2canvas captures). CRITICAL: do NOT change `display`
-      // — the page uses flex column to stack header / content / footer,
-      // and switching to block destroys the layout (header, sides, and
-      // footer disappear). Just relax the min-height constraint.
-      var clonedPage = clonedDoc.getElementById('page');
-      if (clonedPage) {
-        clonedPage.style.minHeight = '0';
-        // Leave height/display alone so flex column layout is preserved
-      }
     }
   }).then(function(canvas) {
     document.body.removeChild(loadingDiv);
-    
+
     try {
       var link = document.createElement('a');
       link.download = filename;
@@ -2064,39 +2497,9 @@ function saveImageFromModal() {
   });
 }
 
-// ────────────────────────────────────────────────────────────────
-// FORM ACTIONS
-// ────────────────────────────────────────────────────────────────
-function clearForm() {
-  if (!confirm('Clear all fields?')) return;
-  document.querySelectorAll('input[type="text"],input[type="email"],input[type="tel"],input[type="date"],input[type="number"],textarea').forEach(function(el) { el.value = ''; });
-  document.querySelectorAll('input[type="checkbox"],input[type="radio"]').forEach(function(el) { el.checked = false; });
-  var s = document.getElementById('sqft-status');
-  if (s) s.textContent = '';
-  var gpsStatus = document.getElementById('gps-status');
-  if (gpsStatus) { gpsStatus.style.display = 'none'; gpsStatus.textContent = ''; }
-  localStorage.removeItem(DRAFT_KEY);
-}
-
-function getFormData() {
-  var data = {};
-  document.querySelectorAll('input, textarea, select').forEach(function(el) {
-    var key = el.id || el.name;
-    if (!key) return;
-    if (el.type === 'checkbox') {
-      if (!data[key]) data[key] = [];
-      if (el.checked) data[key].push(el.value);
-    } else if (el.type === 'radio') {
-      if (el.checked) data[key] = el.value;
-    } else {
-      if (data[key] === undefined) data[key] = el.value;
-    }
-  });
-  return data;
-}
-
 function sendEmail() {
   if (!validateForm()) return;
+
   var data = getFormData();
   var name = data.name || '';
   var emailTo = data.email || '';
@@ -2107,286 +2510,71 @@ function sendEmail() {
   var sqft = data.sqft || '';
   var estDate = data.est_date || '';
   var estimator = data.estimator || '';
+
   var subject = 'Generator Installation Estimate — ' + name;
   var lines = [
-    'Dear ' + name + ',', '',
-    'Thank you for the opportunity to provide you with a generator installation estimate.', '',
+    'Dear ' + name + ',',
+    '',
+    'Thank you for the opportunity to provide you with a generator installation estimate.',
+    '',
     '--- ESTIMATE DETAILS ---',
     'Customer: ' + name,
     'Address: ' + address,
     'Phone: ' + phone,
     'Sq. Footage: ' + sqft + ' SF',
     'Estimate Date: ' + estDate,
-    'Estimator: ' + estimator, '',
-    'Please reply to this email or call us if you have any questions.', '',
+    'Estimator: ' + estimator,
+    '',
+    'Please reply to this email or call us if you have any questions.',
+    '',
     'Best regards,',
     'Always On Generators'
   ];
-  var mailtoLink = 'mailto:' + encodeURIComponent(emailTo) +
-                   '?subject=' + encodeURIComponent(subject) +
+
+  var mailtoLink = 'mailto:' + encodeURIComponent(emailTo) + 
+                   '?subject=' + encodeURIComponent(subject) + 
                    '&body=' + encodeURIComponent(lines.join('\n'));
+
   window.location.href = mailtoLink;
 }
 
-// Modal click-outside close
+function clearForm() {
+  if (!confirm('Clear all fields?')) return;
+
+  document.querySelectorAll('input[type="text"],input[type="email"],input[type="tel"],input[type="date"],input[type="number"],textarea').forEach(function(el) {
+    el.value = '';
+  });
+
+  document.querySelectorAll('input[type="checkbox"],input[type="radio"]').forEach(function(el) {
+    el.checked = false;
+  });
+
+  var s = document.getElementById('sqft-status');
+  if (s) s.textContent = '';
+
+  var gpsStatus = document.getElementById('gps-status');
+  if (gpsStatus) {
+    gpsStatus.style.display = 'none';
+    gpsStatus.textContent = '';
+  }
+
+  localStorage.removeItem(DRAFT_KEY);
+}
+
+// ────────────────────────────────────────────────────────────────
+// MODAL CLICK-OUTSIDE CLOSE
+// ────────────────────────────────────────────────────────────────
 document.addEventListener('click', function(e) {
   var pdfModal = document.getElementById('pdfModal');
   var imageModal = document.getElementById('imageModal');
-  if (pdfModal && e.target === pdfModal) pdfModal.style.display = 'none';
-  if (imageModal && e.target === imageModal) imageModal.style.display = 'none';
+
+  if (pdfModal && e.target === pdfModal) {
+    closePdfModal();
+  }
+  if (imageModal && e.target === imageModal) {
+    closeImageModal();
+  }
 });
-
-// ════════════════════════════════════════════════════════════════
-// ▼▼▼ MOBILE SAFARI ISOLATED-WINDOW PRINT (UNTOUCHED) ▼▼▼
-// This is your known-good iOS Safari print path. It overrides
-// window.print() ONLY on mobile Safari (iPhone/iPad). Every other
-// browser uses the native print path with the stretch logic above.
-// ════════════════════════════════════════════════════════════════
-(function() {
-  'use strict';
-
-  var isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
-              || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-
-  var isDesktopSafari = /Safari/i.test(navigator.userAgent)
-                     && !/Chrome|CriOS|FxiOS|EdgiOS|Mobile/i.test(navigator.userAgent);
-
-  var PRINT_CSS_TEMPLATE = `
-    @page { 
-      size: letter portrait; 
-      margin: 0 !important;
-    }
-    @page :first { margin: 0 !important; }
-    @page :left  { margin: 0 !important; }
-    @page :right { margin: 0 !important; }
-
-    html { 
-      margin: 0 !important; 
-      padding: 0 !important;
-      background: #FFFFFF !important;
-      width: 100% !important;
-      height: 100% !important;
-      overflow: hidden !important;
-    }
-    body { 
-      margin: 0 auto !important;        /* horizontal auto-center */
-      padding: 0 !important; 
-      width: 100% !important;
-      height: 100% !important;
-      zoom: __ZOOM__;
-      background: #FFFFFF !important;
-      overflow: hidden !important;
-      -webkit-print-color-adjust: exact !important;
-      print-color-adjust: exact !important;
-      /* Use flex to center the zoomed page horizontally within the sheet.
-         Without this, CSS zoom on a wider-than-paper element leaves the
-         result hugging the left edge of the paper. */
-      display: flex !important;
-      justify-content: center !important;
-      align-items: flex-start !important;
-    }
-    .page { 
-      width: 100% !important; 
-      max-width: 100% !important; 
-      margin: 0 auto !important;        /* center inside body */
-      padding: 0 !important; 
-      border: 5px solid #D97706 !important;
-      box-shadow: none !important;
-      page-break-after: avoid !important;
-      break-after: avoid !important;
-      page-break-inside: avoid !important;
-      break-inside: avoid !important;
-    }
-    .toolbar, #offline-banner, #pdfModal, #imageModal { 
-      display: none !important; 
-    }
-    .header  { padding: 4px 16px !important; min-height: 0 !important; }
-    .content { padding: 4px 8px  !important; }
-    .footer  { padding: 4px 16px !important; }
-    .section, .top-grid, .flood-bar, .gas-appliances-box { 
-      page-break-inside: avoid !important; 
-      break-inside: avoid !important; 
-    }
-  `;
-
-  // Default fallback zoom in case measurement fails. Used for the
-  // beforeprint listener path (when a user invokes browser print menu
-  // directly instead of clicking our Print button).
-  var FALLBACK_ZOOM = 0.55;
-
-  // Calculate the zoom factor needed to fit the page on a single
-  // letter-sized sheet. Returns a stable 2-decimal value like 0.55, 0.62,
-  // 0.70 — both axes are checked, the more restrictive wins, and we
-  // ALWAYS round DOWN so repeated calls produce the same result even if
-  // scrollHeight drifts by 1-2px between calls (which it does on iOS Safari
-  // when web fonts finish loading or input heights settle).
-  function computePrintZoom() {
-    var pageEl = document.querySelector('.page');
-    if (!pageEl) return FALLBACK_ZOOM;
-    // Letter paper at 96dpi
-    var PAPER_W = 816;
-    var PAPER_H = 1056;
-    // Larger safety buffer to absorb iOS Safari measurement drift between
-    // page loads. Without this, a repeated print can return a tiny bit
-    // higher zoom and overflow onto a second page.
-    var SAFETY = 24;  // ~3% of letter height — more than enough for drift
-
-    var naturalW = pageEl.scrollWidth  || pageEl.offsetWidth  || 1050;
-    var naturalH = pageEl.scrollHeight || pageEl.offsetHeight || 1400;
-
-    // Add the same safety buffer to the measurement side so the zoom
-    // we pick is a little smaller than strictly required.
-    var zX = (PAPER_W - SAFETY) / naturalW;
-    var zY = (PAPER_H - SAFETY) / naturalH;
-    var z  = Math.min(zX, zY);
-
-    // Clamp to sane bounds
-    if (!isFinite(z) || z <= 0) return FALLBACK_ZOOM;
-    if (z > 1) z = 1;
-
-    // Round DOWN to 2 decimal places for stability. Math.floor(z * 100) / 100
-    // means 0.687 -> 0.68, 0.692 -> 0.69, etc. — repeat runs return the same
-    // number even if z shifts by a fraction of a percent.
-    z = Math.floor(z * 100) / 100;
-
-    // Final guard: never exceed FALLBACK_ZOOM if the form is so short
-    // that we'd somehow round up (defensive only).
-    if (z < 0.30) z = 0.30;
-    return z;
-  }
-
-  function buildPrintCSS(zoom) {
-    return PRINT_CSS_TEMPLATE.replace('__ZOOM__', String(zoom));
-  }
-
-  // Static fallback for the beforeprint hook path
-  var PRINT_CSS = buildPrintCSS(FALLBACK_ZOOM);
-
-  function applyPrintStyles() {
-    if (!isMobile) return;
-    var styleEl = document.getElementById('mobile-print-styles');
-    if (styleEl) styleEl.innerHTML = buildPrintCSS(computePrintZoom());
-  }
-
-  function clearPrintStyles() {
-    if (!isMobile) return;
-    var styleEl = document.getElementById('mobile-print-styles');
-    if (styleEl) styleEl.innerHTML = '';
-  }
-
-  window.addEventListener('beforeprint', applyPrintStyles);
-  window.addEventListener('afterprint', clearPrintStyles);
-
-  // Only override window.print on mobile Safari, never desktop, never Android
-  if (!isMobile || isDesktopSafari) return;
-
-  var isSafari = /Safari/i.test(navigator.userAgent)
-              && !/Chrome|CriOS|FxiOS|EdgiOS/i.test(navigator.userAgent);
-
-  if (isSafari) {
-    // iOS Safari approach: swap the page's content in place with a
-    // print-ready clone, call window.print() SYNCHRONOUSLY inside the
-    // user's tap event (so the activation token is still valid), then
-    // restore the original content after the print dialog closes.
-    //
-    // Why not window.open + new window?
-    //   - window.open('', '_blank') sometimes opens a tab without
-    //     completing a navigable load on iOS, so onload never fires
-    //   - calling print() from setTimeout inside that window happens
-    //     AFTER the user-activation token has been "consumed", and
-    //     iOS Safari silently refuses to show the print preview
-    //   - this in-place approach uses the original tap as the activation
-    //     and triggers print() synchronously, which iOS allows
-    window.print = function() {
-      var pageEl = document.querySelector('.page');
-      if (!pageEl) return;
-
-      // Save current state so we can restore after print
-      var savedBodyHTML       = document.body.innerHTML;
-      var savedBodyClassName  = document.body.className;
-      var savedScrollY        = window.scrollY;
-      var savedTitle          = document.title;
-
-      // Build the print-only HTML: clone .page with input values baked in
-      var clone = pageEl.cloneNode(true);
-      var liveInputs  = pageEl.querySelectorAll('input, textarea, select');
-      var cloneInputs = clone.querySelectorAll('input, textarea, select');
-      liveInputs.forEach(function(liveEl, i) {
-        var cloneEl = cloneInputs[i];
-        if (!cloneEl) return;
-        if (liveEl.type === 'checkbox' || liveEl.type === 'radio') {
-          if (liveEl.checked) cloneEl.setAttribute('checked', 'checked');
-          else cloneEl.removeAttribute('checked');
-        } else if (liveEl.tagName === 'TEXTAREA') {
-          cloneEl.textContent = liveEl.value;
-        } else {
-          cloneEl.setAttribute('value', liveEl.value);
-        }
-      });
-
-      // Compute the zoom factor from the original page, which is still
-      // in the DOM at this point (we haven't swapped yet).
-      var dynamicZoom = computePrintZoom();
-
-      // Inject the print-only style. We give it a unique id so we can
-      // find and remove it on restore.
-      var printStyleEl = document.createElement('style');
-      printStyleEl.id = 'aog-ios-print-style';
-      printStyleEl.innerHTML = buildPrintCSS(dynamicZoom);
-      document.head.appendChild(printStyleEl);
-
-      // Swap body content: only the cloned page is visible during print.
-      document.body.innerHTML = '';
-      document.body.appendChild(clone);
-
-      // Restore everything after print dialog closes.
-      function restore() {
-        // Some iOS versions fire afterprint, some don't. Guard against
-        // double-restore by checking a flag.
-        if (window.__aog_restored) return;
-        window.__aog_restored = true;
-        window.removeEventListener('afterprint', restore);
-
-        var styleEl = document.getElementById('aog-ios-print-style');
-        if (styleEl && styleEl.parentNode) styleEl.parentNode.removeChild(styleEl);
-        document.body.innerHTML = savedBodyHTML;
-        document.body.className = savedBodyClassName;
-        document.title          = savedTitle;
-        window.scrollTo(0, savedScrollY);
-
-        // The body innerHTML restore reattaches all inputs but their
-        // current values were lost. Restore them from the live data we
-        // had stored — actually no: liveInputs reference is to the OLD
-        // body which is now gone. The user's original input values are
-        // STILL preserved because innerHTML restore brings back the
-        // inputs with their original `value` attributes set by the
-        // browser as they were typed. Just re-run handlers if needed.
-        if (typeof setupAddressAutocomplete === 'function') setupAddressAutocomplete();
-        if (typeof setupGpsButton === 'function') setupGpsButton();
-        if (typeof setupFieldValidation === 'function') setupFieldValidation();
-
-        delete window.__aog_restored;
-      }
-
-      window.__aog_restored = false;
-      window.addEventListener('afterprint', restore);
-      // iOS Safari often does NOT fire afterprint, so set a fallback timer
-      // that restores after a long-enough window for the user to
-      // interact with the print sheet. 30s is generous.
-      setTimeout(restore, 30000);
-
-      // Call print synchronously in the same call stack as the user's
-      // tap. This is the key to making iOS Safari actually open the
-      // print preview — the user-activation token is still valid here.
-      try {
-        nativePrint();
-      } catch (e) {
-        // If print throws, restore immediately
-        restore();
-      }
-    };
-  }
-})();
 
 // ────────────────────────────────────────────────────────────────
 // ADDRESS AUTOCOMPLETE
@@ -2395,40 +2583,55 @@ function setupAddressAutocomplete() {
   var input = document.getElementById('address');
   var list  = document.getElementById('address-suggestions');
   if (!input || !list) return;
+
   var debounce;
+
   input.addEventListener('input', function() {
     clearTimeout(debounce);
     var q = input.value.trim();
     if (q.length < 3) { list.classList.remove('open'); return; }
+
     debounce = setTimeout(function() {
       var url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/' +
-                encodeURIComponent(q) + '.json?access_token=' + MAPBOX_TOKEN +
+                encodeURIComponent(q) +
+                '.json?access_token=' + MAPBOX_TOKEN +
                 '&country=US&types=address&autocomplete=true&limit=5';
-      fetch(url).then(function(r) { return r.json(); }).then(function(data) {
-        list.innerHTML = '';
-        if (!data.features || data.features.length === 0) { list.classList.remove('open'); return; }
-        data.features.forEach(function(f) {
-          var li = document.createElement('li');
-          li.textContent = f.place_name;
-          li.addEventListener('mousedown', function(e) {
-            e.preventDefault();
-            var parts = f.place_name.split(',');
-            input.value = parts[0].trim();
-            var rest = parts.slice(1).join(',').trim();
-            var addr2 = document.getElementById('address2');
-            if (addr2) addr2.value = rest;
+
+      fetch(url)
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          list.innerHTML = '';
+          if (!data.features || data.features.length === 0) {
             list.classList.remove('open');
-            list.innerHTML = '';
+            return;
+          }
+          data.features.forEach(function(f) {
+            var li = document.createElement('li');
+            li.textContent = f.place_name;
+            li.addEventListener('mousedown', function(e) {
+              e.preventDefault();
+              var parts = f.place_name.split(',');
+              input.value = parts[0].trim();
+              var rest = parts.slice(1).join(',').trim();
+              var addr2 = document.getElementById('address2');
+              if (addr2) addr2.value = rest;
+              list.classList.remove('open');
+              list.innerHTML = '';
+            });
+            list.appendChild(li);
           });
-          list.appendChild(li);
-        });
-        list.classList.add('open');
-      }).catch(function() { list.classList.remove('open'); });
+          list.classList.add('open');
+        })
+        .catch(function() { list.classList.remove('open'); });
     }, 300);
   });
+
   document.addEventListener('click', function(e) {
-    if (!input.contains(e.target) && !list.contains(e.target)) list.classList.remove('open');
+    if (!input.contains(e.target) && !list.contains(e.target)) {
+      list.classList.remove('open');
+    }
   });
+
   input.addEventListener('keydown', function(e) {
     var items = list.querySelectorAll('li');
     var active = list.querySelector('li.active');
@@ -2459,38 +2662,53 @@ function setupGpsButton() {
   var btn    = document.getElementById('gps-btn');
   var status = document.getElementById('gps-status');
   if (!btn) return;
+
   btn.addEventListener('click', function() {
     if (!navigator.geolocation) {
       if (status) { status.textContent = 'Geolocation not supported'; status.style.display = 'block'; }
       return;
     }
+
     btn.disabled = true;
     if (status) { status.textContent = '📡 Getting location...'; status.style.display = 'block'; }
+
     navigator.geolocation.getCurrentPosition(
       function(pos) {
-        var lat = pos.coords.latitude, lng = pos.coords.longitude;
-        var url = 'https://nominatim.openstreetmap.org/reverse?format=json&lat=' + lat + '&lon=' + lng + '&addressdetails=1';
-        fetch(url, { headers: { 'Accept-Language': 'en', 'User-Agent': 'AOG-Estimate-Form' } })
+        var lat = pos.coords.latitude;
+        var lng = pos.coords.longitude;
+
+        var url = 'https://nominatim.openstreetmap.org/reverse?format=json&lat=' +
+                  lat + '&lon=' + lng + '&addressdetails=1';
+
+        fetch(url, {
+          headers: { 'Accept-Language': 'en', 'User-Agent': 'AOG-Estimate-Form' }
+        })
           .then(function(r) { return r.json(); })
           .then(function(data) {
             btn.disabled = false;
             if (data && data.address) {
               var a = data.address;
+
               var street = '';
               if (a.house_number && a.road) street = a.house_number + ' ' + a.road;
               else if (a.road) street = a.road;
               else street = data.display_name.split(',')[0];
+
               var city  = a.city || a.town || a.village || a.county || '';
               var state = a.state || '';
               var zip   = a.postcode || '';
               var cityLine = city + (state ? ', ' + state : '') + (zip ? ' ' + zip : '');
+
               var addrInput  = document.getElementById('address');
               var addr2Input = document.getElementById('address2');
               if (addrInput)  addrInput.value  = street;
               if (addr2Input) addr2Input.value = cityLine;
+
               if (status) { status.textContent = '✓ Location found'; status.style.display = 'block'; }
               saveDraft();
-              setTimeout(function() { if (status) status.style.display = 'none'; }, 3000);
+              setTimeout(function() {
+                if (status) status.style.display = 'none';
+              }, 3000);
             } else {
               if (status) { status.textContent = 'Could not find address'; status.style.display = 'block'; }
             }
@@ -2514,21 +2732,23 @@ function setupGpsButton() {
 }
 
 // ────────────────────────────────────────────────────────────────
-// INIT
+// INITIALIZATION
 // ────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function() {
   var todayInput = document.getElementById('today');
   if (todayInput && !todayInput.value) {
     todayInput.value = new Date().toISOString().split('T')[0];
   }
+
   if (!navigator.onLine) {
     var b = document.getElementById('offline-banner');
     if (b) b.classList.add('show');
     document.body.classList.add('offline');
   }
-  if (typeof setupAddressAutocomplete === 'function') setupAddressAutocomplete();
-  if (typeof setupGpsButton === 'function') setupGpsButton();
-  if (typeof setupFieldValidation === 'function') setupFieldValidation();
+
+  setupAddressAutocomplete();
+  setupGpsButton();
+  setupFieldValidation();
   restoreDraft();
 });
 </script>
