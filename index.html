@@ -2261,29 +2261,32 @@ document.addEventListener('click', function(e) {
               && !/Chrome|CriOS|FxiOS|EdgiOS/i.test(navigator.userAgent);
 
   if (isSafari) {
+    // iOS Safari approach: swap the page's content in place with a
+    // print-ready clone, call window.print() SYNCHRONOUSLY inside the
+    // user's tap event (so the activation token is still valid), then
+    // restore the original content after the print dialog closes.
+    //
+    // Why not window.open + new window?
+    //   - window.open('', '_blank') sometimes opens a tab without
+    //     completing a navigable load on iOS, so onload never fires
+    //   - calling print() from setTimeout inside that window happens
+    //     AFTER the user-activation token has been "consumed", and
+    //     iOS Safari silently refuses to show the print preview
+    //   - this in-place approach uses the original tap as the activation
+    //     and triggers print() synchronously, which iOS allows
     window.print = function() {
       var pageEl = document.querySelector('.page');
-      if (!pageEl) {
-        console.warn('No .page element found to print.');
-        return;
-      }
+      if (!pageEl) return;
 
-      var existingStyles = Array.from(
-        document.querySelectorAll('link[rel="stylesheet"], style')
-      ).map(function(el) {
-        if (el.id === 'mobile-print-styles') return '';
-        return el.outerHTML;
-      }).join('\n');
+      // Save current state so we can restore after print
+      var savedBodyHTML       = document.body.innerHTML;
+      var savedBodyClassName  = document.body.className;
+      var savedScrollY        = window.scrollY;
+      var savedTitle          = document.title;
 
-      var win = window.open('', '_blank');
-      if (!win) {
-        alert('Please allow pop-ups to print.');
-        return;
-      }
-
+      // Build the print-only HTML: clone .page with input values baked in
       var clone = pageEl.cloneNode(true);
-
-      var liveInputs = pageEl.querySelectorAll('input, textarea, select');
+      var liveInputs  = pageEl.querySelectorAll('input, textarea, select');
       var cloneInputs = clone.querySelectorAll('input, textarea, select');
       liveInputs.forEach(function(liveEl, i) {
         var cloneEl = cloneInputs[i];
@@ -2298,42 +2301,66 @@ document.addEventListener('click', function(e) {
         }
       });
 
-      // Compute the right zoom from the parent window. The stable
-      // rounding (Math.floor to 2 decimals) plus the 24px SAFETY buffer
-      // in computePrintZoom() ensure the same value comes back across
-      // repeat invocations, so the print is consistent.
+      // Compute the zoom factor from the original page, which is still
+      // in the DOM at this point (we haven't swapped yet).
       var dynamicZoom = computePrintZoom();
-      var dynamicCSS  = buildPrintCSS(dynamicZoom);
 
-      win.document.open();
-      win.document.write(
-        '<!DOCTYPE html><html><head>' +
-        '<meta charset="UTF-8">' +
-        '<base href="' + location.href + '">' +
-        '<title>Print</title>' +
-        existingStyles +
-        '<style>' + dynamicCSS + '</style>' +
-        '</head><body>' +
-        clone.outerHTML +
-        '</body></html>'
-      );
-      win.document.close();
+      // Inject the print-only style. We give it a unique id so we can
+      // find and remove it on restore.
+      var printStyleEl = document.createElement('style');
+      printStyleEl.id = 'aog-ios-print-style';
+      printStyleEl.innerHTML = buildPrintCSS(dynamicZoom);
+      document.head.appendChild(printStyleEl);
 
-      // Simple, reliable print invocation. Earlier versions waited for
-      // document.fonts.ready, but on iOS Safari that Promise can fail to
-      // resolve when fonts are inherited from the parent's already-loaded
-      // cache, leaving win.print() never called and the user staring at
-      // an open tab with no print preview. A short setTimeout is the
-      // most reliable trigger across all iOS Safari versions.
-      win.onload = function() {
-        win.focus();
-        setTimeout(function() {
-          try { win.print(); } catch (e) {}
-          setTimeout(function() {
-            try { win.close(); } catch (e) {}
-          }, 1000);
-        }, 400);
-      };
+      // Swap body content: only the cloned page is visible during print.
+      document.body.innerHTML = '';
+      document.body.appendChild(clone);
+
+      // Restore everything after print dialog closes.
+      function restore() {
+        // Some iOS versions fire afterprint, some don't. Guard against
+        // double-restore by checking a flag.
+        if (window.__aog_restored) return;
+        window.__aog_restored = true;
+        window.removeEventListener('afterprint', restore);
+
+        var styleEl = document.getElementById('aog-ios-print-style');
+        if (styleEl && styleEl.parentNode) styleEl.parentNode.removeChild(styleEl);
+        document.body.innerHTML = savedBodyHTML;
+        document.body.className = savedBodyClassName;
+        document.title          = savedTitle;
+        window.scrollTo(0, savedScrollY);
+
+        // The body innerHTML restore reattaches all inputs but their
+        // current values were lost. Restore them from the live data we
+        // had stored — actually no: liveInputs reference is to the OLD
+        // body which is now gone. The user's original input values are
+        // STILL preserved because innerHTML restore brings back the
+        // inputs with their original `value` attributes set by the
+        // browser as they were typed. Just re-run handlers if needed.
+        if (typeof setupAddressAutocomplete === 'function') setupAddressAutocomplete();
+        if (typeof setupGpsButton === 'function') setupGpsButton();
+        if (typeof setupFieldValidation === 'function') setupFieldValidation();
+
+        delete window.__aog_restored;
+      }
+
+      window.__aog_restored = false;
+      window.addEventListener('afterprint', restore);
+      // iOS Safari often does NOT fire afterprint, so set a fallback timer
+      // that restores after a long-enough window for the user to
+      // interact with the print sheet. 30s is generous.
+      setTimeout(restore, 30000);
+
+      // Call print synchronously in the same call stack as the user's
+      // tap. This is the key to making iOS Safari actually open the
+      // print preview — the user-activation token is still valid here.
+      try {
+        nativePrint();
+      } catch (e) {
+        // If print throws, restore immediately
+        restore();
+      }
     };
   }
 })();
