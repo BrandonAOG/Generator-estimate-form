@@ -2303,173 +2303,128 @@ function saveImageFromModal() {
   var filename = pageTitle + '_' + timestamp + '.jpg';
   
   var loadingDiv = document.createElement('div');
-  loadingDiv.id = 'image-loading-indicator';
   loadingDiv.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1a1a1a;border:2px solid #D97706;color:#D97706;padding:20px 40px;font-family:monospace;z-index:99999;border-radius:8px;box-shadow:0 0 30px rgba(217,119,6,0.4);';
-  loadingDiv.textContent = '⏳ Generating image... (this may take 10-15 seconds)';
+  loadingDiv.textContent = '⏳ Generating image...';
   document.body.appendChild(loadingDiv);
   
-  // Set a timeout to prevent infinite loading
-  var timeoutId = setTimeout(function() {
-    if (loadingDiv.parentNode) {
-      document.body.removeChild(loadingDiv);
-    }
-    alert('Image generation timed out. Try using Print/PDF instead.');
-  }, 30000); // 30 second timeout
-  
-  try {
-    // Clone the page for rendering
-    var clone = page.cloneNode(true);
+  html2canvas(page, {
+    scale: 2,
+    useCORS: true,
+    backgroundColor: '#FFFFFF',
+    logging: false,
+    windowHeight: page.scrollHeight,
+    allowTaint: true,
+    imageTimeout: 15000,
+    removeContainer: true,
     
-    // Bake input values into clone
-    var liveInputs = page.querySelectorAll('input, textarea, select');
-    var cloneInputs = clone.querySelectorAll('input, textarea, select');
-    liveInputs.forEach(function(liveEl, i) {
-      var cloneEl = cloneInputs[i];
-      if (!cloneEl) return;
-      if (liveEl.type === 'checkbox' || liveEl.type === 'radio') {
-        cloneEl.checked = liveEl.checked;
-      } else {
-        cloneEl.value = liveEl.value;
-      }
-    });
-    
-    // Remove modals and toolbars
-    clone.querySelectorAll('.toolbar, #offline-banner, #pdfModal, #imageModal, #address-suggestions').forEach(function(el) {
-      el.style.display = 'none';
-    });
-    
-    // Create temporary container
-    var tempContainer = document.createElement('div');
-    tempContainer.id = 'temp-html2canvas-container';
-    tempContainer.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:1050px;background:#FFFFFF;margin:0;padding:0;';
-    tempContainer.appendChild(clone);
-    document.body.appendChild(tempContainer);
-    
-    // Configure html2canvas with minimal options for speed
-    var canvas = html2canvas(tempContainer, {
-      scale: 1.5, // Reduced from 2x for faster rendering
-      useCORS: true,
-      backgroundColor: '#FFFFFF',
-      logging: false,
-      windowHeight: clone.scrollHeight,
-      windowWidth: 1050,
-      allowTaint: true,
-      imageTimeout: 5000, // Reduced timeout
-      removeContainer: false,
-      foreignObjectRendering: false,
-      ignoreElements: function(element) {
-        // Skip certain elements for speed
-        var classes = element.className || '';
-        return classes.includes('toolbar') || classes.includes('offline-banner');
-      }
-    }).then(function(canvas) {
-      clearTimeout(timeoutId);
+    onclone: function(clonedDoc, clonedElement) {
+      var svgs = clonedDoc.querySelectorAll('svg');
       
-      // Clean up temp container
-      if (tempContainer.parentNode) {
-        document.body.removeChild(tempContainer);
-      }
-      
-      try {
-        // Convert canvas to blob
-        canvas.toBlob(
-          function(blob) {
-            try {
-              if (!blob) {
-                throw new Error('Blob creation failed');
-              }
-              
-              var blobUrl = URL.createObjectURL(blob);
-              var isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
-              
-              if (isIOS) {
-                // iOS: open in new tab
-                setTimeout(function() {
-                  var newTab = window.open();
-                  if (newTab) {
-                    var img = new Image();
-                    img.src = blobUrl;
-                    newTab.document.write(
-                      '<html><body style="margin:0;padding:0;background:#000;text-align:center;">' +
-                      '<img src="' + blobUrl + '" style="max-width:100%;width:100%;display:block;margin-top:20px;"/>' +
-                      '<p style="font-family:sans-serif;padding:20px;color:#0f0;text-align:center;font-size:14px;">' +
-                      '✓ Long-press image and select "Save to Photos"</p>' +
-                      '</body></html>'
-                    );
-                    newTab.document.close();
-                  }
-                }, 100);
-              } else {
-                // Android/Desktop: download
-                var link = document.createElement('a');
-                link.href = blobUrl;
-                link.download = filename;
-                link.style.display = 'none';
-                document.body.appendChild(link);
-                link.click();
-                
-                setTimeout(function() {
-                  document.body.removeChild(link);
-                  URL.revokeObjectURL(blobUrl);
-                }, 500);
-              }
-              
-              // Remove loading indicator
-              if (loadingDiv.parentNode) {
-                document.body.removeChild(loadingDiv);
-              }
-            } catch (blobErr) {
-              clearTimeout(timeoutId);
-              if (loadingDiv.parentNode) {
-                document.body.removeChild(loadingDiv);
-              }
-              console.error('Blob error:', blobErr);
-              alert('Error processing image. Please try again.');
-            }
-          },
-          'image/jpeg',
-          0.92
-        );
-      } catch (canvasErr) {
-        clearTimeout(timeoutId);
-        if (loadingDiv.parentNode) {
-          document.body.removeChild(loadingDiv);
-        }
-        console.error('Canvas error:', canvasErr);
-        alert('Error converting image. Try Print/PDF instead.');
-      }
-    }).catch(function(html2canvasErr) {
-      clearTimeout(timeoutId);
-      if (tempContainer.parentNode) {
+      svgs.forEach(function(svg) {
+        var parent = svg.parentElement;
+        var computedColor = '#D97706';
+        
         try {
-          document.body.removeChild(tempContainer);
+          if (parent) {
+            var parentStyle = clonedDoc.defaultView.getComputedStyle(parent);
+            computedColor = parentStyle.color || '#D97706';
+          }
         } catch (e) {}
+
+        if (!svg.getAttribute('xmlns')) {
+          svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+        }
+
+        var svgStroke = svg.getAttribute('stroke');
+        var svgFill = svg.getAttribute('fill');
+        var svgStrokeWidth = svg.getAttribute('stroke-width');
+        var svgStrokeLinecap = svg.getAttribute('stroke-linecap');
+        var svgStrokeLinejoin = svg.getAttribute('stroke-linejoin');
+
+        if (svgStroke === 'currentColor') svgStroke = computedColor;
+        if (svgFill === 'currentColor') svgFill = computedColor;
+
+        var shapes = svg.querySelectorAll('path, polyline, polygon, line, rect, circle, ellipse, text');
+        
+        shapes.forEach(function(el) {
+          if (el.getAttribute('stroke') === 'currentColor') {
+            el.setAttribute('stroke', computedColor);
+          }
+          if (el.getAttribute('fill') === 'currentColor') {
+            el.setAttribute('fill', computedColor);
+          }
+          if (svgStroke && !el.hasAttribute('stroke')) el.setAttribute('stroke', svgStroke);
+          if (svgFill && !el.hasAttribute('fill')) el.setAttribute('fill', svgFill);
+          if (svgStrokeWidth && !el.hasAttribute('stroke-width')) el.setAttribute('stroke-width', svgStrokeWidth);
+          if (svgStrokeLinecap && !el.hasAttribute('stroke-linecap')) el.setAttribute('stroke-linecap', svgStrokeLinecap);
+          if (svgStrokeLinejoin && !el.hasAttribute('stroke-linejoin')) el.setAttribute('stroke-linejoin', svgStrokeLinejoin);
+          if (!el.hasAttribute('fill') && el.tagName.toLowerCase() !== 'text') {
+            el.setAttribute('fill', 'none');
+          }
+        });
+      });
+
+      var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+      if (isIOS) {
+        var allPaths = clonedDoc.querySelectorAll('svg path');
+        allPaths.forEach(function(p) {
+          var original = parseFloat(p.getAttribute('stroke-width')) || 2;
+          p.setAttribute('stroke-width', original * 2.2);
+          p.setAttribute('stroke', '#b86a05');
+        });
       }
-      if (loadingDiv.parentNode) {
-        document.body.removeChild(loadingDiv);
-      }
-      
-      console.error('html2canvas error:', html2canvasErr);
-      
-      // Provide user-friendly error message
-      var errorMsg = 'Image generation failed. ';
-      if (html2canvasErr.message) {
-        errorMsg += html2canvasErr.message;
-      }
-      errorMsg += '\n\nPlease use Print/PDF instead (Button: 🖨 Print / PDF)';
-      alert(errorMsg);
-    });
+
+      var inputs = clonedDoc.querySelectorAll('input, textarea');
+      inputs.forEach(function(input) {
+        if (!input.value) input.setAttribute('placeholder', '');
+      });
+
+      var allHeaders = clonedDoc.querySelectorAll('.section-header, .col-label');
+      allHeaders.forEach(function(h) {
+        h.style.animationPlayState = 'paused';
+      });
+
+      var modals = clonedDoc.querySelectorAll('#pdfModal, #imageModal, #offline-banner, .toolbar');
+      modals.forEach(function(m) {
+        m.style.display = 'none';
+      });
+    }
+  }).then(function(canvas) {
+    document.body.removeChild(loadingDiv);
     
-  } catch (err) {
-    clearTimeout(timeoutId);
+    try {
+      var link = document.createElement('a');
+      link.download = filename;
+      link.href = canvas.toDataURL('image/jpeg', 0.95);
+
+      if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+        var newTab = window.open();
+        if (newTab) {
+          newTab.document.write(
+            '<img src="' + link.href + '" style="max-width:100%;"/>' +
+            '<p style="font-family:sans-serif;padding:10px;">Long‑press the image and select "Save to Photos"</p>'
+          );
+        } else {
+          link.click();
+        }
+      } else {
+        document.body.appendChild(link);
+        link.click();
+        setTimeout(function() {
+          document.body.removeChild(link);
+        }, 100);
+      }
+    } catch (e) {
+      alert('Error saving image: ' + e.message);
+    }
+  }).catch(function(err) {
     if (loadingDiv.parentNode) {
       document.body.removeChild(loadingDiv);
     }
-    console.error('Setup error:', err);
-    alert('Error setting up image capture: ' + err.message);
-  }
+    console.error('html2canvas error:', err);
+    alert('Error generating image: ' + err.message);
+  });
 }
-
 
 // ────────────────────────────────────────────────────────────────
 // EMAIL (SINGLE VERSION)
