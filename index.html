@@ -2506,7 +2506,89 @@ function saveImageFromModal() {
         m.style.display = 'none';
       });
     }
-  STEP 2: SCALE TO 8.5x11
+    }).then(function(fullCanvas) {
+    // ══════════════════════════════════════════════════════════════
+    // STEP 2: SCALE TO 8.5x11 PAPER DIMENSIONS
+    // ══════════════════════════════════════════════════════════════
+    var PAPER_W_IN = 8.5;
+    var PAPER_H_IN = 11;
+    var DPI = 96;
+    var PAPER_W_PX = PAPER_W_IN * DPI;    // 816px
+    var PAPER_H_PX = PAPER_H_IN * DPI;    // 1056px
+
+    // Get device pixel ratio for crisp rendering
+    var devicePixelRatio = window.devicePixelRatio || 1;
+    
+    // Create new canvas at 8.5x11 size (scaled for device)
+    var paperCanvas = document.createElement('canvas');
+    paperCanvas.width = PAPER_W_PX * devicePixelRatio;
+    paperCanvas.height = PAPER_H_PX * devicePixelRatio;
+    paperCanvas.style.width = PAPER_W_PX + 'px';
+    paperCanvas.style.height = PAPER_H_PX + 'px';
+    
+    var ctx = paperCanvas.getContext('2d');
+    ctx.scale(devicePixelRatio, devicePixelRatio);
+
+    // Fill with white background
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(0, 0, PAPER_W_PX, PAPER_H_PX);
+
+    // Calculate scale to fit full document to paper width
+    var scaleW = PAPER_W_PX / fullCanvas.width;
+    var scaleH = PAPER_H_PX / fullCanvas.height;
+    var scale = Math.min(scaleW, scaleH);
+
+    // Calculate centered position
+    var scaledW = fullCanvas.width * scale;
+    var scaledH = fullCanvas.height * scale;
+    var offsetX = (PAPER_W_PX - scaledW) / 2;
+    var offsetY = (PAPER_H_PX - scaledH) / 2;
+
+    // Draw scaled image onto paper canvas
+    ctx.drawImage(fullCanvas, offsetX, offsetY, scaledW, scaledH);
+
+    console.log('Full Document: ' + fullCanvas.width + 'x' + fullCanvas.height + 'px');
+    console.log('Paper Size: ' + PAPER_W_PX + 'x' + PAPER_H_PX + 'px (device ratio: ' + devicePixelRatio + ')');
+    console.log('Scale Factor: ' + scale.toFixed(3));
+
+    document.body.removeChild(loadingDiv);
+
+    try {
+      var link = document.createElement('a');
+      link.download = filename;
+      link.href = paperCanvas.toDataURL('image/jpeg', 0.95);
+
+      if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+        var newTab = window.open();
+        if (newTab) {
+          newTab.document.write(
+            '<html><head><meta name="viewport" content="width=device-width, initial-scale=1.0"></head><body style="margin:0;padding:10px;background:#f5f5f5;">' +
+            '<img src="' + link.href + '" style="width:100%;height:auto;display:block;border:1px solid #ccc;"/>' +
+            '<p style="font-family:sans-serif;padding:10px;text-align:center;color:#666;">Long‑press the image and select "Save to Photos"</p>' +
+            '</body></html>'
+          );
+        } else {
+          link.click();
+        }
+      } else {
+        document.body.appendChild(link);
+        link.click();
+        setTimeout(function() {
+          document.body.removeChild(link);
+        }, 100);
+      }
+    } catch (e) {
+      alert('Error saving image: ' + e.message);
+    }
+  }).catch(function(err) {
+    if (loadingDiv.parentNode) {
+      document.body.removeChild(loadingDiv);
+    }
+    console.error('html2canvas error:', err);
+    alert('Error generating image: ' + err.message);
+  });
+}
+
 
 function sendEmail() {
   if (!validateForm()) return;
