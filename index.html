@@ -2524,26 +2524,29 @@ function saveImageFromModal() {
     var scaledW = fullCanvas.width * scale;
     var scaledH = fullCanvas.height * scale;
 
-    // Create canvas with HEIGHT that matches scaled content
+    // Create canvas at DEVICE pixel ratio (don't pre-scale for html2canvas)
     var paperCanvas = document.createElement('canvas');
     paperCanvas.width = PAPER_W_PX * devicePixelRatio;
-    paperCanvas.height = scaledH * devicePixelRatio;  // Dynamic height
-    paperCanvas.style.width = PAPER_W_PX + 'px';
-    paperCanvas.style.height = scaledH + 'px';
+    paperCanvas.height = scaledH * devicePixelRatio;
     
     var ctx = paperCanvas.getContext('2d');
-    ctx.scale(devicePixelRatio, devicePixelRatio);
+    
+    // Set CSS size for display
+    paperCanvas.style.width = PAPER_W_PX + 'px';
+    paperCanvas.style.height = scaledH + 'px';
 
     // Fill with white background
     ctx.fillStyle = '#FFFFFF';
-    ctx.fillRect(0, 0, PAPER_W_PX, scaledH);
+    ctx.fillRect(0, 0, paperCanvas.width, paperCanvas.height);
 
-    // Center horizontally, top-align vertically
-    var offsetX = (PAPER_W_PX - scaledW) / 2;
-    var offsetY = 0;
+    // Scale context for device pixel ratio AND content scaling
+    ctx.scale(devicePixelRatio * scale, devicePixelRatio * scale);
 
-    // Draw scaled image onto paper canvas
-    ctx.drawImage(fullCanvas, offsetX, offsetY, scaledW, scaledH);
+    // Center horizontally on original coordinates
+    var offsetX = (PAPER_W_PX / scale - fullCanvas.width) / 2;
+    
+    // Draw original canvas (unscaled source)
+    ctx.drawImage(fullCanvas, offsetX, 0);
 
     console.log('Full Document: ' + fullCanvas.width + 'x' + fullCanvas.height + 'px');
     console.log('Paper Width: ' + PAPER_W_PX + 'px (device ratio: ' + devicePixelRatio + ')');
@@ -2587,6 +2590,7 @@ function saveImageFromModal() {
     alert('Error generating image: ' + err.message);
   });
 }
+
 
 
 
