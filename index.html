@@ -2361,7 +2361,7 @@ function confirmPdfPrint() {
       // Trigger a real visible scale change, let it paint, then revert.
       // We use requestAnimationFrame to make sure the browser actually
       // applies the change to the real screen before reverting.
-      page.style.transform = 'scale(0.9999)';
+      page.style.transform = 'scale(0.95)';
       page.style.transformOrigin = '0 0';
       
       requestAnimationFrame(function() {
