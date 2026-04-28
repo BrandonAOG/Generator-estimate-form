@@ -1900,6 +1900,26 @@ function saveImageFromModal() {
   loadingDiv.textContent = '⏳ Generating image...';
   document.body.appendChild(loadingDiv);
   
+  // ═══════════════════════════════════════════════════════════════
+  // DIAGNOSTIC: Log all canvas elements BEFORE we do anything
+  // ═══════════════════════════════════════════════════════════════
+  console.log('=== PRE-PROCESSING DIAGNOSTIC ===');
+  var allCanvases = document.querySelectorAll('canvas');
+  console.log('Total canvas elements in DOM:', allCanvases.length);
+  allCanvases.forEach(function(canvas, i) {
+    console.log('Canvas ' + i + ':', {
+      width: canvas.width,
+      height: canvas.height,
+      offsetWidth: canvas.offsetWidth,
+      offsetHeight: canvas.offsetHeight,
+      parentTag: canvas.parentElement?.tagName,
+      id: canvas.id,
+      className: canvas.className,
+      display: window.getComputedStyle(canvas).display,
+      visibility: window.getComputedStyle(canvas).visibility
+    });
+  });
+  
   // Save original styles
   var originalTransform = page.style.transform;
   var originalPosition = page.style.position;
@@ -1920,13 +1940,15 @@ function saveImageFromModal() {
       opacity: svg.style.opacity,
       position: svg.style.position,
       width: svg.style.width,
-      height: svg.style.height
+      height: svg.style.height,
+      innerHTML: svg.innerHTML  // Save for restoration
     });
   });
   
-  // Store original CANVAS styles and REMOVE them
+  // Store original CANVAS styles and REMOVE them AGGRESSIVELY
   var canvasOriginalStyles = [];
-  page.querySelectorAll('canvas').forEach(function(canvas, idx) {
+  document.querySelectorAll('canvas').forEach(function(canvas) {
+    // Store everything about this canvas
     canvasOriginalStyles.push({
       canvas: canvas,
       parent: canvas.parentNode,
@@ -1935,10 +1957,13 @@ function saveImageFromModal() {
       width: canvas.width,
       height: canvas.height,
       offsetWidth: canvas.offsetWidth,
-      offsetHeight: canvas.offsetHeight
+      offsetHeight: canvas.offsetHeight,
+      outerHTML: canvas.outerHTML
     });
     
-    // REMOVE the canvas from DOM
+    console.log('Removing canvas from DOM:', canvas.width, 'x', canvas.height);
+    
+    // REMOVE the canvas completely from DOM
     canvas.remove();
   });
   
@@ -1955,20 +1980,62 @@ function saveImageFromModal() {
   page.style.minHeight = 'auto';
   page.style.height = 'auto';
   
-  // CRITICAL: Ensure all SVGs are visible and have proper dimensions
+  // AGGRESSIVE SVG SANITIZATION
   page.querySelectorAll('svg').forEach(function(svg) {
+    // Force visibility
     svg.style.display = 'block';
     svg.style.visibility = 'visible';
     svg.style.opacity = '1';
     svg.style.position = 'relative';
     
-    // Force width/height if missing
+    // Ensure viewBox is set
+    if (!svg.hasAttribute('viewBox') && svg.hasAttribute('width') && svg.hasAttribute('height')) {
+      var w = parseInt(svg.getAttribute('width'));
+      var h = parseInt(svg.getAttribute('height'));
+      if (w > 0 && h > 0) {
+        svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
+      }
+    }
+    
+    // Force width/height if missing or zero
     var w = svg.getAttribute('width');
     var h = svg.getAttribute('height');
-    if (!w || w === '0') svg.setAttribute('width', '20');
-    if (!h || h === '0') svg.setAttribute('height', '20');
-    if (!svg.style.width) svg.style.width = (w || '20') + 'px';
-    if (!svg.style.height) svg.style.height = (h || '20') + 'px';
+    if (!w || w === '0' || parseInt(w) === 0) {
+      svg.setAttribute('width', '20');
+      svg.style.width = '20px';
+    } else {
+      svg.style.width = w + 'px';
+    }
+    if (!h || h === '0' || parseInt(h) === 0) {
+      svg.setAttribute('height', '20');
+      svg.style.height = '20px';
+    } else {
+      svg.style.height = h + 'px';
+    }
+    
+    // Replace currentColor EVERYWHERE
+    var innerHTML = svg.innerHTML;
+    innerHTML = innerHTML.replace(/currentColor/g, '#D97706');
+    svg.innerHTML = innerHTML;
+    
+    // Replace on SVG element attributes
+    if (svg.hasAttribute('stroke')) {
+      var stroke = svg.getAttribute('stroke');
+      if (stroke === 'currentColor' || stroke === '') {
+        svg.setAttribute('stroke', '#D97706');
+      }
+    }
+    if (svg.hasAttribute('fill')) {
+      var fill = svg.getAttribute('fill');
+      if (fill === 'currentColor') {
+        svg.setAttribute('fill', '#D97706');
+      }
+    }
+    
+    // Ensure xmlns
+    if (!svg.hasAttribute('xmlns')) {
+      svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+    }
   });
   
   // Force reflow
@@ -1976,6 +2043,14 @@ function saveImageFromModal() {
   
   // Wait for DOM to settle
   setTimeout(function() {
+    // CRITICAL: Check again for any new canvas elements created during reflow
+    var newCanvases = document.querySelectorAll('canvas');
+    console.log('Canvas elements after SVG processing:', newCanvases.length);
+    newCanvases.forEach(function(canvas) {
+      console.log('Found canvas:', canvas.width, 'x', canvas.height);
+      canvas.remove();
+    });
+    
     var pageWidth = page.scrollWidth;
     var pageHeight = page.scrollHeight;
     
@@ -1985,52 +2060,7 @@ function saveImageFromModal() {
       return;
     }
     
-    // Verify SVGs are now visible
-    console.log('SVG visibility check:');
-    page.querySelectorAll('svg').forEach(function(svg, i) {
-      console.log('SVG ' + i + ':', {
-        offsetWidth: svg.offsetWidth,
-        offsetHeight: svg.offsetHeight,
-        clientWidth: svg.clientWidth,
-        clientHeight: svg.clientHeight,
-        style_width: svg.style.width,
-        style_height: svg.style.height
-      });
-    });
-    
-    // Pre-process SVGs to remove currentColor
-    var allSVGs = page.querySelectorAll('svg');
-    allSVGs.forEach(function(svg) {
-      // Get computed color from parent
-      var parent = svg.parentElement;
-      var computedColor = '#D97706';
-      try {
-        if (parent) {
-          var parentStyle = window.getComputedStyle(parent);
-          computedColor = parentStyle.color || '#D97706';
-        }
-      } catch(e) {}
-      
-      // Replace currentColor in innerHTML
-      var innerHTML = svg.innerHTML;
-      if (innerHTML.includes('currentColor')) {
-        innerHTML = innerHTML.replace(/currentColor/g, computedColor);
-        svg.innerHTML = innerHTML;
-      }
-      
-      // Replace on SVG attributes
-      if (svg.hasAttribute('stroke') && svg.getAttribute('stroke') === 'currentColor') {
-        svg.setAttribute('stroke', computedColor);
-      }
-      if (svg.hasAttribute('fill') && svg.getAttribute('fill') === 'currentColor') {
-        svg.setAttribute('fill', computedColor);
-      }
-      
-      // Ensure xmlns
-      if (!svg.hasAttribute('xmlns')) {
-        svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-      }
-    });
+    console.log('Page dimensions for capture:', pageWidth, 'x', pageHeight);
     
     // Wait for SVG changes to be rendered
     setTimeout(function() {
@@ -2038,56 +2068,88 @@ function saveImageFromModal() {
         scale: 2,
         useCORS: true,
         backgroundColor: '#FFFFFF',
-        logging: false,
+        logging: true,  // ENABLE LOGGING TO SEE WHAT'S HAPPENING
         allowTaint: true,
         imageTimeout: 15000,
         removeContainer: true,
         foreignObjectRendering: false,
+        
         ignoreElements: function(element) {
           // Skip problematic elements
-          if (element.tagName === 'IFRAME') return true;
-          if (element.tagName === 'VIDEO') return true;
-          if (element.tagName === 'AUDIO') return true;
+          if (element.tagName === 'IFRAME') {
+            console.log('Ignoring IFRAME');
+            return true;
+          }
+          if (element.tagName === 'VIDEO') {
+            console.log('Ignoring VIDEO');
+            return true;
+          }
+          if (element.tagName === 'AUDIO') {
+            console.log('Ignoring AUDIO');
+            return true;
+          }
           if (element.tagName === 'SCRIPT') return true;
           if (element.tagName === 'STYLE') return true;
-          if (element.tagName === 'CANVAS') return true;  // SKIP ALL CANVAS ELEMENTS
+          
+          // SKIP ALL CANVAS ELEMENTS
+          if (element.tagName === 'CANVAS') {
+            console.log('Ignoring CANVAS:', element.width, 'x', element.height);
+            return true;
+          }
+          
           if (element.style.display === 'none') return true;
           if (element.style.visibility === 'hidden') return true;
-          if (element.offsetWidth === 0 && element.offsetHeight === 0) return true;
+          if (element.offsetWidth === 0 && element.offsetHeight === 0) {
+            console.log('Ignoring zero-dimension element:', element.tagName);
+            return true;
+          }
           return false;
         },
         
         onclone: function(clonedDoc, clonedElement) {
-          // Remove ANY remaining canvas elements
+          console.log('=== IN ONCLONE ===');
+          
+          // Remove ANY canvas elements in the clone
           var clonedCanvases = clonedDoc.querySelectorAll('canvas');
+          console.log('Canvases in clone:', clonedCanvases.length);
           clonedCanvases.forEach(function(canvas) {
-            console.log('Removing canvas:', canvas.width, 'x', canvas.height);
+            console.log('Removing canvas from clone:', canvas.width, 'x', canvas.height);
             canvas.remove();
           });
           
-          // Ensure all SVGs are visible in clone
+          // Sanitize SVGs in the clone
           var clonedSVGs = clonedDoc.querySelectorAll('svg');
+          console.log('SVGs in clone:', clonedSVGs.length);
           clonedSVGs.forEach(function(svg) {
             svg.style.display = 'block';
             svg.style.visibility = 'visible';
             svg.style.opacity = '1';
             svg.style.position = 'relative';
             
-            // Set explicit dimensions in clone too
-            svg.setAttribute('width', svg.getAttribute('width') || '20');
-            svg.setAttribute('height', svg.getAttribute('height') || '20');
-            if (!svg.style.width) svg.style.width = (svg.getAttribute('width') || '20') + 'px';
-            if (!svg.style.height) svg.style.height = (svg.getAttribute('height') || '20') + 'px';
+            // Ensure viewBox
+            if (!svg.hasAttribute('viewBox')) {
+              var w = parseInt(svg.getAttribute('width') || '20');
+              var h = parseInt(svg.getAttribute('height') || '20');
+              svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
+            }
+            
+            // Set explicit dimensions
+            var width = svg.getAttribute('width') || '20';
+            var height = svg.getAttribute('height') || '20';
+            svg.setAttribute('width', width);
+            svg.setAttribute('height', height);
+            svg.style.width = width + 'px';
+            svg.style.height = height + 'px';
             svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
             
-            // Ensure NO currentColor in clone
+            // Replace currentColor
             var innerHTML = svg.innerHTML;
             if (innerHTML.includes('currentColor')) {
               innerHTML = innerHTML.replace(/currentColor/g, '#D97706');
               svg.innerHTML = innerHTML;
             }
             
-            // Process all children
+            // Fix all child elements
             var allChildren = svg.querySelectorAll('*');
             allChildren.forEach(function(child) {
               var stroke = child.getAttribute('stroke');
@@ -2098,10 +2160,6 @@ function saveImageFromModal() {
               }
               if (fill === 'currentColor') {
                 child.setAttribute('fill', '#D97706');
-              }
-              // Ensure fills are not empty
-              if (!fill && !stroke && child.tagName.toLowerCase() !== 'text') {
-                child.setAttribute('fill', 'none');
               }
             });
           });
@@ -2115,14 +2173,15 @@ function saveImageFromModal() {
           animated.forEach(function(el) { el.style.animationPlayState = 'paused'; });
         }
       }).then(function(canvas) {
+        console.log('✓ html2canvas succeeded');
+        
         // Restore original canvases to DOM
         canvasOriginalStyles.forEach(function(item) {
           if (item.parent && item.parent.isConnected) {
-            item.parent.insertBefore(item.canvas, null);
-            item.canvas.style.display = item.display;
-            item.canvas.style.visibility = item.visibility;
-            item.canvas.width = item.width;
-            item.canvas.height = item.height;
+            // Re-create the canvas from stored HTML
+            var tempDiv = document.createElement('div');
+            tempDiv.innerHTML = item.outerHTML;
+            item.parent.appendChild(tempDiv.firstChild);
           }
         });
         
@@ -2136,7 +2195,7 @@ function saveImageFromModal() {
         page.style.minHeight = originalMinHeight;
         page.style.height = originalHeight;
         
-        // Restore SVG styles
+        // Restore SVG innerHTML
         svgOriginalStyles.forEach(function(item) {
           item.svg.style.display = item.display;
           item.svg.style.visibility = item.visibility;
@@ -2144,6 +2203,7 @@ function saveImageFromModal() {
           item.svg.style.position = item.position;
           item.svg.style.width = item.width;
           item.svg.style.height = item.height;
+          item.svg.innerHTML = item.innerHTML;  // Restore original content
         });
         
         document.body.removeChild(loadingDiv);
@@ -2174,14 +2234,15 @@ function saveImageFromModal() {
           alert('Error saving image: ' + e.message);
         }
       }).catch(function(err) {
+        console.error('✗ html2canvas error:', err);
+        console.error('Error stack:', err.stack);
+        
         // Restore original canvases to DOM even on error
         canvasOriginalStyles.forEach(function(item) {
           if (item.parent && item.parent.isConnected) {
-            item.parent.insertBefore(item.canvas, null);
-            item.canvas.style.display = item.display;
-            item.canvas.style.visibility = item.visibility;
-            item.canvas.width = item.width;
-            item.canvas.height = item.height;
+            var tempDiv = document.createElement('div');
+            tempDiv.innerHTML = item.outerHTML;
+            item.parent.appendChild(tempDiv.firstChild);
           }
         });
         
@@ -2195,7 +2256,7 @@ function saveImageFromModal() {
         page.style.minHeight = originalMinHeight;
         page.style.height = originalHeight;
         
-        // Restore SVG styles
+        // Restore SVG innerHTML
         svgOriginalStyles.forEach(function(item) {
           item.svg.style.display = item.display;
           item.svg.style.visibility = item.visibility;
@@ -2203,13 +2264,12 @@ function saveImageFromModal() {
           item.svg.style.position = item.position;
           item.svg.style.width = item.width;
           item.svg.style.height = item.height;
+          item.svg.innerHTML = item.innerHTML;
         });
         
         if (loadingDiv.parentNode) {
           document.body.removeChild(loadingDiv);
         }
-        console.error('html2canvas error:', err);
-        console.error('Error details:', err.stack);
         alert('Error generating image: ' + err.message);
       });
     }, 100);
