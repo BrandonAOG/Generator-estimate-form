@@ -173,7 +173,8 @@
     document.documentElement.classList.add('is-mobile-device');
   }
 })();
-<script>
+</script>
+
 <!-- ============================================
      GLOBAL PRINT STATE (accessible to all scripts)
      ============================================ -->
@@ -186,7 +187,6 @@ window.PAGE_NATURAL_W = 1050;
 
 console.log('[AOG Init] Global print state initialized:', window.PRINT_SCALE);
 </script>
-
 
 <style>
 :root {
@@ -221,42 +221,28 @@ body {
   font-family: var(--font-body);
   background: #FFFFFF;
   color: var(--text);
-  /* Use 100% width so it fits any screen, but keep a max for desktop */
   width: 100%; 
   max-width: 1050px; 
   margin: 0 auto;
-  
-  /* min-height: 1in is very small; 100vh ensures it fills the screen */
   min-height: 100vh; 
-  
-  /* Standardizing padding */
   padding: 0; 
   padding-bottom: env(safe-area-inset-bottom, 24px);
-  
   -webkit-text-size-adjust: 100%;
   background-image: none;
-  /* Helps prevent horizontal scrollbars on mobile */
   overflow-x: hidden; 
 }
 
 .page {
-  /* Allow the page to shrink on small screens */
   width: 100%;
   max-width: 1050px;
   margin: 0 auto;
-  
   background: #FFFFFF;
   border: 2px solid var(--cyan);
   box-shadow: 0 0 0 1px rgba(217,119,6,0.1), 0 0 40px rgba(217,119,6,0.08), inset 0 0 60px rgba(255,255,255,0.8);
   position: relative;
-  
-  /* Flex settings */
   display: flex;
   flex-direction: column;
-  
-  /* Ensure content doesn't touch the very edge of the phone screen */
   padding: 12px; 
-  /* Ensures the border/padding doesn't add to the width */
   box-sizing: border-box; 
 }
 
@@ -2776,7 +2762,7 @@ function setupGpsButton() {
   });
 }
 
-}// iOS-only print zoom — shrinks print output to 59% so the form fits and stays centered
+// iOS-only print zoom — shrinks print output to 59% so the form fits and stays centered
 (function() {
   var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
   if (!isIOS) return;
@@ -2795,29 +2781,30 @@ function setupGpsButton() {
         padding: 0 !important;
       }
       .page {
-  zoom: 0.59 !important; 
-  margin: 0 !important;
-  padding: 0 !important;
-  border: 25px solid #D97706 !important
-  width: 100% !important;
-  max-width: none !important;
-  position: relative !important;
-  top: 0 !important;
-  page-break-inside: avoid !important;
-  overflow: hidden !important;
-}
-.footer {
-  page-break-after: avoid !important;
-  break-after: avoid !important;
-}
+        zoom: 0.59 !important; 
+        margin: 0 !important;
+        padding: 0 !important;
+        border: 25px solid #D97706 !important;
+        width: 100% !important;
+        max-width: none !important;
+        position: relative !important;
+        top: 0 !important;
+        page-break-inside: avoid !important;
+        overflow: hidden !important;
+      }
+      .footer {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
     }
   `;
   document.head.appendChild(iosPrintStyle);
 })();
+
 // ────────────────────────────────────────────────────────────────
 // INITIALIZATION
 // ────────────────────────────────────────────────────────────────
-dEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
   var todayInput = document.getElementById('today');
   if (todayInput && !todayInput.value) {
     todayInput.value = new Date().toISOString().split('T')[0];
