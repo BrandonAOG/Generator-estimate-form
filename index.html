@@ -2418,24 +2418,33 @@ function saveImageFromModal() {
   loadingDiv.textContent = '⏳ Generating image...';
   document.body.appendChild(loadingDiv);
 
+  // ══════════════════════════════════════════════════════════════
+  // STEP 1: CAPTURE ENTIRE DOCUMENT AT FULL SIZE
+  // ══════════════════════════════════════════════════════════════
   html2canvas(page, {
     scale: 2,
     useCORS: true,
     backgroundColor: '#FFFFFF',
     logging: false,
-    windowHeight: page.scrollHeight,
     allowTaint: true,
     imageTimeout: 15000,
     removeContainer: true,
+    windowHeight: page.scrollHeight + 100,  // ADD PADDING
 
     onclone: function(clonedDoc, clonedElement) {
+      var clonedPage = clonedElement;
+      clonedPage.style.transform = 'none';
+      clonedPage.style.position = 'static';
+      clonedPage.style.margin = '0';
+      clonedPage.style.padding = '0';
+      clonedPage.style.overflow = 'visible';  // Allow overflow capture
+
       clonedDoc.querySelectorAll('*').forEach(function(el) {
         if (el.getAttribute('stroke') === 'currentColor') el.setAttribute('stroke', '#D97706');
         if (el.getAttribute('fill') === 'currentColor') el.setAttribute('fill', '#D97706');
       });
 
       var svgs = clonedDoc.querySelectorAll('svg');
-
       svgs.forEach(function(svg) {
         var parent = svg.parentElement;
         var computedColor = '#D97706';
@@ -2452,7 +2461,6 @@ function saveImageFromModal() {
         }
 
         var shapes = svg.querySelectorAll('path, polyline, polygon, line, rect, circle, ellipse, text');
-        
         shapes.forEach(function(el) {
           if (el.getAttribute('stroke') === 'currentColor') {
             el.setAttribute('stroke', computedColor);
@@ -2498,13 +2506,50 @@ function saveImageFromModal() {
         m.style.display = 'none';
       });
     }
-  }).then(function(canvas) {
+  }).then(function(fullCanvas) {
+    // ══════════════════════════════════════════════════════════════
+    // STEP 2: SCALE TO 8.5x11 PAPER DIMENSIONS
+    // ══════════════════════════════════════════════════════════════
+    var PAPER_W_IN = 8.5;
+    var PAPER_H_IN = 11;
+    var DPI = 96;
+    var PAPER_W_PX = PAPER_W_IN * DPI;    // 816px
+    var PAPER_H_PX = PAPER_H_IN * DPI;    // 1056px
+
+    // Create new canvas at 8.5x11 size
+    var paperCanvas = document.createElement('canvas');
+    paperCanvas.width = PAPER_W_PX;
+    paperCanvas.height = PAPER_H_PX;
+    var ctx = paperCanvas.getContext('2d');
+
+    // Fill with white background
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(0, 0, paperCanvas.width, paperCanvas.height);
+
+    // Calculate scale to fit full document width
+    var scaleW = PAPER_W_PX / fullCanvas.width;
+    var scaleH = PAPER_H_PX / fullCanvas.height;
+    var scale = Math.min(scaleW, scaleH);
+
+    // Calculate centered position
+    var scaledW = fullCanvas.width * scale;
+    var scaledH = fullCanvas.height * scale;
+    var offsetX = (PAPER_W_PX - scaledW) / 2;
+    var offsetY = (PAPER_H_PX - scaledH) / 2;
+
+    // Draw scaled image onto paper canvas
+    ctx.drawImage(fullCanvas, offsetX, offsetY, scaledW, scaledH);
+
+    console.log('Full Document: ' + fullCanvas.width + 'x' + fullCanvas.height + 'px');
+    console.log('Paper Size: ' + PAPER_W_PX + 'x' + PAPER_H_PX + 'px');
+    console.log('Scale Factor: ' + scale.toFixed(3));
+
     document.body.removeChild(loadingDiv);
 
     try {
       var link = document.createElement('a');
       link.download = filename;
-      link.href = canvas.toDataURL('image/jpeg', 0.95);
+      link.href = paperCanvas.toDataURL('image/jpeg', 0.95);
 
       if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
         var newTab = window.open();
