@@ -57,16 +57,16 @@
       overflow: hidden;
       width: 100vw;
       height: 100vh;
-      margin: 0;
-      padding: 0;
+      margin: 1px;
+      padding: 1px;
       background: white;
     }
 
     body.print-mode .page {
-      margin: 0;
+      margin: 1px;
       position: absolute;
-      top: 0;
-      left: 0;
+      top: 1px;
+      left: 1px;
     }
   `;
 
@@ -222,28 +222,43 @@ body {
   font-family: var(--font-body);
   background: #FFFFFF;
   color: var(--text);
-  min-height: 100vh;
-  padding: 0px 12px;
+  /* Use 100% width so it fits any screen, but keep a max for desktop */
+  width: 100%; 
+  max-width: 1050px; 
+  margin: 0 auto;
+  
+  /* min-height: 1in is very small; 100vh ensures it fills the screen */
+  min-height: 100vh; 
+  
+  /* Standardizing padding */
+  padding: 0; 
   padding-bottom: env(safe-area-inset-bottom, 24px);
+  
   -webkit-text-size-adjust: 100%;
   background-image: none;
-  width: 1050px;
-  margin: 0 auto;
+  /* Helps prevent horizontal scrollbars on mobile */
+  overflow-x: hidden; 
 }
 
 .page {
+  /* Allow the page to shrink on small screens */
+  width: 100%;
   max-width: 1050px;
   margin: 0 auto;
+  
   background: #FFFFFF;
   border: 2px solid var(--cyan);
-  border-top: 2px solid var(--cyan);
   box-shadow: 0 0 0 1px rgba(217,119,6,0.1), 0 0 40px rgba(217,119,6,0.08), inset 0 0 60px rgba(255,255,255,0.8);
   position: relative;
-  margin-top: 0px;
-  padding-top: 0px;
+  
+  /* Flex settings */
   display: flex;
   flex-direction: column;
-  min-height: auto;
+  
+  /* Ensure content doesn't touch the very edge of the phone screen */
+  padding: 12px; 
+  /* Ensures the border/padding doesn't add to the width */
+  box-sizing: border-box; 
 }
 
 /* Corner accents */
