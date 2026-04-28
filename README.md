@@ -44,7 +44,7 @@ This is a single-file project. Everything lives in `index.html`:
 ## Getting Started
 
 1. Clone the repo:
-2. 2. Open `index.html` in a browser. That's it.
+2. Open `index.html` in a browser. That's it.
 
 To deploy, host the file on any static web host (GitHub Pages, Netlify, Vercel, Cloudflare Pages). No server or build step required.
 
