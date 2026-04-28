@@ -2772,16 +2772,23 @@ function setupGpsButton() {
   var iosPrintStyle = document.createElement('style');
   iosPrintStyle.textContent = `
     @media print {
+      html, body {
+        height: auto !important;
+        min-height: 0 !important;
+      }
       body { 
-        zoom: 0.50 !important; 
+        zoom: 0.60 !important; 
         width: 100% !important;
         max-width: none !important;
         margin: 0 !important;
         padding: 0 !important;
       }
       .page {
-        margin: 0 auto !important;
-        max-width: 1050px !important;
+        margin: 0 !important;
+        width: 100% !important;
+        max-width: none !important;
+        position: relative !important;
+        top: 0 !important;
       }
     }
   `;
