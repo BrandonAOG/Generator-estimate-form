@@ -16,9 +16,6 @@
 (function() {
   'use strict';
 
-  // ────────────────────────────────────────────────────────────────
-  // DEVICE DETECTION
-  // ────────────────────────────────────────────────────────────────
   var IS_IOS_SAFARI = /iPad|iPhone|iPod/.test(navigator.userAgent) && 
                       !/Chrome|Firefox|Edge/.test(navigator.userAgent);
   var IS_MOBILE = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -26,57 +23,44 @@
   window.IS_IOS_SAFARI = IS_IOS_SAFARI;
   window.IS_MOBILE = IS_MOBILE;
 
-  // ────────────────────────────────────────────────────────────────
-  // PAGE DIMENSIONS (US Letter)
-  // ────────────────────────────────────────────────────────────────
   var PAPER_W_IN = 8.5;
   var PAPER_H_IN = 11;
   var DPI = 96;
-  var PAPER_W_PX = PAPER_W_IN * DPI;      // 816px
-  var PAPER_H_PX = PAPER_H_IN * DPI;      // 1056px
+  var PAPER_W_PX = PAPER_W_IN * DPI;
+  var PAPER_H_PX = PAPER_H_IN * DPI;
   var PAGE_NATURAL_W = 1050;
 
   window.PAPER_W_PX = PAPER_W_PX;
   window.PAPER_H_PX = PAPER_H_PX;
   window.PAGE_NATURAL_W = PAGE_NATURAL_W;
 
-  // ────────────────────────────────────────────────────────────────
-  // INJECT PRINT CSS
-  // ────────────────────────────────────────────────────────────────
   var PRINT_CSS = `
     @media print {
       * { margin: 0; padding: 0; }
       body { margin: 0; padding: 0; }
       .page { width: 8.5in; height: 11in; margin: 0; padding: 0; page-break-after: avoid; }
-      .toolbar, #pdfModal, #imageModal, #offline-banner { display: none !important; }
+      .toolbar, #pdfModal, #imageModal, #offline-banner, #theme-toggle-btn { display: none !important; }
       input, textarea { border: none; background: none; }
     }
 
-   body.print-mode .page {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh; /* Takes up full page height */
-  position: relative; /* Remove absolute if possible */
-}
+    body.print-mode .page {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      position: relative;
+    }
 
-.footer {
-  margin-top: auto; /* Pushes footer to the bottom */
-}
+    .footer {
+      margin-top: auto;
+    }
   `;
   var styleEl = document.createElement('style');
   styleEl.setAttribute('id', 'print-optimization-styles');
   styleEl.textContent = PRINT_CSS;
   document.head.appendChild(styleEl);
 
-  // ────────────────────────────────────────────────────────────────
-  // BIND NATIVE PRINT
-  // ────────────────────────────────────────────────────────────────
-  var nativePrint = window.print.bind(window);
-  window.nativePrint = nativePrint;
+  window.nativePrint = window.print.bind(window);
 
-  // ────────────────────────────────────────────────────────────────
-  // DESKTOP/ANDROID PRINT-MODE SCALING
-  // ────────────────────────────────────────────────────────────────
   function calculateStretchScale() {
     var page = document.getElementById('page');
     if (!page) return { scaleX: 1, scaleY: 1 };
@@ -98,8 +82,8 @@
     };
   }
 
-  function enterPrintMode() {
-    if (IS_IOS_SAFARI) return null;  // Don't touch iOS Safari path
+  window.enterPrintMode = function() {
+    if (IS_IOS_SAFARI) return null;
 
     var page = document.getElementById('page');
     if (!page) return null;
@@ -114,12 +98,10 @@
     page.style.top             = '0';
     page.style.left            = '0';
 
-    console.log('[AOG Print] Entered print mode: scaleX=' + info.scaleX.toFixed(3) + ', scaleY=' + info.scaleY.toFixed(3));
-
     return info;
-  }
+  };
 
-  function exitPrintMode() {
+  window.exitPrintMode = function() {
     if (IS_IOS_SAFARI) return;
 
     var page = document.getElementById('page');
@@ -132,30 +114,19 @@
       page.style.left            = '';
     }
     document.body.classList.remove('print-mode');
-    console.log('[AOG Print] Exited print mode');
-  }
+  };
 
-  // 
- ────────────────────────────────────────────────────────────────
-  // MOBILE DEVICE CLASS
-  // ────────────────────────────────────────────────────────────────
   if (IS_MOBILE) {
     document.documentElement.classList.add('is-mobile-device');
   }
 })();
 </script>
 
-<!-- ============================================
-     GLOBAL PRINT STATE (accessible to all scripts)
-     ============================================ -->
 <script>
-// Make print state available globally
 window.PRINT_SCALE = { x: 1, y: 1 };
 window.PAPER_W_PX = 816;
 window.PAPER_H_PX = 1056;
 window.PAGE_NATURAL_W = 1050;
-
-console.log('[AOG Init] Global print state initialized:', window.PRINT_SCALE);
 </script>
 
 <style>
@@ -185,11 +156,28 @@ console.log('[AOG Init] Global print state initialized:', window.PRINT_SCALE);
   --font-body: 'Exo 2', sans-serif;
 }
 
+/* DARK MODE VARIABLES */
+body.dark-mode {
+  --bg: #0F172A;
+  --bg2: #1A202C;
+  --bg3: #2D3748;
+  --bg4: #374151;
+  --panel: #1A202C;
+  --panel2: #2D3748;
+  --border: rgba(217,119,6,0.15);
+  --border-bright: rgba(217,119,6,0.3);
+  --text: #E5E7EB;
+  --text-muted: #9CA3AF;
+  --text-dim: #6B7280;
+  --glow: 0 0 8px rgba(217,119,6,0.4), 0 0 20px rgba(217,119,6,0.15);
+  --glow-amber: 0 0 8px rgba(217,119,6,0.4), 0 0 20px rgba(217,119,6,0.15);
+}
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
   font-family: var(--font-body);
-  background: #FFFFFF;
+  background: var(--bg);
   color: var(--text);
   width: 100%; 
   max-width: 1050px; 
@@ -199,21 +187,27 @@ body {
   padding-bottom: env(safe-area-inset-bottom, 24px);
   -webkit-text-size-adjust: 100%;
   background-image: none;
-  overflow-x: hidden; 
+  overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .page {
   width: 100%;
   max-width: 1050px;
   margin: 0 auto;
-  background: #FFFFFF;
+  background: var(--panel);
   border: 2px solid var(--cyan);
   box-shadow: 0 0 0 1px rgba(217,119,6,0.1), 0 0 40px rgba(217,119,6,0.08), inset 0 0 60px rgba(255,255,255,0.8);
   position: relative;
   display: flex;
   flex-direction: column;
   padding: 12px; 
-  box-sizing: border-box; 
+  box-sizing: border-box;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+body.dark-mode .page {
+  box-shadow: 0 0 0 1px rgba(217,119,6,0.1), 0 0 40px rgba(217,119,6,0.12), inset 0 0 60px rgba(0,0,0,0.3);
 }
 
 /* Corner accents */
@@ -247,7 +241,7 @@ body {
 
 /* ── HEADER ── */
 .header {
-  background: #FFFFFF;
+  background: var(--panel);
   padding: 8px 32px;
   display: flex;
   align-items: center;
@@ -320,12 +314,64 @@ body {
   white-space: nowrap;
 }
 
-/* Status blips in header */
-.header-status {
+/* ── THEME TOGGLE BUTTON ── */
+.theme-toggle-btn {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  padding: 6px;
+  border: 1px solid rgba(217, 119, 6, 0.4);
+  background: rgba(217, 119, 6, 0.05);
+  border-radius: 4px;
+  cursor: pointer;
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 4px;
+  align-items: center;
+  justify-content: center;
+  color: var(--cyan);
+  transition: all 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  flex-shrink: 0;
+  margin-left: 12px;
+  z-index: 100;
+}
+
+.theme-toggle-btn:hover {
+  border-color: var(--cyan);
+  background: rgba(217, 119, 6, 0.1);
+  box-shadow: var(--glow);
+  transform: scale(1.08);
+}
+
+.theme-toggle-btn:active {
+  transform: scale(0.95);
+}
+
+.theme-icon {
+  stroke: var(--cyan);
+  width: 18px;
+  height: 18px;
+  transition: all 0.3s ease;
+  position: absolute;
+}
+
+.theme-icon.theme-icon-moon {
+  opacity: 0;
+}
+
+body.dark-mode .theme-icon {
+  opacity: 0;
+  transform: rotate(-180deg);
+}
+
+body.dark-mode .theme-icon.theme-icon-moon {
+  opacity: 1;
+  transform: rotate(0deg);
+}
+
+/* PRINT: Hide theme toggle */
+@media print {
+  .theme-toggle-btn { display: none !important; }
 }
 
 /* Offline indicator */
@@ -352,7 +398,7 @@ body.offline { padding-top: 50px; }
 
 /* ── TOOLBAR ── */
 .toolbar {
-  background: #FFFFFF;
+  background: var(--panel);
   border-bottom: 1px solid var(--border);
   padding: 7px 12px;
   display: flex;
@@ -360,6 +406,7 @@ body.offline { padding-top: 50px; }
   align-items: center;
   flex-wrap: wrap;
   flex-shrink: 0;
+  id: toolbar;
 }
 
 .btn {
@@ -422,7 +469,7 @@ body.offline { padding-top: 50px; }
 .section {
   border: 1px solid var(--border);
   margin-bottom: 10px;
-  background: #FFFFFF;
+  background: var(--panel);
   position: relative;
 }
 
@@ -435,7 +482,7 @@ body.offline { padding-top: 50px; }
 }
 
 .section-header {
-  background: #F8F8F8;
+  background: var(--bg3);
   color: var(--cyan);
   font-family: var(--font-display);
   font-size: 0.7rem;
@@ -475,7 +522,7 @@ body.offline { padding-top: 50px; }
   gap: 0;
   border: 1px solid var(--border);
   margin-bottom: 10px;
-  background: #FFFFFF;
+  background: var(--panel);
   position: relative;
 }
 
@@ -500,7 +547,7 @@ body.offline { padding-top: 50px; }
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: #F8F8F8;
+  background: var(--bg3);
   border: 1px solid rgba(217,119,6,0.3);
   border-left: 3px solid var(--cyan);
   color: var(--cyan);
@@ -558,7 +605,7 @@ select {
   font-family: var(--font-mono);
   font-size: 0.82rem;
   color: var(--text);
-  background: #FFFFFF;
+  background: var(--panel);
   border: none;
   border-bottom: 2px solid rgba(217,119,6,0.25);
   padding: 5px 6px;
@@ -579,8 +626,12 @@ input[type="date"] {
   color-scheme: light;
 }
 
+body.dark-mode input[type="date"] {
+  color-scheme: dark;
+}
+
 input::placeholder, textarea::placeholder { 
-  color: #9CA3AF !important;
+  color: var(--text-dim) !important;
   opacity: 1;
 }
 
@@ -615,7 +666,7 @@ textarea {
   padding: 6px;
   margin-top: 4px;
   min-height: 40px;
-  background: #FFFFFF;
+  background: var(--panel);
   color: var(--text);
 }
 textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0.1); }
@@ -705,7 +756,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   border: 1px solid rgba(217,119,6,0.3);
   overflow: hidden;
   flex-shrink: 0;
-  background: #FFFFFF;
+  background: var(--panel);
 }
 
 .yn-group input[type="radio"] { display: none; }
@@ -771,7 +822,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   border-top: 1px solid rgba(217,119,6,0.15);
   margin: 8px 0;
   position: relative;
-  background: #FFFFFF;
+  background: var(--panel);
 }
 
 .divider::before {
@@ -783,7 +834,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   font-family: var(--font-mono);
   font-size: 0.6rem;
   color: var(--text-dim);
-  background: #FFFFFF;
+  background: var(--panel);
   padding: 0 6px;
   letter-spacing: 2px;
 }
@@ -795,7 +846,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   border-top: none;
   margin-bottom: 10px;
   flex-wrap: wrap;
-  background: #FFFFFF;
+  background: var(--panel);
 }
 
 .flood-item {
@@ -821,7 +872,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   top: 100%;
   left: 0; right: 0;
   z-index: 9999;
-  background: #FFFFFF;
+  background: var(--panel);
   border: 1px solid var(--border-bright);
   border-top: none;
   margin: 0; padding: 0;
@@ -875,7 +926,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
 
 .gps-btn:hover { background: rgba(217,119,6,0.2); box-shadow: var(--glow); }
 .gps-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.gps-btn svg { stroke: var(--cyan); }
+.gps-btn svg { stroke: var(--green); }
 
 #address { padding-right: 38px; }
 
@@ -891,9 +942,9 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
 /* ── GAS APPLIANCES BOX ── */
 .gas-appliances-box {
   border: 1px solid rgba(217,119,6,0.2);
-  padding: 6px 8px !important
+  padding: 6px 8px !important;
   margin-bottom: 6px !important;
-  background: #FFFFFF;
+  background: var(--panel);
   position: relative;
 }
 
@@ -916,7 +967,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
 
 /* ── FOOTER ── */
 .footer {
-  background: #FFFFFF;
+  background: var(--panel);
   padding: 10px 22px;
   display: flex;
   justify-content: space-between;
@@ -924,7 +975,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   flex-wrap: wrap;
   gap: 6px;
   border-top: 1px solid var(--border-bright);
-  margin-top: auto !important;  /* ← make sure this is here */
+  margin-top: auto !important;
   flex-shrink: 0;
 }
 
@@ -937,7 +988,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
 
 /* ── SCROLLBAR ── */
 ::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #FFFFFF; }
+::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb { background: rgba(217,119,6,0.3); border-radius: 0; }
 ::-webkit-scrollbar-thumb:hover { background: var(--cyan-dim); }
 
@@ -947,7 +998,6 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
     size: 8.5in 11in;
     margin: 0;
   }
-
 
   * { 
     -webkit-print-color-adjust: exact !important; 
@@ -964,7 +1014,6 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
     overflow: hidden !important;
   }
 
-  /* FOR SAVED IMAGE PRINTING */
   body.print-preview {
     margin: 0 !important;
     padding: 0 !important;
@@ -1276,6 +1325,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
 }
 </style>
 </head>
+
 <body>
 
 <!-- Offline indicator banner -->
@@ -1285,127 +1335,139 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
 
   <div class="header">
     <div class="header-logo">
-     <img src="https://raw.githubusercontent.com/BrandonAOG/AOG-Logo/main/logo.png" alt="logo" width="50" height="40">
+      <img src="https://raw.githubusercontent.com/BrandonAOG/AOG-Logo/main/logo.png" alt="logo" width="50" height="40" class="logo-img">
       <div class="company-name">Always On<br>Generators</div>
     </div>
     <div class="doc-title">Installation Estimate</div>
+    
+    <!-- THEME TOGGLE BUTTON -->
+    <button id="theme-toggle-btn" class="theme-toggle-btn" title="Toggle dark mode" aria-label="Toggle dark mode">
+      <svg class="theme-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="5"/>
+        <line x1="12" y1="1" x2="12" y2="3"/>
+        <line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1" y1="12" x2="3" y2="12"/>
+        <line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+      <svg class="theme-icon theme-icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+    </button>
   </div>
 
+  <!-- TOOLBAR -->
   <div class="toolbar" id="toolbar">
-    <button class="btn btn-gold" onclick="printPDF()">🖨 Print / PDF</button>
-    <button class="btn btn-gold" onclick="openImageModal()">📸 Save Image</button>
-    <button class="btn" onclick="clearForm()">↺ Clear</button>
-    <button class="btn" onclick="sendEmail()">✉ Send Email</button>
+    <button class="btn" onclick="printPDF()" title="Export as PDF">📄 PDF</button>
+    <button class="btn" onclick="openImageModal()" title="Save as JPEG image">🖼 IMAGE</button>
+    <button class="btn btn-gold" onclick="sendEmail()" title="Send estimate via email">✉ EMAIL</button>
+    <button class="btn" onclick="clearForm()" title="Clear all fields and start over">🗑 CLEAR</button>
   </div>
 
   <div class="content">
 
-   <!-- Customer + Property -->
-<div class="top-grid">
-  <div class="top-col">
-    <div class="col-label">
-    <svg width="22" height="22" viewBox="0 0 122 122" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
-  <path
-    d="
-      M61 10
-      C76 10 88 22 88 38
-      C88 54 76 66 61 66
-      C46 66 34 54 34 38
-      C34 22 46 10 61 10
-      M26 114
-      C26 90 44 74 61 74
-      C78 74 96 90 96 114
-      M26 114 H96
-      M20 52
-      L10 42
-      L20 32
-      M102 52
-      L112 42
-      L102 32
-    "
-    fill="none"
-    stroke="#D97706"
-    stroke="currentColor"
-    stroke-width="6"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  />
-</svg>
+    <!-- Customer + Property -->
+    <div class="top-grid">
+      <div class="top-col">
+        <div class="col-label">
+          <svg width="22" height="22" viewBox="0 0 122 122" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+            <path
+              d="
+                M61 10
+                C76 10 88 22 88 38
+                C88 54 76 66 61 66
+                C46 66 34 54 34 38
+                C34 22 46 10 61 10
+                M26 114
+                C26 90 44 74 61 74
+                C78 74 96 90 96 114
+                M26 114 H96
+                M20 52
+                L10 42
+                L20 32
+                M102 52
+                L112 42
+                L102 32
+              "
+              fill="none"
+              stroke="currentColor"
+              stroke-width="6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          Customer Info
+        </div>
 
-Customer Info
-    </div>
+        <div class="field-row">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" required class="long" placeholder="Full name" autocomplete="name" aria-label="Customer name">
+        </div>
 
-    <div class="field-row">
-      <label for="name">Name</label>
-      <input type="text" id="name" name="name" required class="long" placeholder="Full name" autocomplete="name" aria-label="Customer name">
+        <div class="field-row">
+          <label for="address">Address</label>
+          <div class="addr-wrap">
+            <input type="text" id="address" name="address" required class="long" placeholder="Start typing address..." autocomplete="off" autocorrect="off" autocapitalize="words" spellcheck="false" aria-label="Street address">
+            <button class="gps-btn" title="Use my current location" id="gps-btn" type="button" aria-label="Get location from GPS">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>
+                <circle cx="12" cy="12" r="8" stroke-dasharray="2 4"/>
+              </svg>
+            </button>
+            <ul id="address-suggestions" aria-label="Address suggestions"></ul>
+          </div>
+        </div>
 
-    </div>
+        <div id="gps-status"></div>
 
-    <div class="field-row">
-      <label for="address">Address</label>
-      <div class="addr-wrap">
-        <input type="text" id="address" name="address" required class="long" placeholder="Start typing address..." autocomplete="off" autocorrect="off" autocapitalize="words" spellcheck="false" aria-label="Street address">
-        <button class="gps-btn" title="Use my current location" id="gps-btn" type="button" aria-label="Get location from GPS">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-  <circle cx="12" cy="12" r="3"/>
-  <path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>
-  <circle cx="12" cy="12" r="8" stroke-dasharray="2 4"/>
-</svg>
-        </button>
-        <ul id="address-suggestions" aria-label="Address suggestions"></ul>
+        <div class="field-row">
+          <label> </label>
+          <input type="text" id="address2" name="address2" required class="long" placeholder="City, State ZIP" autocomplete="off" aria-label="City, state, and zip code">
+        </div>
+
+        <div class="field-row">
+          <label for="hoa">Community/HOA</label>
+          <input type="text" id="hoa" name="hoa" class="long" autocomplete="off" aria-label="Community or HOA name">
+        </div>
+
+        <div class="field-row">
+          <label for="phone">Phone #</label>
+          <input type="tel" id="phone" name="phone" required class="long" autocomplete="tel" aria-label="Phone number" pattern="[0-9\-\(\)\s]*">
+        </div>
+
+        <div class="field-row">
+          <label for="email">Best Email</label>
+          <input type="email" id="email" name="email" required class="long" autocomplete="email" aria-label="Email address">
+        </div>
+
+        <div class="field-row">
+          <label for="today">Today's Date</label>
+          <input type="date" id="today" name="today" required class="med" autocomplete="off" aria-label="Today's date">
+        </div>
       </div>
-    </div>
-
-    <div id="gps-status"></div>
-
-    <div class="field-row">
-      <label> </label>
-      <input type="text" id="address2" name="address2" required class="long" placeholder="City, State ZIP" autocomplete="off" aria-label="City, state, and zip code">
-    </div>
-
-    <div class="field-row">
-      <label for="hoa">Community/HOA</label>
-      <input type="text" id="hoa" name="hoa" class="long" autocomplete="off" aria-label="Community or HOA name">
-    </div>
-
-    <div class="field-row">
-      <label for="phone">Phone #</label>
-      <input type="tel" id="phone" name="phone" required class="long" autocomplete="tel" aria-label="Phone number" pattern="[0-9\-\(\)\s]*">
-    </div>
-
-    <div class="field-row">
-      <label for="email">Best Email</label>
-      <input type="email" id="email" name="email" required class="long" autocomplete="email" aria-label="Email address">
-    </div>
-
-    <div class="field-row">
-      <label for="today">Today's Date</label>
-      <input type="date" id="today" name="today" required class="med" autocomplete="off" aria-label="Today's date">
-
-    </div>
-  </div>
-
 
       <div class="top-col">
-       <div class="col-label">
- <svg width="22" height="22" viewBox="0 0 122 114" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
-  <path
-    d="M61 4 L8 48 M61 4 L114 48
-       M15 56 V112 H107 V56
-       M30 76 H56 V98 H30 V76
-       M68 74 H92 V112 H68 V74
-       M60 36 A6 6 0 1 1 60 48 A6 6 0 1 1 60 36"
-    fill="none"
-    stroke="#D97706"
-    stroke="currentColor"
-    stroke-width="6"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  />
-</svg>
-
-  Property Info
-</div>
+        <div class="col-label">
+          <svg width="22" height="22" viewBox="0 0 122 114" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+            <path
+              d="M61 4 L8 48 M61 4 L114 48
+                 M15 56 V112 H107 V56
+                 M30 76 H56 V98 H30 V76
+                 M68 74 H92 V112 H68 V74
+                 M60 36 A6 6 0 1 1 60 48 A6 6 0 1 1 60 36"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          Property Info
+        </div>
 
         <div class="field-row">
           <label for="referral">How did you hear about us?</label>
@@ -1414,7 +1476,7 @@ Customer Info
         <div class="field-row">
           <label for="sqft">Sq. Footage</label>
           <input type="number" id="sqft" name="sqft" class="med" placeholder="e.g. 2000" inputmode="numeric" autocomplete="off" aria-label="Square footage">
-                    <span id="sqft-status" style="font-size:0.68rem;color:var(--text-muted);margin-left:4px;"></span>
+          <span id="sqft-status" style="font-size:0.68rem;color:var(--text-muted);margin-left:4px;"></span>
         </div>
         <div class="field-row">
           <label for="gas">Natural Gas / Propane</label>
@@ -1463,20 +1525,15 @@ Customer Info
         <label for="est_done_on">Estimate Done On</label>
         <input type="date" id="est_done_on" name="est_done_on" autocomplete="off" aria-label="Estimate completion date">
       </div>
-      <div class="flood-item">
-
-      </div>
+      <div class="flood-item"></div>
     </div>
 
     <!-- Generator -->
     <div class="section">
       <div class="section-header">
         <svg width="20" height="20" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
-          <!-- Main engine block (rectangular) -->
           <rect x="15" y="30" width="50" height="35" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
-          <!-- Engine head (top section) -->
           <rect x="18" y="28" width="44" height="8" rx="1" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.7"/>
-          <!-- Cylinder cooling fins (vertical lines on side) -->
           <line x1="20" y1="33" x2="20" y2="60" stroke="currentColor" stroke-width="0.6" opacity="0.5"/>
           <line x1="24" y1="33" x2="24" y2="60" stroke="currentColor" stroke-width="0.6" opacity="0.5"/>
           <line x1="28" y1="33" x2="28" y2="60" stroke="currentColor" stroke-width="0.6" opacity="0.5"/>
@@ -1488,30 +1545,22 @@ Customer Info
           <line x1="52" y1="33" x2="52" y2="60" stroke="currentColor" stroke-width="0.6" opacity="0.5"/>
           <line x1="56" y1="33" x2="56" y2="60" stroke="currentColor" stroke-width="0.6" opacity="0.5"/>
           <line x1="60" y1="33" x2="60" y2="60" stroke="currentColor" stroke-width="0.6" opacity="0.5"/>
-          <!-- Air intake/carburetor on top -->
           <rect x="35" y="22" width="10" height="6" rx="1" stroke="currentColor" stroke-width="1.2" fill="none"/>
           <circle cx="40" cy="25" r="1.5" fill="none" stroke="currentColor" stroke-width="0.8"/>
-          <!-- Spark plug -->
           <line x1="68" y1="32" x2="72" y2="28" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
           <circle cx="72" cy="28" r="1.2" fill="currentColor" opacity="0.3"/>
-          <!-- Alternator/Generator head (right side circular) -->
           <circle cx="78" cy="48" r="12" stroke="currentColor" stroke-width="2" fill="none"/>
-          <!-- Alternator cooling fan vents (inside circle) -->
           <line x1="72" y1="48" x2="84" y2="48" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
           <line x1="78" y1="42" x2="78" y2="54" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
           <line x1="72" y1="42" x2="84" y2="54" stroke="currentColor" stroke-width="0.6" opacity="0.4"/>
           <line x1="84" y1="42" x2="72" y2="54" stroke="currentColor" stroke-width="0.6" opacity="0.4"/>
-          <!-- Coupling between engine and alternator -->
           <line x1="65" y1="46" x2="68" y2="48" stroke="currentColor" stroke-width="1.5"/>
           <line x1="65" y1="50" x2="68" y2="48" stroke="currentColor" stroke-width="1.5"/>
           <circle cx="65" cy="48" r="1" fill="currentColor" opacity="0.3"/>
-          <!-- Muffler (exhaust on back top) -->
           <rect x="8" y="26" width="4" height="8" rx="1" stroke="currentColor" stroke-width="1" fill="none" opacity="0.7"/>
           <line x1="10" y1="26" x2="8" y2="22" stroke="currentColor" stroke-width="0.8" stroke-linecap="round" opacity="0.6"/>
-          <!-- Engine mounting feet (bottom) -->
           <rect x="22" y="64" width="6" height="4" rx="0.5" fill="none" stroke="currentColor" stroke-width="1" opacity="0.6"/>
           <rect x="48" y="64" width="6" height="4" rx="0.5" fill="none" stroke="currentColor" stroke-width="1" opacity="0.6"/>
-          <!-- Power output terminals (right side bottom) -->
           <circle cx="82" cy="60" r="1.5" fill="none" stroke="currentColor" stroke-width="1" opacity="0.7"/>
           <circle cx="82" cy="65" r="1.5" fill="none" stroke="currentColor" stroke-width="1" opacity="0.7"/>
           <line x1="80" y1="60" x2="78" y2="60" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
@@ -1521,45 +1570,45 @@ Customer Info
       </div>
 
       <div class="section-body">
-       <div class="inline-row">
-  <label for="gen_size">Size</label>
-  <input type="text" id="gen_size" name="gen_size" placeholder="22kW" autocomplete="off" style="width:80px;min-width:80px;" aria-label="Generator size">
-  <span class="inline-label" style="margin-left:6px;">Placement</span>
-  <div class="check-group">
-    <label class="check-item"><input type="checkbox" name="placement" value="Right" aria-label="Right placement"><span>Right</span></label>
-    <label class="check-item"><input type="checkbox" name="placement" value="Left" aria-label="Left placement"><span>Left</span></label>
-    <label class="check-item"><input type="checkbox" name="placement" value="Back" aria-label="Back placement"><span>Back</span></label>
-  </div>
-  <span class="inline-label" style="margin-left:6px;">Seal Window</span>
-  <div class="yn-group">
-    <input type="radio" name="seal_window" id="sw_y" value="Y" class="yn-y" aria-label="Seal window yes">
-    <label class="yn-label yn-label-y" for="sw_y">Y</label>
-    <input type="radio" name="seal_window" id="sw_n" value="N" class="yn-n" aria-label="Seal window no">
-    <label class="yn-label yn-label-n" for="sw_n">N</label>
-  </div>
-</div>
+        <div class="inline-row">
+          <label for="gen_size">Size</label>
+          <input type="text" id="gen_size" name="gen_size" placeholder="22kW" autocomplete="off" style="width:80px;min-width:80px;" aria-label="Generator size">
+          <span class="inline-label" style="margin-left:6px;">Placement</span>
+          <div class="check-group">
+            <label class="check-item"><input type="checkbox" name="placement" value="Right" aria-label="Right placement"><span>Right</span></label>
+            <label class="check-item"><input type="checkbox" name="placement" value="Left" aria-label="Left placement"><span>Left</span></label>
+            <label class="check-item"><input type="checkbox" name="placement" value="Back" aria-label="Back placement"><span>Back</span></label>
+          </div>
+          <span class="inline-label" style="margin-left:6px;">Seal Window</span>
+          <div class="yn-group">
+            <input type="radio" name="seal_window" id="sw_y" value="Y" class="yn-y" aria-label="Seal window yes">
+            <label class="yn-label yn-label-y" for="sw_y">Y</label>
+            <input type="radio" name="seal_window" id="sw_n" value="N" class="yn-n" aria-label="Seal window no">
+            <label class="yn-label yn-label-n" for="sw_n">N</label>
+          </div>
+        </div>
 
-<div class="inline-row">
-  <span class="inline-label">Elec. Run Footage</span>
-  <input type="number" id="elec_run_ft" name="elec_run_ft" class="short" placeholder="ft" inputmode="numeric" autocomplete="off" aria-label="Electrical run footage">
-  <div class="check-group">
-    <label class="check-item"><input type="checkbox" name="run" value="undergrnd" aria-label="Underground electrical"><span>Under Grnd</span></label>
-    <label class="check-item"><input type="checkbox" name="run" value="abovegrnd" aria-label="Above ground electrical"><span>Above Grnd</span></label>
-    <label class="check-item"><input type="checkbox" name="run" value="attic" aria-label="Attic electrical"><span>Attic</span></label>
-  </div>
-  <span class="inline-label" style="margin-left:6px;">Wiring</span>
-  <div class="check-group">
-    <label class="check-item"><input type="checkbox" name="wiring" value="aluminum" aria-label="Aluminum wiring"><span>Aluminum</span></label>
-    <label class="check-item"><input type="checkbox" name="wiring" value="copper" aria-label="Copper wiring"><span>Copper</span></label>
-  </div>
-  <span class="inline-label">Bore</span>
-  <div class="yn-group">
-    <input type="radio" name="bore_gen" id="bore_gen_y" value="Y" class="yn-y" aria-label="Bore generator yes">
-    <label class="yn-label yn-label-y" for="bore_gen_y">Y</label>
-    <input type="radio" name="bore_gen" id="bore_gen_n" value="N" class="yn-n" aria-label="Bore generator no">
-    <label class="yn-label yn-label-n" for="bore_gen_n">N</label>
-  </div>
-</div>
+        <div class="inline-row">
+          <span class="inline-label">Elec. Run Footage</span>
+          <input type="number" id="elec_run_ft" name="elec_run_ft" class="short" placeholder="ft" inputmode="numeric" autocomplete="off" aria-label="Electrical run footage">
+          <div class="check-group">
+            <label class="check-item"><input type="checkbox" name="run" value="undergrnd" aria-label="Underground electrical"><span>Under Grnd</span></label>
+            <label class="check-item"><input type="checkbox" name="run" value="abovegrnd" aria-label="Above ground electrical"><span>Above Grnd</span></label>
+            <label class="check-item"><input type="checkbox" name="run" value="attic" aria-label="Attic electrical"><span>Attic</span></label>
+          </div>
+          <span class="inline-label" style="margin-left:6px;">Wiring</span>
+          <div class="check-group">
+            <label class="check-item"><input type="checkbox" name="wiring" value="aluminum" aria-label="Aluminum wiring"><span>Aluminum</span></label>
+            <label class="check-item"><input type="checkbox" name="wiring" value="copper" aria-label="Copper wiring"><span>Copper</span></label>
+          </div>
+          <span class="inline-label">Bore</span>
+          <div class="yn-group">
+            <input type="radio" name="bore_gen" id="bore_gen_y" value="Y" class="yn-y" aria-label="Bore generator yes">
+            <label class="yn-label yn-label-y" for="bore_gen_y">Y</label>
+            <input type="radio" name="bore_gen" id="bore_gen_n" value="N" class="yn-n" aria-label="Bore generator no">
+            <label class="yn-label yn-label-n" for="bore_gen_n">N</label>
+          </div>
+        </div>
 
         <div class="field-block">
           <textarea id="gen_notes" name="gen_notes" placeholder="Additional notes on generator placement / run..." aria-label="Generator notes"></textarea>
@@ -1571,21 +1620,13 @@ Customer Info
     <div class="section">
       <div class="section-header">
         <svg width="20" height="20" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
-          <!-- Left power line -->
           <line x1="10" y1="30" x2="30" y2="30" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          <!-- Right power line -->
           <line x1="70" y1="30" x2="90" y2="30" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          <!-- Switch box -->
           <rect x="35" y="20" width="30" height="40" rx="3" stroke="currentColor" stroke-width="2" fill="none"/>
-          <!-- Center divider -->
           <line x1="50" y1="20" x2="50" y2="60" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>
-          <!-- Top label (Grid) -->
           <text x="42" y="35" font-size="8" fill="currentColor" text-anchor="middle">G</text>
-          <!-- Bottom label (Gen) -->
           <text x="42" y="52" font-size="8" fill="currentColor" text-anchor="middle">G</text>
-          <!-- Output connection -->
           <line x1="50" y1="60" x2="50" y2="75" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          <!-- Arrow indicator (switched position) -->
           <path d="M58 45 L65 45 M62 42 L65 45 L62 48" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         Transfer Switch
@@ -1664,21 +1705,16 @@ Customer Info
     <div class="section">
       <div class="section-header">
         <svg width="20" height="20" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
-          <!-- Concrete pad top surface -->
           <rect x="15" y="20" width="70" height="50" stroke="currentColor" stroke-width="2" fill="none" rx="3"/>
-          <!-- Concrete texture (aggregate pattern) -->
           <circle cx="30" cy="35" r="2" fill="currentColor" opacity="0.4"/>
           <circle cx="50" cy="30" r="1.5" fill="currentColor" opacity="0.5"/>
           <circle cx="65" cy="40" r="2" fill="currentColor" opacity="0.4"/>
           <circle cx="35" cy="55" r="1.5" fill="currentColor" opacity="0.5"/>
           <circle cx="70" cy="55" r="2" fill="currentColor" opacity="0.4"/>
           <circle cx="25" cy="60" r="1.5" fill="currentColor" opacity="0.5"/>
-          <!-- Pad edges/shadow -->
           <line x1="15" y1="70" x2="85" y2="72" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
-          <!-- Foundation depth indicator -->
           <line x1="12" y1="20" x2="12" y2="75" stroke="currentColor" stroke-width="1" opacity="0.4" stroke-dasharray="2,2"/>
           <line x1="88" y1="20" x2="88" y2="75" stroke="currentColor" stroke-width="1" opacity="0.4" stroke-dasharray="2,2"/>
-          <!-- Anchor bolt pattern (4 corners) -->
           <circle cx="25" cy="32" r="1.5" fill="currentColor"/>
           <circle cx="75" cy="32" r="1.5" fill="currentColor"/>
           <circle cx="25" cy="60" r="1.5" fill="currentColor"/>
@@ -1711,31 +1747,21 @@ Customer Info
     <div class="section">
       <div class="section-header">
         <svg width="30" height="20" viewBox="0 0 100 60" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
-          <!-- Main horizontal cylinder body -->
           <ellipse cx="50" cy="28" rx="38" ry="14" stroke="currentColor" stroke-width="2" fill="none"/>
-          <!-- Left hemispherical end cap -->
           <path d="M 12 28 Q 12 14 12 28 Q 12 42 12 28" stroke="currentColor" stroke-width="2" fill="none"/>
           <ellipse cx="12" cy="28" rx="8" ry="14" stroke="currentColor" stroke-width="2" fill="none"/>
-          <!-- Right hemispherical end cap -->
           <path d="M 88 28 Q 88 14 88 28 Q 88 42 88 28" stroke="currentColor" stroke-width="2" fill="none"/>
           <ellipse cx="88" cy="28" rx="8" ry="14" stroke="currentColor" stroke-width="2" fill="none"/>
-          <!-- Top dome/fill cap -->
           <ellipse cx="50" cy="14" rx="8" ry="6" stroke="currentColor" stroke-width="1.5" fill="none"/>
           <circle cx="50" cy="12" r="2.5" stroke="currentColor" stroke-width="1.2" fill="none"/>
-          <!-- Liquid level inside (shaded area) -->
           <path d="M 12 28 Q 12 38 50 40 Q 88 38 88 28 L 88 28 Q 88 20 50 22 Q 12 20 12 28" fill="currentColor" opacity="0.2"/>
-          <!-- Liquid level line -->
           <line x1="14" y1="28" x2="86" y2="28" stroke="currentColor" stroke-width="0.8" opacity="0.4" stroke-dasharray="2,1"/>
-          <!-- Left support leg/bracket -->
           <line x1="30" y1="42" x2="28" y2="50" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
           <circle cx="28" cy="50" r="1.5" fill="currentColor" opacity="0.5"/>
-          <!-- Right support leg/bracket -->
           <line x1="70" y1="42" x2="72" y2="50" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
           <circle cx="72" cy="50" r="1.5" fill="currentColor" opacity="0.5"/>
-          <!-- Drain valve at bottom center -->
           <circle cx="50" cy="42" r="1.5" fill="none" stroke="currentColor" stroke-width="1" opacity="0.6"/>
           <line x1="50" y1="43" x2="50" y2="48" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
-          <!-- Gauge glass indicator (right side) -->
           <rect x="90" y="18" width="1.2" height="20" rx="0.6" fill="none" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
           <line x1="88" y1="28" x2="92" y2="28" stroke="currentColor" stroke-width="0.6" opacity="0.4"/>
         </svg>
@@ -1869,6 +1895,30 @@ Customer Info
 <!-- ▲▲▲ END IMAGE MODAL ▲▲▲ -->
 
 <script>
+// ────────────────────────────────────────────────────────────────
+// ICON COLOR HELPER
+// ────────────────────────────────────────────────────────────────
+function setIconColor(svg, color) {
+  if (!svg || !svg.querySelectorAll) return;
+  
+  // Update SVG stroke attribute
+  svg.setAttribute('stroke', color);
+  svg.setAttribute('fill', 'none');
+  
+  // Update all child elements
+  svg.querySelectorAll('*').forEach(el => {
+    if (el.getAttribute('stroke') === 'currentColor') {
+      el.setAttribute('stroke', color);
+    }
+    if (el.getAttribute('fill') === 'currentColor') {
+      el.setAttribute('fill', color);
+    }
+    // Update CSS computed color
+    el.style.stroke = el.getAttribute('stroke') === color ? color : el.style.stroke;
+    el.style.fill = el.getAttribute('fill') === color ? color : el.style.fill;
+  });
+}
+
 // Mobile device detection
 if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
   document.body.classList.add('is-mobile-device');
@@ -1876,6 +1926,61 @@ if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(naviga
 
 var MAPBOX_TOKEN = 'pk.eyJ1IjoicHJvamVjdHdyYXBwZXIiLCJhIjoiY201d2k1eHU3MDAwajJrbzU2a2c5dW40NSJ9.WJlNJ4o5CqBhWpHKMKOzIQ';
 var DRAFT_KEY = 'aog_estimate_draft';
+
+// ────────────────────────────────────────────────────────────────
+// THEME MANAGEMENT
+// ────────────────────────────────────────────────────────────────
+const THEME_KEY = 'aog_theme_preference';
+
+function getInitialTheme() {
+  const saved = localStorage.getItem(THEME_KEY);
+  if (saved) return saved;
+
+  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    return 'dark';
+  }
+
+  return 'light';
+}
+
+function applyTheme(theme) {
+  const html = document.documentElement;
+  const body = document.body;
+
+  if (theme === 'dark') {
+    body.classList.add('dark-mode');
+    html.setAttribute('data-theme', 'dark');
+  } else {
+    body.classList.remove('dark-mode');
+    html.setAttribute('data-theme', 'light');
+  }
+
+  try {
+    localStorage.setItem(THEME_KEY, theme);
+  } catch (e) {
+    console.warn('Could not save theme preference:', e);
+  }
+}
+
+function toggleTheme() {
+  const isDarkMode = document.body.classList.contains('dark-mode');
+  applyTheme(isDarkMode ? 'light' : 'dark');
+}
+
+function setupThemeToggle() {
+  const btn = document.getElementById('theme-toggle-btn');
+  if (!btn) return;
+
+  btn.addEventListener('click', toggleTheme);
+
+  if (window.matchMedia) {
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+      if (!localStorage.getItem(THEME_KEY)) {
+        applyTheme(e.matches ? 'dark' : 'light');
+      }
+    });
+  }
+}
 
 // ────────────────────────────────────────────────────────────────
 // OFFLINE HANDLING
@@ -2303,6 +2408,7 @@ function getFormData() {
 
   return data;
 }
+
 // ────────────────────────────────────────────────────────────────
 // FORM ACTIONS (PRINT, IMAGE, EMAIL, CLEAR)
 // ────────────────────────────────────────────────────────────────
@@ -2347,7 +2453,6 @@ function confirmPdfPrint() {
   var PAPER_W = 816;
   var PAPER_H = 1056;
 
-  // Measure natural content size with no transforms
   var prevTransform = page.style.transform;
   page.style.transform = 'none';
   void page.offsetHeight;
@@ -2355,7 +2460,6 @@ function confirmPdfPrint() {
   var naturalW = 1050;
   page.style.transform = prevTransform;
 
-  // Scale to fit exactly on one page
   var scaleX = PAPER_W / naturalW;
   var scaleY = PAPER_H / naturalH;
   var scale  = Math.min(scaleX, scaleY);
@@ -2385,7 +2489,9 @@ function confirmPdfPrint() {
       if (toolbar) toolbar.style.display = '';
     }, 1500);
   }, 150);
-}function openImageModal() {
+}
+
+function openImageModal() {
   if (!validateForm()) return;
   var modal = document.getElementById('imageModal');
   if (modal) modal.style.display = 'flex';
@@ -2413,9 +2519,6 @@ function saveImageFromModal() {
   loadingDiv.textContent = '⏳ Generating image...';
   document.body.appendChild(loadingDiv);
 
-  // ══════════════════════════════════════════════════════════════
-  // STEP 1: CAPTURE ENTIRE DOCUMENT AT FULL SIZE
-  // ══════════════════════════════════════════════════════════════
   html2canvas(page, {
     scale: 2,
     useCORS: true,
@@ -2424,7 +2527,7 @@ function saveImageFromModal() {
     allowTaint: true,
     imageTimeout: 15000,
     removeContainer: true,
-    windowHeight: page.scrollHeight + 100,  // ADD PADDING
+    windowHeight: page.scrollHeight + 100,
 
     onclone: function(clonedDoc, clonedElement) {
       var clonedPage = clonedElement;
@@ -2432,7 +2535,7 @@ function saveImageFromModal() {
       clonedPage.style.position = 'static';
       clonedPage.style.margin = '0';
       clonedPage.style.padding = '0';
-      clonedPage.style.overflow = 'visible';  // Allow overflow capture
+      clonedPage.style.overflow = 'visible';
 
       clonedDoc.querySelectorAll('*').forEach(function(el) {
         if (el.getAttribute('stroke') === 'currentColor') el.setAttribute('stroke', '#D97706');
@@ -2502,51 +2605,33 @@ function saveImageFromModal() {
       });
     }
       }).then(function(fullCanvas) {
-    // ══════════════════════════════════════════════════════════════
-    // STEP 2: SCALE TO 8.5x11 PAPER DIMENSIONS
-    // ══════════════════════════════════════════════════════════════
     var PAPER_W_IN = 8.5;
     var DPI = 96;
-    var PAPER_W_PX = PAPER_W_IN * DPI;    // 816px
+    var PAPER_W_PX = PAPER_W_IN * DPI;
 
-    // Get device pixel ratio for crisp rendering
     var devicePixelRatio = window.devicePixelRatio || 1;
-    
-    // Calculate scale based on width ONLY
     var scale = PAPER_W_PX / fullCanvas.width;
 
-    // Calculate actual scaled dimensions
     var scaledW = fullCanvas.width * scale;
     var scaledH = fullCanvas.height * scale;
 
-    // Create canvas at DEVICE pixel ratio (don't pre-scale for html2canvas)
     var paperCanvas = document.createElement('canvas');
     paperCanvas.width = PAPER_W_PX * devicePixelRatio;
     paperCanvas.height = scaledH * devicePixelRatio;
     
     var ctx = paperCanvas.getContext('2d');
     
-    // Set CSS size for display
     paperCanvas.style.width = PAPER_W_PX + 'px';
     paperCanvas.style.height = scaledH + 'px';
 
-    // Fill with white background
     ctx.fillStyle = '#FFFFFF';
     ctx.fillRect(0, 0, paperCanvas.width, paperCanvas.height);
 
-    // Scale context for device pixel ratio AND content scaling
     ctx.scale(devicePixelRatio * scale, devicePixelRatio * scale);
 
-    // Center horizontally on original coordinates
     var offsetX = (PAPER_W_PX / scale - fullCanvas.width) / 2;
     
-    // Draw original canvas (unscaled source)
     ctx.drawImage(fullCanvas, offsetX, 0);
-
-    console.log('Full Document: ' + fullCanvas.width + 'x' + fullCanvas.height + 'px');
-    console.log('Paper Width: ' + PAPER_W_PX + 'px (device ratio: ' + devicePixelRatio + ')');
-    console.log('Scale Factor: ' + scale.toFixed(3));
-    console.log('Final Canvas: ' + PAPER_W_PX + 'x' + scaledH.toFixed(0) + 'px');
 
     document.body.removeChild(loadingDiv);
 
@@ -2585,10 +2670,6 @@ function saveImageFromModal() {
     alert('Error generating image: ' + err.message);
   });
 }
-
-
-
-
 
 function sendEmail() {
   if (!validateForm()) return;
@@ -2704,18 +2785,12 @@ function setupAddressAutocomplete() {
             li.addEventListener('mousedown', function(e) {
               e.preventDefault();
               
-              // Parse the Mapbox place_name properly
-              // Format is typically: "street, city, state ZIP"
               var fullAddress = f.place_name;
               var parts = fullAddress.split(',').map(p => p.trim());
               
-              // Street address is first part
               var street = parts[0] || '';
-              
-              // City, state, zip is everything after first comma
               var cityStateZip = parts.slice(1).join(', ') || '';
               
-              // Populate the fields
               input.value = street;
               var addr2 = document.getElementById('address2');
               if (addr2) addr2.value = cityStateZip;
@@ -2837,6 +2912,7 @@ function setupGpsButton() {
   });
 }
 
+// ────────────────────────────────────────────────────────────────
 // INITIALIZATION
 // ────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function() {
@@ -2851,10 +2927,30 @@ document.addEventListener('DOMContentLoaded', function() {
     document.body.classList.add('offline');
   }
 
+  // ===== THEME SETUP =====
+  const initialTheme = getInitialTheme();
+  applyTheme(initialTheme);
+  setupThemeToggle();
+  // ===== END THEME SETUP =====
+
   setupAddressAutocomplete();
   setupGpsButton();
   setupFieldValidation();
   restoreDraft();
+
+  // ===== ICON COLORING =====
+  document.querySelectorAll('.section-header svg').forEach(svg => {
+    setIconColor(svg, '#D97706');
+  });
+
+  document.querySelectorAll('#toolbar svg').forEach(svg => {
+    setIconColor(svg, '#06B6D4');
+  });
+
+  document.querySelectorAll('.gps-btn svg').forEach(svg => {
+    setIconColor(svg, '#10B981');
+  });
+  // ===== END ICON COLORING =====
 });
 </script>
 
