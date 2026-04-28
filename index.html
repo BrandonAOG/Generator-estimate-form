@@ -135,32 +135,8 @@
     console.log('[AOG Print] Exited print mode');
   }
 
-  // ────────────────────────────────────────────────────────────────
-  // BEFOREPRINT/AFTERPRINT HOOKS
-  // ────────────────────────────────────────────────────────────────
-  window.addEventListener('beforeprint', function() {
-    console.log('[AOG] beforeprint fired (IS_IOS=' + IS_IOS_SAFARI + ')');
-    if (!IS_IOS_SAFARI) {
-      enterPrintMode();
-    } else {
-      // iOS: Apply input text color for preview
-      document.querySelectorAll('input, textarea').forEach(function(el) {
-        if (el.value) {
-          el.style.color = '#000';
-          el.style.backgroundColor = 'transparent';
-        }
-      });
-    }
-  });
-
-  window.addEventListener('afterprint', function() {
-    console.log('[AOG] afterprint fired');
-    if (!IS_IOS_SAFARI) {
-      exitPrintMode();
-    }
-  });
-
-  // ────────────────────────────────────────────────────────────────
+  // 
+ ────────────────────────────────────────────────────────────────
   // MOBILE DEVICE CLASS
   // ────────────────────────────────────────────────────────────────
   if (IS_MOBILE) {
