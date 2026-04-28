@@ -2337,41 +2337,59 @@ function closePdfModal() {
 
 function confirmPdfPrint() {
   closePdfModal();
-  
+
   var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-  
+
   if (isIOS) {
     var page = document.getElementById('page');
-    if (page) {
-      // Stronger reflow: visible scale change that iOS can't optimize away
-      page.style.transform = 'scale(0.95)';
-      page.style.transformOrigin = '0 0';
-      
-      // Force the browser to actually compute and paint the change
-      void page.offsetHeight;
-      
-      // Wait two animation frames so iOS commits the layout
+    var toolbar = document.getElementById('toolbar');
+    if (!page) { window.print(); return; }
+
+    // 1. Hide toolbar so it doesn't push content
+    if (toolbar) toolbar.style.display = 'none';
+
+    // 2. Force the page to its natural print dimensions
+    //    so iOS measures it correctly before the dialog opens
+    var prev = {
+      width: page.style.width,
+      maxWidth: page.style.maxWidth,
+      height: page.style.height,
+      overflow: page.style.overflow,
+      position: page.style.position,
+      transform: page.style.transform
+    };
+
+    page.style.width      = '816px';
+    page.style.maxWidth   = '816px';
+    page.style.height     = '1056px';
+    page.style.overflow   = 'hidden';
+    page.style.position   = 'static';
+    page.style.transform  = 'none';
+
+    // 3. Force a layout recalc, then print on next frame
+    void page.offsetHeight;
+
+    requestAnimationFrame(function() {
       requestAnimationFrame(function() {
-        requestAnimationFrame(function() {
-          page.style.transform = '';
-          page.style.transformOrigin = '';
-          
-          // One more reflow + frame after revert
-          void page.offsetHeight;
-          
-          requestAnimationFrame(function() {
-            window.print();
-          });
-        });
+        window.print();
+
+        // 4. Restore after print dialog closes
+        setTimeout(function() {
+          page.style.width      = prev.width;
+          page.style.maxWidth   = prev.maxWidth;
+          page.style.height     = prev.height;
+          page.style.overflow   = prev.overflow;
+          page.style.position   = prev.position;
+          page.style.transform  = prev.transform;
+          if (toolbar) toolbar.style.display = '';
+        }, 1000);
       });
-    } else {
-      window.print();
-    }
+    });
+
   } else {
     window.print();
   }
 }
-
 function openImageModal() {
   if (!validateForm()) return;
   var modal = document.getElementById('imageModal');
@@ -2764,44 +2782,43 @@ function setupGpsButton() {
   });
 }
 
-// iOS-only print zoom — shrinks print output to 59% so the form fits and stays centered
+// iOS-only print
 (function() {
   var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
   if (!isIOS) return;
-  
-  var iosPrintStyle = document.createElement('style');
-  iosPrintStyle.textContent = `
-    @media print {
-      html, body {
-        height: auto !important;
-        min-height: 0 !important;
-      }
-      body {  
-        width: 100% !important;
-        max-width: none !important;
-        margin: 0 !important;
-        padding: 0 !important;
-      }
-      .page {
-        zoom: 0.98 !important; 
-        margin: 0 !important;
-        padding: 0 !important;
-        border: 4px solid #D97706 !important;
-        width: 100% !important;
-        max-width: none !important;
-        position: relative !important;
-        top: 0 !important;
-        page-break-inside: avoid !important;
-        overflow: hidden !important;
-      }
-      .footer {
-        page-break-after: avoid !important;
-        break-after: avoid !important;
-      }
-    }
-  `;
-  document.head.appendChild(iosPrintStyle);
+
+  var iosStyle = document.createElement('style');
+  iosStyle.textContent = [
+    '@media print {',
+    '  @page { size: letter portrait; margin: 0; }',
+    '  html { height: auto !important; }',
+    '  body {',
+    '    width: 816px !important;',
+    '    max-width: 816px !important;',
+    '    margin: 0 !important;',
+    '    padding: 0 !important;',
+    '    overflow: hidden !important;',
+    '  }',
+    '  .page {',
+    '    width: 816px !important;',
+    '    max-width: 816px !important;',
+    '    height: 1056px !important;',
+    '    overflow: hidden !important;',
+    '    margin: 0 !important;',
+    '    padding: 6px !important;',
+    '    border: 2px solid #D97706 !important;',
+    '    box-shadow: none !important;',
+    '    position: static !important;',
+    '    transform: none !important;',
+    '    display: flex !important;',
+    '    flex-direction: column !important;',
+    '  }',
+    '  .toolbar { display: none !important; }',
+    '}',
+  ].join('\n');
+  document.head.appendChild(iosStyle);
 })();
+
 
 // ────────────────────────────────────────────────────────────────
 // INITIALIZATION
