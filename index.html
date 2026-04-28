@@ -2642,13 +2642,26 @@ function setupAddressAutocomplete() {
             li.textContent = f.place_name;
             li.addEventListener('mousedown', function(e) {
               e.preventDefault();
-              var parts = f.place_name.split(',');
-              input.value = parts[0].trim();
-              var rest = parts.slice(1).join(',').trim();
+              
+              // Parse the Mapbox place_name properly
+              // Format is typically: "street, city, state ZIP"
+              var fullAddress = f.place_name;
+              var parts = fullAddress.split(',').map(p => p.trim());
+              
+              // Street address is first part
+              var street = parts[0] || '';
+              
+              // City, state, zip is everything after first comma
+              var cityStateZip = parts.slice(1).join(', ') || '';
+              
+              // Populate the fields
+              input.value = street;
               var addr2 = document.getElementById('address2');
-              if (addr2) addr2.value = rest;
+              if (addr2) addr2.value = cityStateZip;
+              
               list.classList.remove('open');
               list.innerHTML = '';
+              saveDraft();
             });
             list.appendChild(li);
           });
@@ -2657,6 +2670,35 @@ function setupAddressAutocomplete() {
         .catch(function() { list.classList.remove('open'); });
     }, 300);
   });
+
+  document.addEventListener('click', function(e) {
+    if (!input.contains(e.target) && !list.contains(e.target)) {
+      list.classList.remove('open');
+    }
+  });
+
+  input.addEventListener('keydown', function(e) {
+    var items = list.querySelectorAll('li');
+    var active = list.querySelector('li.active');
+    var idx = Array.prototype.indexOf.call(items, active);
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (active) active.classList.remove('active');
+      var next = items[idx + 1] || items[0];
+      if (next) next.classList.add('active');
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (active) active.classList.remove('active');
+      var prev = items[idx - 1] || items[items.length - 1];
+      if (prev) prev.classList.add('active');
+    } else if (e.key === 'Enter' && active) {
+      e.preventDefault();
+      active.dispatchEvent(new MouseEvent('mousedown'));
+    } else if (e.key === 'Escape') {
+      list.classList.remove('open');
+    }
+  });
+}
 
   document.addEventListener('click', function(e) {
     if (!input.contains(e.target) && !list.contains(e.target)) {
