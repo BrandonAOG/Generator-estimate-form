@@ -2353,24 +2353,24 @@ function confirmPdfPrint() {
   var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
   
   if (isIOS) {
-    // iOS Safari fix: force a real layout reflow on the visible page
-    // BEFORE print is called. This mimics the manual "drop to 99% and
-    // back to 100%" trick that makes the zoom take effect on first try.
     var page = document.getElementById('page');
     if (page) {
-      // Trigger a real visible scale change, let it paint, then revert.
-      // We use requestAnimationFrame to make sure the browser actually
-      // applies the change to the real screen before reverting.
+      // Stronger reflow: visible scale change that iOS can't optimize away
       page.style.transform = 'scale(0.95)';
       page.style.transformOrigin = '0 0';
       
+      // Force the browser to actually compute and paint the change
+      void page.offsetHeight;
+      
+      // Wait two animation frames so iOS commits the layout
       requestAnimationFrame(function() {
-        // Wait one paint frame, then revert
         requestAnimationFrame(function() {
           page.style.transform = '';
           page.style.transformOrigin = '';
           
-          // After revert, give iOS one more frame to settle, then print
+          // One more reflow + frame after revert
+          void page.offsetHeight;
+          
           requestAnimationFrame(function() {
             window.print();
           });
@@ -2380,11 +2380,9 @@ function confirmPdfPrint() {
       window.print();
     }
   } else {
-    // Desktop and Android: print directly, no fix needed
     window.print();
   }
 }
-
 
 function openImageModal() {
   if (!validateForm()) return;
