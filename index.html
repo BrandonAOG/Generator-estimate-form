@@ -2700,35 +2700,6 @@ function setupAddressAutocomplete() {
   });
 }
 
-  document.addEventListener('click', function(e) {
-    if (!input.contains(e.target) && !list.contains(e.target)) {
-      list.classList.remove('open');
-    }
-  });
-
-  input.addEventListener('keydown', function(e) {
-    var items = list.querySelectorAll('li');
-    var active = list.querySelector('li.active');
-    var idx = Array.prototype.indexOf.call(items, active);
-    if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      if (active) active.classList.remove('active');
-      var next = items[idx + 1] || items[0];
-      if (next) next.classList.add('active');
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      if (active) active.classList.remove('active');
-      var prev = items[idx - 1] || items[items.length - 1];
-      if (prev) prev.classList.add('active');
-    } else if (e.key === 'Enter' && active) {
-      e.preventDefault();
-      active.dispatchEvent(new MouseEvent('mousedown'));
-    } else if (e.key === 'Escape') {
-      list.classList.remove('open');
-    }
-  });
-}
-
 // ────────────────────────────────────────────────────────────────
 // GPS BUTTON
 // ────────────────────────────────────────────────────────────────
@@ -2803,6 +2774,8 @@ function setupGpsButton() {
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
   });
+}
+
 }// iOS-only print zoom — shrinks print output to 59% so the form fits and stays centered
 (function() {
   var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -2844,7 +2817,7 @@ function setupGpsButton() {
 // ────────────────────────────────────────────────────────────────
 // INITIALIZATION
 // ────────────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', function() {
+dEventListener('DOMContentLoaded', function() {
   var todayInput = document.getElementById('today');
   if (todayInput && !todayInput.value) {
     todayInput.value = new Date().toISOString().split('T')[0];
