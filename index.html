@@ -2764,13 +2764,27 @@ function setupGpsButton() {
     );
   });
 }
-// iOS-only print zoom — shrinks print output to 60% so the form fits on one page
+// iOS-only print zoom — shrinks print output to 60% so the form fits and stays centered
 (function() {
   var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
   if (!isIOS) return;
   
   var iosPrintStyle = document.createElement('style');
-  iosPrintStyle.textContent = '@media print { body { zoom: 0.60 !important; } }';
+  iosPrintStyle.textContent = `
+    @media print {
+      body { 
+        zoom: 0.60 !important; 
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      .page {
+        margin: 0 auto !important;
+        max-width: 1050px !important;
+      }
+    }
+  `;
   document.head.appendChild(iosPrintStyle);
 })();
 // ────────────────────────────────────────────────────────────────
