@@ -1924,6 +1924,24 @@ function saveImageFromModal() {
     });
   });
   
+  // Store original CANVAS styles and REMOVE them
+  var canvasOriginalStyles = [];
+  page.querySelectorAll('canvas').forEach(function(canvas, idx) {
+    canvasOriginalStyles.push({
+      canvas: canvas,
+      parent: canvas.parentNode,
+      display: canvas.style.display,
+      visibility: canvas.style.visibility,
+      width: canvas.width,
+      height: canvas.height,
+      offsetWidth: canvas.offsetWidth,
+      offsetHeight: canvas.offsetHeight
+    });
+    
+    // REMOVE the canvas from DOM
+    canvas.remove();
+  });
+  
   // Remove print-mode class if present
   document.body.classList.remove('print-mode');
   
@@ -2014,18 +2032,6 @@ function saveImageFromModal() {
       }
     });
     
-    // Pre-process canvases
-    var problematicElements = page.querySelectorAll('canvas, iframe, video, audio');
-    problematicElements.forEach(function(el) {
-      el.dataset.originalWidth = el.width || el.getAttribute('width');
-      el.dataset.originalHeight = el.height || el.getAttribute('height');
-      
-      if (el.tagName === 'CANVAS') {
-        if (!el.width || el.width === 0) el.width = 1;
-        if (!el.height || el.height === 0) el.height = 1;
-      }
-    });
-    
     // Wait for SVG changes to be rendered
     setTimeout(function() {
       html2canvas(page, {
@@ -2044,6 +2050,7 @@ function saveImageFromModal() {
           if (element.tagName === 'AUDIO') return true;
           if (element.tagName === 'SCRIPT') return true;
           if (element.tagName === 'STYLE') return true;
+          if (element.tagName === 'CANVAS') return true;  // SKIP ALL CANVAS ELEMENTS
           if (element.style.display === 'none') return true;
           if (element.style.visibility === 'hidden') return true;
           if (element.offsetWidth === 0 && element.offsetHeight === 0) return true;
@@ -2051,6 +2058,13 @@ function saveImageFromModal() {
         },
         
         onclone: function(clonedDoc, clonedElement) {
+          // Remove ANY remaining canvas elements
+          var clonedCanvases = clonedDoc.querySelectorAll('canvas');
+          clonedCanvases.forEach(function(canvas) {
+            console.log('Removing canvas:', canvas.width, 'x', canvas.height);
+            canvas.remove();
+          });
+          
           // Ensure all SVGs are visible in clone
           var clonedSVGs = clonedDoc.querySelectorAll('svg');
           clonedSVGs.forEach(function(svg) {
@@ -2092,13 +2106,6 @@ function saveImageFromModal() {
             });
           });
 
-          // Fix canvases
-          var clonedCanvases = clonedDoc.querySelectorAll('canvas');
-          clonedCanvases.forEach(function(canvas) {
-            if (!canvas.width || canvas.width === 0) canvas.width = 1;
-            if (!canvas.height || canvas.height === 0) canvas.height = 1;
-          });
-
           // Hide problematic elements
           var toHide = clonedDoc.querySelectorAll('#pdfModal, #imageModal, #offline-banner, .toolbar');
           toHide.forEach(function(el) { el.style.display = 'none'; });
@@ -2108,6 +2115,17 @@ function saveImageFromModal() {
           animated.forEach(function(el) { el.style.animationPlayState = 'paused'; });
         }
       }).then(function(canvas) {
+        // Restore original canvases to DOM
+        canvasOriginalStyles.forEach(function(item) {
+          if (item.parent && item.parent.isConnected) {
+            item.parent.insertBefore(item.canvas, null);
+            item.canvas.style.display = item.display;
+            item.canvas.style.visibility = item.visibility;
+            item.canvas.width = item.width;
+            item.canvas.height = item.height;
+          }
+        });
+        
         // Restore original styles
         page.style.transform = originalTransform;
         page.style.position = originalPosition;
@@ -2156,7 +2174,18 @@ function saveImageFromModal() {
           alert('Error saving image: ' + e.message);
         }
       }).catch(function(err) {
-        // Restore original styles even on error
+        // Restore original canvases to DOM even on error
+        canvasOriginalStyles.forEach(function(item) {
+          if (item.parent && item.parent.isConnected) {
+            item.parent.insertBefore(item.canvas, null);
+            item.canvas.style.display = item.display;
+            item.canvas.style.visibility = item.visibility;
+            item.canvas.width = item.width;
+            item.canvas.height = item.height;
+          }
+        });
+        
+        // Restore original styles
         page.style.transform = originalTransform;
         page.style.position = originalPosition;
         page.style.top = originalTop;
