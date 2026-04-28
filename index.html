@@ -2763,8 +2763,7 @@ function setupGpsButton() {
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
   });
-}
-// iOS-only print zoom — shrinks print output to 60% so the form fits and stays centered
+}// iOS-only print zoom — shrinks print output to 59% so the form fits and stays centered
 (function() {
   var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
   if (!isIOS) return;
@@ -2789,6 +2788,7 @@ function setupGpsButton() {
         max-width: none !important;
         position: relative !important;
         top: 0 !important;
+        page-break-inside: avoid !important;
       }
     }
   `;
