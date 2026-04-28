@@ -57,19 +57,18 @@
       overflow: hidden;
       width: 100vw;
       height: 100vh;
-      margin: 1px;
-      padding: 1px;
+      margin: 0;
+      padding: 0;
       background: white;
     }
 
     body.print-mode .page {
-      margin: 1px;
+      margin: 0;
       position: absolute;
-      top: 1px;
-      left: 1px;
+      top: 0;
+      left: 0;
     }
   `;
-
   var styleEl = document.createElement('style');
   styleEl.setAttribute('id', 'print-optimization-styles');
   styleEl.textContent = PRINT_CSS;
