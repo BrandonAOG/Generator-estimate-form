@@ -631,8 +631,7 @@ textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0
   .grid-4 { grid-template-columns: 1fr 1fr; }
 }
 
-.field-block { display: flex; flex-direction: column; gap: 4px; }
-.field-block > label { margin-bottom: 0; }
+.field-block .yn-group { align-self: flex-start; }
 
 /* ── CHECK GROUPS ── */
 .check-group {
@@ -1758,7 +1757,7 @@ Customer Info
 
         <div class="gas-appliances-box">
           <div class="gas-appliances-label">Existing Gas Appliances</div>
-          <div class="check-group" style="margin-bottom:10px;">
+          <div class="check-group" style="margin-center:6px;">
             <label class="check-item"><input type="checkbox" name="gas_appliances" value="range" aria-label="Gas range"><span>Range</span></label>
             <label class="check-item"><input type="checkbox" name="gas_appliances" value="cooktop" aria-label="Gas cooktop"><span>Cooktop</span></label>
             <label class="check-item"><input type="checkbox" name="gas_appliances" value="oven" aria-label="Gas oven"><span>Oven</span></label>
@@ -1787,7 +1786,7 @@ Customer Info
             <label for="fuel_attic">Attic (ft)</label>
             <input type="number" id="fuel_attic" name="fuel_attic" inputmode="numeric" autocomplete="off" aria-label="Attic fuel line footage">
           </div>
-          <div class="field-block" style="display:flex;flex-direction:column;gap:6px;">
+          <div class="field-block" style="display:flex;flex-direction:column;gap:14px;">
             <label>Bore</label>
             <div class="yn-group">
               <input type="radio" name="bore_fuel" id="bf_y" value="Y" class="yn-y" aria-label="Bore fuel line yes">
@@ -2838,45 +2837,7 @@ function setupGpsButton() {
   });
 }
 
-// iOS-only print
-(function() {
-  var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-  if (!isIOS) return;
-
-  var iosStyle = document.createElement('style');
-  iosStyle.textContent = [
-    '@media print {',
-    '  @page { size: letter portrait; margin: 0; }',
-    '  html { height: auto !important; }',
-    '  body {',
-    '    width: 816px !important;',
-    '    max-width: 816px !important;',
-    '    margin: 0 !important;',
-    '    padding: 0 !important;',
-    '    overflow: hidden !important;',
-    '  }',
-    '  .page {',
-    '    width: 816px !important;',
-    '    max-width: 816px !important;',
-    '    height: 1056px !important;',
-    '    overflow: hidden !important;',
-    '    margin: 0 !important;',
-    '    padding: 6px !important;',
-    '    border: 2px solid #D97706 !important;',
-    '    box-shadow: none !important;',
-    '    position: static !important;',
-    '    transform: none !important;',
-    '    display: flex !important;',
-    '    flex-direction: column !important;',
-    '  }',
-    '  .toolbar { display: none !important; }',
-    '}',
-  ].join('\n');
-  document.head.appendChild(iosStyle);
-})();
-
-
-// ────────────────────────────────────────────────────────────────
+────────────────────────────────────────────────────────────────
 // INITIALIZATION
 // ────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function() {
