@@ -3244,23 +3244,30 @@ function saveImageFromModal() {
   loadingDiv.textContent = '⏳ Generating image...';
   document.body.appendChild(loadingDiv);
 
+  var NATURAL_W = 1050;
+  var TARGET_W = 816; // 8.5in at 96dpi
+
+  // This scale neutralises whatever zoom the browser is at
+  var captureScale = NATURAL_W / page.getBoundingClientRect().width;
+
   html2canvas(page, {
-    scale: 2,
+    scale: captureScale,
     useCORS: true,
     backgroundColor: '#FFFFFF',
     logging: false,
     allowTaint: true,
     imageTimeout: 15000,
     removeContainer: true,
-    windowHeight: page.scrollHeight + 100,
+    windowWidth: NATURAL_W,
 
     onclone: function(clonedDoc, clonedElement) {
-      var clonedPage = clonedElement;
-      clonedPage.style.transform = 'none';
-      clonedPage.style.position = 'static';
-      clonedPage.style.margin = '0';
-      clonedPage.style.padding = '0';
-      clonedPage.style.overflow = 'visible';
+      clonedElement.style.transform = 'none';
+      clonedElement.style.transformOrigin = '';
+      clonedElement.style.position = 'static';
+      clonedElement.style.margin = '0';
+      clonedElement.style.padding = '0';
+      clonedElement.style.width = NATURAL_W + 'px';
+      clonedElement.style.overflow = 'visible';
 
       clonedDoc.querySelectorAll('*').forEach(function(el) {
         if (el.getAttribute('stroke') === 'currentColor') el.setAttribute('stroke', '#D97706');
@@ -3271,7 +3278,6 @@ function saveImageFromModal() {
       svgs.forEach(function(svg) {
         var parent = svg.parentElement;
         var computedColor = '#D97706';
-
         try {
           if (parent) {
             var parentStyle = clonedDoc.defaultView.getComputedStyle(parent);
@@ -3279,122 +3285,87 @@ function saveImageFromModal() {
           }
         } catch (e) {}
 
-        if (!svg.getAttribute('xmlns')) {
-          svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-        }
+        if (!svg.getAttribute('xmlns')) svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
 
-        var shapes = svg.querySelectorAll('path, polyline, polygon, line, rect, circle, ellipse, text');
-        shapes.forEach(function(el) {
-          if (el.getAttribute('stroke') === 'currentColor') {
-            el.setAttribute('stroke', computedColor);
-          }
-          if (el.getAttribute('fill') === 'currentColor') {
-            el.setAttribute('fill', computedColor);
-          }
-          if (!el.getAttribute('fill') && el.tagName.toLowerCase() !== 'text') {
-            el.setAttribute('fill', 'none');
-          }
-        });
-
-        svg.querySelectorAll('[stroke="currentColor"]').forEach(function(el) {
-          el.setAttribute('stroke', '#D97706');
-        });
-        svg.querySelectorAll('[fill="currentColor"]').forEach(function(el) {
-          el.setAttribute('fill', '#D97706');
+        svg.querySelectorAll('path, polyline, polygon, line, rect, circle, ellipse, text').forEach(function(el) {
+          if (el.getAttribute('stroke') === 'currentColor') el.setAttribute('stroke', computedColor);
+          if (el.getAttribute('fill') === 'currentColor') el.setAttribute('fill', computedColor);
+          if (!el.getAttribute('fill') && el.tagName.toLowerCase() !== 'text') el.setAttribute('fill', 'none');
         });
       });
 
       var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
       if (isIOS) {
-        var allPaths = clonedDoc.querySelectorAll('svg path');
-        allPaths.forEach(function(p) {
+        clonedDoc.querySelectorAll('svg path').forEach(function(p) {
           var original = parseFloat(p.getAttribute('stroke-width')) || 2;
           p.setAttribute('stroke-width', original * 2.2);
           p.setAttribute('stroke', '#b86a05');
         });
       }
 
-      var inputs = clonedDoc.querySelectorAll('input, textarea');
-      inputs.forEach(function(input) {
-        if (!input.value) input.setAttribute('placeholder', '');
+      clonedDoc.querySelectorAll('input, textarea').forEach(function(el) {
+        if (!el.value) el.setAttribute('placeholder', '');
       });
 
-      var allHeaders = clonedDoc.querySelectorAll('.section-header, .col-label');
-      allHeaders.forEach(function(h) {
+      clonedDoc.querySelectorAll('.section-header, .col-label').forEach(function(h) {
         h.style.animationPlayState = 'paused';
       });
 
-      var modals = clonedDoc.querySelectorAll('#pdfModal, #imageModal, #offline-banner, .toolbar');
-      modals.forEach(function(m) {
+      clonedDoc.querySelectorAll('#pdfModal, #imageModal, #offline-banner, .toolbar').forEach(function(m) {
         m.style.display = 'none';
       });
     }
-  }).then(function(fullCanvas) {
-    var PAPER_W_IN = 8.5;
-    var DPI = 96;
-    var PAPER_W_PX = PAPER_W_IN * DPI;
 
-    var devicePixelRatio = window.devicePixelRatio || 1;
-    var scale = PAPER_W_PX / fullCanvas.width;
+  }).then(function(canvas) {
+    // canvas is now NATURAL_W px wide — scale down to TARGET_W
+    var finalH = Math.round(canvas.height * (TARGET_W / canvas.width));
 
-    var scaledW = fullCanvas.width * scale;
-    var scaledH = fullCanvas.height * scale;
-
-    var paperCanvas = document.createElement('canvas');
-    paperCanvas.width = PAPER_W_PX * devicePixelRatio;
-    paperCanvas.height = scaledH * devicePixelRatio;
-    
-    var ctx = paperCanvas.getContext('2d');
-    
-    paperCanvas.style.width = PAPER_W_PX + 'px';
-    paperCanvas.style.height = scaledH + 'px';
-
+    var out = document.createElement('canvas');
+    out.width = TARGET_W;
+    out.height = finalH;
+    var ctx = out.getContext('2d');
     ctx.fillStyle = '#FFFFFF';
-    ctx.fillRect(0, 0, paperCanvas.width, paperCanvas.height);
+    ctx.fillRect(0, 0, TARGET_W, finalH);
+    ctx.drawImage(canvas, 0, 0, TARGET_W, finalH);
 
-    ctx.scale(devicePixelRatio * scale, devicePixelRatio * scale);
-
-    var offsetX = (PAPER_W_PX / scale - fullCanvas.width) / 2;
-    
-    ctx.drawImage(fullCanvas, offsetX, 0);
-
-    document.body.removeChild(loadingDiv);
+    if (loadingDiv.parentNode) document.body.removeChild(loadingDiv);
 
     try {
-      var link = document.createElement('a');
-      link.download = filename;
-      link.href = paperCanvas.toDataURL('image/jpeg', 0.95);
-
+      var dataUrl = out.toDataURL('image/jpeg', 0.95);
       if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
         var newTab = window.open();
         if (newTab) {
           newTab.document.write(
-            '<html><head><meta name="viewport" content="width=device-width, initial-scale=1.0"></head><body style="margin:0;padding:10px;background:#f5f5f5;">' +
-            '<img src="' + link.href + '" style="width:100%;height:auto;display:block;"/>' +
+            '<html><head><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>' +
+            '<body style="margin:0;padding:10px;background:#f5f5f5;">' +
+            '<img src="' + dataUrl + '" style="width:100%;height:auto;display:block;"/>' +
             '<p style="font-family:sans-serif;padding:10px;text-align:center;color:#666;">Long‑press the image and select "Save to Photos"</p>' +
             '</body></html>'
           );
         } else {
-          link.click();
+          var a = document.createElement('a');
+          a.download = filename; a.href = dataUrl; a.click();
         }
       } else {
+        var link = document.createElement('a');
+        link.download = filename;
+        link.href = dataUrl;
         document.body.appendChild(link);
         link.click();
-        setTimeout(function() {
-          document.body.removeChild(link);
-        }, 100);
+        setTimeout(function() { document.body.removeChild(link); }, 100);
       }
-    } catch (e) {
+    } catch(e) {
       alert('Error saving image: ' + e.message);
     }
+
   }).catch(function(err) {
-    if (loadingDiv.parentNode) {
-      document.body.removeChild(loadingDiv);
-    }
+    if (loadingDiv.parentNode) document.body.removeChild(loadingDiv);
     console.error('html2canvas error:', err);
     alert('Error generating image: ' + err.message);
   });
 }
+
+
 
 function sendEmail() {
   if (!validateForm()) return;
