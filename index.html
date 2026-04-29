@@ -1704,7 +1704,7 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
 @media print {
   @page {
     size: 8.5in 11in;
-    margin: 0;
+    margin: 0.25in 0;
   }
 
   * { 
@@ -2359,7 +2359,7 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
       </div>
     </div>
 
-    <div class="field-block" style="margin-bottom:14px;">
+    <div class="field-block" style="margin-bottom:10px;">
       <textarea id="gen_notes" name="gen_notes" placeholder="Additional notes on generator placement / run..." aria-label="Generator notes"></textarea>
     </div>
   </div>
@@ -2485,7 +2485,7 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
       </div>
     </div>
 
-    <div class="field-block" style="margin-bottom:14px;">
+    <div class="field-block" style="margin-bottom:10px;">
       <textarea id="pad_notes" name="pad_notes" placeholder="Additional pad notes..." aria-label="Pad notes"></textarea>
     </div>
   </div>
@@ -3161,53 +3161,88 @@ function closePdfModal() {
 function confirmPdfPrint() {
   closePdfModal();
 
-  var page = document.getElementById('page');
-  var toolbar = document.getElementById('toolbar');
-  if (!page) { window.print(); return; }
-
-  if (toolbar) toolbar.style.display = 'none';
+  // ── AUTO SWITCH TO LIGHT MODE FOR PRINTING ──
   var wasDarkMode = document.body.classList.contains('dark-mode');
-  if (wasDarkMode) document.body.classList.remove('dark-mode');
+  if (wasDarkMode) {
+    document.body.classList.remove('dark-mode');
+    document.documentElement.setAttribute('data-theme', 'light');
+  }
 
-  var PAPER_W = 816;
-  var PAPER_H = 1056;
+  var page = document.getElementById('page');
+  if (!page) return;
 
-  var prevTransform = page.style.transform;
-  page.style.transform = 'none';
-  void page.offsetHeight;
-  var naturalH = page.scrollHeight;
-  var naturalW = 1050;
-  page.style.transform = prevTransform;
+  var loadingDiv = document.createElement('div');
+  loadingDiv.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1a1a1a;border:2px solid #D97706;color:#D97706;padding:20px 40px;font-family:monospace;z-index:99999;border-radius:8px;box-shadow:0 0 30px rgba(217,119,6,0.4);';
+  loadingDiv.textContent = '⏳ Generating PDF...';
+  document.body.appendChild(loadingDiv);
 
-  var scaleX = PAPER_W / naturalW;
-  var scaleY = PAPER_H / naturalH;
-  var scale  = Math.min(scaleX, scaleY);
+  var NATURAL_W = 1050;
+  var TARGET_W = 816;
+  var captureScale = NATURAL_W / page.getBoundingClientRect().width;
 
-  page.style.transformOrigin = '0 0';
-  page.style.transform       = 'scale(' + scale + ')';
-  page.style.width           = naturalW + 'px';
-  page.style.height          = naturalH + 'px';
-  page.style.position        = 'absolute';
-  page.style.top             = '0';
-  page.style.left            = '0';
-  document.body.style.width  = (naturalW * scale) + 'px';
-  document.body.style.height = (naturalH * scale) + 'px';
+  html2canvas(page, {
+    scale: captureScale,
+    useCORS: true,
+    backgroundColor: '#FFFFFF',
+    logging: false,
+    allowTaint: true,
+    imageTimeout: 15000,
+    removeContainer: true,
+    windowWidth: NATURAL_W,
+    onclone: function(clonedDoc, clonedElement) {
+      clonedElement.style.transform = 'none';
+      clonedElement.style.position = 'static';
+      clonedElement.style.margin = '0';
+      clonedElement.style.width = NATURAL_W + 'px';
+      clonedElement.style.overflow = 'visible';
+      clonedDoc.querySelectorAll('*').forEach(function(el) {
+        if (el.getAttribute('stroke') === 'currentColor') el.setAttribute('stroke', '#D97706');
+        if (el.getAttribute('fill') === 'currentColor') el.setAttribute('fill', '#D97706');
+      });
+      clonedDoc.querySelectorAll('#pdfModal, #imageModal, #offline-banner, .toolbar').forEach(function(m) {
+        m.style.display = 'none';
+      });
+    }
+  }).then(function(canvas) {
+    var finalH = Math.round(canvas.height * (TARGET_W / canvas.width));
+    var out = document.createElement('canvas');
+    out.width = TARGET_W;
+    out.height = finalH;
+    var ctx = out.getContext('2d');
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(0, 0, TARGET_W, finalH);
+    ctx.drawImage(canvas, 0, 0, TARGET_W, finalH);
 
-  setTimeout(function() {
-    window.print();
-    setTimeout(function() {
-      page.style.transform       = '';
-      page.style.transformOrigin = '';
-      page.style.width           = '';
-      page.style.height          = '';
-      page.style.position        = '';
-      page.style.top             = '';
-      page.style.left            = '';
-      document.body.style.width  = '';
-      document.body.style.height = '';
-      if (toolbar) toolbar.style.display = '';
-    }, 1500);
-  }, 150);
+    if (loadingDiv.parentNode) document.body.removeChild(loadingDiv);
+
+    if (wasDarkMode) {
+      document.body.classList.add('dark-mode');
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+
+    var dataUrl = out.toDataURL('image/jpeg', 0.95);
+    var name = (document.getElementById('name').value || 'Estimate').replace(/\s+/g, '_');
+    var date = new Date().toISOString().split('T')[0];
+
+    var printWin = window.open('', '_blank');
+    if (printWin) {
+      printWin.document.write(
+        '<!DOCTYPE html><html><head><title>' + name + '_' + date + '</title>' +
+        '<style>*{margin:0;padding:0;}@page{size:8.5in 11in;margin:0;}' +
+        'body{margin:0;padding:0;background:#fff;}' +
+        'img{width:8.4in;height:10.8in;display:block;object-fit:contain;margin:0.1in auto;}</style></head>' +
+        '<body><img src="' + dataUrl + '" onload="window.print();"/></body></html>'
+      );
+      printWin.document.close();
+    }
+  }).catch(function(err) {
+    if (loadingDiv.parentNode) document.body.removeChild(loadingDiv);
+    if (wasDarkMode) {
+      document.body.classList.add('dark-mode');
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+    alert('Error generating PDF: ' + err.message);
+  });
 }
 
 function openImageModal() {
