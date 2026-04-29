@@ -2548,29 +2548,30 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
           </div>
         </div>
 
-        <div class="grid-4" style="margin-bottom:14px;">
-          <div class="field-block">
-            <label for="fuel_underground">Underground (ft)</label>
-            <input type="number" id="fuel_underground" name="fuel_underground" inputmode="numeric" autocomplete="off" aria-label="Underground fuel line footage">
-          </div>
-          <div class="field-block">
-            <label for="fuel_aboveground">Above Ground (ft)</label>
-            <input type="number" id="fuel_aboveground" name="fuel_aboveground" inputmode="numeric" autocomplete="off" aria-label="Above ground fuel line footage">
-          </div>
-          <div class="field-block">
-            <label for="fuel_attic">Attic (ft)</label>
-            <input type="number" id="fuel_attic" name="fuel_attic" inputmode="numeric" autocomplete="off" aria-label="Attic fuel line footage">
-          </div>
-          <div class="field-block" style="display:flex;flex-direction:column;gap:14px;">
-            <label>Bore</label>
-            <div class="yn-group">
-              <input type="radio" name="bore_fuel" id="bf_y" value="Y" class="yn-y" aria-label="Bore fuel line yes">
-              <label class="yn-label yn-label-y" for="bf_y">Y</label>
-              <input type="radio" name="bore_fuel" id="bf_n" value="N" class="yn-n" aria-label="Bore fuel line no">
-              <label class="yn-label yn-label-n" for="bf_n">N</label>
-            </div>
-          </div>
-        </div>
+       <div class="grid-4" style="margin-bottom:14px;">
+  <div class="field-block">
+    <label for="fuel_underground" style="margin-bottom:-20px; font-size:0.75rem;">Underground (ft)</label>
+    <input type="number" id="fuel_underground" name="fuel_underground" inputmode="numeric" autocomplete="off" aria-label="Underground fuel line footage">
+  </div>
+  <div class="field-block">
+    <label for="fuel_aboveground" style="margin-bottom:-20px; font-size:0.75rem;">Above Ground (ft)</label>
+    <input type="number" id="fuel_aboveground" name="fuel_aboveground" inputmode="numeric" autocomplete="off" aria-label="Above ground fuel line footage">
+  </div>
+  <div class="field-block">
+    <label for="fuel_attic" style="margin-bottom:-20px; font-size:0.75rem;">Attic (ft)</label>
+    <input type="number" id="fuel_attic" name="fuel_attic" inputmode="numeric" autocomplete="off" aria-label="Attic fuel line footage">
+  </div>
+  <div class="field-block" style="display:flex;flex-direction:column;gap:14px;">
+  <label style="font-size:0.80rem; margin-bottom:-8px; margin-left:18px;">Bore</label>
+  <div class="yn-group">
+    <input type="radio" name="bore_fuel" id="bf_y" value="Y" class="yn-y" aria-label="Bore fuel line yes">
+    <label class="yn-label yn-label-y" for="bf_y" style="font-size:0.65rem;">Y</label>
+    <input type="radio" name="bore_fuel" id="bf_n" value="N" class="yn-n" aria-label="Bore fuel line no">
+    <label class="yn-label yn-label-n" for="bf_n" style="font-size:0.65rem;">N</label>
+  </div>
+</div>
+</div>
+
 
         <div class="inline-row">
           <span class="inline-label">Install Difficulty</span>
@@ -3449,7 +3450,7 @@ document.addEventListener('click', function(e) {
 // ────────────────────────────────────────────────────────────────
 // ADDRESS AUTOCOMPLETE - SOUTHWEST FLORIDA PRIORITY
 // ────────────────────────────────────────────────────────────────
-var MAPBOX_TOKEN = 'pk.eyJ1IjoiYnJhbmRvbmFvZyIsImEiOiJjbW9rZ3pzZ3AwMHQ4Mm9weXFpMDVyNXJnIn0.7Lz45A8opMkBnYPykWifAw';
+var MAPBOX_TOKEN = 'pk.eyJ1IjoicHJvamVjdHdyYXBwZXIiLCJhIjoiY201d2k1eHU3MDAwajJrbzU2a2c5dW40NSJ9.WJlNJ4o5CqBhWpHKMKOzIQ';
 
 // Southwest Florida bounding box: [minLng, minLat, maxLng, maxLat]
 // Covers: Naples, Fort Myers, Cape Coral, Estero, Bonita Springs
