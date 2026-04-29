@@ -1712,7 +1712,7 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     print-color-adjust: exact !important;
   }
 
-  body {
+ body, body.dark-mode {
     background: #ffffff !important;
     background-image: none !important;
     padding: 0 !important;
@@ -1720,6 +1720,7 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     width: 8.5in !important;
     height: 11in !important;
     overflow: hidden !important;
+    color: #1F2937 !important;
   }
 
   body.print-preview {
@@ -1764,6 +1765,33 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     left: auto !important;
     top: auto !important;
     transform-origin: top left !important;
+  }
+
+  body.dark-mode .page,
+  body.dark-mode .header,
+  body.dark-mode .section,
+  body.dark-mode .section-header,
+  body.dark-mode .top-grid,
+  body.dark-mode .top-col,
+  body.dark-mode .content,
+  body.dark-mode .flood-bar,
+  body.dark-mode .flood-item,
+  body.dark-mode .footer,
+  body.dark-mode .col-label,
+  body.dark-mode input,
+  body.dark-mode textarea,
+  body.dark-mode label,
+  body.dark-mode .check-item,
+  body.dark-mode .yn-group,
+  body.dark-mode .yn-label,
+  body.dark-mode .inline-label,
+  body.dark-mode .gas-appliances-box,
+  body.dark-mode .gas-appliances-label {
+    background: #ffffff !important;
+    color: #1F2937 !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+    border-color: #D97706 !important;
   }
 
   .toolbar { display: none !important; }
@@ -3144,6 +3172,8 @@ function confirmPdfPrint() {
   if (!page) { window.print(); return; }
 
   if (toolbar) toolbar.style.display = 'none';
+  var wasDarkMode = document.body.classList.contains('dark-mode');
+  if (wasDarkMode) document.body.classList.remove('dark-mode');
 
   var PAPER_W = 816;
   var PAPER_H = 1056;
