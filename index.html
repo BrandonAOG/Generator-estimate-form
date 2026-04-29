@@ -1455,7 +1455,7 @@ body.dark-mode .flood-item {
   position: absolute;
   top: 100%;
   left: 0; right: 0;
-  z-index: 9999;
+  z-index: 99999;
   background: var(--panel);
   border: 1px solid var(--border-bright);
   border-top: none;
@@ -3470,7 +3470,10 @@ function setupAddressAutocomplete() {
                 '&country=US&types=address&autocomplete=true&limit=5';
 
       fetch(url)
-        .then(function(r) { return r.json(); })
+        .then(function(r) {
+          if (!r.ok) throw new Error('Mapbox error: ' + r.status);
+          return r.json();
+        })
         .then(function(data) {
           list.innerHTML = '';
           if (!data.features || data.features.length === 0) {
@@ -3482,17 +3485,10 @@ function setupAddressAutocomplete() {
             li.textContent = f.place_name;
             li.addEventListener('mousedown', function(e) {
               e.preventDefault();
-              
-              var fullAddress = f.place_name;
-              var parts = fullAddress.split(',').map(p => p.trim());
-              
-              var street = parts[0] || '';
-              var cityStateZip = parts.slice(1).join(', ') || '';
-              
-              input.value = street;
+              var parts = f.place_name.split(',').map(function(p) { return p.trim(); });
+              input.value = parts[0] || '';
               var addr2 = document.getElementById('address2');
-              if (addr2) addr2.value = cityStateZip;
-              
+              if (addr2) addr2.value = parts.slice(1).join(', ') || '';
               list.classList.remove('open');
               list.innerHTML = '';
               saveDraft();
@@ -3501,7 +3497,38 @@ function setupAddressAutocomplete() {
           });
           list.classList.add('open');
         })
-        .catch(function() { list.classList.remove('open'); });
+        .catch(function(err) {
+          console.error('Autocomplete error:', err);
+          // Fallback: try OpenStreetMap Nominatim if Mapbox fails
+          var nomUrl = 'https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=5&countrycodes=us&q=' + encodeURIComponent(q);
+          fetch(nomUrl, { headers: { 'Accept-Language': 'en' } })
+            .then(function(r) { return r.json(); })
+            .then(function(results) {
+              list.innerHTML = '';
+              if (!results || results.length === 0) { list.classList.remove('open'); return; }
+              results.forEach(function(result) {
+                var li = document.createElement('li');
+                li.textContent = result.display_name;
+                li.addEventListener('mousedown', function(e) {
+                  e.preventDefault();
+                  var a = result.address || {};
+                  var street = ((a.house_number || '') + ' ' + (a.road || '')).trim() || result.display_name.split(',')[0];
+                  var city  = a.city || a.town || a.village || a.county || '';
+                  var state = a.state || '';
+                  var zip   = a.postcode || '';
+                  input.value = street;
+                  var addr2 = document.getElementById('address2');
+                  if (addr2) addr2.value = [city, state, zip].filter(Boolean).join(', ');
+                  list.classList.remove('open');
+                  list.innerHTML = '';
+                  saveDraft();
+                });
+                list.appendChild(li);
+              });
+              list.classList.add('open');
+            })
+            .catch(function() { list.classList.remove('open'); });
+        });
     }, 300);
   });
 
@@ -3533,7 +3560,6 @@ function setupAddressAutocomplete() {
     }
   });
 }
-
 // ────────────────────────────────────────────────────────────────
 // GPS BUTTON
 // ────────────────────────────────────────────────────────────────
