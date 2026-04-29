@@ -2068,8 +2068,10 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     color: #D97706 !important;
   }
 
-  #address-suggestions, #gps-status, #gps-btn { display: none !important; }
+#address-suggestions, #gps-status, #gps-btn { display: none !important; }
   #address { padding-right: 6px !important; }
+
+  }
 }
 </style>
 </head>
@@ -2359,7 +2361,7 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
       </div>
     </div>
 
-    <div class="field-block" style="margin-bottom:14px;">
+    <div class="field-block" style="margin-bottom:0px;">
       <textarea id="gen_notes" name="gen_notes" placeholder="Additional notes on generator placement / run..." aria-label="Generator notes"></textarea>
     </div>
   </div>
@@ -2485,7 +2487,7 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
       </div>
     </div>
 
-    <div class="field-block" style="margin-bottom:14px;">
+    <div class="field-block" style="margin-bottom:0px;">
       <textarea id="pad_notes" name="pad_notes" placeholder="Additional pad notes..." aria-label="Pad notes"></textarea>
     </div>
   </div>
@@ -2540,7 +2542,10 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
         <label class="check-item"><input type="checkbox" name="gas_appliances" value="grill" aria-label="Outdoor gas grill"><span>Outdoor Grill</span></label>
         <label class="check-item"><input type="checkbox" name="gas_appliances" value="pool_heater" aria-label="Gas pool heater"><span>Pool Heater</span></label>
       </div>
-      <input type="text" id="gas_appliances_other" name="gas_appliances_other" class="long" placeholder="Additional notes..." autocomplete="off" aria-label="Additional gas appliance notes">
+      <div class="field-block" style="margin-bottom:0px;">
+      <textarea id="GAS_NOTES" name="gas_notes" placeholder="additional gas notes..." aria-label="gas notes"></textarea>
+    </div>
+
     </div>
 
     <div class="grid-4" style="margin-bottom:14px;">
@@ -2567,30 +2572,29 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
       </div>
     </div>
 
-    <div class="inline-row">
-      <span class="inline-label">Install Difficulty</span>
-      <div class="check-group">
-        <label class="check-item"><input type="radio" name="difficulty" value="Easy" aria-label="Easy installation difficulty"><span>Easy</span></label>
-        <label class="check-item"><input type="radio" name="difficulty" value="Med" aria-label="Medium installation difficulty"><span>Med</span></label>
-        <label class="check-item"><input type="radio" name="difficulty" value="Hard" aria-label="Hard installation difficulty"><span>Hard</span></label>
-      </div>
-      <span class="inline-label" style="margin-left:8px;">How Many Days?</span>
-      <input type="text" id="install_days" name="install_days" class="short" placeholder="e.g. 2-3" autocomplete="off" style="width: 14ch;" aria-label="Installation duration in days">
-    </div>
-
-    <div class="inline-row" style="margin-bottom:14px;">
-      <span class="inline-label">New Build?</span>
-      <div class="yn-group">
-        <input type="radio" name="new_build" id="nb_y" value="Y" class="yn-y" aria-label="New build yes">
-        <label class="yn-label yn-label-y" for="nb_y">Y</label>
-        <input type="radio" name="new_build" id="nb_n" value="N" class="yn-n" aria-label="New build no">
-        <label class="yn-label yn-label-n" for="nb_n">N</label>
-      </div>
-      <input type="text" id="new_build_date" name="new_build_date" class="long" placeholder="Ready/Notes" autocomplete="off" aria-label="New build ready date or notes">
-
-    </div>
+<div class="inline-row">
+  <span class="inline-label">Install Difficulty</span>
+  <div class="check-group">
+    <label class="check-item"><input type="radio" name="difficulty" value="Easy" aria-label="Easy installation difficulty"><span>Easy</span></label>
+    <label class="check-item"><input type="radio" name="difficulty" value="Med" aria-label="Medium installation difficulty"><span>Med</span></label>
+    <label class="check-item"><input type="radio" name="difficulty" value="Hard" aria-label="Hard installation difficulty"><span>Hard</span></label>
+  </div>
+  <span class="inline-label" style="margin-left:8px;">How Many Days?</span>
+  <input type="text" id="install_days" name="install_days" class="short" placeholder="e.g. 2-3" autocomplete="off" style="width: 14ch;" aria-label="Installation duration in days">
+  <span class="inline-label" style="margin-left:8px;">New Build?</span>
+  <div class="yn-group">
+    <input type="radio" name="new_build" id="nb_y" value="Y" class="yn-y" aria-label="New build yes">
+    <label class="yn-label yn-label-y" for="nb_y">Y</label>
+    <input type="radio" name="new_build" id="nb_n" value="N" class="yn-n" aria-label="New build no">
+    <label class="yn-label yn-label-n" for="nb_n">N</label>
   </div>
 </div>
+
+<div class="field-block" style="margin-bottom:0px;">
+  <textarea id="Job_notes" name="JOB_notes" placeholder="READY? / Additional job notes..." aria-label="job notes"></textarea>
+</div>
+
+
 
 
   <div class="footer">
