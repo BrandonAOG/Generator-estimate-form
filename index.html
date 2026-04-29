@@ -3447,9 +3447,29 @@ document.addEventListener('click', function(e) {
 });
 
 // ────────────────────────────────────────────────────────────────
-// ADDRESS AUTOCOMPLETE
+// ADDRESS AUTOCOMPLETE - SOUTHWEST FLORIDA PRIORITY
 // ────────────────────────────────────────────────────────────────
-var MAPBOX_TOKEN = 'pk.eyJ1IjoicHJvamVjdHdyYXBwZXIiLCJhIjoiY201d2k1eHU3MDAwajJrbzU2a2c5dW40NSJ9.WJlNJ4o5CqBhWpHKMKOzIQ';
+var MAPBOX_TOKEN = 'pk.eyJ1IjoiYnJhbmRvbmFvZyIsImEiOiJjbW9rZ3pzZ3AwMHQ4Mm9weXFpMDVyNXJnIn0.7Lz45A8opMkBnYPykWifAw';
+
+// Southwest Florida bounding box: [minLng, minLat, maxLng, maxLat]
+// Covers: Naples, Fort Myers, Cape Coral, Estero, Bonita Springs
+var SW_FLORIDA_BBOX = '-82.2,26.0,-81.2,27.0';
+
+// Center point for proximity boost (Naples area)
+var SW_FLORIDA_CENTER = '-81.76,26.14';
+
+function isFloridaAddress(placeName, address) {
+  if (address && address.state) {
+    var s = address.state.toLowerCase();
+    if (s === 'florida' || s === 'fl') return true;
+  }
+
+  if (!placeName) return false;
+  var p = placeName.toLowerCase();
+  return p.includes('florida') ||
+         /,\s*fl\b/.test(p) ||
+         /\bfl\s+\d{5}/.test(p);
+}
 
 function setupAddressAutocomplete() {
   var input = document.getElementById('address');
@@ -3461,117 +3481,214 @@ function setupAddressAutocomplete() {
   input.addEventListener('input', function() {
     clearTimeout(debounce);
     var q = input.value.trim();
-    if (q.length < 3) { list.classList.remove('open'); return; }
+    
+    // ← LOWER THIS TO 1 CHARACTER
+    if (q.length < 1) { 
+      list.classList.remove('open'); 
+      return; 
+    }
 
     debounce = setTimeout(function() {
-      var url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/' +
+      // ===== MAPBOX REQUEST - SW FLORIDA FIRST =====
+      var mapboxUrl = 'https://api.mapbox.com/geocoding/v5/mapbox.places/' +
                 encodeURIComponent(q) +
-               '.json?access_token=' + MAPBOX_TOKEN +
-'&country=US&types=address&autocomplete=true&limit=10'; // Request more to sort
+                '.json?access_token=' + MAPBOX_TOKEN +
+                '&country=US' +
+                '&types=address' +
+                '&autocomplete=true' +
+                '&limit=20' +
+                '&proximity=' + SW_FLORIDA_CENTER +
+                '&bbox=' + SW_FLORIDA_BBOX;
 
-      fetch(url)
+      console.log('Searching for:', q);
+
+      fetch(mapboxUrl)
         .then(function(r) {
-          if (!r.ok) throw new Error('Mapbox error: ' + r.status);
+          if (!r.ok) throw new Error('Mapbox error');
           return r.json();
         })
         .then(function(data) {
-          list.innerHTML = '';
           if (!data.features || data.features.length === 0) {
-            list.classList.remove('open');
+            console.log('No Mapbox results, trying Nominatim...');
+            tryNominatim(q);
             return;
           }
 
-          // ===== SORT FLORIDA FIRST =====
-          data.features.sort(function(a, b) {
-            var aPlace = (a.place_name || '').toUpperCase();
-            var bPlace = (b.place_name || '').toUpperCase();
-            
-            var aIsFL = aPlace.includes('FLORIDA') || aPlace.includes(', FL') || aPlace.includes(', FL ');
-            var bIsFL = bPlace.includes('FLORIDA') || bPlace.includes(', FL') || bPlace.includes(', FL ');
-            
-            if (aIsFL && !bIsFL) return -1; // FL first
-            if (!aIsFL && bIsFL) return 1;  // FL first
-            return 0; // preserve order for same state
-          });
-          // ===== END SORT =====
+          var floridaResults = [];
+          var otherResults = [];
 
-          data.features.slice(0, 5).forEach(function(f) { // Show top 5 after sorting
-            var li = document.createElement('li');
-            li.textContent = f.place_name;
-            li.addEventListener('mousedown', function(e) {
+          data.features.forEach(function(f) {
+            // Prioritize results that have street-level precision
+            var hasPrecision = f.geometry && 
+                             f.geometry.type === 'Point' &&
+                             f.relevance > 0.5;
+            
+            if (isFloridaAddress(f.place_name, null)) {
+              floridaResults.push({ item: f, precision: hasPrecision });
+            } else {
+              otherResults.push({ item: f, precision: hasPrecision });
+            }
+          });
+
+          // Sort by precision (street addresses first)
+          floridaResults.sort(function(a, b) { 
+            return (b.precision ? 1 : 0) - (a.precision ? 1 : 0); 
+          });
+
+          var allResults = floridaResults
+            .concat(otherResults)
+            .slice(0, 8)
+            .map(function(r) { return r.item; });
+
+          console.log('Mapbox - FL:', floridaResults.length, 'Other:', otherResults.length);
+          renderResults(allResults, 'mapbox');
+        })
+        .catch(function(err) {
+          console.error('Mapbox error:', err);
+          tryNominatim(q);
+        });
+
+      function tryNominatim(query) {
+        var nomUrl = 'https://nominatim.openstreetmap.org/search?' +
+                     'format=json' +
+                     '&addressdetails=1' +
+                     '&limit=20' +
+                     '&countrycodes=us' +
+                     '&viewbox=-82.2,27.0,-81.2,26.0' +
+                     '&bounded=1' +
+                     '&q=' + encodeURIComponent(query);
+        
+        console.log('Nominatim fallback for:', query);
+
+        fetch(nomUrl, {
+          headers: { 
+            'Accept-Language': 'en',
+            'User-Agent': 'AOG-Estimate-Form'
+          } 
+        })
+          .then(function(r) { return r.json(); })
+          .then(function(results) {
+            if (!results || results.length === 0) {
+              console.log('No Nominatim results');
+              list.classList.remove('open');
+              list.innerHTML = '';
+              return;
+            }
+
+            var floridaResults = [];
+            var otherResults = [];
+
+            results.forEach(function(result) {
+              if (isFloridaAddress(result.display_name, result.address)) {
+                floridaResults.push(result);
+              } else {
+                otherResults.push(result);
+              }
+            });
+
+            var allResults = floridaResults.concat(otherResults).slice(0, 8);
+            console.log('Nominatim - FL:', floridaResults.length, 'Other:', otherResults.length);
+            renderResults(allResults, 'nominatim');
+          })
+          .catch(function(err) { 
+            console.error('Nominatim error:', err);
+            list.classList.remove('open');
+            list.innerHTML = '';
+          });
+      }
+
+      function renderResults(results, source) {
+        list.innerHTML = '';
+
+        if (results.length === 0) {
+          var noResults = document.createElement('li');
+          noResults.style.cssText = 'color: var(--text-muted); padding: 12px; text-align: center;';
+          noResults.textContent = 'No addresses found in Southwest Florida';
+          list.appendChild(noResults);
+          list.classList.add('open');
+          return;
+        }
+
+        results.forEach(function(item) {
+          var li = document.createElement('li');
+          var isFlorida;
+          var clickHandler;
+
+          if (source === 'mapbox') {
+            li.textContent = item.place_name;
+            isFlorida = isFloridaAddress(item.place_name, null);
+            
+            clickHandler = function(e) {
               e.preventDefault();
-              var parts = f.place_name.split(',').map(function(p) { return p.trim(); });
+              var parts = item.place_name.split(',').map(function(p) { return p.trim(); });
               input.value = parts[0] || '';
               var addr2 = document.getElementById('address2');
               if (addr2) addr2.value = parts.slice(1).join(', ') || '';
               list.classList.remove('open');
               list.innerHTML = '';
               saveDraft();
-            });
-            list.appendChild(li);
-          });
-          list.classList.add('open');
-        })
-        .catch(function(err) {
-          console.error('Autocomplete error:', err);
-          // Fallback: try OpenStreetMap Nominatim if Mapbox fails
-          var nomUrl = 'https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=10&countrycodes=us&q=' + encodeURIComponent(q);
-          fetch(nomUrl, { headers: { 'Accept-Language': 'en' } })
-            .then(function(r) { return r.json(); })
-            .then(function(results) {
-              // ===== SORT FLORIDA FIRST (NOMINATIM) =====
-              results.sort(function(a, b) {
-                var aState = (a.address && a.address.state) ? a.address.state.toUpperCase() : '';
-                var bState = (b.address && b.address.state) ? b.address.state.toUpperCase() : '';
-                
-                var aIsFL = aState === 'FLORIDA' || aState === 'FL';
-                var bIsFL = bState === 'FLORIDA' || bState === 'FL';
-                
-                if (aIsFL && !bIsFL) return -1; // FL first
-                if (!aIsFL && bIsFL) return 1;  // FL first
-                return 0; // preserve order for same state
-              });
-              // ===== END SORT =====
-
-              list.innerHTML = '';
-              if (!results || results.length === 0) { list.classList.remove('open'); return; }
+            };
+          } else {
+            // nominatim
+            li.textContent = item.display_name;
+            isFlorida = isFloridaAddress(item.display_name, item.address);
+            
+            clickHandler = function(e) {
+              e.preventDefault();
+              var a = item.address || {};
+              var street = ((a.house_number || '') + ' ' + (a.road || '')).trim() || 
+                          item.display_name.split(',')[0];
+              var city  = a.city || a.town || a.village || a.county || '';
+              var state = a.state || '';
+              var zip   = a.postcode || '';
               
-              results.slice(0, 5).forEach(function(result) { // Show top 5 after sorting
-                var li = document.createElement('li');
-                li.textContent = result.display_name;
-                li.addEventListener('mousedown', function(e) {
-                  e.preventDefault();
-                  var a = result.address || {};
-                  var street = ((a.house_number || '') + ' ' + (a.road || '')).trim() || result.display_name.split(',')[0];
-                  var city  = a.city || a.town || a.village || a.county || '';
-                  var state = a.state || '';
-                  var zip   = a.postcode || '';
-                  input.value = street;
-                  var addr2 = document.getElementById('address2');
-                  if (addr2) addr2.value = [city, state, zip].filter(Boolean).join(', ');
-                  list.classList.remove('open');
-                  list.innerHTML = '';
-                  saveDraft();
-                });
-                list.appendChild(li);
-              });
-              list.classList.add('open');
-            })
-            .catch(function() { list.classList.remove('open'); });
+              input.value = street;
+              var addr2 = document.getElementById('address2');
+              if (addr2) addr2.value = [city, state, zip].filter(Boolean).join(', ');
+              
+              list.classList.remove('open');
+              list.innerHTML = '';
+              saveDraft();
+            };
+          }
+
+          // Visual styling for Florida results
+          if (isFlorida) {
+            li.style.fontWeight = 'bold';
+            li.style.color = 'var(--cyan)';
+            li.style.textShadow = '0 0 6px rgba(0, 255, 200, 0.4)';
+            li.style.background = 'rgba(0, 255, 200, 0.08)';
+          }
+          
+          li.addEventListener('mousedown', clickHandler);
+          li.addEventListener('mouseenter', function() {
+            this.classList.add('active');
+          });
+          li.addEventListener('mouseleave', function() {
+            this.classList.remove('active');
+          });
+          list.appendChild(li);
         });
-    }, 300);
+
+        list.classList.add('open');
+      }
+
+    }, 150); // ← REDUCED DEBOUNCE (was 300ms)
   });
 
+  // Close on click outside
   document.addEventListener('click', function(e) {
     if (!input.contains(e.target) && !list.contains(e.target)) {
       list.classList.remove('open');
     }
   });
 
+  // Keyboard navigation
   input.addEventListener('keydown', function(e) {
     var items = list.querySelectorAll('li');
     var active = list.querySelector('li.active');
     var idx = Array.prototype.indexOf.call(items, active);
+    
     if (e.key === 'ArrowDown') {
       e.preventDefault();
       if (active) active.classList.remove('active');
@@ -3590,6 +3707,9 @@ function setupAddressAutocomplete() {
     }
   });
 }
+
+
+
 // ────────────────────────────────────────────────────────────────
 // GPS BUTTON
 // ────────────────────────────────────────────────────────────────
