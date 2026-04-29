@@ -3467,9 +3467,7 @@ function setupAddressAutocomplete() {
       var url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/' +
                 encodeURIComponent(q) +
                '.json?access_token=' + MAPBOX_TOKEN +
-'&country=US&types=address&autocomplete=true&limit=5' +
-'&proximity=-81.5,28.0' +
-'&bbox=-87.6,24.4,-79.9,31.0';
+'&country=US&types=address&autocomplete=true&limit=10'; // Request more to sort
 
       fetch(url)
         .then(function(r) {
@@ -3482,7 +3480,22 @@ function setupAddressAutocomplete() {
             list.classList.remove('open');
             return;
           }
-          data.features.forEach(function(f) {
+
+          // ===== SORT FLORIDA FIRST =====
+          data.features.sort(function(a, b) {
+            var aPlace = (a.place_name || '').toUpperCase();
+            var bPlace = (b.place_name || '').toUpperCase();
+            
+            var aIsFL = aPlace.includes('FLORIDA') || aPlace.includes(', FL') || aPlace.includes(', FL ');
+            var bIsFL = bPlace.includes('FLORIDA') || bPlace.includes(', FL') || bPlace.includes(', FL ');
+            
+            if (aIsFL && !bIsFL) return -1; // FL first
+            if (!aIsFL && bIsFL) return 1;  // FL first
+            return 0; // preserve order for same state
+          });
+          // ===== END SORT =====
+
+          data.features.slice(0, 5).forEach(function(f) { // Show top 5 after sorting
             var li = document.createElement('li');
             li.textContent = f.place_name;
             li.addEventListener('mousedown', function(e) {
@@ -3502,18 +3515,28 @@ function setupAddressAutocomplete() {
         .catch(function(err) {
           console.error('Autocomplete error:', err);
           // Fallback: try OpenStreetMap Nominatim if Mapbox fails
-          var nomUrl = 'https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=8&countrycodes=us&q=' + encodeURIComponent(q);
+          var nomUrl = 'https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=10&countrycodes=us&q=' + encodeURIComponent(q);
           fetch(nomUrl, { headers: { 'Accept-Language': 'en' } })
             .then(function(r) { return r.json(); })
             .then(function(results) {
-results.sort(function(a,b){
-  var aFL = (a.address && (a.address.state||'').toLowerCase().includes('florida')) ? 0 : 1;
-  var bFL = (b.address && (b.address.state||'').toLowerCase().includes('florida')) ? 0 : 1;
-  return aFL - bFL;
-});
+              // ===== SORT FLORIDA FIRST (NOMINATIM) =====
+              results.sort(function(a, b) {
+                var aState = (a.address && a.address.state) ? a.address.state.toUpperCase() : '';
+                var bState = (b.address && b.address.state) ? b.address.state.toUpperCase() : '';
+                
+                var aIsFL = aState === 'FLORIDA' || aState === 'FL';
+                var bIsFL = bState === 'FLORIDA' || bState === 'FL';
+                
+                if (aIsFL && !bIsFL) return -1; // FL first
+                if (!aIsFL && bIsFL) return 1;  // FL first
+                return 0; // preserve order for same state
+              });
+              // ===== END SORT =====
+
               list.innerHTML = '';
               if (!results || results.length === 0) { list.classList.remove('open'); return; }
-              results.forEach(function(result) {
+              
+              results.slice(0, 5).forEach(function(result) { // Show top 5 after sorting
                 var li = document.createElement('li');
                 li.textContent = result.display_name;
                 li.addEventListener('mousedown', function(e) {
