@@ -3466,8 +3466,10 @@ function setupAddressAutocomplete() {
     debounce = setTimeout(function() {
       var url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/' +
                 encodeURIComponent(q) +
-                '.json?access_token=' + MAPBOX_TOKEN +
-                '&country=US&types=address&autocomplete=true&limit=5';
+               '.json?access_token=' + MAPBOX_TOKEN +
+'&country=US&types=address&autocomplete=true&limit=5' +
+'&proximity=-81.5,28.0' +
+'&bbox=-87.6,24.4,-79.9,31.0';
 
       fetch(url)
         .then(function(r) {
@@ -3500,10 +3502,15 @@ function setupAddressAutocomplete() {
         .catch(function(err) {
           console.error('Autocomplete error:', err);
           // Fallback: try OpenStreetMap Nominatim if Mapbox fails
-          var nomUrl = 'https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=5&countrycodes=us&q=' + encodeURIComponent(q);
+          var nomUrl = 'https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=8&countrycodes=us&q=' + encodeURIComponent(q);
           fetch(nomUrl, { headers: { 'Accept-Language': 'en' } })
             .then(function(r) { return r.json(); })
             .then(function(results) {
+results.sort(function(a,b){
+  var aFL = (a.address && (a.address.state||'').toLowerCase().includes('florida')) ? 0 : 1;
+  var bFL = (b.address && (b.address.state||'').toLowerCase().includes('florida')) ? 0 : 1;
+  return aFL - bFL;
+});
               list.innerHTML = '';
               if (!results || results.length === 0) { list.classList.remove('open'); return; }
               results.forEach(function(result) {
