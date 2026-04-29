@@ -2277,331 +2277,321 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
       <div class="flood-item"></div>
     </div>
 
-    <!-- Generator -->
-    <div class="section">
-      <div class="section-header">
-        <svg width="20" height="20" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
-          <rect x="15" y="30" width="50" height="35" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
-          <rect x="18" y="28" width="44" height="8" rx="1" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.7"/>
-          <line x1="20" y1="33" x2="20" y2="60" stroke="currentColor" stroke-width="0.6" opacity="0.5"/>
-          <line x1="24" y1="33" x2="24" y2="60" stroke="currentColor" stroke-width="0.6" opacity="0.5"/>
-          <line x1="28" y1="33" x2="28" y2="60" stroke="currentColor" stroke-width="0.6" opacity="0.5"/>
-          <line x1="32" y1="33" x2="32" y2="60" stroke="currentColor" stroke-width="0.6" opacity="0.5"/>
-          <line x1="36" y1="33" x2="36" y2="60" stroke="currentColor" stroke-width="0.6" opacity="0.5"/>
-          <line x1="40" y1="33" x2="40" y2="60" stroke="currentColor" stroke-width="0.6" opacity="0.5"/>
-          <line x1="44" y1="33" x2="44" y2="60" stroke="currentColor" stroke-width="0.6" opacity="0.5"/>
-          <line x1="48" y1="33" x2="48" y2="60" stroke="currentColor" stroke-width="0.6" opacity="0.5"/>
-          <line x1="52" y1="33" x2="52" y2="60" stroke="currentColor" stroke-width="0.6" opacity="0.5"/>
-          <line x1="56" y1="33" x2="56" y2="60" stroke="currentColor" stroke-width="0.6" opacity="0.5"/>
-          <line x1="60" y1="33" x2="60" y2="60" stroke="currentColor" stroke-width="0.6" opacity="0.5"/>
-          <rect x="35" y="22" width="10" height="6" rx="1" stroke="currentColor" stroke-width="1.2" fill="none"/>
-          <circle cx="40" cy="25" r="1.5" fill="none" stroke="currentColor" stroke-width="0.8"/>
-          <line x1="68" y1="32" x2="72" y2="28" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-          <circle cx="72" cy="28" r="1.2" fill="currentColor" opacity="0.3"/>
-          <circle cx="78" cy="48" r="12" stroke="currentColor" stroke-width="2" fill="none"/>
-          <line x1="72" y1="48" x2="84" y2="48" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
-          <line x1="78" y1="42" x2="78" y2="54" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
-          <line x1="72" y1="42" x2="84" y2="54" stroke="currentColor" stroke-width="0.6" opacity="0.4"/>
-          <line x1="84" y1="42" x2="72" y2="54" stroke="currentColor" stroke-width="0.6" opacity="0.4"/>
-          <line x1="65" y1="46" x2="68" y2="48" stroke="currentColor" stroke-width="1.5"/>
-          <line x1="65" y1="50" x2="68" y2="48" stroke="currentColor" stroke-width="1.5"/>
-          <circle cx="65" cy="48" r="1" fill="currentColor" opacity="0.3"/>
-          <rect x="8" y="26" width="4" height="8" rx="1" stroke="currentColor" stroke-width="1" fill="none" opacity="0.7"/>
-          <line x1="10" y1="26" x2="8" y2="22" stroke="currentColor" stroke-width="0.8" stroke-linecap="round" opacity="0.6"/>
-          <rect x="22" y="64" width="6" height="4" rx="0.5" fill="none" stroke="currentColor" stroke-width="1" opacity="0.6"/>
-          <rect x="48" y="64" width="6" height="4" rx="0.5" fill="none" stroke="currentColor" stroke-width="1" opacity="0.6"/>
-          <circle cx="82" cy="60" r="1.5" fill="none" stroke="currentColor" stroke-width="1" opacity="0.7"/>
-          <circle cx="82" cy="65" r="1.5" fill="none" stroke="currentColor" stroke-width="1" opacity="0.7"/>
-          <line x1="80" y1="60" x2="78" y2="60" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
-          <line x1="80" y1="65" x2="78" y2="65" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
-        </svg>
-        Generator
-      </div>
-
-      <div class="section-body">
-        <div class="inline-row">
-          <label for="gen_size">Size</label>
-          <input type="text" id="gen_size" name="gen_size" placeholder="22kW" autocomplete="off" style="width:80px;min-width:80px;" aria-label="Generator size">
-          <span class="inline-label" style="margin-left:6px;">Placement</span>
-          <div class="check-group">
-            <label class="check-item"><input type="checkbox" name="placement" value="Right" aria-label="Right placement"><span>Right</span></label>
-            <label class="check-item"><input type="checkbox" name="placement" value="Left" aria-label="Left placement"><span>Left</span></label>
-            <label class="check-item"><input type="checkbox" name="placement" value="Back" aria-label="Back placement"><span>Back</span></label>
-          </div>
-          <span class="inline-label" style="margin-left:6px;">Seal Window</span>
-          <div class="yn-group">
-            <input type="radio" name="seal_window" id="sw_y" value="Y" class="yn-y" aria-label="Seal window yes">
-            <label class="yn-label yn-label-y" for="sw_y">Y</label>
-            <input type="radio" name="seal_window" id="sw_n" value="N" class="yn-n" aria-label="Seal window no">
-            <label class="yn-label yn-label-n" for="sw_n">N</label>
-          </div>
-        </div>
-
-        <div class="inline-row">
-          <span class="inline-label">Elec. Run Footage</span>
-          <input type="number" id="elec_run_ft" name="elec_run_ft" class="short" placeholder="ft" inputmode="numeric" autocomplete="off" aria-label="Electrical run footage">
-          <div class="check-group">
-            <label class="check-item"><input type="checkbox" name="run" value="undergrnd" aria-label="Underground electrical"><span>Under Grnd</span></label>
-            <label class="check-item"><input type="checkbox" name="run" value="abovegrnd" aria-label="Above ground electrical"><span>Above Grnd</span></label>
-            <label class="check-item"><input type="checkbox" name="run" value="attic" aria-label="Attic electrical"><span>Attic</span></label>
-          </div>
-          <span class="inline-label" style="margin-left:6px;">Wiring</span>
-          <div class="check-group">
-            <label class="check-item"><input type="checkbox" name="wiring" value="aluminum" aria-label="Aluminum wiring"><span>Aluminum</span></label>
-            <label class="check-item"><input type="checkbox" name="wiring" value="copper" aria-label="Copper wiring"><span>Copper</span></label>
-          </div>
-          <span class="inline-label">Bore</span>
-          <div class="yn-group">
-            <input type="radio" name="bore_gen" id="bore_gen_y" value="Y" class="yn-y" aria-label="Bore generator yes">
-            <label class="yn-label yn-label-y" for="bore_gen_y">Y</label>
-            <input type="radio" name="bore_gen" id="bore_gen_n" value="N" class="yn-n" aria-label="Bore generator no">
-            <label class="yn-label yn-label-n" for="bore_gen_n">N</label>
-          </div>
-        </div>
-
-        <div class="field-block">
-          <textarea id="gen_notes" name="gen_notes" placeholder="Additional notes on generator placement / run..." aria-label="Generator notes"></textarea>
-        </div>
-      </div>
-    </div>
-
-    <!-- Transfer Switch -->
-    <div class="section">
-      <div class="section-header">
-        <svg width="20" height="20" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
-          <line x1="10" y1="30" x2="30" y2="30" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          <line x1="70" y1="30" x2="90" y2="30" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          <rect x="35" y="20" width="30" height="40" rx="3" stroke="currentColor" stroke-width="2" fill="none"/>
-          <line x1="50" y1="20" x2="50" y2="60" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>
-          <text x="42" y="35" font-size="8" fill="currentColor" text-anchor="middle">G</text>
-          <text x="42" y="52" font-size="8" fill="currentColor" text-anchor="middle">G</text>
-          <line x1="50" y1="60" x2="50" y2="75" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          <path d="M58 45 L65 45 M62 42 L65 45 L62 48" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        Transfer Switch
-      </div>
-
-      <div class="section-body">
-
-        <div class="inline-row">
-          <span class="inline-label"># Elect. Panels</span>
-          <input type="number" id="num_panels" name="num_panels" class="tiny" placeholder="1" inputmode="numeric" autocomplete="off" aria-label="Number of electrical panels">
-          <span class="inline-label" style="margin-left:4px;"># Transfer Switches</span>
-          <input type="number" id="num_ts" name="num_ts" class="tiny" placeholder="1" inputmode="numeric" autocomplete="off" aria-label="Number of transfer switches">
-          <span class="inline-label">TRANSFER SWITCH TYPE</span>
-          <input type="text" id="ts_type_desc" name="ts_type_desc" class="med" placeholder="e.g. 200A 20 Space" autocomplete="off" style="width: 20ch;" aria-label="Transfer switch type description">
-          <span class="inline-label" style="margin-left:4px;">FPL/LCEC Shutdown</span>
-          <div class="yn-group">
-            <input type="radio" name="fpl" id="fpl_y" value="Y" class="yn-y" aria-label="FPL shutdown yes">
-            <label class="yn-label yn-label-y" for="fpl_y">Y</label>
-            <input type="radio" name="fpl" id="fpl_n" value="N" class="yn-n" aria-label="FPL shutdown no">
-            <label class="yn-label yn-label-n" for="fpl_n">N</label>
-          </div>
-        </div>
-
-        <div class="inline-row">
-          <span class="inline-label">Transfer Switch Placement</span>
-          <input type="text" id="ts_placement" name="ts_placement" class="med" placeholder="e.g. Meter Main" autocomplete="off" aria-label="Transfer switch placement location">
-          <span class="inline-label" style="margin-left:8px;">Update Grounding</span>
-          <div class="yn-group">
-            <input type="radio" name="grounding" id="grnd_y" value="Y" class="yn-y" aria-label="Update grounding yes">
-            <label class="yn-label yn-label-y" for="grnd_y">Y</label>
-            <input type="radio" name="grounding" id="grnd_n" value="N" class="yn-n" aria-label="Update grounding no">
-            <label class="yn-label yn-label-n" for="grnd_n">N</label>
-          </div>
-        </div>
-
-        <div class="inline-row">
-          <span class="inline-label">Type</span>
-          <div class="check-group">
-            <label class="check-item"><input type="radio" name="ts_type" value="ASE" aria-label="ASE transfer switch type"><span>ASE</span></label>
-            <label class="check-item"><input type="radio" name="ts_type" value="NonASE" aria-label="Non-ASE transfer switch type"><span>Non-ASE</span></label>
-          </div>
-          <span class="inline-label" style="margin-left:8px;">Load Shed Needed</span>
-          <div class="yn-group">
-            <input type="radio" name="loadshed" id="ls_y" value="Y" class="yn-y" aria-label="Load shedding yes">
-            <label class="yn-label yn-label-y" for="ls_y">Y</label>
-            <input type="radio" name="loadshed" id="ls_n" value="N" class="yn-n" aria-label="Load shedding no">
-            <label class="yn-label yn-label-n" for="ls_n">N</label>
-          </div>
-          <span class="inline-label">60A circuits</span>
-          <input type="number" id="circuits_60a" name="circuits_60a" class="tiny" placeholder="0" inputmode="numeric" autocomplete="off" aria-label="60 amp circuits">
-          <span class="inline-label" style="margin-left:4px;">100A circuits</span>
-          <input type="number" id="circuits_100a" name="circuits_100a" class="tiny" placeholder="0" inputmode="numeric" autocomplete="off" aria-label="100 amp circuits">
-        </div>
-
-        <div class="inline-row">
-          <span class="inline-label">Coverage</span>
-          <div class="check-group">
-            <label class="check-item"><input type="checkbox" name="coverage" value="whole" aria-label="Whole house coverage"><span>Whole House</span></label>
-            <label class="check-item"><input type="checkbox" name="coverage" value="partial" aria-label="Partial backup coverage"><span>Partial Backup</span></label>
-            <label class="check-item"><input type="checkbox" name="coverage" value="pool" aria-label="Pool coverage"><span>Pool</span></label>
-            <label class="check-item"><input type="checkbox" name="coverage" value="no_pool" aria-label="No pool coverage"><span>No Pool</span></label>
-          </div>
-          <span class="inline-label" style="margin-left:8px;">Circuit Swap After Insp?</span>
-          <div class="yn-group">
-            <input type="radio" name="circuit_swap" id="cs_y" value="Y" class="yn-y" aria-label="Circuit swap after inspection yes">
-            <label class="yn-label yn-label-y" for="cs_y">Y</label>
-            <input type="radio" name="circuit_swap" id="cs_n" value="N" class="yn-n" aria-label="Circuit swap after inspection no">
-            <label class="yn-label yn-label-n" for="cs_n">N</label>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- Pad -->
-    <div class="section">
-      <div class="section-header">
-        <svg width="20" height="20" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
-          <rect x="15" y="20" width="70" height="50" stroke="currentColor" stroke-width="2" fill="none" rx="3"/>
-          <circle cx="30" cy="35" r="2" fill="currentColor" opacity="0.4"/>
-          <circle cx="50" cy="30" r="1.5" fill="currentColor" opacity="0.5"/>
-          <circle cx="65" cy="40" r="2" fill="currentColor" opacity="0.4"/>
-          <circle cx="35" cy="55" r="1.5" fill="currentColor" opacity="0.5"/>
-          <circle cx="70" cy="55" r="2" fill="currentColor" opacity="0.4"/>
-          <circle cx="25" cy="60" r="1.5" fill="currentColor" opacity="0.5"/>
-          <line x1="15" y1="70" x2="85" y2="72" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
-          <line x1="12" y1="20" x2="12" y2="75" stroke="currentColor" stroke-width="1" opacity="0.4" stroke-dasharray="2,2"/>
-          <line x1="88" y1="20" x2="88" y2="75" stroke="currentColor" stroke-width="1" opacity="0.4" stroke-dasharray="2,2"/>
-          <circle cx="25" cy="32" r="1.5" fill="currentColor"/>
-          <circle cx="75" cy="32" r="1.5" fill="currentColor"/>
-          <circle cx="25" cy="60" r="1.5" fill="currentColor"/>
-          <circle cx="75" cy="60" r="1.5" fill="currentColor"/>
-        </svg>
-        Precast Pad
-      </div>
-
-      <div class="section-body">
-        <div class="inline-row">
-          <div class="check-group">
-            <label class="check-item"><input type="checkbox" name="pad" value="precast" aria-label="Precast pad"><span>Precast</span></label>
-            <label class="check-item"><input type="checkbox" name="pad" value="poured" aria-label="Poured pad"><span>Poured</span></label>
-            <label class="check-item"><input type="checkbox" name="pad" value="elevated" aria-label="Elevated pad"><span>Elevated</span></label>
-            <span class="inline-label" style="margin-left:4px;">Height</span>
-            <input type="text" id="stand_height" name="stand_height" placeholder="1 ft" autocomplete="off" style="width:50px;min-width:50px;" aria-label="Stand height">
-            <label class="check-item" style="margin-left:8px;"><input type="checkbox" name="pad" value="legs" aria-label="Legs in concrete"><span>Legs in Concrete</span></label>
-            <label class="check-item"><input type="checkbox" name="pad" value="bolted" aria-label="Bolted to pad"><span>Bolted to Pad</span></label>
-            <label class="check-item"><input type="checkbox" name="pad" value="cantilever" aria-label="Cantilever pad"><span>Cantilever</span></label>
-            <label class="check-item"><input type="checkbox" name="pad" value="existing" aria-label="Existing pad"><span>Existing</span></label>
-          </div>
-        </div>
-        <div class="field-block" style="margin-top:10px;">
-          <textarea id="pad_notes" name="pad_notes" placeholder="Additional pad notes..." aria-label="Pad notes"></textarea>
-        </div>
-      </div>
-    </div>
-
-    <!-- Fuel Tank -->
-    <div class="section">
-      <div class="section-header">
-        <svg width="30" height="20" viewBox="0 0 100 60" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
-          <ellipse cx="50" cy="28" rx="38" ry="14" stroke="currentColor" stroke-width="2" fill="none"/>
-          <path d="M 12 28 Q 12 14 12 28 Q 12 42 12 28" stroke="currentColor" stroke-width="2" fill="none"/>
-          <ellipse cx="12" cy="28" rx="8" ry="14" stroke="currentColor" stroke-width="2" fill="none"/>
-          <path d="M 88 28 Q 88 14 88 28 Q 88 42 88 28" stroke="currentColor" stroke-width="2" fill="none"/>
-          <ellipse cx="88" cy="28" rx="8" ry="14" stroke="currentColor" stroke-width="2" fill="none"/>
-          <ellipse cx="50" cy="14" rx="8" ry="6" stroke="currentColor" stroke-width="1.5" fill="none"/>
-          <circle cx="50" cy="12" r="2.5" stroke="currentColor" stroke-width="1.2" fill="none"/>
-          <path d="M 12 28 Q 12 38 50 40 Q 88 38 88 28 L 88 28 Q 88 20 50 22 Q 12 20 12 28" fill="currentColor" opacity="0.2"/>
-          <line x1="14" y1="28" x2="86" y2="28" stroke="currentColor" stroke-width="0.8" opacity="0.4" stroke-dasharray="2,1"/>
-          <line x1="30" y1="42" x2="28" y2="50" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
-          <circle cx="28" cy="50" r="1.5" fill="currentColor" opacity="0.5"/>
-          <line x1="70" y1="42" x2="72" y2="50" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
-          <circle cx="72" cy="50" r="1.5" fill="currentColor" opacity="0.5"/>
-          <circle cx="50" cy="42" r="1.5" fill="none" stroke="currentColor" stroke-width="1" opacity="0.6"/>
-          <line x1="50" y1="43" x2="50" y2="48" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
-          <rect x="90" y="18" width="1.2" height="20" rx="0.6" fill="none" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
-          <line x1="88" y1="28" x2="92" y2="28" stroke="currentColor" stroke-width="0.6" opacity="0.4"/>
-        </svg>
-        Fuel Tank
-      </div>
-
-      <div class="section-body">
-
-        <div class="inline-row" style="margin-bottom:14px;">
-          <div class="check-group">
-            <label class="check-item"><input type="checkbox" name="fuel_type" value="natural_gas" aria-label="Natural gas fuel"><span>Natural Gas</span></label>
-            <label class="check-item"><input type="checkbox" name="fuel_type" value="needs_tank" aria-label="Needs propane tank"><span>Needs Tank</span></label>
-          </div>
-          <span class="inline-label" style="margin-left:12px;">New Tank Size</span>
-          <input type="text" id="new_tank_size" name="new_tank_size" autocomplete="off" style="width:100px;min-width:100px;" aria-label="New tank size">
-          <span class="inline-label" style="margin-left:8px;">Existing Tank Size</span>
-          <input type="text" id="existing_tank_size" name="existing_tank_size" autocomplete="off" style="width:100px;min-width:100px;" aria-label="Existing tank size">
-        </div>
-
-       <div class="gas-appliances-box">
-  <div class="gas-appliances-label">Existing Gas Appliances</div>
-  <div class="check-group" style="margin-bottom: 6px;">
-    <label class="check-item"><input type="checkbox" name="gas_appliances" value="range" aria-label="Gas range"><span>Range</span></label>
-    <label class="check-item"><input type="checkbox" name="gas_appliances" value="cooktop" aria-label="Gas cooktop"><span>Cooktop</span></label>
-    <label class="check-item"><input type="checkbox" name="gas_appliances" value="oven" aria-label="Gas oven"><span>Oven</span></label>
-    <label class="check-item"><input type="checkbox" name="gas_appliances" value="water_heater" aria-label="Gas water heater"><span>Water Heater</span></label>
-    <label class="check-item"><input type="checkbox" name="gas_appliances" value="dryer" aria-label="Gas dryer"><span>Dryer</span></label>
-    <label class="check-item"><input type="checkbox" name="gas_appliances" value="fireplace" aria-label="Gas fireplace"><span>Fireplace</span></label>
-    <label class="check-item"><input type="checkbox" name="gas_appliances" value="grill" aria-label="Outdoor gas grill"><span>Outdoor Grill</span></label>
-    <label class="check-item"><input type="checkbox" name="gas_appliances" value="pool_heater" aria-label="Gas pool heater"><span>Pool Heater</span></label>
+   <!-- Generator -->
+<div class="section">
+  <div class="section-header">
+    <svg width="20" height="20" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+      <rect x="15" y="30" width="50" height="35" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
+      <rect x="18" y="28" width="44" height="8" rx="1" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.7"/>
+      <line x1="20" y1="33" x2="20" y2="60" stroke="currentColor" stroke-width="0.6" opacity="0.5"/>
+      <line x1="24" y1="33" x2="24" y2="60" stroke="currentColor" stroke-width="0.6" opacity="0.5"/>
+      <line x1="28" y1="33" x2="28" y2="60" stroke="currentColor" stroke-width="0.6" opacity="0.5"/>
+      <line x1="32" y1="33" x2="32" y2="60" stroke="currentColor" stroke-width="0.6" opacity="0.5"/>
+      <line x1="36" y1="33" x2="36" y2="60" stroke="currentColor" stroke-width="0.6" opacity="0.5"/>
+      <line x1="40" y1="33" x2="40" y2="60" stroke="currentColor" stroke-width="0.6" opacity="0.5"/>
+      <line x1="44" y1="33" x2="44" y2="60" stroke="currentColor" stroke-width="0.6" opacity="0.5"/>
+      <line x1="48" y1="33" x2="48" y2="60" stroke="currentColor" stroke-width="0.6" opacity="0.5"/>
+      <line x1="52" y1="33" x2="52" y2="60" stroke="currentColor" stroke-width="0.6" opacity="0.5"/>
+      <line x1="56" y1="33" x2="56" y2="60" stroke="currentColor" stroke-width="0.6" opacity="0.5"/>
+      <line x1="60" y1="33" x2="60" y2="60" stroke="currentColor" stroke-width="0.6" opacity="0.5"/>
+      <rect x="35" y="22" width="10" height="6" rx="1" stroke="currentColor" stroke-width="1.2" fill="none"/>
+      <circle cx="40" cy="25" r="1.5" fill="none" stroke="currentColor" stroke-width="0.8"/>
+      <line x1="68" y1="32" x2="72" y2="28" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+      <circle cx="72" cy="28" r="1.2" fill="currentColor" opacity="0.3"/>
+      <circle cx="78" cy="48" r="12" stroke="currentColor" stroke-width="2" fill="none"/>
+      <line x1="72" y1="48" x2="84" y2="48" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
+      <line x1="78" y1="42" x2="78" y2="54" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
+      <line x1="72" y1="42" x2="84" y2="54" stroke="currentColor" stroke-width="0.6" opacity="0.4"/>
+      <line x1="84" y1="42" x2="72" y2="54" stroke="currentColor" stroke-width="0.6" opacity="0.4"/>
+      <line x1="65" y1="46" x2="68" y2="48" stroke="currentColor" stroke-width="1.5"/>
+      <line x1="65" y1="50" x2="68" y2="48" stroke="currentColor" stroke-width="1.5"/>
+      <circle cx="65" cy="48" r="1" fill="currentColor" opacity="0.3"/>
+      <rect x="8" y="26" width="4" height="8" rx="1" stroke="currentColor" stroke-width="1" fill="none" opacity="0.7"/>
+      <line x1="10" y1="26" x2="8" y2="22" stroke="currentColor" stroke-width="0.8" stroke-linecap="round" opacity="0.6"/>
+      <rect x="22" y="64" width="6" height="4" rx="0.5" fill="none" stroke="currentColor" stroke-width="1" opacity="0.6"/>
+      <rect x="48" y="64" width="6" height="4" rx="0.5" fill="none" stroke="currentColor" stroke-width="1" opacity="0.6"/>
+      <circle cx="82" cy="60" r="1.5" fill="none" stroke="currentColor" stroke-width="1" opacity="0.7"/>
+      <circle cx="82" cy="65" r="1.5" fill="none" stroke="currentColor" stroke-width="1" opacity="0.7"/>
+      <line x1="80" y1="60" x2="78" y2="60" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
+      <line x1="80" y1="65" x2="78" y2="65" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
+    </svg>
+    Generator
   </div>
-  <input type="text" id="gas_appliances_other" name="gas_appliances_other" class="long" placeholder="Additional notes..." autocomplete="off" aria-label="Additional gas appliance notes">
+
+  <div class="section-body">
+    <div class="inline-row">
+      <label for="gen_size">Size</label>
+      <input type="text" id="gen_size" name="gen_size" placeholder="22kW" autocomplete="off" style="width:80px;min-width:80px;" aria-label="Generator size">
+      <span class="inline-label" style="margin-left:6px;">Placement</span>
+      <div class="check-group">
+        <label class="check-item"><input type="checkbox" name="placement" value="Right" aria-label="Right placement"><span>Right</span></label>
+        <label class="check-item"><input type="checkbox" name="placement" value="Left" aria-label="Left placement"><span>Left</span></label>
+        <label class="check-item"><input type="checkbox" name="placement" value="Back" aria-label="Back placement"><span>Back</span></label>
+      </div>
+      <span class="inline-label" style="margin-left:6px;">Seal Window</span>
+      <div class="yn-group">
+        <input type="radio" name="seal_window" id="sw_y" value="Y" class="yn-y" aria-label="Seal window yes">
+        <label class="yn-label yn-label-y" for="sw_y">Y</label>
+        <input type="radio" name="seal_window" id="sw_n" value="N" class="yn-n" aria-label="Seal window no">
+        <label class="yn-label yn-label-n" for="sw_n">N</label>
+      </div>
+    </div>
+
+    <div class="inline-row">
+      <span class="inline-label">Elec. Run Footage</span>
+      <input type="number" id="elec_run_ft" name="elec_run_ft" class="short" placeholder="ft" inputmode="numeric" autocomplete="off" aria-label="Electrical run footage">
+      <div class="check-group">
+        <label class="check-item"><input type="checkbox" name="run" value="undergrnd" aria-label="Underground electrical"><span>Under Grnd</span></label>
+        <label class="check-item"><input type="checkbox" name="run" value="abovegrnd" aria-label="Above ground electrical"><span>Above Grnd</span></label>
+        <label class="check-item"><input type="checkbox" name="run" value="attic" aria-label="Attic electrical"><span>Attic</span></label>
+      </div>
+      <span class="inline-label" style="margin-left:6px;">Wiring</span>
+      <div class="check-group">
+        <label class="check-item"><input type="checkbox" name="wiring" value="aluminum" aria-label="Aluminum wiring"><span>Aluminum</span></label>
+        <label class="check-item"><input type="checkbox" name="wiring" value="copper" aria-label="Copper wiring"><span>Copper</span></label>
+      </div>
+      <span class="inline-label">Bore</span>
+      <div class="yn-group">
+        <input type="radio" name="bore_gen" id="bore_gen_y" value="Y" class="yn-y" aria-label="Bore generator yes">
+        <label class="yn-label yn-label-y" for="bore_gen_y">Y</label>
+        <input type="radio" name="bore_gen" id="bore_gen_n" value="N" class="yn-n" aria-label="Bore generator no">
+        <label class="yn-label yn-label-n" for="bore_gen_n">N</label>
+      </div>
+    </div>
+
+    <div class="field-block" style="margin-bottom:14px;">
+      <textarea id="gen_notes" name="gen_notes" placeholder="Additional notes on generator placement / run..." aria-label="Generator notes"></textarea>
+    </div>
+  </div>
 </div>
 
-<div style="margin-bottom: 14px;"></div>
-
-
-<div style="margin-bottom: 14px;"></div>
-
-       <div class="grid-4" style="margin-bottom:14px;">
-  <div class="field-block">
-    <label for="fuel_underground" style="margin-bottom:-20px; font-size:0.75rem;">Underground (ft)</label>
-    <input type="number" id="fuel_underground" name="fuel_underground" inputmode="numeric" autocomplete="off" aria-label="Underground fuel line footage">
+<!-- Transfer Switch -->
+<div class="section">
+  <div class="section-header">
+    <svg width="20" height="20" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+      <line x1="10" y1="30" x2="30" y2="30" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      <line x1="70" y1="30" x2="90" y2="30" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      <rect x="35" y="20" width="30" height="40" rx="3" stroke="currentColor" stroke-width="2" fill="none"/>
+      <line x1="50" y1="20" x2="50" y2="60" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>
+      <text x="42" y="35" font-size="8" fill="currentColor" text-anchor="middle">G</text>
+      <text x="42" y="52" font-size="8" fill="currentColor" text-anchor="middle">G</text>
+      <line x1="50" y1="60" x2="50" y2="75" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      <path d="M58 45 L65 45 M62 42 L65 45 L62 48" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Transfer Switch
   </div>
-  <div class="field-block">
-    <label for="fuel_aboveground" style="margin-bottom:-20px; font-size:0.75rem;">Above Ground (ft)</label>
-    <input type="number" id="fuel_aboveground" name="fuel_aboveground" inputmode="numeric" autocomplete="off" aria-label="Above ground fuel line footage">
-  </div>
-  <div class="field-block">
-    <label for="fuel_attic" style="margin-bottom:-20px; font-size:0.75rem;">Attic (ft)</label>
-    <input type="number" id="fuel_attic" name="fuel_attic" inputmode="numeric" autocomplete="off" aria-label="Attic fuel line footage">
-  </div>
-  <div class="field-block" style="display:flex;flex-direction:column;gap:14px;">
-  <label style="font-size:0.80rem; margin-bottom:-8px; margin-left:18px;">Bore</label>
-  <div class="yn-group">
-    <input type="radio" name="bore_fuel" id="bf_y" value="Y" class="yn-y" aria-label="Bore fuel line yes">
-    <label class="yn-label yn-label-y" for="bf_y" style="font-size:0.65rem;">Y</label>
-    <input type="radio" name="bore_fuel" id="bf_n" value="N" class="yn-n" aria-label="Bore fuel line no">
-    <label class="yn-label yn-label-n" for="bf_n" style="font-size:0.65rem;">N</label>
-  </div>
-</div>
-</div>
 
-
-        <div class="inline-row">
-          <span class="inline-label">Install Difficulty</span>
-          <div class="check-group">
-            <label class="check-item"><input type="radio" name="difficulty" value="Easy" aria-label="Easy installation difficulty"><span>Easy</span></label>
-            <label class="check-item"><input type="radio" name="difficulty" value="Med" aria-label="Medium installation difficulty"><span>Med</span></label>
-            <label class="check-item"><input type="radio" name="difficulty" value="Hard" aria-label="Hard installation difficulty"><span>Hard</span></label>
-          </div>
-          <span class="inline-label" style="margin-left:8px;">How Many Days?</span>
-          <input type="text" id="install_days" name="install_days" class="short" placeholder="e.g. 2-3" autocomplete="off" style="width: 14ch;" aria-label="Installation duration in days">
-        </div>
-
-        <div class="inline-row">
-          <span class="inline-label">New Build?</span>
-          <div class="yn-group">
-            <input type="radio" name="new_build" id="nb_y" value="Y" class="yn-y" aria-label="New build yes">
-            <label class="yn-label yn-label-y" for="nb_y">Y</label>
-            <input type="radio" name="new_build" id="nb_n" value="N" class="yn-n" aria-label="New build no">
-            <label class="yn-label yn-label-n" for="nb_n">N</label>
-          </div>
-          <span class="inline-label" style="margin-left:8px;">Ready/Notes</span>
-          <input type="text" id="new_build_date" name="new_build_date" class="long" autocomplete="off" aria-label="New build ready date or notes">
-        </div>
-
+  <div class="section-body">
+    <div class="inline-row">
+      <span class="inline-label"># Elect. Panels</span>
+      <input type="number" id="num_panels" name="num_panels" class="tiny" placeholder="1" inputmode="numeric" autocomplete="off" aria-label="Number of electrical panels">
+      <span class="inline-label" style="margin-left:4px;"># Transfer Switches</span>
+      <input type="number" id="num_ts" name="num_ts" class="tiny" placeholder="1" inputmode="numeric" autocomplete="off" aria-label="Number of transfer switches">
+      <span class="inline-label">TRANSFER SWITCH TYPE</span>
+      <input type="text" id="ts_type_desc" name="ts_type_desc" class="med" placeholder="e.g. 200A 20 Space" autocomplete="off" style="width: 20ch;" aria-label="Transfer switch type description">
+      <span class="inline-label" style="margin-left:4px;">FPL/LCEC Shutdown</span>
+      <div class="yn-group">
+        <input type="radio" name="fpl" id="fpl_y" value="Y" class="yn-y" aria-label="FPL shutdown yes">
+        <label class="yn-label yn-label-y" for="fpl_y">Y</label>
+        <input type="radio" name="fpl" id="fpl_n" value="N" class="yn-n" aria-label="FPL shutdown no">
+        <label class="yn-label yn-label-n" for="fpl_n">N</label>
       </div>
     </div>
 
+    <div class="inline-row">
+      <span class="inline-label">Transfer Switch Placement</span>
+      <input type="text" id="ts_placement" name="ts_placement" class="med" placeholder="e.g. Meter Main" autocomplete="off" aria-label="Transfer switch placement location">
+      <span class="inline-label" style="margin-left:8px;">Update Grounding</span>
+      <div class="yn-group">
+        <input type="radio" name="grounding" id="grnd_y" value="Y" class="yn-y" aria-label="Update grounding yes">
+        <label class="yn-label yn-label-y" for="grnd_y">Y</label>
+        <input type="radio" name="grounding" id="grnd_n" value="N" class="yn-n" aria-label="Update grounding no">
+        <label class="yn-label yn-label-n" for="grnd_n">N</label>
+      </div>
+    </div>
+
+    <div class="inline-row">
+      <span class="inline-label">Type</span>
+      <div class="check-group">
+        <label class="check-item"><input type="radio" name="ts_type" value="ASE" aria-label="ASE transfer switch type"><span>ASE</span></label>
+        <label class="check-item"><input type="radio" name="ts_type" value="NonASE" aria-label="Non-ASE transfer switch type"><span>Non-ASE</span></label>
+      </div>
+      <span class="inline-label" style="margin-left:8px;">Load Shed Needed</span>
+      <div class="yn-group">
+        <input type="radio" name="loadshed" id="ls_y" value="Y" class="yn-y" aria-label="Load shedding yes">
+        <label class="yn-label yn-label-y" for="ls_y">Y</label>
+        <input type="radio" name="loadshed" id="ls_n" value="N" class="yn-n" aria-label="Load shedding no">
+        <label class="yn-label yn-label-n" for="ls_n">N</label>
+      </div>
+      <span class="inline-label">60A circuits</span>
+      <input type="number" id="circuits_60a" name="circuits_60a" class="tiny" placeholder="0" inputmode="numeric" autocomplete="off" aria-label="60 amp circuits">
+      <span class="inline-label" style="margin-left:4px;">100A circuits</span>
+      <input type="number" id="circuits_100a" name="circuits_100a" class="tiny" placeholder="0" inputmode="numeric" autocomplete="off" aria-label="100 amp circuits">
+    </div>
+
+    <div class="inline-row" style="margin-bottom:14px;">
+      <span class="inline-label">Coverage</span>
+      <div class="check-group">
+        <label class="check-item"><input type="checkbox" name="coverage" value="whole" aria-label="Whole house coverage"><span>Whole House</span></label>
+        <label class="check-item"><input type="checkbox" name="coverage" value="partial" aria-label="Partial backup coverage"><span>Partial Backup</span></label>
+        <label class="check-item"><input type="checkbox" name="coverage" value="pool" aria-label="Pool coverage"><span>Pool</span></label>
+        <label class="check-item"><input type="checkbox" name="coverage" value="no_pool" aria-label="No pool coverage"><span>No Pool</span></label>
+      </div>
+      <span class="inline-label" style="margin-left:8px;">Circuit Swap After Insp?</span>
+      <div class="yn-group">
+        <input type="radio" name="circuit_swap" id="cs_y" value="Y" class="yn-y" aria-label="Circuit swap after inspection yes">
+        <label class="yn-label yn-label-y" for="cs_y">Y</label>
+        <input type="radio" name="circuit_swap" id="cs_n" value="N" class="yn-n" aria-label="Circuit swap after inspection no">
+        <label class="yn-label yn-label-n" for="cs_n">N</label>
+      </div>
+    </div>
   </div>
+</div>
+
+<!-- Pad -->
+<div class="section">
+  <div class="section-header">
+    <svg width="20" height="20" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+      <rect x="15" y="20" width="70" height="50" stroke="currentColor" stroke-width="2" fill="none" rx="3"/>
+      <circle cx="30" cy="35" r="2" fill="currentColor" opacity="0.4"/>
+      <circle cx="50" cy="30" r="1.5" fill="currentColor" opacity="0.5"/>
+      <circle cx="65" cy="40" r="2" fill="currentColor" opacity="0.4"/>
+      <circle cx="35" cy="55" r="1.5" fill="currentColor" opacity="0.5"/>
+      <circle cx="70" cy="55" r="2" fill="currentColor" opacity="0.4"/>
+      <circle cx="25" cy="60" r="1.5" fill="currentColor" opacity="0.5"/>
+      <line x1="15" y1="70" x2="85" y2="72" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
+      <line x1="12" y1="20" x2="12" y2="75" stroke="currentColor" stroke-width="1" opacity="0.4" stroke-dasharray="2,2"/>
+      <line x1="88" y1="20" x2="88" y2="75" stroke="currentColor" stroke-width="1" opacity="0.4" stroke-dasharray="2,2"/>
+      <circle cx="25" cy="32" r="1.5" fill="currentColor"/>
+      <circle cx="75" cy="32" r="1.5" fill="currentColor"/>
+      <circle cx="25" cy="60" r="1.5" fill="currentColor"/>
+      <circle cx="75" cy="60" r="1.5" fill="currentColor"/>
+    </svg>
+    Precast Pad
+  </div>
+
+  <div class="section-body">
+    <div class="inline-row" style="margin-bottom:14px;">
+      <div class="check-group">
+        <label class="check-item"><input type="checkbox" name="pad" value="precast" aria-label="Precast pad"><span>Precast</span></label>
+        <label class="check-item"><input type="checkbox" name="pad" value="poured" aria-label="Poured pad"><span>Poured</span></label>
+        <label class="check-item"><input type="checkbox" name="pad" value="elevated" aria-label="Elevated pad"><span>Elevated</span></label>
+        <span class="inline-label" style="margin-left:4px;">Height</span>
+        <input type="text" id="stand_height" name="stand_height" placeholder="1 ft" autocomplete="off" style="width:50px;min-width:50px;" aria-label="Stand height">
+        <label class="check-item" style="margin-left:8px;"><input type="checkbox" name="pad" value="legs" aria-label="Legs in concrete"><span>Legs in Concrete</span></label>
+        <label class="check-item"><input type="checkbox" name="pad" value="bolted" aria-label="Bolted to pad"><span>Bolted to Pad</span></label>
+        <label class="check-item"><input type="checkbox" name="pad" value="cantilever" aria-label="Cantilever pad"><span>Cantilever</span></label>
+        <label class="check-item"><input type="checkbox" name="pad" value="existing" aria-label="Existing pad"><span>Existing</span></label>
+      </div>
+    </div>
+
+    <div class="field-block" style="margin-bottom:14px;">
+      <textarea id="pad_notes" name="pad_notes" placeholder="Additional pad notes..." aria-label="Pad notes"></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- Fuel Tank -->
+<div class="section">
+  <div class="section-header">
+    <svg width="30" height="20" viewBox="0 0 100 60" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+      <ellipse cx="50" cy="28" rx="38" ry="14" stroke="currentColor" stroke-width="2" fill="none"/>
+      <path d="M 12 28 Q 12 14 12 28 Q 12 42 12 28" stroke="currentColor" stroke-width="2" fill="none"/>
+      <ellipse cx="12" cy="28" rx="8" ry="14" stroke="currentColor" stroke-width="2" fill="none"/>
+      <path d="M 88 28 Q 88 14 88 28 Q 88 42 88 28" stroke="currentColor" stroke-width="2" fill="none"/>
+      <ellipse cx="88" cy="28" rx="8" ry="14" stroke="currentColor" stroke-width="2" fill="none"/>
+      <ellipse cx="50" cy="14" rx="8" ry="6" stroke="currentColor" stroke-width="1.5" fill="none"/>
+      <circle cx="50" cy="12" r="2.5" stroke="currentColor" stroke-width="1.2" fill="none"/>
+      <path d="M 12 28 Q 12 38 50 40 Q 88 38 88 28 L 88 28 Q 88 20 50 22 Q 12 20 12 28" fill="currentColor" opacity="0.2"/>
+      <line x1="14" y1="28" x2="86" y2="28" stroke="currentColor" stroke-width="0.8" opacity="0.4" stroke-dasharray="2,1"/>
+      <line x1="30" y1="42" x2="28" y2="50" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
+      <circle cx="28" cy="50" r="1.5" fill="currentColor" opacity="0.5"/>
+      <line x1="70" y1="42" x2="72" y2="50" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
+      <circle cx="72" cy="50" r="1.5" fill="currentColor" opacity="0.5"/>
+      <circle cx="50" cy="42" r="1.5" fill="none" stroke="currentColor" stroke-width="1" opacity="0.6"/>
+      <line x1="50" y1="43" x2="50" y2="48" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
+      <rect x="90" y="18" width="1.2" height="20" rx="0.6" fill="none" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
+      <line x1="88" y1="28" x2="92" y2="28" stroke="currentColor" stroke-width="0.6" opacity="0.4"/>
+    </svg>
+    Fuel Tank
+  </div>
+
+  <div class="section-body">
+    <div class="inline-row" style="margin-bottom:14px;">
+      <div class="check-group">
+        <label class="check-item"><input type="checkbox" name="fuel_type" value="natural_gas" aria-label="Natural gas fuel"><span>Natural Gas</span></label>
+        <label class="check-item"><input type="checkbox" name="fuel_type" value="needs_tank" aria-label="Needs propane tank"><span>Needs Tank</span></label>
+      </div>
+      <span class="inline-label" style="margin-left:12px;">New Tank Size</span>
+      <input type="text" id="new_tank_size" name="new_tank_size" autocomplete="off" style="width:100px;min-width:100px;" aria-label="New tank size">
+      <span class="inline-label" style="margin-left:8px;">Existing Tank Size</span>
+      <input type="text" id="existing_tank_size" name="existing_tank_size" autocomplete="off" style="width:100px;min-width:100px;" aria-label="Existing tank size">
+    </div>
+
+    <div class="gas-appliances-box" style="margin-bottom:14px;">
+      <div class="gas-appliances-label">Existing Gas Appliances</div>
+      <div class="check-group" style="margin-bottom: 6px;">
+        <label class="check-item"><input type="checkbox" name="gas_appliances" value="range" aria-label="Gas range"><span>Range</span></label>
+        <label class="check-item"><input type="checkbox" name="gas_appliances" value="cooktop" aria-label="Gas cooktop"><span>Cooktop</span></label>
+        <label class="check-item"><input type="checkbox" name="gas_appliances" value="oven" aria-label="Gas oven"><span>Oven</span></label>
+        <label class="check-item"><input type="checkbox" name="gas_appliances" value="water_heater" aria-label="Gas water heater"><span>Water Heater</span></label>
+        <label class="check-item"><input type="checkbox" name="gas_appliances" value="dryer" aria-label="Gas dryer"><span>Dryer</span></label>
+        <label class="check-item"><input type="checkbox" name="gas_appliances" value="fireplace" aria-label="Gas fireplace"><span>Fireplace</span></label>
+        <label class="check-item"><input type="checkbox" name="gas_appliances" value="grill" aria-label="Outdoor gas grill"><span>Outdoor Grill</span></label>
+        <label class="check-item"><input type="checkbox" name="gas_appliances" value="pool_heater" aria-label="Gas pool heater"><span>Pool Heater</span></label>
+      </div>
+      <input type="text" id="gas_appliances_other" name="gas_appliances_other" class="long" placeholder="Additional notes..." autocomplete="off" aria-label="Additional gas appliance notes">
+    </div>
+
+    <div class="grid-4" style="margin-bottom:14px;">
+      <div class="field-block">
+        <label for="fuel_underground" style="margin-bottom:-20px; font-size:0.75rem;">Underground (ft)</label>
+        <input type="number" id="fuel_underground" name="fuel_underground" inputmode="numeric" autocomplete="off" aria-label="Underground fuel line footage">
+      </div>
+      <div class="field-block">
+        <label for="fuel_aboveground" style="margin-bottom:-20px; font-size:0.75rem;">Above Ground (ft)</label>
+        <input type="number" id="fuel_aboveground" name="fuel_aboveground" inputmode="numeric" autocomplete="off" aria-label="Above ground fuel line footage">
+      </div>
+      <div class="field-block">
+        <label for="fuel_attic" style="margin-bottom:-20px; font-size:0.75rem;">Attic (ft)</label>
+        <input type="number" id="fuel_attic" name="fuel_attic" inputmode="numeric" autocomplete="off" aria-label="Attic fuel line footage">
+      </div>
+      <div class="field-block" style="display:flex;flex-direction:column;gap:14px;">
+        <label style="font-size:0.80rem; margin-bottom:-8px; margin-left:18px;">Bore</label>
+        <div class="yn-group">
+          <input type="radio" name="bore_fuel" id="bf_y" value="Y" class="yn-y" aria-label="Bore fuel line yes">
+          <label class="yn-label yn-label-y" for="bf_y" style="font-size:0.65rem;">Y</label>
+          <input type="radio" name="bore_fuel" id="bf_n" value="N" class="yn-n" aria-label="Bore fuel line no">
+          <label class="yn-label yn-label-n" for="bf_n" style="font-size:0.65rem;">N</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="inline-row">
+      <span class="inline-label">Install Difficulty</span>
+      <div class="check-group">
+        <label class="check-item"><input type="radio" name="difficulty" value="Easy" aria-label="Easy installation difficulty"><span>Easy</span></label>
+        <label class="check-item"><input type="radio" name="difficulty" value="Med" aria-label="Medium installation difficulty"><span>Med</span></label>
+        <label class="check-item"><input type="radio" name="difficulty" value="Hard" aria-label="Hard installation difficulty"><span>Hard</span></label>
+      </div>
+      <span class="inline-label" style="margin-left:8px;">How Many Days?</span>
+      <input type="text" id="install_days" name="install_days" class="short" placeholder="e.g. 2-3" autocomplete="off" style="width: 14ch;" aria-label="Installation duration in days">
+    </div>
+
+    <div class="inline-row" style="margin-bottom:14px;">
+      <span class="inline-label">New Build?</span>
+      <div class="yn-group">
+        <input type="radio" name="new_build" id="nb_y" value="Y" class="yn-y" aria-label="New build yes">
+        <label class="yn-label yn-label-y" for="nb_y">Y</label>
+        <input type="radio" name="new_build" id="nb_n" value="N" class="yn-n" aria-label="New build no">
+        <label class="yn-label yn-label-n" for="nb_n">N</label>
+      </div>
+      <span class="inline-label" style="margin-left:8px;">Ready/Notes</span>
+      <input type="text" id="new_build_date" name="new_build_date" class="long" autocomplete="off" aria-label="New build ready date or notes">
+    </div>
+  </div>
+</div>
+
 
   <div class="footer">
     <span class="footer-text">GENERATOR INSTALLATION ESTIMATE · CONFIDENTIAL</span>
