@@ -3204,6 +3204,11 @@ function confirmPdfPrint() {
   var wasDarkMode = document.body.classList.contains('dark-mode');
   if (wasDarkMode) document.body.classList.remove('dark-mode');
 
+  // Strip seasonal classes before print so iOS doesn't render decorations
+  var seasonalClasses = Array.from(document.body.classList)
+    .filter(function(c) { return c.indexOf('seasonal-') === 0; });
+  seasonalClasses.forEach(function(c) { document.body.classList.remove(c); });
+
   var PAPER_W = 816;
   var PAPER_H = 1056;
 
@@ -3241,6 +3246,7 @@ function confirmPdfPrint() {
       document.body.style.width  = '';
       document.body.style.height = '';
       if (toolbar) toolbar.style.display = '';
+      seasonalClasses.forEach(function(c) { document.body.classList.add(c); });
     }, 1500);
   }, 150);
 }
