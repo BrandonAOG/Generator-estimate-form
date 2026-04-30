@@ -2562,7 +2562,7 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     <input type="number" id="fuel_attic" name="fuel_attic" inputmode="numeric" autocomplete="off" aria-label="Attic fuel line footage">
   </div>
   <div class="field-block" style="display:flex;flex-direction:column;gap:14px;">
-  <label style="font-size:0.65rem; margin-bottom:-8px; margin-left:16px;">Bore</label>
+  <label style="font-size:0.65rem; margin-bottom:-8px; margin-left:18px;">Bore</label>
   <div class="yn-group">
     <input type="radio" name="bore_fuel" id="bf_y" value="Y" class="yn-y" aria-label="Bore fuel line yes">
     <label class="yn-label yn-label-y" for="bf_y" style="font-size:0.65rem;">Y</label>
@@ -3787,7 +3787,822 @@ function setupGpsButton() {
   });
 }
 
+
 // ────────────────────────────────────────────────────────────────
+// ────────────────────────────────────────────────────────────────
+// SEASONAL THEME SYSTEM
+// ────────────────────────────────────────────────────────────────
+
+const SEASONAL_THEMES = {
+  'newyear': {
+    name: 'New Year',
+    start: { month: 1, day: 1 },
+    end: { month: 1, day: 7 },
+    primary: '#1E40AF',
+    secondary: '#FBBF24',
+    accent: '#60A5FA'
+  },
+  'valentines': {
+    name: "Valentine's Day",
+    start: { month: 2, day: 1 },
+    end: { month: 2, day: 28 },
+    primary: '#DC2626',
+    secondary: '#FCA5A5',
+    accent: '#F472B6'
+  },
+  'stpatricks': {
+    name: "St. Patrick's Day",
+    start: { month: 3, day: 1 },
+    end: { month: 3, day: 31 },
+    primary: '#059669',
+    secondary: '#10B981',
+    accent: '#6EE7B7'
+  },
+  'spring': {
+    name: 'Spring',
+    start: { month: 3, day: 20 },
+    end: { month: 6, day: 20 },
+    primary: '#8B5CF6',
+    secondary: '#A78BFA',
+    accent: '#E9D5FF'
+  },
+  'memorialday': {
+    name: 'Memorial Day',
+    start: { month: 5, day: 25 },
+    end: { month: 5, day: 31 },
+    primary: '#1E40AF',
+    secondary: '#DC2626',
+    accent: '#FFFFFF'
+  },
+  'summer': {
+    name: 'Summer',
+    start: { month: 6, day: 21 },
+    end: { month: 9, day: 22 },
+    primary: '#0284C7',
+    secondary: '#06B6D4',
+    accent: '#FCD34D'
+  },
+  'fourthofjuly': {
+    name: 'Fourth of July',
+    start: { month: 7, day: 1 },
+    end: { month: 7, day: 31 },
+    primary: '#DC2626',
+    secondary: '#1E40AF',
+    accent: '#FFFFFF'
+  },
+  'laborday': {
+    name: 'Labor Day',
+    start: { month: 9, day: 1 },
+    end: { month: 9, day: 7 },
+    primary: '#1E40AF',
+    secondary: '#FFFFFF',
+    accent: '#DC2626'
+  },
+  'halloween': {
+    name: 'Halloween',
+    start: { month: 10, day: 1 },
+    end: { month: 10, day: 31 },
+    primary: '#EA580C',
+    secondary: '#1F2937',
+    accent: '#FBBF24'
+  },
+  'thanksgiving': {
+    name: 'Thanksgiving',
+    start: { month: 11, day: 1 },
+    end: { month: 11, day: 30 },
+    primary: '#B45309',
+    secondary: '#EA580C',
+    accent: '#F59E0B'
+  },
+  'christmas': {
+    name: 'Christmas',
+    start: { month: 12, day: 1 },
+    end: { month: 12, day: 31 },
+    primary: '#DC2626',
+    secondary: '#059669',
+    accent: '#FFD700'
+  }
+};
+
+function getCurrentSeasonalTheme() {
+  const today = new Date();
+  const month = today.getMonth() + 1;
+  const date = today.getDate();
+
+  for (const [key, theme] of Object.entries(SEASONAL_THEMES)) {
+    const startMonth = theme.start.month;
+    const startDay = theme.start.day;
+    const endMonth = theme.end.month;
+    const endDay = theme.end.day;
+
+    let isActive = false;
+
+    if (startMonth === endMonth) {
+      isActive = month === startMonth && date >= startDay && date <= endDay;
+    } else {
+      isActive = (month === startMonth && date >= startDay) || 
+                 (month === endMonth && date <= endDay) ||
+                 (month > startMonth && month < endMonth);
+    }
+
+    if (isActive) {
+      return key;
+    }
+  }
+
+  return 'default';
+}
+
+function applySeasonalTheme(themeName) {
+  // Remove all seasonal classes
+  Object.keys(SEASONAL_THEMES).forEach(key => {
+    document.body.classList.remove(`seasonal-${key}`);
+  });
+
+  if (themeName !== 'default' && SEASONAL_THEMES[themeName]) {
+    const theme = SEASONAL_THEMES[themeName];
+    document.body.classList.add(`seasonal-${themeName}`);
+
+    // Update CSS variables
+    document.documentElement.style.setProperty('--seasonal-primary', theme.primary);
+    document.documentElement.style.setProperty('--seasonal-secondary', theme.secondary);
+    document.documentElement.style.setProperty('--seasonal-accent', theme.accent);
+  }
+}
+
+function injectSeasonalStyles() {
+  const style = document.createElement('style');
+  style.id = 'seasonal-styles';
+  style.textContent = `
+    /* ========== SEASONAL THEME VARIABLES ========== */
+    :root {
+      --seasonal-primary: #D97706;
+      --seasonal-secondary: #059669;
+      --seasonal-accent: #FFB300;
+      --page-title-color: #06B6D4;
+      --print-title-color: #D97706;
+    }
+
+    /* Generic seasonal styling */
+    body[class*="seasonal-"] .page {
+      border-color: var(--seasonal-primary) !important;
+      box-shadow: 
+        0 0 1px rgba(0, 0, 0, 0.3),
+        0 0 20px rgba(217, 119, 6, 0.2),
+        0 0 40px rgba(5, 150, 105, 0.08),
+        inset 0 0 60px rgba(217, 119, 6, 0.05) !important;
+    }
+
+    body[class*="seasonal-"] .section-header,
+    body[class*="seasonal-"] .col-label {
+      color: var(--seasonal-primary) !important;
+      border-left-color: var(--seasonal-primary) !important;
+      text-shadow: 
+        0 0 8px rgba(217, 119, 6, 0.6),
+        0 0 16px rgba(5, 150, 105, 0.4) !important;
+    }
+
+    body[class*="seasonal-"] .section-header::before,
+    body[class*="seasonal-"] .col-label::before {
+      background: var(--seasonal-primary) !important;
+      box-shadow: 
+        0 0 8px var(--seasonal-primary),
+        0 0 16px rgba(5, 150, 105, 0.5) !important;
+    }
+
+    /* ===== CSV EXPORT BUTTONS - ALL SECTIONS ===== */
+    .csv-export-btn,
+    #customerInfoCsvBtn,
+    #propertyInfoCsvBtn,
+    #generatorCsvBtn,
+    #transferSwitchCsvBtn,
+    #precastPadCsvBtn,
+    #fuelTankCsvBtn,
+    [class*="csv-export"],
+    [id*="csv"] {
+      color: var(--seasonal-primary) !important;
+      border-color: var(--seasonal-primary) !important;
+      transition: all 0.3s ease !important;
+    }
+
+    .csv-export-btn:hover,
+    #customerInfoCsvBtn:hover,
+    #propertyInfoCsvBtn:hover,
+    #generatorCsvBtn:hover,
+    #transferSwitchCsvBtn:hover,
+    #precastPadCsvBtn:hover,
+    #fuelTankCsvBtn:hover,
+    [class*="csv-export"]:hover,
+    [id*="csv"]:hover {
+      background-color: var(--seasonal-primary) !important;
+      color: #ffffff !important;
+      box-shadow: 
+        0 0 8px var(--seasonal-primary),
+        0 0 16px var(--seasonal-secondary) !important;
+      transform: scale(1.05) !important;
+    }
+
+    .csv-export-btn svg,
+    #customerInfoCsvBtn svg,
+    #propertyInfoCsvBtn svg,
+    #generatorCsvBtn svg,
+    #transferSwitchCsvBtn svg,
+    #precastPadCsvBtn svg,
+    #fuelTankCsvBtn svg,
+    [class*="csv-export"] svg,
+    [id*="csv"] svg {
+      fill: var(--seasonal-primary) !important;
+      stroke: var(--seasonal-primary) !important;
+      transition: all 0.3s ease !important;
+    }
+
+    .csv-export-btn:hover svg,
+    #customerInfoCsvBtn:hover svg,
+    #propertyInfoCsvBtn:hover svg,
+    #generatorCsvBtn:hover svg,
+    #transferSwitchCsvBtn:hover svg,
+    #precastPadCsvBtn:hover svg,
+    #fuelTankCsvBtn:hover svg,
+    [class*="csv-export"]:hover svg,
+    [id*="csv"]:hover svg {
+      fill: #ffffff !important;
+      stroke: #ffffff !important;
+      filter: drop-shadow(0 0 4px var(--seasonal-primary)) !important;
+    }
+
+    /* CSV Icon styling - ensure proper display */
+    .csv-export-btn i,
+    #customerInfoCsvBtn i,
+    #propertyInfoCsvBtn i,
+    #generatorCsvBtn i,
+    #transferSwitchCsvBtn i,
+    #precastPadCsvBtn i,
+    #fuelTankCsvBtn i,
+    [class*="csv-export"] i,
+    [id*="csv"] i {
+      color: var(--seasonal-primary) !important;
+      font-size: 1.2em !important;
+    }
+
+    .csv-export-btn:hover i,
+    #customerInfoCsvBtn:hover i,
+    #propertyInfoCsvBtn:hover i,
+    #generatorCsvBtn:hover i,
+    #transferSwitchCsvBtn:hover i,
+    #precastPadCsvBtn:hover i,
+    #fuelTankCsvBtn:hover i,
+    [class*="csv-export"]:hover i,
+    [id*="csv"]:hover i {
+      color: #ffffff !important;
+      text-shadow: 0 0 8px var(--seasonal-primary) !important;
+    }
+
+    /* ===== VALENTINE'S DAY ===== */
+    body.seasonal-valentines {
+      background: linear-gradient(
+        135deg,
+        #1a0f1a 0%,
+        #2a1a2a 25%,
+        #1a0f1a 50%,
+        #2a1a2a 75%,
+        #1a0f1a 100%
+      ) !important;
+      background-attachment: fixed;
+    }
+
+    @keyframes heartbeat {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.1);
+      }
+    }
+
+    body.seasonal-valentines::before {
+      content: '💕 ❤️ 💗 ❤️ 💕 ❤️ 💗 ❤️ 💕';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      font-size: 48px;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.15;
+      animation: heartbeat 2s infinite;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ===== ST. PATRICK'S DAY ===== */
+    body.seasonal-stpatricks {
+      background: linear-gradient(
+        135deg,
+        #0a1a0a 0%,
+        #1a2a1a 25%,
+        #0a1a0a 50%,
+        #1a2a1a 75%,
+        #0a1a0a 100%
+      ) !important;
+      background-attachment: fixed;
+    }
+
+    @keyframes shamrock-float {
+      0%, 100% {
+        transform: translateY(0px) rotate(0deg);
+        opacity: 0.3;
+      }
+      50% {
+        transform: translateY(-20px) rotate(15deg);
+        opacity: 0.5;
+      }
+    }
+
+    body.seasonal-stpatricks::after {
+      content: '🍀 ☘️ 🍀 ☘️ 🍀 ☘️ 🍀';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      font-size: 64px;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.15;
+      animation: shamrock-float 6s ease-in-out infinite;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+    }
+
+    /* ===== MEMORIAL DAY ===== */
+    body.seasonal-memorialday {
+      background: linear-gradient(
+        135deg,
+        #0a0a1a 0%,
+        #1a1a2a 25%,
+        #0a0a1a 50%,
+        #1a1a2a 75%,
+        #0a0a1a 100%
+      ) !important;
+      background-attachment: fixed;
+    }
+
+    body.seasonal-memorialday .page::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #DC2626, #1E40AF, #FFFFFF);
+      opacity: 0.8;
+    }
+
+    /* ===== FOURTH OF JULY ===== */
+    body.seasonal-fourthofjuly {
+      background: linear-gradient(
+        135deg,
+        #0a0a1a 0%,
+        #1a1a3a 25%,
+        #0a0a1a 50%,
+        #1a1a3a 75%,
+        #0a0a1a 100%
+      ) !important;
+      background-attachment: fixed;
+    }
+
+    @keyframes firework {
+      0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(var(--tx), var(--ty)) scale(0);
+        opacity: 0;
+      }
+    }
+
+    body.seasonal-fourthofjuly::before {
+      content: '✨ 🎆 ⭐ 🎇 ✨';
+      position: fixed;
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 48px;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.4;
+      animation: firework 3s ease-out infinite;
+    }
+
+    /* ===== LABOR DAY ===== */
+    body.seasonal-laborday {
+      background: linear-gradient(
+        135deg,
+        #0a0f1a 0%,
+        #0f1a2a 25%,
+        #0a0f1a 50%,
+        #0f1a2a 75%,
+        #0a0f1a 100%
+      ) !important;
+      background-attachment: fixed;
+    }
+
+    body.seasonal-laborday .page {
+      border-color: #1E40AF !important;
+    }
+
+    /* ===== THANKSGIVING ===== */
+    body.seasonal-thanksgiving {
+      background: linear-gradient(
+        135deg,
+        #1a140a 0%,
+        #2a1f0f 25%,
+        #1a140a 50%,
+        #2a1f0f 75%,
+        #1a140a 100%
+      ) !important;
+      background-attachment: fixed;
+    }
+
+    @keyframes autumn-fall {
+      0% {
+        transform: translateY(-10vh) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    body.seasonal-thanksgiving::before {
+      content: '🍂 🦃 🍁 🌽 🍂 🦃 🍁 🌽';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      font-size: 48px;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.2;
+      animation: autumn-fall 10s linear infinite;
+      display: flex;
+      justify-content: space-around;
+    }
+
+    /* ===== CHRISTMAS ===== */
+    body.seasonal-christmas {
+      background: linear-gradient(
+        135deg,
+        #0f1520 0%,
+        #1a2a3a 25%,
+        #0f1520 50%,
+        #1a2a3a 75%,
+        #0f1520 100%
+      ) !important;
+      background-attachment: fixed;
+    }
+
+    @keyframes snowfall {
+      0% {
+        transform: translateY(-10vh) translateX(0) rotateZ(0deg);
+        opacity: 1;
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) translateX(100px) rotateZ(360deg);
+        opacity: 0;
+      }
+    }
+
+    body.seasonal-christmas::before {
+      content: '❄️ ⛄ 🎄 ❄️ ⛄ 🎄 ❄️ ⛄ 🎄';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      font-size: 48px;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.3;
+      animation: snowfall 10s linear infinite;
+      display: flex;
+      justify-content: space-around;
+    }
+
+    /* ===== NEW YEAR ===== */
+    body.seasonal-newyear {
+      background: linear-gradient(
+        135deg,
+        #0A0E27 0%,
+        #1a1a5a 25%,
+        #0f1535 50%,
+        #1a1a5a 75%,
+        #0A0E27 100%
+      ) !important;
+      background-attachment: fixed;
+    }
+
+    @keyframes confetti-fall {
+      0% {
+        transform: translateY(-10vh) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+      }
+    }
+
+    body.seasonal-newyear::after {
+      content: '🎉 ✨ 🎊 🎆 ✨ 🎉 🎊';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      font-size: 48px;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.4;
+      animation: confetti-fall 15s linear infinite;
+      display: flex;
+      justify-content: space-around;
+    }
+
+    /* ===== SPRING ===== */
+    body.seasonal-spring {
+      background: linear-gradient(
+        135deg,
+        #0f1520 0%,
+        #1a2a4a 25%,
+        #0f1520 50%,
+        #1a2a4a 75%,
+        #0f1520 100%
+      ) !important;
+      background-attachment: fixed;
+    }
+
+    @keyframes flower-bloom {
+      0%, 100% {
+        opacity: 0.2;
+      }
+      50% {
+        opacity: 0.4;
+      }
+    }
+
+    body.seasonal-spring::after {
+      content: '🌸 🌺 🌻 🌷 🌸 🌺 🌻 🌷';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      font-size: 48px;
+      pointer-events: none;
+      z-index: 1;
+      animation: flower-bloom 4s ease-in-out infinite;
+      display: flex;
+      justify-content: space-around;
+    }
+
+    /* ===== SUMMER ===== */
+    body.seasonal-summer {
+      background: linear-gradient(
+        135deg,
+        #0A1628 0%,
+        #1a3a5a 25%,
+        #0f2540 50%,
+        #1a3a5a 75%,
+        #0A1628 100%
+      ) !important;
+      background-attachment: fixed;
+    }
+
+    @keyframes sun-glow {
+      0%, 100% {
+        opacity: 0.2;
+      }
+      50% {
+        opacity: 0.4;
+      }
+    }
+
+    body.seasonal-summer::after {
+      content: '☀️ 🌊 🏖️ 🌞 ☀️ 🌊 🏖️ 🌞';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      font-size: 48px;
+      pointer-events: none;
+      z-index: 1;
+      animation: sun-glow 3s ease-in-out infinite;
+      display: flex;
+      justify-content: space-around;
+    }
+
+    /* ===== HALLOWEEN ===== */
+    body.seasonal-halloween {
+      background: linear-gradient(
+        135deg,
+        #1a1a0a 0%,
+        #2d1f0a 25%,
+        #1a1a0a 50%,
+        #2d1f0a 75%,
+        #1a1a0a 100%
+      ) !important;
+      background-attachment: fixed;
+    }
+
+    @keyframes spooky-bob {
+      0%, 100% {
+        transform: translateY(0px);
+      }
+      50% {
+        transform: translateY(-20px);
+      }
+    }
+
+    body.seasonal-halloween::before {
+      content: '👻 🎃 🦇 👻 🎃 🦇 👻 🎃 🦇';
+      position: fixed;
+      top: 10%;
+      left: 0;
+      width: 100%;
+      font-size: 48px;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.3;
+      animation: spooky-bob 3s ease-in-out infinite;
+      display: flex;
+      justify-content: space-around;
+    }
+
+    /* Z-index fix to ensure decorations don't block content */
+    body[class*="seasonal-"]::before,
+    body[class*="seasonal-"]::after {
+      pointer-events: none !important;
+    }
+/* ===== SEASONAL SVG ICONS ===== */
+    body[class*="seasonal-"] .section-header svg,
+    body[class*="seasonal-"] .section-header svg *,
+    body[class*="seasonal-"] .section-header svg path,
+    body[class*="seasonal-"] .section-header svg line,
+    body[class*="seasonal-"] .section-header svg circle,
+    body[class*="seasonal-"] .section-header svg rect {
+      stroke: var(--seasonal-primary) !important;
+      color: var(--seasonal-primary) !important;
+      fill: none !important;
+    }
+    body[class*="seasonal-"] .col-label svg,
+    body[class*="seasonal-"] .col-label svg *,
+    body[class*="seasonal-"] .col-label svg path,
+    body[class*="seasonal-"] .col-label svg line,
+    body[class*="seasonal-"] .col-label svg circle,
+    body[class*="seasonal-"] .col-label svg rect {
+      stroke: var(--seasonal-primary) !important;
+      color: var(--seasonal-primary) !important;
+      fill: none !important;
+    }
+    /* ========== PRINT MEDIA QUERIES - HIDE SEASONAL THEMES & FORCE #D97706 ========== */
+    @media print {
+      /* Remove seasonal decorations from print */
+      body[class*="seasonal-"]::before,
+      body[class*="seasonal-"]::after {
+        display: none !important;
+      }
+
+      /* Reset seasonal backgrounds to white for printing */
+      body.seasonal-valentines,
+      body.seasonal-stpatricks,
+      body.seasonal-memorialday,
+      body.seasonal-fourthofjuly,
+      body.seasonal-laborday,
+      body.seasonal-thanksgiving,
+      body.seasonal-christmas,
+      body.seasonal-newyear,
+      body.seasonal-spring,
+      body.seasonal-summer,
+      body.seasonal-halloween {
+        background: #ffffff !important;
+        background-attachment: unset !important;
+      }
+
+      /* Remove glow effects from page */
+      body[class*="seasonal-"] .page {
+        border-color: #cccccc !important;
+        box-shadow: none !important;
+      }
+
+      /* Force #D97706 (amber/orange) on ALL titles during print */
+      body[class*="seasonal-"] .section-header,
+      body[class*="seasonal-"] .col-label {
+        color: #D97706 !important;
+        border-left-color: #D97706 !important;
+        text-shadow: none !important;
+      }
+
+      /* Force #D97706 on pseudo-element backgrounds */
+      body[class*="seasonal-"] .section-header::before,
+      body[class*="seasonal-"] .col-label::before {
+        background: #D97706 !important;
+        box-shadow: none !important;
+      }
+
+      /* Force #D97706 on CSV export buttons during print */
+      .csv-export-btn,
+      #customerInfoCsvBtn,
+      #propertyInfoCsvBtn,
+      #generatorCsvBtn,
+      #transferSwitchCsvBtn,
+      #precastPadCsvBtn,
+      #fuelTankCsvBtn,
+      [class*="csv-export"],
+      [id*="csv"] {
+        color: #D97706 !important;
+        border-color: #D97706 !important;
+        box-shadow: none !important;
+      }
+
+      .csv-export-btn:hover,
+      #customerInfoCsvBtn:hover,
+      #propertyInfoCsvBtn:hover,
+      #generatorCsvBtn:hover,
+      #transferSwitchCsvBtn:hover,
+      #precastPadCsvBtn:hover,
+      #fuelTankCsvBtn:hover,
+      [class*="csv-export"]:hover,
+      [id*="csv"]:hover {
+        background-color: transparent !important;
+        color: #D97706 !important;
+        transform: none !important;
+      }
+
+      .csv-export-btn svg,
+      #customerInfoCsvBtn svg,
+      #propertyInfoCsvBtn svg,
+      #generatorCsvBtn svg,
+      #transferSwitchCsvBtn svg,
+      #precastPadCsvBtn svg,
+      #fuelTankCsvBtn svg,
+      [class*="csv-export"] svg,
+      [id*="csv"] svg {
+        fill: #D97706 !important;
+        stroke: #D97706 !important;
+      }
+
+      .csv-export-btn i,
+      #customerInfoCsvBtn i,
+      #propertyInfoCsvBtn i,
+      #generatorCsvBtn i,
+      #transferSwitchCsvBtn i,
+      #precastPadCsvBtn i,
+      #fuelTankCsvBtn i,
+      [class*="csv-export"] i,
+      [id*="csv"] i {
+        color: #D97706 !important;
+        text-shadow: none !important;
+      }
+
+     /* Keep text readable in print */
+      body[class*="seasonal-"] {
+        color: #000000 !important;
+      }
+
+      body[class*="seasonal-"] .section-header svg,
+      body[class*="seasonal-"] .section-header svg *,
+      body[class*="seasonal-"] .section-header svg path,
+      body[class*="seasonal-"] .section-header svg line,
+      body[class*="seasonal-"] .section-header svg circle,
+      body[class*="seasonal-"] .section-header svg rect {
+        stroke: #D97706 !important;
+        color: #D97706 !important;
+        fill: none !important;
+      }
+
+      body[class*="seasonal-"] .col-label svg,
+      body[class*="seasonal-"] .col-label svg *,
+      body[class*="seasonal-"] .col-label svg path,
+      body[class*="seasonal-"] .col-label svg line,
+      body[class*="seasonal-"] .col-label svg circle,
+      body[class*="seasonal-"] .col-label svg rect {
+        stroke: #D97706 !important;
+        color: #D97706 !important;
+        fill: none !important;
+      }
+    }
+  `;
+
+  document.head.appendChild(style);
+}
+
+
 // INITIALIZATION
 // ────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function() {
@@ -3802,6 +4617,12 @@ document.addEventListener('DOMContentLoaded', function() {
     document.body.classList.add('offline');
   }
 
+  // ===== SEASONAL THEME SETUP =====
+  injectSeasonalStyles();
+  const seasonalTheme = getCurrentSeasonalTheme();
+  applySeasonalTheme(seasonalTheme);
+  // ===== END SEASONAL THEME SETUP =====
+
   // ===== THEME SETUP =====
   const initialTheme = getInitialTheme();
   applyTheme(initialTheme);
@@ -3812,8 +4633,7 @@ document.addEventListener('DOMContentLoaded', function() {
   setupGpsButton();
   setupFieldValidation();
   restoreDraft();
-});
-</script>
+});</script>
 
 </body>
 </html>
