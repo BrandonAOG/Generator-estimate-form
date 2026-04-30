@@ -2070,6 +2070,34 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
 
   #address-suggestions, #gps-status, #gps-btn { display: none !important; }
   #address { padding-right: 6px !important; }
+
+  /* ── SEASONAL DECORATION KILL (static block) ── */
+  body::before,
+  body::after,
+  body[class*="seasonal-"]::before,
+  body[class*="seasonal-"]::after {
+    display: none !important;
+    content: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    font-size: 0 !important;
+    position: static !important;
+    animation: none !important;
+  }
+
+  /* ── STOP ALL ANIMATIONS ── */
+  *, *::before, *::after {
+    animation: none !important;
+    animation-play-state: paused !important;
+    transition: none !important;
+  }
+
+  /* ── HARD CLAMP HTML TO ONE PAGE ── */
+  html {
+    overflow: hidden !important;
+    height: 11in !important;
+    max-height: 11in !important;
+  }
 }
 </style>
 </head>
@@ -4471,7 +4499,37 @@ function injectSeasonalStyles() {
       fill: none !important;
     }
     /* ========== PRINT MEDIA QUERIES - HIDE SEASONAL THEMES & FORCE #D97706 ========== */
-    @media print {
+   @media print {
+      /* Remove seasonal decorations from print */
+      body::before,
+      body::after,
+      body[class*="seasonal-"]::before,
+      body[class*="seasonal-"]::after {
+        display: none !important;
+        content: none !important;
+        width: 0 !important;
+        height: 0 !important;
+        font-size: 0 !important;
+        position: static !important;
+        animation: none !important;
+      }
+
+      /* Stop all animations */
+      *,
+      *::before,
+      *::after {
+        animation: none !important;
+        animation-play-state: paused !important;
+        transition: none !important;
+      }
+
+      /* Hard clamp to one page */
+      html {
+        overflow: hidden !important;
+        height: 11in !important;
+        max-height: 11in !important;
+      }
+
       /* Remove seasonal decorations from print */
       body[class*="seasonal-"]::before,
       body[class*="seasonal-"]::after {
