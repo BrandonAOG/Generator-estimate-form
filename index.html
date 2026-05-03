@@ -1716,6 +1716,31 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
   @page {
     size: 8.5in 11in;
     margin: 0;
+    marks: none;
+  }
+
+  @page :first {
+    margin: 0;
+  }
+
+  @page :left {
+    margin: 0;
+    @top-left { content: ""; }
+    @top-center { content: ""; }
+    @top-right { content: ""; }
+    @bottom-left { content: ""; }
+    @bottom-center { content: ""; }
+    @bottom-right { content: ""; }
+  }
+
+  @page :right {
+    margin: 0;
+    @top-left { content: ""; }
+    @top-center { content: ""; }
+    @top-right { content: ""; }
+    @bottom-left { content: ""; }
+    @bottom-center { content: ""; }
+    @bottom-right { content: ""; }
   }
 
   body {
@@ -2224,10 +2249,25 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
   }
 
   /* ── HARD CLAMP HTML TO ONE PAGE ── */
-  html {
+  html, body {
     overflow: hidden !important;
-    height: 11in !important;
+    height: 10.95in !important;
     max-height: 10.95in !important;
+    page-break-after: avoid !important;
+    page-break-before: avoid !important;
+    page-break-inside: avoid !important;
+    break-after: avoid !important;
+    break-before: avoid !important;
+  }
+
+  .page {
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+  }
+
+  .footer {
+    page-break-after: avoid !important;
+    break-after: avoid !important;
   }
 }
 </style>
