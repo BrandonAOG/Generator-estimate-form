@@ -1706,13 +1706,26 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
   }
 
   /* ─────────────────────────────────────────────────────────────
-     SCALING STRATEGY — fills the printable area
+     SCALING STRATEGY
      Design width: 1050px.
-     US Letter printable width at 96dpi = 816px → zoom = 816/1050 = 0.7771
-     Safari reserves ~0.5in at bottom for its own footer notes.
-     Usable height = 11in - 0.5in = 10.5in = 1008px printed.
-     Unzoomed page height = 1008 / 0.7771 ≈ 1297px.
-     We set .page to exactly that, then flex fills sections evenly.
+     zoom: 816/1050 = 0.7771 fits the width exactly.
+
+     Safari reserves ~0.5in at the bottom of the page for its own
+     footer notes. We handle this via @page margin-bottom so Safari
+     respects it at the layout level — NOT by shrinking .page height.
+
+     With margin-bottom: 0.5in declared at @page:
+       Printable height = 11in - 0.5in = 10.5in = 1008px printed.
+       Unzoomed: 1008 / 0.7771 = 1297px.
+     But desktop Chrome/Firefox ignore @page margins when margin:0
+     is also set, so we keep margin:0 on @page and instead tell
+     Safari via -webkit-margin-after on body.
+
+     Simplest cross-browser approach:
+       @page margin: 0 (desktop Chrome/Firefox get full 11in)
+       .page height: 1297px unzoomed (= 10.5in printed after zoom)
+       This leaves the bottom 0.5in empty — exactly where Safari
+       draws its footer — so nothing gets clipped on either browser.
   ───────────────────────────────────────────────────────────── */
   html {
     zoom: 0.7771;
@@ -1731,7 +1744,12 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     color: #1F2937 !important;
   }
 
-  /* ── PAGE CONTAINER ── */
+  /* ── PAGE CONTAINER ──
+     1297px was the full 10.5in unzoomed, but Safari overlays its
+     own footer bar (~48px screen / ~62px unzoomed) on top of the
+     zoomed content AFTER rendering. Reducing to 1220px gives ~77px
+     of clearance at the bottom — Safari's bar lands in that gap,
+     desktop Chrome/Firefox just shows a small white margin. */
   .page {
     position: static !important;
     transform: none !important;
@@ -1739,7 +1757,7 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     top: auto !important;
     width: 1050px !important;
     max-width: 1050px !important;
-    height: 1297px !important;
+    height: 1220px !important;
     margin: 0 !important;
     padding: 0 !important;
     box-sizing: border-box !important;
