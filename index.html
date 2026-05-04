@@ -1744,7 +1744,7 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     top: auto !important;
     width: 1050px !important;
     max-width: 1050px !important;
-    height: 1253px !important;
+    height: 1207px !important;
     margin: 0 !important;
     padding: 0 !important;
     box-sizing: border-box !important;
@@ -1997,9 +1997,23 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
   .divider::before { background: #ffffff !important; color: #D97706 !important; }
 
   /* ── GAS APPLIANCES ── */
-  .gas-appliances-box { background: #ffffff !important; border-color: #D97706 !important; }
+  .gas-appliances-box { background: #ffffff !important; border-color: #D97706 !important; padding: 5px 8px !important; margin-bottom: 5px !important; }
   .gas-appliances-box::before { background: none !important; }
-  .gas-appliances-label { color: #6B7280 !important; }
+  .gas-appliances-label { color: #6B7280 !important; font-size: 0.54rem !important; margin-bottom: 4px !important; }
+
+  /* Override inline margin-bottom:14px on fuel tank rows */
+  .section-body .inline-row[style*="margin-bottom:14px"],
+  .section-body .inline-row[style*="margin-bottom: 14px"] {
+    margin-bottom: 5px !important;
+  }
+  .section-body .grid-4[style*="margin-bottom:14px"],
+  .section-body .grid-4[style*="margin-bottom: 14px"] {
+    margin-bottom: 5px !important;
+  }
+  .field-block [style*="margin-top:10px"],
+  .field-block [style*="margin-top: 10px"] {
+    margin-top: 4px !important;
+  }
 
   /* ── INSTALL DIFFICULTY / NOTES ── */
   #address-suggestions, #gps-status { display: none !important; }
