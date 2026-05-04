@@ -1785,6 +1785,79 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
 
   .footer-text { color: #D97706 !important; text-shadow: none !important; }
 
+  /* ── DESKTOP FILL (Chrome/Edge only) ──────────────────────────────
+     Safari supports -webkit-touch-callout so it skips this block entirely.
+     Chrome/Edge do not, so they get:
+       • .page min-height fills the full printable area (1027px at zoom 0.759)
+       • Sections grow equally via flex-grow:1
+       • Full flex chain passes height down to textareas so they expand
+     Result: content fills the page evenly — looks like a professional form.
+     Safari: height:auto, no grow — fits in ~987px available → 1 page ✓
+  ─────────────────────────────────────────────────────────────────── */
+  @supports (not (-webkit-touch-callout: default)) {
+    .page {
+      min-height: 1353px !important;
+    }
+
+    /* Sections grow equally to fill the page */
+    .section {
+      flex-grow: 1 !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+
+    /* section-body fills its grown section */
+    .section-body {
+      flex: 1 !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+
+    /* Pass height down through .field-block wrappers */
+    .section-body > .field-block:last-child {
+      flex: 1 !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+
+    /* Pass height through gas-appliances-box (Fuel Tank section) */
+    .gas-appliances-box {
+      flex: 1 !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+
+    .gas-appliances-box > .field-block {
+      flex: 1 !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+
+    /* All textareas at the end of sections expand to fill */
+    .section-body textarea,
+    .section-body .field-block textarea,
+    .gas-appliances-box textarea {
+      flex: 1 !important;
+      min-height: 24px !important;
+      max-height: none !important;
+      height: auto !important;
+    }
+
+    /* install-difficulty row grows, ready_notes expands */
+    #install-difficulty-row {
+      flex-grow: 1 !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+
+    #ready_notes {
+      flex: 1 !important;
+      min-height: 24px !important;
+      max-height: none !important;
+      height: auto !important;
+    }
+  }
+
   /* Dark mode → white for print */
   body.dark-mode .page,
   body.dark-mode .header,
@@ -1825,16 +1898,6 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
   body[class*="seasonal-"] .section-header svg *,
   body[class*="seasonal-"] .col-label svg,
   body[class*="seasonal-"] .col-label svg * { stroke: #D97706 !important; color: #D97706 !important; }
-
-  /* ... existing print styles ... */
-  
-  input[type="date"] {
-    min-width: 160px !important;
-    width: 160px !important;
-    font-size: 0.95rem !important;
-  }
-}
-
 }
 </style>
 </head>
