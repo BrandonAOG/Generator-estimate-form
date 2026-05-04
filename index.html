@@ -9,9 +9,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-<!-- ============================================
-     MOBILE PRINT OPTIMIZATION (HEAD INJECTION)
-     ============================================ -->
 <script>
 (function() {
   'use strict';
@@ -23,16 +20,9 @@
   window.IS_IOS_SAFARI = IS_IOS_SAFARI;
   window.IS_MOBILE = IS_MOBILE;
 
-  var PAPER_W_IN = 8.5;
-  var PAPER_H_IN = 11;
-  var DPI = 96;
-  var PAPER_W_PX = PAPER_W_IN * DPI;
-  var PAPER_H_PX = PAPER_H_IN * DPI;
-  var PAGE_NATURAL_W = 1050;
-
-  window.PAPER_W_PX = PAPER_W_PX;
-  window.PAPER_H_PX = PAPER_H_PX;
-  window.PAGE_NATURAL_W = PAGE_NATURAL_W;
+  window.PAPER_W_PX = 816;
+  window.PAPER_H_PX = 1056;
+  window.PAGE_NATURAL_W = 1050;
 
   var PRINT_CSS = `
     @media print {
@@ -44,21 +34,10 @@
   styleEl.textContent = PRINT_CSS;
   document.head.appendChild(styleEl);
 
-  window.nativePrint = window.print.bind(window);
-  window.enterPrintMode = function() { return null; };
-  window.exitPrintMode  = function() {};
-
   if (IS_MOBILE) {
     document.documentElement.classList.add('is-mobile-device');
   }
 })();
-</script>
-
-<script>
-window.PRINT_SCALE = { x: 1, y: 1 };
-window.PAPER_W_PX = 816;
-window.PAPER_H_PX = 1056;
-window.PAGE_NATURAL_W = 1050;
 </script>
 
 <style>
@@ -86,47 +65,32 @@ window.PAGE_NATURAL_W = 1050;
   --font-display: 'Orbitron', monospace;
   --font-mono: 'Share Tech Mono', monospace;
   --font-body: 'Exo 2', sans-serif;
-  
-  /* ===== ICON COLORS (LIGHT MODE) ===== */
   --icon-color-primary: #D97706;
   --icon-color-section: #D97706;
   --icon-color-gps: #10B981;
 }
 
-/* DARK MODE VARIABLES */
 body.dark-mode {
-  /* ── PRIMARY BACKGROUND ── */
   --bg: #0A0E27;
   --bg2: #0F1535;
   --bg3: #1A2847;
   --bg4: #243458;
-
-  /* ── PANEL & SURFACES ── */
   --panel: #0F1535;
   --panel2: #1A2847;
-
-  /* ── BORDERS & DIVIDERS ── */
   --border: rgba(0, 255, 200, 0.08);
   --border-bright: rgba(0, 255, 200, 0.25);
-
-  /* ── TEXT HIERARCHY ── */
   --text: #E0F7FF;
   --text-muted: #7DD3FC;
   --text-dim: #38BDF8;
-
-  /* ── GLOW EFFECTS (NEON) ── */
   --glow: 
     0 0 8px rgba(0, 255, 200, 0.3),
     0 0 16px rgba(0, 255, 200, 0.15),
     0 0 20px rgba(59, 130, 246, 0.1),
     inset 0 0 20px rgba(0, 255, 200, 0.02);
-  
   --glow-amber:
     0 0 8px rgba(217, 119, 6, 0.4),
     0 0 12px rgba(217, 119, 6, 0.25),
     0 0 24px rgba(217, 119, 6, 0.1);
-
-  /* ── ACCENT COLORS ── */
   --cyan: #00FFC8;
   --cyan-dim: #06B6D4;
   --cyan-dark: #0891B2;
@@ -134,13 +98,11 @@ body.dark-mode {
   --amber-dim: #B45309;
   --green: #10B981;
   --red: #F43F5E;
-  
-  /* ===== ICON COLORS (DARK MODE) ===== */
   --icon-color-primary: #00FFC8;
   --icon-color-section: #00FFC8;
   --icon-color-gps: #10B981;
 }
-/* ===== EMAIL BUTTON FIX ===== */
+
 .btn-gold {
   transition: all 0.3s ease;
 }
@@ -159,8 +121,6 @@ body.dark-mode .btn-gold:hover {
   box-shadow: 0 0 15px rgba(217, 119, 6, 0.5) !important;
   text-shadow: 0 0 12px rgba(217, 119, 6, 0.8) !important;
 }
-
-/* ===== HEADER TITLE FIX ===== */
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -223,7 +183,6 @@ body.dark-mode .page {
     inset 0 0 60px rgba(0, 255, 200, 0.02);
 }
 
-/* Corner accents */
 .page::before, .page::after {
   content: '';
   position: absolute;
@@ -252,7 +211,6 @@ body.dark-mode .page {
   .page-corner-bl, .page-corner-br { display: none; }
 }
 
-/* ── HEADER ── */
 .header {
   background: var(--panel);
   padding: 8px 32px;
@@ -273,7 +231,6 @@ body.dark-mode .page {
   width: 100%;
   box-sizing: border-box;
 }
-
 
 body.dark-mode .header {
   background: linear-gradient(
@@ -357,7 +314,6 @@ body.dark-mode .company-name {
   letter-spacing: 3px;
 }
 
-/* ===== HEADER TITLE (doc-title) ===== */
 .doc-title {
   font-family: var(--font-display);
   font-size: 1.1rem;
@@ -370,7 +326,6 @@ body.dark-mode .company-name {
   transition: all 0.3s ease;
 }
 
-/* DARK MODE - HEADER TITLE */
 body.dark-mode .doc-title {
   color: #00FFC8 !important;
   text-shadow: 
@@ -379,7 +334,7 @@ body.dark-mode .doc-title {
     0 0 30px rgba(0, 255, 200, 0.3) !important;
   letter-spacing: 5px;
 }
-/* ── THEME TOGGLE BUTTON ── */
+
 .theme-toggle-btn {
   position: relative;
   width: 40px;
@@ -423,9 +378,7 @@ body.dark-mode .theme-toggle-btn:hover {
   transform: scale(1.1);
 }
 
-.theme-toggle-btn:active {
-  transform: scale(0.95);
-}
+.theme-toggle-btn:active { transform: scale(0.95); }
 
 .theme-icon {
   width: 18px;
@@ -445,9 +398,7 @@ body.dark-mode .theme-icon {
   color: var(--icon-color-primary) !important;
 }
 
-.theme-icon.theme-icon-moon {
-  opacity: 0;
-}
+.theme-icon.theme-icon-moon { opacity: 0; }
 
 body.dark-mode .theme-icon {
   opacity: 0;
@@ -459,12 +410,6 @@ body.dark-mode .theme-icon.theme-icon-moon {
   transform: rotate(0deg);
 }
 
-/* PRINT: Hide theme toggle */
-@media print {
-  .theme-toggle-btn { display: none !important; }
-}
-
-/* Offline indicator */
 #offline-banner {
   position: fixed;
   top: 0;
@@ -483,10 +428,8 @@ body.dark-mode .theme-icon.theme-icon-moon {
 }
 
 #offline-banner.show { display: block; }
-
 body.offline { padding-top: 50px; }
 
-/* ── TOOLBAR ── */
 .toolbar {
   background: var(--panel);
   border-bottom: 1px solid var(--border);
@@ -549,11 +492,7 @@ body.dark-mode .btn {
   transition: opacity 0.15s;
 }
 
-.btn:hover { 
-  border-color: var(--cyan); 
-  color: var(--cyan); 
-  box-shadow: var(--glow); 
-}
+.btn:hover { border-color: var(--cyan); color: var(--cyan); box-shadow: var(--glow); }
 
 body.dark-mode .btn:hover {
   background: rgba(0, 255, 200, 0.12);
@@ -568,7 +507,6 @@ body.dark-mode .btn:hover {
 .btn:active { transform: scale(0.97); }
 .btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
-/* ===== EMAIL BUTTON (btn-gold) ===== */
 .btn-gold {
   background: rgba(217,119,6,0.08);
   border-color: rgba(217,119,6,0.4);
@@ -576,13 +514,8 @@ body.dark-mode .btn:hover {
   transition: all 0.15s;
 }
 
-.btn-gold:hover { 
-  border-color: var(--amber); 
-  color: var(--amber); 
-  box-shadow: var(--glow-amber); 
-}
+.btn-gold:hover { border-color: var(--amber); color: var(--amber); box-shadow: var(--glow-amber); }
 
-/* DARK MODE - EMAIL BUTTON */
 body.dark-mode .btn.btn-gold {
   background: rgba(0,255, 200, 0.08) !important;
   border-color: rgba(0,255,200,0.25)!important;
@@ -597,7 +530,6 @@ body.dark-mode .btn-gold:hover {
   text-shadow: 0 0 12px rgba(217, 119, 6, 0.8) !important;
 }
 
-/* ── CONTENT ── */
 .content { 
   padding: 14px 18px;
   display: flex;
@@ -611,7 +543,6 @@ body.dark-mode .btn-gold:hover {
 
 @media (max-width: 480px) { .content { padding: 10px 8px; } }
 
-/* ── SECTIONS ── */
 .section {
   border: 1px solid var(--border);
   margin-bottom: 10px;
@@ -724,7 +655,6 @@ body.dark-mode .section-header::before {
 
 @media (max-width: 480px) { .section-body { padding: 8px 8px; } }
 
-/* ── TOP GRID ── */
 .top-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -781,7 +711,6 @@ body.dark-mode .top-col {
 
 .top-col:first-child { border-right: 1px solid var(--border); }
 
-/* ── COL LABEL ── */
 .col-label {
   display: inline-flex;
   align-items: center;
@@ -831,86 +760,31 @@ body.dark-mode .col-label::before {
     0 0 12px rgba(0, 255, 200, 0.4);
 }
 
-/* ──────────────────────────────────────────────────────────────
-   SVG ICON STYLING - ENSURES COLOR SWITCHING IN LIGHT/DARK MODE
-   ────────────────────────────────────────────────────────────── */
-
-/* Section header icons */
-.section-header svg {
-  stroke: var(--icon-color-section) !important;
-  color: var(--icon-color-section) !important;
-}
-
-.section-header svg * {
-  stroke: var(--icon-color-section) !important;
-  color: var(--icon-color-section) !important;
-}
-
+.section-header svg { stroke: var(--icon-color-section) !important; color: var(--icon-color-section) !important; }
+.section-header svg * { stroke: var(--icon-color-section) !important; color: var(--icon-color-section) !important; }
 .section-header svg path,
 .section-header svg line,
 .section-header svg circle,
 .section-header svg rect,
 .section-header svg polyline,
-.section-header svg polygon {
-  stroke: var(--icon-color-section) !important;
-  fill: none !important;
-}
+.section-header svg polygon { stroke: var(--icon-color-section) !important; fill: none !important; }
 
-/* Column label icons */
-.col-label svg {
-  stroke: var(--icon-color-section) !important;
-  color: var(--icon-color-section) !important;
-}
-
-.col-label svg * {
-  stroke: var(--icon-color-section) !important;
-  color: var(--icon-color-section) !important;
-}
-
+.col-label svg { stroke: var(--icon-color-section) !important; color: var(--icon-color-section) !important; }
+.col-label svg * { stroke: var(--icon-color-section) !important; color: var(--icon-color-section) !important; }
 .col-label svg path,
 .col-label svg line,
 .col-label svg circle,
 .col-label svg rect,
 .col-label svg polyline,
-.col-label svg polygon {
-  stroke: var(--icon-color-section) !important;
-  fill: none !important;
-}
+.col-label svg polygon { stroke: var(--icon-color-section) !important; fill: none !important; }
 
-/* Toolbar button icons */
-.toolbar svg {
-  stroke: var(--icon-color-primary) !important;
-  color: var(--icon-color-primary) !important;
-}
+.toolbar svg { stroke: var(--icon-color-primary) !important; color: var(--icon-color-primary) !important; }
+.toolbar svg * { stroke: var(--icon-color-primary) !important; color: var(--icon-color-primary) !important; }
+.gps-btn svg { stroke: var(--icon-color-gps) !important; color: var(--icon-color-gps) !important; }
+.gps-btn svg * { stroke: var(--icon-color-gps) !important; color: var(--icon-color-gps) !important; }
+#theme-toggle-btn svg { stroke: var(--icon-color-primary) !important; color: var(--icon-color-primary) !important; }
+#theme-toggle-btn svg * { stroke: var(--icon-color-primary) !important; color: var(--icon-color-primary) !important; }
 
-.toolbar svg * {
-  stroke: var(--icon-color-primary) !important;
-  color: var(--icon-color-primary) !important;
-}
-
-/* GPS button icons */
-.gps-btn svg {
-  stroke: var(--icon-color-gps) !important;
-  color: var(--icon-color-gps) !important;
-}
-
-.gps-btn svg * {
-  stroke: var(--icon-color-gps) !important;
-  color: var(--icon-color-gps) !important;
-}
-
-/* Theme toggle button icons */
-#theme-toggle-btn svg {
-  stroke: var(--icon-color-primary) !important;
-  color: var(--icon-color-primary) !important;
-}
-
-#theme-toggle-btn svg * {
-  stroke: var(--icon-color-primary) !important;
-  color: var(--icon-color-primary) !important;
-}
-
-/* ── FIELD ROWS ── */
 .field-row {
   display: flex;
   align-items: center;
@@ -934,11 +808,8 @@ label {
   transition: color 0.3s ease;
 }
 
-body.dark-mode label {
-  color: #7DD3FC;
-}
+body.dark-mode label { color: #7DD3FC; }
 
-/* ── INPUTS ── */
 input[type="text"],
 input[type="email"],
 input[type="tel"],
@@ -986,9 +857,7 @@ input[type="date"] {
   color-scheme: light;
 }
 
-body.dark-mode input[type="date"] {
-  color-scheme: dark;
-}
+body.dark-mode input[type="date"] { color-scheme: dark; }
 
 input::placeholder, textarea::placeholder { 
   color: var(--text-dim) !important;
@@ -996,16 +865,7 @@ input::placeholder, textarea::placeholder {
 }
 
 body.dark-mode input::placeholder,
-body.dark-mode textarea::placeholder {
-  color: rgba(125, 211, 252, 0.4) !important;
-}
-
-/* PRINT: Hide placeholders for clean exports */
-@media print {
-  input::placeholder, textarea::placeholder { 
-    color: transparent !important; 
-  }
-}
+body.dark-mode textarea::placeholder { color: rgba(125, 211, 252, 0.4) !important; }
 
 input[type="text"]:focus,
 input[type="email"]:focus,
@@ -1058,17 +918,9 @@ body.dark-mode textarea {
   color: #E0F7FF;
 }
 
-textarea:focus { 
-  border-color: var(--cyan); 
-  box-shadow: 0 0 8px rgba(217,119,6,0.1); 
-}
+textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(217,119,6,0.1); }
+body.dark-mode textarea:focus { border-color: #00FFC8; box-shadow: 0 0 8px rgba(0, 255, 200, 0.2); }
 
-body.dark-mode textarea:focus {
-  border-color: #00FFC8;
-  box-shadow: 0 0 8px rgba(0, 255, 200, 0.2);
-}
-
-/* ── GRIDS ── */
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
 .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px; }
 .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 10px; }
@@ -1079,9 +931,6 @@ body.dark-mode textarea:focus {
   .grid-4 { grid-template-columns: 1fr 1fr; }
 }
 
-.field-block .yn-group { align-self: flex-start; }
-
-/* ── CHECK GROUPS ── */
 .check-group {
   display: flex;
   flex-wrap: wrap;
@@ -1153,9 +1002,7 @@ body.dark-mode .check-item:has(input:checked) {
 }
 
 body.dark-mode .check-item input[type="checkbox"],
-body.dark-mode .check-item input[type="radio"] {
-  accent-color: #00FFC8;
-}
+body.dark-mode .check-item input[type="radio"] { accent-color: #00FFC8; }
 
 .check-item span {
   font-family: var(--font-display);
@@ -1167,9 +1014,7 @@ body.dark-mode .check-item input[type="radio"] {
   transition: color 0.15s;
 }
 
-body.dark-mode .check-item span {
-  color: #E0F7FF;
-}
+body.dark-mode .check-item span { color: #E0F7FF; }
 
 .check-item:has(input:checked) span {
   color: var(--cyan);
@@ -1181,7 +1026,6 @@ body.dark-mode .check-item:has(input:checked) span {
   text-shadow: 0 0 8px rgba(0, 255, 200, 0.5);
 }
 
-/* ── Y/N TOGGLE ── */
 .yn-group {
   display: inline-flex;
   border: 1px solid rgba(217,119,6,0.3);
@@ -1221,19 +1065,12 @@ body.dark-mode .yn-group .yn-label {
   color: #7DD3FC;
   border-color: rgba(0, 255, 200, 0.1);
   background: transparent;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .yn-group .yn-label:first-of-type { border-right: 1px solid rgba(217,119,6,0.2); }
+body.dark-mode .yn-group .yn-label:first-of-type { border-right-color: rgba(0, 255, 200, 0.1); }
 
-body.dark-mode .yn-group .yn-label:first-of-type {
-  border-right-color: rgba(0, 255, 200, 0.1);
-}
-
-.yn-group .yn-label:hover { 
-  background: rgba(217,119,6,0.08); 
-  color: var(--text); 
-}
+.yn-group .yn-label:hover { background: rgba(217,119,6,0.08); color: var(--text); }
 
 body.dark-mode .yn-group .yn-label:hover {
   background: rgba(0, 255, 200, 0.05);
@@ -1259,23 +1096,16 @@ body.dark-mode .yn-group .yn-y:checked + .yn-label-y {
   background: rgba(16, 185, 129, 0.15);
   color: #10B981;
   text-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
-  border-color: rgba(16, 185, 129, 0.4);
-  box-shadow: 
-    0 0 8px rgba(16, 185, 129, 0.2),
-    inset 0 0 8px rgba(16, 185, 129, 0.1);
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.2), inset 0 0 8px rgba(16, 185, 129, 0.1);
 }
 
 body.dark-mode .yn-group .yn-n:checked + .yn-label-n {
   background: rgba(244, 63, 94, 0.15);
   color: #F43F5E;
   text-shadow: 0 0 8px rgba(244, 63, 94, 0.4);
-  border-color: rgba(244, 63, 94, 0.4);
-  box-shadow: 
-    0 0 8px rgba(244, 63, 94, 0.2),
-    inset 0 0 8px rgba(244, 63, 94, 0.1);
+  box-shadow: 0 0 8px rgba(244, 63, 94, 0.2), inset 0 0 8px rgba(244, 63, 94, 0.1);
 }
 
-/* ── INLINE ROWS ── */
 .inline-row {
   display: flex;
   align-items: center;
@@ -1296,9 +1126,7 @@ body.dark-mode .yn-group .yn-n:checked + .yn-label-n {
   transition: color 0.3s ease;
 }
 
-body.dark-mode .inline-label {
-  color: #7DD3FC;
-}
+body.dark-mode .inline-label { color: #7DD3FC; }
 
 .divider {
   border: none;
@@ -1311,12 +1139,6 @@ body.dark-mode .inline-label {
 
 body.dark-mode .divider {
   border-top-color: rgba(0, 255, 200, 0.15);
-  background: linear-gradient(
-    90deg,
-    rgba(0, 255, 200, 0.1) 0%,
-    rgba(59, 130, 246, 0.05) 50%,
-    rgba(0, 255, 200, 0.1) 100%
-  );
 }
 
 .divider::before {
@@ -1336,16 +1158,10 @@ body.dark-mode .divider {
 
 body.dark-mode .divider::before {
   color: #7DD3FC;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(10, 14, 39, 0.95),
-    transparent
-  );
+  background: rgba(10, 14, 39, 0.95);
   text-shadow: 0 0 8px rgba(0, 255, 200, 0.3);
 }
 
-/* ── FLOOD BAR ── */
 .flood-bar {
   display: flex;
   border: 1px solid var(--border);
@@ -1377,11 +1193,7 @@ body.dark-mode .flood-bar {
   transition: all 0.3s ease;
 }
 
-body.dark-mode .flood-item {
-  border-color: rgba(0, 255, 200, 0.08);
-  background: transparent;
-}
-
+body.dark-mode .flood-item { border-color: rgba(0, 255, 200, 0.08); background: transparent; }
 .flood-item:last-child { border-right: none; }
 
 @media (max-width: 540px) {
@@ -1390,7 +1202,6 @@ body.dark-mode .flood-item {
   .flood-item:nth-child(1), .flood-item:nth-child(2) { border-bottom: 1px solid var(--border); }
 }
 
-/* ── ADDRESS AUTOCOMPLETE ── */
 #address-suggestions {
   position: absolute;
   top: 100%;
@@ -1405,7 +1216,6 @@ body.dark-mode .flood-item {
   overflow-y: auto;
   box-shadow: 0 8px 24px rgba(217,119,6,0.12);
   display: none;
-  transition: all 0.3s ease;
 }
 
 body.dark-mode #address-suggestions {
@@ -1430,22 +1240,13 @@ body.dark-mode #address-suggestions {
   transition: background 0.1s;
 }
 
-body.dark-mode #address-suggestions li {
-  color: #E0F7FF;
-  border-bottom-color: rgba(0, 255, 200, 0.08);
-}
+body.dark-mode #address-suggestions li { color: #E0F7FF; border-bottom-color: rgba(0, 255, 200, 0.08); }
 
 #address-suggestions li:hover,
-#address-suggestions li.active { 
-  background: rgba(217,119,6,0.08); 
-  color: var(--cyan); 
-}
+#address-suggestions li.active { background: rgba(217,119,6,0.08); color: var(--cyan); }
 
 body.dark-mode #address-suggestions li:hover,
-body.dark-mode #address-suggestions li.active {
-  background: rgba(0, 255, 200, 0.08);
-  color: #00FFC8;
-}
+body.dark-mode #address-suggestions li.active { background: rgba(0, 255, 200, 0.08); color: #00FFC8; }
 
 .addr-wrap { flex: 1; position: relative; }
 
@@ -1469,27 +1270,14 @@ body.dark-mode #address-suggestions li.active {
   transition: all 0.15s;
 }
 
-body.dark-mode .gps-btn {
-  background: rgba(16, 185, 129, 0.1);
-  border-color: rgba(16, 185, 129, 0.3);
-}
-
-.gps-btn:hover { 
-  background: rgba(217,119,6,0.2); 
-  box-shadow: var(--glow); 
-}
-
-body.dark-mode .gps-btn:hover {
-  background: rgba(16, 185, 129, 0.2);
-  box-shadow: 0 0 8px rgba(16, 185, 129, 0.3);
-}
-
+body.dark-mode .gps-btn { background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.3); }
+.gps-btn:hover { background: rgba(217,119,6,0.2); box-shadow: var(--glow); }
+body.dark-mode .gps-btn:hover { background: rgba(16, 185, 129, 0.2); box-shadow: 0 0 8px rgba(16, 185, 129, 0.3); }
 .gps-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .gps-btn svg { 
   stroke: var(--icon-color-gps) !important;
   color: var(--icon-color-gps) !important;
-  transition: all 0.3s ease;
 }
 
 body.dark-mode .gps-btn svg {
@@ -1506,14 +1294,10 @@ body.dark-mode .gps-btn svg {
   margin-top: 2px;
   margin-bottom: 4px;
   display: none;
-  transition: all 0.3s ease;
 }
 
-body.dark-mode #gps-status {
-  color: #7DD3FC;
-}
+body.dark-mode #gps-status { color: #7DD3FC; }
 
-/* ── GAS APPLIANCES BOX ── */
 .gas-appliances-box {
   border: 1px solid rgba(217,119,6,0.2);
   padding: 6px 8px !important;
@@ -1524,15 +1308,8 @@ body.dark-mode #gps-status {
 }
 
 body.dark-mode .gas-appliances-box {
-  background: linear-gradient(
-    135deg,
-    rgba(26, 40, 71, 0.5) 0%,
-    rgba(15, 21, 53, 0.7) 100%
-  );
+  background: linear-gradient(135deg, rgba(26, 40, 71, 0.5) 0%, rgba(15, 21, 53, 0.7) 100%);
   border-color: rgba(0, 255, 200, 0.1);
-  box-shadow: 
-    0 0 1px rgba(0, 255, 200, 0.1),
-    inset 0 0 12px rgba(0, 255, 200, 0.02);
 }
 
 .gas-appliances-box::before {
@@ -1541,15 +1318,10 @@ body.dark-mode .gas-appliances-box {
   top: 0; left: 0; right: 0;
   height: 1px;
   background: linear-gradient(90deg, var(--cyan-dim), transparent 50%);
-  transition: all 0.3s ease;
 }
 
 body.dark-mode .gas-appliances-box::before {
-  background: linear-gradient(
-    90deg,
-    rgba(0, 255, 200, 0.3),
-    transparent
-  );
+  background: linear-gradient(90deg, rgba(0, 255, 200, 0.3), transparent);
 }
 
 .gas-appliances-label {
@@ -1559,15 +1331,10 @@ body.dark-mode .gas-appliances-box::before {
   color: var(--text-muted);
   margin-bottom: 8px;
   text-transform: uppercase;
-  transition: color 0.3s ease;
 }
 
-body.dark-mode .gas-appliances-label {
-  color: #7DD3FC;
-  text-shadow: 0 0 6px rgba(0, 255, 200, 0.2);
-}
+body.dark-mode .gas-appliances-label { color: #7DD3FC; }
 
-/* ── FOOTER ── */
 .footer {
   background: var(--panel);
   padding: 10px 22px;
@@ -1586,11 +1353,7 @@ body.dark-mode .gas-appliances-label {
 }
 
 body.dark-mode .footer {
-  background: linear-gradient(
-    90deg,
-    rgba(15, 21, 53, 0.8) 0%,
-    rgba(26, 40, 71, 0.6) 100%
-  );
+  background: linear-gradient(90deg, rgba(15, 21, 53, 0.8) 0%, rgba(26, 40, 71, 0.6) 100%);
   border-top-color: rgba(0, 255, 200, 0.15);
   box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.5);
 }
@@ -1600,50 +1363,25 @@ body.dark-mode .footer {
   font-size: 0.55rem;
   color: var(--text-dim);
   letter-spacing: 2px;
-  transition: color 0.3s ease;
 }
 
-body.dark-mode .footer-text {
-  color: #7DD3FC;
-  text-shadow: 0 0 6px rgba(0, 255, 200, 0.2);
-}
+body.dark-mode .footer-text { color: #7DD3FC; }
 
-/* ── SCROLLBAR ── */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb { background: rgba(217,119,6,0.3); border-radius: 0; }
 ::-webkit-scrollbar-thumb:hover { background: var(--cyan-dim); }
 
-body.dark-mode::-webkit-scrollbar {
-  width: 8px;
-}
-
-body.dark-mode::-webkit-scrollbar-track {
-  background: rgba(10, 14, 39, 0.5);
-  border-radius: 4px;
-}
-
+body.dark-mode::-webkit-scrollbar { width: 8px; }
+body.dark-mode::-webkit-scrollbar-track { background: rgba(10, 14, 39, 0.5); }
 body.dark-mode::-webkit-scrollbar-thumb {
-  background: linear-gradient(
-    180deg,
-    #00FFC8 0%,
-    #3B82F6 100%
-  );
+  background: linear-gradient(180deg, #00FFC8 0%, #3B82F6 100%);
   border-radius: 4px;
-  box-shadow: 0 0 8px rgba(0, 255, 200, 0.4);
-  transition: all 0.3s ease;
 }
-
 body.dark-mode::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(
-    180deg,
-    #00FFE8 0%,
-    #60A5FA 100%
-  );
-  box-shadow: 0 0 12px rgba(0, 255, 200, 0.6);
+  background: linear-gradient(180deg, #00FFE8 0%, #60A5FA 100%);
 }
 
-/* ── MOBILE RESPONSIVE ── */
 @media screen and (max-width: 768px) {
   body { max-width: 100%; }
   .page { border-left: none; border-right: none; }
@@ -1668,14 +1406,24 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
   .check-item { flex: 1 1 calc(50% - 4px); min-width: 80px; }
 }
 
-/* ── PRINT ── */
+/* ═══════════════════════════════════════════════════════════════
+   PRINT STYLES — FULL-WIDTH, CROSS-PLATFORM
+   
+   Strategy:
+   • @page: 0.1in side margins, 0.2in bottom margin — maximum usable width
+   • html { zoom }: Chrome/Edge scale the 1050px design to fill the page
+   • Safari/iOS: JS beforeprint listener applies transform scale instead
+     (Safari ignores zoom in @media print but respects transform)
+   • NO fixed heights anywhere — content flows to its natural height
+   ═══════════════════════════════════════════════════════════════ */
 @media print {
   @page {
     size: 8.5in 11in;
-    margin: 0;
+    /* 0.1in left+right margins, 0.1in top, 0.2in bottom */
+    margin: 0.1in 0.1in 0.2in 0.1in;
   }
 
-  /* ── COLOR FIDELITY ── */
+  /* Color fidelity */
   * {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
@@ -1684,7 +1432,7 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     transition: none !important;
   }
 
-  /* ── HIDE UI CHROME ── */
+  /* Hide UI chrome */
   .toolbar,
   #theme-toggle-btn,
   #offline-banner,
@@ -1696,7 +1444,7 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
 
   .header::after { display: none !important; }
 
-  /* ── SEASONAL DECORATIONS OFF ── */
+  /* Seasonal decorations off */
   body::before, body::after,
   body[class*="seasonal-"]::before,
   body[class*="seasonal-"]::after {
@@ -1704,54 +1452,53 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     content: none !important;
   }
 
- 
-  ───────────────────────────────────────────────────────────── */
+  /* html zoom: Chrome/Edge only.
+     Printable width = 8.5in - 0.2in margins = 8.3in = 796.8px @ 96dpi
+     Design width = 1050px
+     zoom = 796.8 / 1050 = 0.7589 → use 0.759 */
   html {
-    zoom: 0.7771;
-    -webkit-text-size-adjust: none;
-    overflow: hidden !important;
+    zoom: 0.759;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
-  body, body.dark-mode {
+  body {
     margin: 0 !important;
     padding: 0 !important;
     width: 1050px !important;
     max-width: none !important;
-    overflow: hidden !important;
     background: #ffffff !important;
     background-image: none !important;
     color: #1F2937 !important;
   }
 
-  /* ── PAGE CONTAINER ── */
   .page {
-    position: static !important;
-    transform: none !important;
-    left: auto !important;
-    top: auto !important;
     width: 1050px !important;
-    max-width: 1050px !important;
-    height: 1207px !important;
+    max-width: none !important;
+    height: auto !important;
+    min-height: 0 !important;
     margin: 0 !important;
     padding: 0 !important;
     box-sizing: border-box !important;
     display: flex !important;
     flex-direction: column !important;
-    overflow: hidden !important;
+    overflow: visible !important;
     background: #ffffff !important;
     border: 2px solid #D97706 !important;
     box-shadow: none !important;
+    position: static !important;
+    transform: none !important;
   }
 
   /* Corner accents */
   .page::before, .page::after,
   .page-corner-bl, .page-corner-br { display: block !important; }
 
-  /* ── HEADER ── */
+  /* Header */
   .header {
     background: #ffffff !important;
     border-bottom: 1px solid #D97706 !important;
-    padding: 10px 28px !important;
+    padding: 8px 28px !important;
     min-height: auto !important;
     height: auto !important;
     display: flex !important;
@@ -1774,18 +1521,18 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     text-shadow: none !important;
   }
 
-  /* ── CONTENT AREA ── */
+  /* Content area */
   .content {
     flex: 1 !important;
     min-height: 0 !important;
-    overflow: hidden !important;
+    overflow: visible !important;
     padding: 8px 18px !important;
     background: #ffffff !important;
     display: flex !important;
     flex-direction: column !important;
   }
 
-  /* ── TOP GRID — SIDE BY SIDE (Customer | Property) ── */
+  /* Top grid — side by side */
   .top-grid {
     display: grid !important;
     grid-template-columns: 1fr 1fr !important;
@@ -1808,7 +1555,7 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     border-bottom: none !important;
   }
 
-  /* ── COL LABELS ── */
+  /* Col labels */
   .col-label {
     display: inline-flex !important;
     background: #f5f5f5 !important;
@@ -1827,12 +1574,9 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     animation: none !important;
   }
 
-  .col-label svg, .col-label svg * {
-    stroke: #D97706 !important;
-    color: #D97706 !important;
-  }
+  .col-label svg, .col-label svg * { stroke: #D97706 !important; color: #D97706 !important; }
 
-  /* ── FLOOD BAR ── */
+  /* Flood bar */
   .flood-bar {
     display: flex !important;
     background: #ffffff !important;
@@ -1848,25 +1592,17 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     padding: 3px 12px !important;
   }
 
-  /* ── SECTIONS ── */
+  /* Sections */
   .section {
     background: #ffffff !important;
     border: 1px solid #D97706 !important;
     margin-bottom: 6px !important;
     flex-shrink: 0 !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }
 
   .section::before { background: none !important; }
-
-  /* Install difficulty: margin-top auto fills all remaining space
-     above it, pinning it to the bottom of .content above the footer */
-  #install-difficulty-row {
-    flex-shrink: 0 !important;
-    margin-top: auto !important;
-    padding: 4px 0 0 0 !important;
-    background: transparent !important;
-    border: none !important;
-  }
 
   .section-header {
     background: #f5f5f5 !important;
@@ -1883,22 +1619,19 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     animation: none !important;
   }
 
-  .section-header svg, .section-header svg * {
-    stroke: #D97706 !important;
-    color: #D97706 !important;
-  }
+  .section-header svg, .section-header svg * { stroke: #D97706 !important; color: #D97706 !important; }
 
   .section-body {
     background: #ffffff !important;
     padding: 7px 12px !important;
   }
 
-  /* ── GRIDS ── */
+  /* Grids */
   .grid-2 { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 8px !important; margin-bottom: 5px !important; }
   .grid-3 { display: grid !important; grid-template-columns: 1fr 1fr 1fr !important; gap: 8px !important; margin-bottom: 5px !important; }
   .grid-4 { display: grid !important; grid-template-columns: repeat(4, 1fr) !important; gap: 8px !important; margin-bottom: 5px !important; }
 
-  /* ── FIELDS ── */
+  /* Fields */
   .field-row { margin-bottom: 6px !important; flex-wrap: nowrap !important; }
   .inline-row { margin-bottom: 6px !important; flex-wrap: wrap !important; }
 
@@ -1931,6 +1664,7 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     min-height: auto !important;
     height: auto !important;
     font-size: 0.88rem !important;
+    box-shadow: none !important;
   }
 
   input::placeholder, textarea::placeholder { color: transparent !important; }
@@ -1946,11 +1680,12 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     overflow: hidden !important;
   }
 
-  /* ── Y/N TOGGLES ── */
+  /* Y/N toggles */
   .yn-group {
     display: inline-flex !important;
     border: 1px solid #D97706 !important;
     background: #ffffff !important;
+    box-shadow: none !important;
   }
 
   .yn-group .yn-label {
@@ -1965,7 +1700,7 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
   .yn-group .yn-y:checked + .yn-label-y { background: #f0f0f0 !important; color: #059669 !important; text-shadow: none !important; box-shadow: none !important; }
   .yn-group .yn-n:checked + .yn-label-n { background: #f0f0f0 !important; color: #DC2626 !important; text-shadow: none !important; box-shadow: none !important; }
 
-  /* ── CHECKBOXES ── */
+  /* Checkboxes */
   .check-group { display: flex !important; flex-wrap: wrap !important; gap: 4px !important; }
 
   .check-item {
@@ -1973,36 +1708,32 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     padding: 2px 6px 2px 4px !important;
     background: #ffffff !important;
     border: 1px solid #D97706 !important;
+    box-shadow: none !important;
   }
 
   .check-item span { color: #1F2937 !important; text-shadow: none !important; font-size: 0.6rem !important; }
   .check-item:has(input:checked) { background: #f0f0f0 !important; border-color: #D97706 !important; box-shadow: none !important; }
   .check-item:has(input:checked) span { color: #D97706 !important; }
 
-  /* ── DIVIDER ── */
+  /* Divider */
   .divider { border-top: 1px solid #D97706 !important; background: #ffffff !important; margin: 6px 0 !important; }
   .divider::before { background: #ffffff !important; color: #D97706 !important; }
 
-  /* ── GAS APPLIANCES ── */
+  /* Gas appliances */
   .gas-appliances-box { background: #ffffff !important; border-color: #D97706 !important; padding: 5px 8px !important; margin-bottom: 5px !important; }
   .gas-appliances-box::before { background: none !important; }
   .gas-appliances-label { color: #6B7280 !important; font-size: 0.54rem !important; margin-bottom: 4px !important; }
 
-  /* Override inline margin-bottom:14px on fuel tank rows */
-  .section-body .inline-row[style*="margin-bottom:14px"],
-  .section-body .inline-row[style*="margin-bottom: 14px"] {
-    margin-bottom: 5px !important;
-  }
-  .section-body .grid-4[style*="margin-bottom:14px"],
-  .section-body .grid-4[style*="margin-bottom: 14px"] {
-    margin-bottom: 5px !important;
-  }
-  .field-block [style*="margin-top:10px"],
-  .field-block [style*="margin-top: 10px"] {
-    margin-top: 4px !important;
+  /* Install difficulty / notes — NO margin-top:auto here.
+     Let it flow naturally after the fuel tank section. */
+  #install-difficulty-row {
+    flex-shrink: 0 !important;
+    margin-top: 6px !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
   }
 
-  /* ── INSTALL DIFFICULTY / NOTES ── */
   #address-suggestions, #gps-status { display: none !important; }
 
   #install_days { padding: 3px 4px !important; min-height: auto !important; height: auto !important; }
@@ -2017,12 +1748,12 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     box-sizing: border-box !important;
   }
 
-  /* ── FOOTER ── */
+  /* Footer — natural flow, not pushed by flex */
   .footer {
     background: #ffffff !important;
     border-top: 1px solid #D97706 !important;
-    padding: 7px 22px !important;
-    margin-top: 0 !important;
+    padding: 6px 22px !important;
+    margin-top: 8px !important;
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
@@ -2034,7 +1765,7 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
 
   .footer-text { color: #D97706 !important; text-shadow: none !important; }
 
-  /* ── DARK MODE → WHITE FOR PRINT ── */
+  /* Dark mode → white for print */
   body.dark-mode .page,
   body.dark-mode .header,
   body.dark-mode .section,
@@ -2062,7 +1793,7 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     border-color: #D97706 !important;
   }
 
-  /* ── SEASONAL BACKGROUNDS → WHITE ── */
+  /* Seasonal → white for print */
   body[class*="seasonal-"] {
     background: #ffffff !important;
     color: #1F2937 !important;
@@ -2075,13 +1806,11 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
   body[class*="seasonal-"] .col-label svg,
   body[class*="seasonal-"] .col-label svg * { stroke: #D97706 !important; color: #D97706 !important; }
 }
-
 </style>
 </head>
 
 <body>
 
-<!-- Offline indicator banner -->
 <div id="offline-banner">⚠️ YOU ARE OFFLINE — Your data will be auto-saved locally</div>
 
 <div class="page" id="page">
@@ -2093,7 +1822,6 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     </div>
     <div class="doc-title">Installation Estimate</div>
     
-    <!-- THEME TOGGLE BUTTON -->
     <button id="theme-toggle-btn" class="theme-toggle-btn" title="Toggle dark mode" aria-label="Toggle dark mode">
       <svg class="theme-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="5"/>
@@ -2112,46 +1840,25 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     </button>
   </div>
 
-  <!-- TOOLBAR -->
   <div class="toolbar" id="toolbar">
     <button class="btn" onclick="window.location.href='https://brandonaog.github.io/AOG-hub/'">🏠 HOME</button>
     <button class="btn" onclick="printPDF()" title="Export as PDF">📄 PDF</button>
     <button class="btn" onclick="openImageModal()" title="Save as JPEG image">🖼 IMAGE</button>
     <button class="btn btn-gold" id="email-btn" onclick="sendEmail()" title="Send estimate via email">✉ EMAIL</button>
-
     <button class="btn" onclick="clearForm()" title="Clear all fields and start over">🗑 CLEAR</button>
   </div>
 
   <div class="content">
 
-    <!-- Customer + Property -->
     <div class="top-grid">
       <div class="top-col">
         <div class="col-label">
           <svg width="22" height="22" viewBox="0 0 122 122" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
             <path
-              d="
-                M61 10
-                C76 10 88 22 88 38
-                C88 54 76 66 61 66
-                C46 66 34 54 34 38
-                C34 22 46 10 61 10
-                M26 114
-                C26 90 44 74 61 74
-                C78 74 96 90 96 114
-                M26 114 H96
-                M20 52
-                L10 42
-                L20 32
-                M102 52
-                L112 42
-                L102 32
-              "
-              fill="none"
-              stroke="currentColor"
-              stroke-width="6"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              d="M61 10 C76 10 88 22 88 38 C88 54 76 66 61 66 C46 66 34 54 34 38 C34 22 46 10 61 10
+                 M26 114 C26 90 44 74 61 74 C78 74 96 90 96 114 M26 114 H96
+                 M20 52 L10 42 L20 32 M102 52 L112 42 L102 32"
+              fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"
             />
           </svg>
           Customer Info
@@ -2161,7 +1868,6 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
           <label for="name">Name</label>
           <input type="text" id="name" name="name" required class="long" placeholder="Full name" autocomplete="name" aria-label="Customer name">
         </div>
-
         <div class="field-row">
           <label for="address">Address</label>
           <div class="addr-wrap">
@@ -2176,29 +1882,23 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
             <ul id="address-suggestions" aria-label="Address suggestions"></ul>
           </div>
         </div>
-
         <div id="gps-status"></div>
-
         <div class="field-row">
           <label> </label>
           <input type="text" id="address2" name="address2" required class="long" placeholder="City, State ZIP" autocomplete="off" aria-label="City, state, and zip code">
         </div>
-
         <div class="field-row">
           <label for="hoa">Community/HOA</label>
           <input type="text" id="hoa" name="hoa" class="long" autocomplete="off" aria-label="Community or HOA name">
         </div>
-
         <div class="field-row">
           <label for="phone">Phone #</label>
           <input type="tel" id="phone" name="phone" required class="long" autocomplete="tel" aria-label="Phone number" pattern="[0-9\-\(\)\s]*">
         </div>
-
         <div class="field-row">
           <label for="email">Best Email</label>
           <input type="email" id="email" name="email" required class="long" autocomplete="email" aria-label="Email address">
         </div>
-
         <div class="field-row">
           <label for="today">Today's Date</label>
           <input type="date" id="today" name="today" required class="med" autocomplete="off" aria-label="Today's date">
@@ -2209,16 +1909,8 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
         <div class="col-label">
           <svg width="22" height="22" viewBox="0 0 122 114" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
             <path
-              d="M61 4 L8 48 M61 4 L114 48
-                 M15 56 V112 H107 V56
-                 M30 76 H56 V98 H30 V76
-                 M68 74 H92 V112 H68 V74
-                 M60 36 A6 6 0 1 1 60 48 A6 6 0 1 1 60 36"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="6"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              d="M61 4 L8 48 M61 4 L114 48 M15 56 V112 H107 V56 M30 76 H56 V98 H30 V76 M68 74 H92 V112 H68 V74 M60 36 A6 6 0 1 1 60 48 A6 6 0 1 1 60 36"
+              fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"
             />
           </svg>
           Property Info
@@ -2266,7 +1958,6 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
       </div>
     </div>
 
-    <!-- Flood / Parcel / Done -->
     <div class="flood-bar">
       <div class="flood-item">
         <label for="flood_zone">Flood Zone / Footage</label>
@@ -2323,7 +2014,6 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
         </svg>
         Generator
       </div>
-
       <div class="section-body">
         <div class="inline-row">
           <label for="gen_size">Size</label>
@@ -2336,35 +2026,33 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
           </div>
           <span class="inline-label" style="margin-left:6px;">Seal Window</span>
           <div class="yn-group">
-            <input type="radio" name="seal_window" id="sw_y" value="Y" class="yn-y" aria-label="Seal window yes">
+            <input type="radio" name="seal_window" id="sw_y" value="Y" class="yn-y">
             <label class="yn-label yn-label-y" for="sw_y">Y</label>
-            <input type="radio" name="seal_window" id="sw_n" value="N" class="yn-n" aria-label="Seal window no">
+            <input type="radio" name="seal_window" id="sw_n" value="N" class="yn-n">
             <label class="yn-label yn-label-n" for="sw_n">N</label>
           </div>
         </div>
-
         <div class="inline-row">
           <span class="inline-label">Elec. Run Footage</span>
           <input type="number" id="elec_run_ft" name="elec_run_ft" class="short" placeholder="ft" inputmode="numeric" autocomplete="off" aria-label="Electrical run footage">
           <div class="check-group">
-            <label class="check-item"><input type="checkbox" name="run" value="undergrnd" aria-label="Underground electrical"><span>Under Grnd</span></label>
-            <label class="check-item"><input type="checkbox" name="run" value="abovegrnd" aria-label="Above ground electrical"><span>Above Grnd</span></label>
-            <label class="check-item"><input type="checkbox" name="run" value="attic" aria-label="Attic electrical"><span>Attic</span></label>
+            <label class="check-item"><input type="checkbox" name="run" value="undergrnd"><span>Under Grnd</span></label>
+            <label class="check-item"><input type="checkbox" name="run" value="abovegrnd"><span>Above Grnd</span></label>
+            <label class="check-item"><input type="checkbox" name="run" value="attic"><span>Attic</span></label>
           </div>
           <span class="inline-label" style="margin-left:6px;">Wiring</span>
           <div class="check-group">
-            <label class="check-item"><input type="checkbox" name="wiring" value="aluminum" aria-label="Aluminum wiring"><span>Aluminum</span></label>
-            <label class="check-item"><input type="checkbox" name="wiring" value="copper" aria-label="Copper wiring"><span>Copper</span></label>
+            <label class="check-item"><input type="checkbox" name="wiring" value="aluminum"><span>Aluminum</span></label>
+            <label class="check-item"><input type="checkbox" name="wiring" value="copper"><span>Copper</span></label>
           </div>
           <span class="inline-label">Bore</span>
           <div class="yn-group">
-            <input type="radio" name="bore_gen" id="bore_gen_y" value="Y" class="yn-y" aria-label="Bore generator yes">
+            <input type="radio" name="bore_gen" id="bore_gen_y" value="Y" class="yn-y">
             <label class="yn-label yn-label-y" for="bore_gen_y">Y</label>
-            <input type="radio" name="bore_gen" id="bore_gen_n" value="N" class="yn-n" aria-label="Bore generator no">
+            <input type="radio" name="bore_gen" id="bore_gen_n" value="N" class="yn-n">
             <label class="yn-label yn-label-n" for="bore_gen_n">N</label>
           </div>
         </div>
-
         <div class="field-block">
           <textarea id="gen_notes" name="gen_notes" placeholder="Additional notes on generator placement / run..." aria-label="Generator notes"></textarea>
         </div>
@@ -2386,73 +2074,67 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
         </svg>
         Transfer Switch
       </div>
-
       <div class="section-body">
-
         <div class="inline-row">
           <span class="inline-label"># Elect. Panels</span>
-          <input type="number" id="num_panels" name="num_panels" class="tiny" placeholder="1" inputmode="numeric" autocomplete="off" aria-label="Number of electrical panels">
+          <input type="number" id="num_panels" name="num_panels" class="tiny" placeholder="1" inputmode="numeric" autocomplete="off">
           <span class="inline-label" style="margin-left:4px;"># Transfer Switches</span>
-          <input type="number" id="num_ts" name="num_ts" class="tiny" placeholder="1" inputmode="numeric" autocomplete="off" aria-label="Number of transfer switches">
+          <input type="number" id="num_ts" name="num_ts" class="tiny" placeholder="1" inputmode="numeric" autocomplete="off">
           <span class="inline-label">TRANSFER SWITCH TYPE</span>
-          <input type="text" id="ts_type_desc" name="ts_type_desc" class="med" placeholder="e.g. 200A 20 Space" autocomplete="off" style="width: 20ch;" aria-label="Transfer switch type description">
+          <input type="text" id="ts_type_desc" name="ts_type_desc" class="med" placeholder="e.g. 200A 20 Space" autocomplete="off" style="width: 20ch;">
           <span class="inline-label" style="margin-left:4px;">FPL/LCEC Shutdown</span>
           <div class="yn-group">
-            <input type="radio" name="fpl" id="fpl_y" value="Y" class="yn-y" aria-label="FPL shutdown yes">
+            <input type="radio" name="fpl" id="fpl_y" value="Y" class="yn-y">
             <label class="yn-label yn-label-y" for="fpl_y">Y</label>
-            <input type="radio" name="fpl" id="fpl_n" value="N" class="yn-n" aria-label="FPL shutdown no">
+            <input type="radio" name="fpl" id="fpl_n" value="N" class="yn-n">
             <label class="yn-label yn-label-n" for="fpl_n">N</label>
           </div>
         </div>
-
         <div class="inline-row">
           <span class="inline-label">Transfer Switch Placement</span>
-          <input type="text" id="ts_placement" name="ts_placement" class="med" placeholder="e.g. Meter Main" autocomplete="off" aria-label="Transfer switch placement location">
+          <input type="text" id="ts_placement" name="ts_placement" class="med" placeholder="e.g. Meter Main" autocomplete="off">
           <span class="inline-label" style="margin-left:8px;">Update Grounding</span>
           <div class="yn-group">
-            <input type="radio" name="grounding" id="grnd_y" value="Y" class="yn-y" aria-label="Update grounding yes">
+            <input type="radio" name="grounding" id="grnd_y" value="Y" class="yn-y">
             <label class="yn-label yn-label-y" for="grnd_y">Y</label>
-            <input type="radio" name="grounding" id="grnd_n" value="N" class="yn-n" aria-label="Update grounding no">
+            <input type="radio" name="grounding" id="grnd_n" value="N" class="yn-n">
             <label class="yn-label yn-label-n" for="grnd_n">N</label>
           </div>
         </div>
-
         <div class="inline-row">
           <span class="inline-label">Type</span>
           <div class="check-group">
-            <label class="check-item"><input type="radio" name="ts_type" value="ASE" aria-label="ASE transfer switch type"><span>ASE</span></label>
-            <label class="check-item"><input type="radio" name="ts_type" value="NonASE" aria-label="Non-ASE transfer switch type"><span>Non-ASE</span></label>
+            <label class="check-item"><input type="radio" name="ts_type" value="ASE"><span>ASE</span></label>
+            <label class="check-item"><input type="radio" name="ts_type" value="NonASE"><span>Non-ASE</span></label>
           </div>
           <span class="inline-label" style="margin-left:8px;">Load Shed Needed</span>
           <div class="yn-group">
-            <input type="radio" name="loadshed" id="ls_y" value="Y" class="yn-y" aria-label="Load shedding yes">
+            <input type="radio" name="loadshed" id="ls_y" value="Y" class="yn-y">
             <label class="yn-label yn-label-y" for="ls_y">Y</label>
-            <input type="radio" name="loadshed" id="ls_n" value="N" class="yn-n" aria-label="Load shedding no">
+            <input type="radio" name="loadshed" id="ls_n" value="N" class="yn-n">
             <label class="yn-label yn-label-n" for="ls_n">N</label>
           </div>
           <span class="inline-label">60A circuits</span>
-          <input type="number" id="circuits_60a" name="circuits_60a" class="tiny" placeholder="0" inputmode="numeric" autocomplete="off" aria-label="60 amp circuits">
+          <input type="number" id="circuits_60a" name="circuits_60a" class="tiny" placeholder="0" inputmode="numeric" autocomplete="off">
           <span class="inline-label" style="margin-left:4px;">100A circuits</span>
-          <input type="number" id="circuits_100a" name="circuits_100a" class="tiny" placeholder="0" inputmode="numeric" autocomplete="off" aria-label="100 amp circuits">
+          <input type="number" id="circuits_100a" name="circuits_100a" class="tiny" placeholder="0" inputmode="numeric" autocomplete="off">
         </div>
-
         <div class="inline-row">
           <span class="inline-label">Coverage</span>
           <div class="check-group">
-            <label class="check-item"><input type="checkbox" name="coverage" value="whole" aria-label="Whole house coverage"><span>Whole House</span></label>
-            <label class="check-item"><input type="checkbox" name="coverage" value="partial" aria-label="Partial backup coverage"><span>Partial Backup</span></label>
-            <label class="check-item"><input type="checkbox" name="coverage" value="pool" aria-label="Pool coverage"><span>Pool</span></label>
-            <label class="check-item"><input type="checkbox" name="coverage" value="no_pool" aria-label="No pool coverage"><span>No Pool</span></label>
+            <label class="check-item"><input type="checkbox" name="coverage" value="whole"><span>Whole House</span></label>
+            <label class="check-item"><input type="checkbox" name="coverage" value="partial"><span>Partial Backup</span></label>
+            <label class="check-item"><input type="checkbox" name="coverage" value="pool"><span>Pool</span></label>
+            <label class="check-item"><input type="checkbox" name="coverage" value="no_pool"><span>No Pool</span></label>
           </div>
           <span class="inline-label" style="margin-left:8px;">Circuit Swap After Insp?</span>
           <div class="yn-group">
-            <input type="radio" name="circuit_swap" id="cs_y" value="Y" class="yn-y" aria-label="Circuit swap after inspection yes">
+            <input type="radio" name="circuit_swap" id="cs_y" value="Y" class="yn-y">
             <label class="yn-label yn-label-y" for="cs_y">Y</label>
-            <input type="radio" name="circuit_swap" id="cs_n" value="N" class="yn-n" aria-label="Circuit swap after inspection no">
+            <input type="radio" name="circuit_swap" id="cs_n" value="N" class="yn-n">
             <label class="yn-label yn-label-n" for="cs_n">N</label>
           </div>
         </div>
-
       </div>
     </div>
 
@@ -2468,8 +2150,6 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
           <circle cx="70" cy="55" r="2" fill="currentColor" opacity="0.4"/>
           <circle cx="25" cy="60" r="1.5" fill="currentColor" opacity="0.5"/>
           <line x1="15" y1="70" x2="85" y2="72" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
-          <line x1="12" y1="20" x2="12" y2="75" stroke="currentColor" stroke-width="1" opacity="0.4" stroke-dasharray="2,2"/>
-          <line x1="88" y1="20" x2="88" y2="75" stroke="currentColor" stroke-width="1" opacity="0.4" stroke-dasharray="2,2"/>
           <circle cx="25" cy="32" r="1.5" fill="currentColor"/>
           <circle cx="75" cy="32" r="1.5" fill="currentColor"/>
           <circle cx="25" cy="60" r="1.5" fill="currentColor"/>
@@ -2477,19 +2157,18 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
         </svg>
         Precast Pad
       </div>
-
       <div class="section-body">
         <div class="inline-row">
           <div class="check-group">
-            <label class="check-item"><input type="checkbox" name="pad" value="precast" aria-label="Precast pad"><span>Precast</span></label>
-            <label class="check-item"><input type="checkbox" name="pad" value="poured" aria-label="Poured pad"><span>Poured</span></label>
-            <label class="check-item"><input type="checkbox" name="pad" value="elevated" aria-label="Elevated pad"><span>Elevated</span></label>
+            <label class="check-item"><input type="checkbox" name="pad" value="precast"><span>Precast</span></label>
+            <label class="check-item"><input type="checkbox" name="pad" value="poured"><span>Poured</span></label>
+            <label class="check-item"><input type="checkbox" name="pad" value="elevated"><span>Elevated</span></label>
             <span class="inline-label" style="margin-left:4px;">Height</span>
-            <input type="text" id="stand_height" name="stand_height" placeholder="1 ft" autocomplete="off" style="width:50px;min-width:50px;" aria-label="Stand height">
-            <label class="check-item" style="margin-left:8px;"><input type="checkbox" name="pad" value="legs" aria-label="Legs in concrete"><span>Legs in Concrete</span></label>
-            <label class="check-item"><input type="checkbox" name="pad" value="bolted" aria-label="Bolted to pad"><span>Bolted to Pad</span></label>
-            <label class="check-item"><input type="checkbox" name="pad" value="cantilever" aria-label="Cantilever pad"><span>Cantilever</span></label>
-            <label class="check-item"><input type="checkbox" name="pad" value="existing" aria-label="Existing pad"><span>Existing</span></label>
+            <input type="text" id="stand_height" name="stand_height" placeholder="1 ft" autocomplete="off" style="width:50px;min-width:50px;">
+            <label class="check-item" style="margin-left:8px;"><input type="checkbox" name="pad" value="legs"><span>Legs in Concrete</span></label>
+            <label class="check-item"><input type="checkbox" name="pad" value="bolted"><span>Bolted to Pad</span></label>
+            <label class="check-item"><input type="checkbox" name="pad" value="cantilever"><span>Cantilever</span></label>
+            <label class="check-item"><input type="checkbox" name="pad" value="existing"><span>Existing</span></label>
           </div>
         </div>
         <div class="field-block" style="margin-top:10px;">
@@ -2503,93 +2182,83 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
       <div class="section-header">
         <svg width="30" height="20" viewBox="0 0 100 60" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
           <ellipse cx="50" cy="28" rx="38" ry="14" stroke="currentColor" stroke-width="2" fill="none"/>
-          <path d="M 12 28 Q 12 14 12 28 Q 12 42 12 28" stroke="currentColor" stroke-width="2" fill="none"/>
           <ellipse cx="12" cy="28" rx="8" ry="14" stroke="currentColor" stroke-width="2" fill="none"/>
-          <path d="M 88 28 Q 88 14 88 28 Q 88 42 88 28" stroke="currentColor" stroke-width="2" fill="none"/>
           <ellipse cx="88" cy="28" rx="8" ry="14" stroke="currentColor" stroke-width="2" fill="none"/>
           <ellipse cx="50" cy="14" rx="8" ry="6" stroke="currentColor" stroke-width="1.5" fill="none"/>
           <circle cx="50" cy="12" r="2.5" stroke="currentColor" stroke-width="1.2" fill="none"/>
           <path d="M 12 28 Q 12 38 50 40 Q 88 38 88 28 L 88 28 Q 88 20 50 22 Q 12 20 12 28" fill="currentColor" opacity="0.2"/>
           <line x1="14" y1="28" x2="86" y2="28" stroke="currentColor" stroke-width="0.8" opacity="0.4" stroke-dasharray="2,1"/>
           <line x1="30" y1="42" x2="28" y2="50" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
-          <circle cx="28" cy="50" r="1.5" fill="currentColor" opacity="0.5"/>
           <line x1="70" y1="42" x2="72" y2="50" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
-          <circle cx="72" cy="50" r="1.5" fill="currentColor" opacity="0.5"/>
-          <circle cx="50" cy="42" r="1.5" fill="none" stroke="currentColor" stroke-width="1" opacity="0.6"/>
-          <line x1="50" y1="43" x2="50" y2="48" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
-          <rect x="90" y="18" width="1.2" height="20" rx="0.6" fill="none" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
-          <line x1="88" y1="28" x2="92" y2="28" stroke="currentColor" stroke-width="0.6" opacity="0.4"/>
         </svg>
         Fuel Tank
       </div>
-
       <div class="section-body">
-
         <div class="inline-row" style="margin-bottom:14px;">
           <div class="check-group">
-            <label class="check-item"><input type="checkbox" name="fuel_type" value="natural_gas" aria-label="Natural gas fuel"><span>Natural Gas</span></label>
-            <label class="check-item"><input type="checkbox" name="fuel_type" value="needs_tank" aria-label="Needs propane tank"><span>Needs Tank</span></label>
+            <label class="check-item"><input type="checkbox" name="fuel_type" value="natural_gas"><span>Natural Gas</span></label>
+            <label class="check-item"><input type="checkbox" name="fuel_type" value="needs_tank"><span>Needs Tank</span></label>
           </div>
           <span class="inline-label" style="margin-left:12px;">New Tank Size</span>
-          <input type="text" id="new_tank_size" name="new_tank_size" autocomplete="off" style="width:100px;min-width:100px;" aria-label="New tank size">
+          <input type="text" id="new_tank_size" name="new_tank_size" autocomplete="off" style="width:100px;min-width:100px;">
           <span class="inline-label" style="margin-left:8px;">Existing Tank Size</span>
-          <input type="text" id="existing_tank_size" name="existing_tank_size" autocomplete="off" style="width:100px;min-width:100px;" aria-label="Existing tank size">
+          <input type="text" id="existing_tank_size" name="existing_tank_size" autocomplete="off" style="width:100px;min-width:100px;">
         </div>
 
-               <div class="gas-appliances-box">
+        <div class="gas-appliances-box">
           <div class="gas-appliances-label">Existing Gas Appliances</div>
-          <div class="check-group" style="margin-center:6px;">
-            <label class="check-item"><input type="checkbox" name="gas_appliances" value="range" aria-label="Gas range"><span>Range</span></label>
-            <label class="check-item"><input type="checkbox" name="gas_appliances" value="cooktop" aria-label="Gas cooktop"><span>Cooktop</span></label>
-            <label class="check-item"><input type="checkbox" name="gas_appliances" value="oven" aria-label="Gas oven"><span>Oven</span></label>
-            <label class="check-item"><input type="checkbox" name="gas_appliances" value="water_heater" aria-label="Gas water heater"><span>Water Heater</span></label>
-            <label class="check-item"><input type="checkbox" name="gas_appliances" value="dryer" aria-label="Gas dryer"><span>Dryer</span></label>
-            <label class="check-item"><input type="checkbox" name="gas_appliances" value="fireplace" aria-label="Gas fireplace"><span>Fireplace</span></label>
-            <label class="check-item"><input type="checkbox" name="gas_appliances" value="grill" aria-label="Outdoor gas grill"><span> Grill</span></label>
-            <label class="check-item"><input type="checkbox" name="gas_appliances" value="pool_heater" aria-label="Gas pool heater"><span>Pool Heater</span></label>
+          <div class="check-group">
+            <label class="check-item"><input type="checkbox" name="gas_appliances" value="range"><span>Range</span></label>
+            <label class="check-item"><input type="checkbox" name="gas_appliances" value="cooktop"><span>Cooktop</span></label>
+            <label class="check-item"><input type="checkbox" name="gas_appliances" value="oven"><span>Oven</span></label>
+            <label class="check-item"><input type="checkbox" name="gas_appliances" value="water_heater"><span>Water Heater</span></label>
+            <label class="check-item"><input type="checkbox" name="gas_appliances" value="dryer"><span>Dryer</span></label>
+            <label class="check-item"><input type="checkbox" name="gas_appliances" value="fireplace"><span>Fireplace</span></label>
+            <label class="check-item"><input type="checkbox" name="gas_appliances" value="grill"><span>Grill</span></label>
+            <label class="check-item"><input type="checkbox" name="gas_appliances" value="pool_heater"><span>Pool Heater</span></label>
           </div>
           <div class="field-block" style="margin-top:10px;">
             <textarea id="gas_notes" name="gas_notes" placeholder="List other gas appliances or notes..." aria-label="Gas notes"></textarea>
           </div>
-        </div>  <!-- closes gas-appliances-box -->
-
+        </div>
 
         <div class="grid-4" style="margin-bottom:14px;">
           <div class="field-block">
             <label for="fuel_underground" style="margin-bottom:-20px; font-size:0.75rem;">Underground (ft)</label>
-            <input type="number" id="fuel_underground" name="fuel_underground" inputmode="numeric" autocomplete="off" aria-label="Underground fuel line footage">
+            <input type="number" id="fuel_underground" name="fuel_underground" inputmode="numeric" autocomplete="off">
           </div>
           <div class="field-block">
             <label for="fuel_aboveground" style="margin-bottom:-20px; font-size:0.75rem;">Above Ground (ft)</label>
-            <input type="number" id="fuel_aboveground" name="fuel_aboveground" inputmode="numeric" autocomplete="off" aria-label="Above ground fuel line footage">
+            <input type="number" id="fuel_aboveground" name="fuel_aboveground" inputmode="numeric" autocomplete="off">
           </div>
           <div class="field-block">
             <label for="fuel_attic" style="margin-bottom:-20px; font-size:0.75rem;">Attic (ft)</label>
-            <input type="number" id="fuel_attic" name="fuel_attic" inputmode="numeric" autocomplete="off" aria-label="Attic fuel line footage">
+            <input type="number" id="fuel_attic" name="fuel_attic" inputmode="numeric" autocomplete="off">
           </div>
           <div class="field-block" style="display:flex;flex-direction:column;gap:14px;">
             <label style="font-size:0.65rem; margin-bottom:-8px; margin-left:18px;">Bore</label>
             <div class="yn-group">
-              <input type="radio" name="bore_fuel" id="bf_y" value="Y" class="yn-y" aria-label="Bore fuel line yes">
+              <input type="radio" name="bore_fuel" id="bf_y" value="Y" class="yn-y">
               <label class="yn-label yn-label-y" for="bf_y" style="font-size:0.65rem;">Y</label>
-              <input type="radio" name="bore_fuel" id="bf_n" value="N" class="yn-n" aria-label="Bore fuel line no">
+              <input type="radio" name="bore_fuel" id="bf_n" value="N" class="yn-n">
               <label class="yn-label yn-label-n" for="bf_n" style="font-size:0.65rem;">N</label>
             </div>
           </div>
         </div>
       </div>
     </div>
-           <!-- Install Difficulty & Days & Build -->
-   <div id="install-difficulty-row" style="margin: 0; padding: 0; background: transparent; border: none;">
+
+    <!-- Install Difficulty & Days & Build -->
+    <div id="install-difficulty-row" style="margin: 0; padding: 0; background: transparent; border: none;">
       <div class="inline-row" style="margin: 0 0 8px 0; gap: 8px;">
         <span class="inline-label">Install Difficulty</span>
         <div class="check-group">
-          <label class="check-item"><input type="radio" name="difficulty" value="Easy" aria-label="Easy"><span>Easy</span></label>
-          <label class="check-item"><input type="radio" name="difficulty" value="Med" aria-label="Medium"><span>Med</span></label>
-          <label class="check-item"><input type="radio" name="difficulty" value="Hard" aria-label="Hard"><span>Hard</span></label>
+          <label class="check-item"><input type="radio" name="difficulty" value="Easy"><span>Easy</span></label>
+          <label class="check-item"><input type="radio" name="difficulty" value="Med"><span>Med</span></label>
+          <label class="check-item"><input type="radio" name="difficulty" value="Hard"><span>Hard</span></label>
         </div>
         <span class="inline-label" style="margin-left: 8px;">Days?</span>
-        <input type="text" id="install_days" name="install_days" placeholder="2-3" autocomplete="off" class="form-input" style="width: 12ch;" aria-label="Days">
+        <input type="text" id="install_days" name="install_days" placeholder="2-3" autocomplete="off" style="width: 12ch;">
         <span class="inline-label" style="margin-left: 8px;">New Build?</span>
         <div class="yn-group">
           <input type="radio" name="new_build" id="nb_y" value="Y" class="yn-y">
@@ -2598,143 +2267,107 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
           <label class="yn-label yn-label-n" for="nb_n">N</label>
         </div>
       </div>
-      <textarea id="ready_notes" name="ready_notes" placeholder="Ready/Notes..." rows="2" autocomplete="off" class="form-input" style="margin: 0; display: block;" aria-label="Ready notes"></textarea>
+      <textarea id="ready_notes" name="ready_notes" placeholder="Ready/Notes..." rows="2" autocomplete="off" style="margin: 0; display: block;" aria-label="Ready notes"></textarea>
     </div>
 
-  </div>  <!-- ✓ closes .content -->
+  </div><!-- /.content -->
 
-  <div class="footer">  <!-- ✓ NOW INSIDE .page -->
+  <div class="footer">
     <span class="footer-text">GENERATOR INSTALLATION ESTIMATE · CONFIDENTIAL</span>
-    <span style="font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--text-dim);">Ver. 1.0B</span>
+    <span style="font-family:'Share Tech Mono',monospace;font-size:0.72rem;color:var(--text-dim);">Ver. 1.0B</span>
   </div>
 
-</div>  <!-- ✓ closes .page -->
+  <div class="page-corner-bl"></div>
+  <div class="page-corner-br"></div>
+
+</div><!-- /.page -->
 
 
-
-<!-- ▼▼▼ PDF SAVE MODAL ▼▼▼ -->
+<!-- PDF MODAL -->
 <div id="pdfModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(4px);">
-  <div style="background:linear-gradient(135deg,#0a0a0a 0%,#1a1a1a 100%); border:2px solid #FFB300; border-radius:12px; padding:30px; max-width:420px; width:90%; box-shadow:0 0 40px rgba(255,179,0,0.4), inset 0 0 20px rgba(0,229,255,0.05); font-family:'Exo 2',sans-serif;">
-
-    <h2 style="color:#FFB300; font-family:'Orbitron',sans-serif; margin:0 0 8px 0; font-size:18px; letter-spacing:2px; text-shadow:0 0 10px rgba(255,179,0,0.5);">📄 SAVE AS PDF</h2>
-
+  <div style="background:linear-gradient(135deg,#0a0a0a 0%,#1a1a1a 100%); border:2px solid #FFB300; border-radius:12px; padding:30px; max-width:420px; width:90%; box-shadow:0 0 40px rgba(255,179,0,0.4); font-family:'Exo 2',sans-serif;">
+    <h2 style="color:#FFB300; font-family:'Orbitron',sans-serif; margin:0 0 8px 0; font-size:18px; letter-spacing:2px;">📄 SAVE AS PDF</h2>
     <div style="height:1px; background:linear-gradient(90deg,#FFB300,transparent); margin-bottom:18px;"></div>
-
     <div id="pdfInstructions" style="color:#00E5FF; font-family:'Share Tech Mono',monospace; font-size:13px; line-height:1.8;"></div>
-
     <div style="margin-top:24px; display:flex; justify-content:flex-end; gap:10px;">
-      <button onclick="closePdfModal()" style="background:transparent !important; border:1px solid #666 !important; color:#999 !important; padding:9px 18px !important; border-radius:6px !important; cursor:pointer !important; font-family:'Share Tech Mono',monospace !important; font-size:12px !important; letter-spacing:1px !important; clip-path: none !important; margin: 0 !important;">CANCEL</button>
-      <button onclick="confirmPdfPrint()" style="background:linear-gradient(135deg,#FFB300,#FF8C00) !important; border:none !important; color:#000 !important; padding:9px 22px !important; border-radius:6px !important; cursor:pointer !important; font-weight:bold !important; font-family:'Share Tech Mono',monospace !important; font-size:12px !important; letter-spacing:1px !important; box-shadow:0 0 15px rgba(255,179,0,0.4) !important; clip-path: none !important; margin: 0 !important;">CONTINUE ▶</button>
+      <button onclick="closePdfModal()" style="background:transparent !important; border:1px solid #666 !important; color:#999 !important; padding:9px 18px !important; border-radius:6px !important; cursor:pointer !important; font-family:'Share Tech Mono',monospace !important; font-size:12px !important; letter-spacing:1px !important; clip-path:none !important; margin:0 !important;">CANCEL</button>
+      <button onclick="confirmPdfPrint()" style="background:linear-gradient(135deg,#FFB300,#FF8C00) !important; border:none !important; color:#000 !important; padding:9px 22px !important; border-radius:6px !important; cursor:pointer !important; font-weight:bold !important; font-family:'Share Tech Mono',monospace !important; font-size:12px !important; letter-spacing:1px !important; clip-path:none !important; margin:0 !important;">CONTINUE ▶</button>
     </div>
   </div>
 </div>
-<!-- ▲▲▲ END PDF MODAL ▲▲▲ -->
 
-<!-- ▼▼▼ IMAGE SAVE MODAL ▼▼▼ -->
+<!-- IMAGE MODAL -->
 <div id="imageModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(4px);">
-  <div style="background:linear-gradient(135deg,#0a0a0a 0%,#1a1a1a 100%); border:2px solid #059669; border-radius:12px; padding:30px; max-width:420px; width:90%; box-shadow:0 0 40px rgba(5,150,105,0.4), inset 0 0 20px rgba(0,229,255,0.05); font-family:'Exo 2',sans-serif;">
-
-    <h2 style="color:#059669; font-family:'Orbitron',sans-serif; margin:0 0 8px 0; font-size:18px; letter-spacing:2px; text-shadow:0 0 10px rgba(5,150,105,0.5);">🖼 SAVE AS IMAGE</h2>
-
+  <div style="background:linear-gradient(135deg,#0a0a0a 0%,#1a1a1a 100%); border:2px solid #059669; border-radius:12px; padding:30px; max-width:420px; width:90%; box-shadow:0 0 40px rgba(5,150,105,0.4); font-family:'Exo 2',sans-serif;">
+    <h2 style="color:#059669; font-family:'Orbitron',sans-serif; margin:0 0 8px 0; font-size:18px; letter-spacing:2px;">🖼 SAVE AS IMAGE</h2>
     <div style="height:1px; background:linear-gradient(90deg,#059669,transparent); margin-bottom:18px;"></div>
-
-    <p style="color:#00E5FF; font-family:'Share Tech Mono',monospace; font-size:13px; line-height:1.8; margin:0 0 20px 0;">Capture the entire form as a JPEG image. Perfect for saving, printing, or sharing.</p>
-
+    <p style="color:#00E5FF; font-family:'Share Tech Mono',monospace; font-size:13px; line-height:1.8; margin:0 0 20px 0;">Capture the entire form as a JPEG image.</p>
     <div style="margin-top:24px; display:flex; justify-content:flex-end; gap:10px;">
-      <button onclick="closeImageModal()" style="background:transparent !important; border:1px solid #666 !important; color:#999 !important; padding:9px 18px !important; border-radius:6px !important; cursor:pointer !important; font-family:'Share Tech Mono',monospace !important; font-size:12px !important; letter-spacing:1px !important; clip-path: none !important; margin: 0 !important;">CANCEL</button>
-      <button onclick="saveImageFromModal()" style="background:linear-gradient(135deg,#059669,#04874f) !important; border:none !important; color:#fff !important; padding:9px 22px !important; border-radius:6px !important; cursor:pointer !important; font-weight:bold !important; font-family:'Share Tech Mono',monospace !important; font-size:12px !important; letter-spacing:1px !important; box-shadow:0 0 15px rgba(5,150,105,0.4) !important; clip-path: none !important; margin: 0 !important;">SAVE IMAGE ▶</button>
+      <button onclick="closeImageModal()" style="background:transparent !important; border:1px solid #666 !important; color:#999 !important; padding:9px 18px !important; border-radius:6px !important; cursor:pointer !important; font-family:'Share Tech Mono',monospace !important; font-size:12px !important; letter-spacing:1px !important; clip-path:none !important; margin:0 !important;">CANCEL</button>
+      <button onclick="saveImageFromModal()" style="background:linear-gradient(135deg,#059669,#04874f) !important; border:none !important; color:#fff !important; padding:9px 22px !important; border-radius:6px !important; cursor:pointer !important; font-weight:bold !important; font-family:'Share Tech Mono',monospace !important; font-size:12px !important; letter-spacing:1px !important; clip-path:none !important; margin:0 !important;">SAVE IMAGE ▶</button>
     </div>
   </div>
 </div>
-<!-- ▲▲▲ END IMAGE MODAL ▲▲▲ -->
 
 <script>
-// ────────────────────────────────────────────────────────────────
-// THEME MANAGEMENT - UPDATED
-// ────────────────────────────────────────────────────────────────
+// ── THEME MANAGEMENT ──
 const THEME_KEY = 'aog_theme_preference';
 
 function getInitialTheme() {
   const saved = localStorage.getItem(THEME_KEY);
   if (saved) return saved;
-
-  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    return 'dark';
-  }
-
+  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
   return 'light';
 }
 
 function applyTheme(theme) {
-  console.log('Applying theme:', theme);
-  const html = document.documentElement;
   const body = document.body;
-
   if (theme === 'dark') {
     body.classList.add('dark-mode');
-    html.setAttribute('data-theme', 'dark');
+    document.documentElement.setAttribute('data-theme', 'dark');
   } else {
     body.classList.remove('dark-mode');
-    html.setAttribute('data-theme', 'light');
+    document.documentElement.setAttribute('data-theme', 'light');
   }
-
-  try {
-    localStorage.setItem(THEME_KEY, theme);
-  } catch (e) {
-    console.warn('Could not save theme preference:', e);
-  }
+  try { localStorage.setItem(THEME_KEY, theme); } catch(e) {}
 }
 
 function toggleTheme() {
-  const isDarkMode = document.body.classList.contains('dark-mode');
-  const newTheme = isDarkMode ? 'light' : 'dark';
+  const newTheme = document.body.classList.contains('dark-mode') ? 'light' : 'dark';
   applyTheme(newTheme);
-  // CSS variables handle icon colors automatically!
 }
 
 function setupThemeToggle() {
   const btn = document.getElementById('theme-toggle-btn');
   if (!btn) return;
-
   btn.addEventListener('click', toggleTheme);
-
   if (window.matchMedia) {
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-      if (!localStorage.getItem(THEME_KEY)) {
-        const newTheme = e.matches ? 'dark' : 'light';
-        applyTheme(newTheme);
-      }
+      if (!localStorage.getItem(THEME_KEY)) applyTheme(e.matches ? 'dark' : 'light');
     });
   }
 }
 
-// ────────────────────────────────────────────────────────────────
-// OFFLINE HANDLING
-// ────────────────────────────────────────────────────────────────
+// ── OFFLINE HANDLING ──
 window.addEventListener('online', function() {
   var b = document.getElementById('offline-banner');
   if (b) b.classList.remove('show');
   document.body.classList.remove('offline');
 });
-
 window.addEventListener('offline', function() {
   var b = document.getElementById('offline-banner');
   if (b) b.classList.add('show');
   document.body.classList.add('offline');
 });
 
-// ────────────────────────────────────────────────────────────────
-// DRAFT SAVE/RESTORE
-// ────────────────────────────────────────────────────────────────
+// ── DRAFT SAVE/RESTORE ──
 var DRAFT_KEY = 'aog_estimate_draft';
 
 function saveDraft() {
   var data = {};
-
   document.querySelectorAll('input, textarea').forEach(function(el) {
     var key = el.id || el.name;
     if (!key) return;
-
     try {
       if (el.type === 'checkbox') {
         if (!data[key]) data[key] = [];
@@ -2744,190 +2377,93 @@ function saveDraft() {
       } else {
         if (data[key] === undefined) data[key] = el.value;
       }
-    } catch (e) {
-      console.warn('Error saving field:', key);
-    }
+    } catch(e) {}
   });
-
-  try {
-    localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
-  } catch(e) {
-    if (e.name === 'QuotaExceededError') {
-      console.warn('LocalStorage quota exceeded');
-    }
-  }
+  try { localStorage.setItem(DRAFT_KEY, JSON.stringify(data)); } catch(e) {}
 }
 
 function restoreDraft() {
   var saved = localStorage.getItem(DRAFT_KEY);
   if (!saved) return;
-
   try {
     var data = JSON.parse(saved);
-
     document.querySelectorAll('input, textarea').forEach(function(el) {
       var key = el.id || el.name;
       if (!key || data[key] === undefined) return;
-
       try {
         if (el.type === 'checkbox') {
-          if (Array.isArray(data[key])) {
-            el.checked = data[key].indexOf(el.value) !== -1;
-          }
+          if (Array.isArray(data[key])) el.checked = data[key].indexOf(el.value) !== -1;
         } else if (el.type === 'radio') {
           if (el.value === data[key]) el.checked = true;
         } else {
           el.value = data[key];
         }
-      } catch (e) {
-        console.warn('Error restoring field:', key);
-      }
+      } catch(e) {}
     });
-  } catch(e) {
-    console.warn('Error restoring draft:', e);
-  }
+  } catch(e) {}
 }
 
 setInterval(saveDraft, 30000);
 document.addEventListener('change', saveDraft);
 document.addEventListener('input', saveDraft);
 
-// ────────────────────────────────────────────────────────────────
-// ENHANCED FORM VALIDATION
-// ────────────────────────────────────────────────────────────────
-
+// ── VALIDATION ──
 const VALIDATION_RULES = {
-  name: {
-    required: true,
-    minLength: 2,
-    pattern: /^[a-zA-Z\s\-'.]+$/,
-    message: 'Name must contain only letters, spaces, hyphens, or apostrophes'
-  },
-  address: {
-    required: true,
-    minLength: 5,
-    message: 'Please enter a valid street address'
-  },
-  phone: {
-    required: true,
-    pattern: /^[\d\-\(\)\s+]{10,}$/,
-    message: 'Phone must be at least 10 digits'
-  },
-  email: {
-    required: true,
-    pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-    message: 'Please enter a valid email address'
-  },
-  estimator: {
-    required: true,
-    minLength: 2,
-    message: 'Estimator name is required'
-  },
-  sqft: {
-    pattern: /^[0-9]*$/,
-    min: 500,
-    max: 100000,
-    message: 'Square footage must be between 500 and 100,000'
-  },
-  gen_size: {
-    pattern: /^[\d\w\s\-]*$/,
-    message: 'Invalid generator size format'
-  }
+  name: { required: true, minLength: 2, pattern: /^[a-zA-Z\s\-'.]+$/, message: 'Name must contain only letters, spaces, hyphens, or apostrophes' },
+  address: { required: true, minLength: 5, message: 'Please enter a valid street address' },
+  phone: { required: true, pattern: /^[\d\-\(\)\s+]{10,}$/, message: 'Phone must be at least 10 digits' },
+  email: { required: true, pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Please enter a valid email address' },
+  estimator: { required: true, minLength: 2, message: 'Estimator name is required' },
+  sqft: { pattern: /^[0-9]*$/, min: 500, max: 100000, message: 'Square footage must be between 500 and 100,000' },
+  gen_size: { pattern: /^[\d\w\s\-]*$/, message: 'Invalid generator size format' }
 };
 
 class FormValidator {
-  constructor() {
-    this.errors = {};
-    this.validatedFields = new Set();
-  }
+  constructor() { this.errors = {}; this.validatedFields = new Set(); }
 
   validateField(fieldId) {
     const el = document.getElementById(fieldId);
     if (!el) return true;
-
     const rules = VALIDATION_RULES[fieldId];
     if (!rules) return true;
-
     const value = el.value.trim();
     const errors = [];
-
-    if (rules.required && !value) {
-      errors.push(rules.message || `${fieldId} is required`);
-    }
-
+    if (rules.required && !value) errors.push(rules.message || `${fieldId} is required`);
     if (value) {
-      if (rules.minLength && value.length < rules.minLength) {
-        errors.push(`Must be at least ${rules.minLength} characters`);
-      }
-
-      if (rules.maxLength && value.length > rules.maxLength) {
-        errors.push(`Must be no more than ${rules.maxLength} characters`);
-      }
-
-      if (rules.pattern && !rules.pattern.test(value)) {
-        errors.push(rules.message || `Invalid ${fieldId} format`);
-      }
-
+      if (rules.minLength && value.length < rules.minLength) errors.push(`Must be at least ${rules.minLength} characters`);
+      if (rules.pattern && !rules.pattern.test(value)) errors.push(rules.message || `Invalid ${fieldId} format`);
       if (!isNaN(value)) {
         const num = parseFloat(value);
-        if (rules.min !== undefined && num < rules.min) {
-          errors.push(`Must be at least ${rules.min}`);
-        }
-        if (rules.max !== undefined && num > rules.max) {
-          errors.push(`Must be no more than ${rules.max}`);
-        }
+        if (rules.min !== undefined && num < rules.min) errors.push(`Must be at least ${rules.min}`);
+        if (rules.max !== undefined && num > rules.max) errors.push(`Must be no more than ${rules.max}`);
       }
     }
-
-    if (errors.length > 0) {
-      this.errors[fieldId] = errors;
-    } else {
-      delete this.errors[fieldId];
-    }
-
+    if (errors.length > 0) this.errors[fieldId] = errors;
+    else delete this.errors[fieldId];
     this.updateFieldUI(el, errors.length === 0);
     this.validatedFields.add(fieldId);
-
     return errors.length === 0;
   }
 
   validateAllRequired() {
-    const requiredFields = Object.keys(VALIDATION_RULES)
-      .filter(key => VALIDATION_RULES[key].required);
-
-    const results = requiredFields.map(fieldId => this.validateField(fieldId));
-    return results.every(r => r === true);
-  }
-
-  validateAll() {
-    Object.keys(VALIDATION_RULES).forEach(fieldId => {
-      this.validateField(fieldId);
-    });
-    return Object.keys(this.errors).length === 0;
+    const required = Object.keys(VALIDATION_RULES).filter(k => VALIDATION_RULES[k].required);
+    return required.map(id => this.validateField(id)).every(r => r === true);
   }
 
   updateFieldUI(el, isValid) {
     const wrapper = el.parentElement;
     const oldError = wrapper?.querySelector('.field-error');
     if (oldError) oldError.remove();
-
     if (isValid) {
       el.style.borderBottomColor = '#059669';
-      el.style.boxShadow = '0 2px 0 0 rgba(5,150,105,0.3), 0 0 12px rgba(5,150,105,0.08)';
+      el.style.boxShadow = '0 2px 0 0 rgba(5,150,105,0.3)';
     } else {
       el.style.borderBottomColor = '#DC2626';
-      el.style.boxShadow = '0 2px 0 0 rgba(220,38,38,0.3), 0 0 12px rgba(220,38,38,0.08)';
-
+      el.style.boxShadow = '0 2px 0 0 rgba(220,38,38,0.3)';
       if (wrapper && this.errors[el.id]) {
         const errorMsg = document.createElement('div');
         errorMsg.className = 'field-error';
-        errorMsg.style.cssText = `
-          font-size: 0.62rem;
-          color: #DC2626;
-          margin-top: 2px;
-          font-family: var(--font-mono);
-          letter-spacing: 0.5px;
-        `;
+        errorMsg.style.cssText = 'font-size:0.62rem;color:#DC2626;margin-top:2px;font-family:var(--font-mono);letter-spacing:0.5px;';
         errorMsg.textContent = '✗ ' + this.errors[el.id][0];
         wrapper.appendChild(errorMsg);
       }
@@ -2943,187 +2479,79 @@ class FormValidator {
   }
 
   getErrorSummary() {
-    const summary = [];
-    Object.entries(this.errors).forEach(([fieldId, msgs]) => {
-      const label = fieldId
-        .replace(/_/g, ' ')
-        .split(' ')
-        .map(w => w.charAt(0).toUpperCase() + w.slice(1))
-        .join(' ');
-      summary.push(`${label}: ${msgs[0]}`);
+    return Object.entries(this.errors).map(([fieldId, msgs]) => {
+      const label = fieldId.replace(/_/g, ' ').split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+      return `${label}: ${msgs[0]}`;
     });
-    return summary;
   }
 
   showErrorModal() {
     const errors = this.getErrorSummary();
     if (errors.length === 0) return false;
-
     const modal = document.createElement('div');
-    modal.style.cssText = `
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.85);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 9998;
-      backdrop-filter: blur(4px);
-    `;
-
+    modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;z-index:9998;backdrop-filter:blur(4px);';
     const content = document.createElement('div');
-    content.style.cssText = `
-      background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
-      border: 2px solid #DC2626;
-      border-radius: 12px;
-      padding: 30px;
-      max-width: 500px;
-      width: 90%;
-      box-shadow: 0 0 40px rgba(220,38,38,0.4), inset 0 0 20px rgba(0,229,255,0.05);
-      font-family: var(--font-body);
-    `;
-
+    content.style.cssText = 'background:linear-gradient(135deg,#1a1a1a 0%,#0a0a0a 100%);border:2px solid #DC2626;border-radius:12px;padding:30px;max-width:500px;width:90%;box-shadow:0 0 40px rgba(220,38,38,0.4);font-family:var(--font-body);';
     const title = document.createElement('h2');
-    title.style.cssText = `
-      color: #DC2626;
-      font-family: var(--font-display);
-      margin: 0 0 16px 0;
-      font-size: 18px;
-      letter-spacing: 2px;
-      text-shadow: 0 0 10px rgba(220,38,38,0.5);
-    `;
+    title.style.cssText = 'color:#DC2626;font-family:var(--font-display);margin:0 0 16px 0;font-size:18px;letter-spacing:2px;';
     title.textContent = '⚠ VALIDATION ERRORS';
-
     const divider = document.createElement('div');
-    divider.style.cssText = `
-      height: 1px;
-      background: linear-gradient(90deg, #DC2626, transparent);
-      margin-bottom: 16px;
-    `;
-
+    divider.style.cssText = 'height:1px;background:linear-gradient(90deg,#DC2626,transparent);margin-bottom:16px;';
     const errorList = document.createElement('ul');
-    errorList.style.cssText = `
-      list-style: none;
-      padding: 0;
-      margin: 0 0 20px 0;
-    `;
-
+    errorList.style.cssText = 'list-style:none;padding:0;margin:0 0 20px 0;';
     errors.forEach(error => {
       const li = document.createElement('li');
-      li.style.cssText = `
-        color: #00E5FF;
-        font-family: var(--font-mono);
-        font-size: 13px;
-        line-height: 1.6;
-        padding: 6px 0;
-      `;
+      li.style.cssText = 'color:#00E5FF;font-family:var(--font-mono);font-size:13px;line-height:1.6;padding:6px 0;';
       li.textContent = '• ' + error;
       errorList.appendChild(li);
     });
-
     const closeBtn = document.createElement('button');
-    closeBtn.style.cssText = `
-      width: 100%;
-      background: linear-gradient(135deg, #DC2626, #b01f1f);
-      border: none;
-      color: white;
-      padding: 12px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: bold;
-      font-family: var(--font-display);
-      font-size: 12px;
-      letter-spacing: 1px;
-      box-shadow: 0 0 15px rgba(220,38,38,0.4);
-      transition: all 0.2s;
-    `;
+    closeBtn.style.cssText = 'width:100%;background:linear-gradient(135deg,#DC2626,#b01f1f);border:none;color:white;padding:12px;border-radius:6px;cursor:pointer;font-weight:bold;font-family:var(--font-display);font-size:12px;letter-spacing:1px;';
     closeBtn.textContent = 'CLOSE';
-
-    closeBtn.addEventListener('mouseenter', function() {
-      this.style.transform = 'translateY(-2px)';
-      this.style.boxShadow = '0 0 25px rgba(220,38,38,0.6)';
-    });
-
-    closeBtn.addEventListener('mouseleave', function() {
-      this.style.transform = '';
-      this.style.boxShadow = '0 0 15px rgba(220,38,38,0.4)';
-    });
-
-    closeBtn.addEventListener('click', function() {
-      document.body.removeChild(modal);
-    });
-
+    closeBtn.addEventListener('click', () => document.body.removeChild(modal));
     content.appendChild(title);
     content.appendChild(divider);
     content.appendChild(errorList);
     content.appendChild(closeBtn);
     modal.appendChild(content);
-
     document.body.appendChild(modal);
-
     const firstErrorId = Object.keys(this.errors)[0];
     if (firstErrorId) {
       const el = document.getElementById(firstErrorId);
-      if (el) {
-        setTimeout(() => {
-          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          el.focus();
-        }, 100);
-      }
+      if (el) setTimeout(() => { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); el.focus(); }, 100);
     }
-
     return true;
   }
 }
 
 const validator = new FormValidator();
 
-// ────────────────────────────────────────────────────────────────
-// REAL-TIME VALIDATION
-// ────────────────────────────────────────────────────────────────
 function setupFieldValidation() {
   Object.keys(VALIDATION_RULES).forEach(fieldId => {
     const el = document.getElementById(fieldId);
     if (!el) return;
-
-    el.addEventListener('blur', function() {
-      validator.validateField(fieldId);
-    });
-
-    el.addEventListener('focus', function() {
-      validator.clearFieldUI(this);
-    });
-
+    el.addEventListener('blur', () => validator.validateField(fieldId));
+    el.addEventListener('focus', function() { validator.clearFieldUI(this); });
     if (['email', 'phone', 'sqft'].includes(fieldId)) {
       let debounceTimer;
       el.addEventListener('input', function() {
         clearTimeout(debounceTimer);
-        debounceTimer = setTimeout(() => {
-          validator.validateField(fieldId);
-        }, 600);
+        debounceTimer = setTimeout(() => validator.validateField(fieldId), 600);
       });
     }
   });
 }
 
-// ────────────────────────────────────────────────────────────────
-// FORM VALIDATION & DATA
-// ────────────────────────────────────────────────────────────────
 function validateForm() {
-  if (!validator.validateAllRequired()) {
-    validator.showErrorModal();
-    return false;
-  }
+  if (!validator.validateAllRequired()) { validator.showErrorModal(); return false; }
   return true;
 }
 
 function getFormData() {
   var data = {};
-
   document.querySelectorAll('input, textarea, select').forEach(function(el) {
     var key = el.id || el.name;
     if (!key) return;
-
     if (el.type === 'checkbox') {
       if (!data[key]) data[key] = [];
       if (el.checked) data[key].push(el.value);
@@ -3133,27 +2561,17 @@ function getFormData() {
       if (data[key] === undefined) data[key] = el.value;
     }
   });
-
   return data;
 }
 
-// ────────────────────────────────────────────────────────────────
-// FORM ACTIONS (PRINT, IMAGE, EMAIL, CLEAR)
-// ────────────────────────────────────────────────────────────────
-
+// ── PRINT / PDF ──
 function printPDF() {
   if (!validateForm()) return;
-
   var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
   var isAndroid = /Android/i.test(navigator.userAgent);
   var modal = document.getElementById('pdfModal');
   var instr = document.getElementById('pdfInstructions');
-
-  if (!modal || !instr) {
-    window.print();
-    return;
-  }
-
+  if (!modal || !instr) { window.print(); return; }
   if (isIOS) {
     instr.innerHTML = "<b style='color:#FFB300'>1.</b> Tap CONTINUE to open Print preview<br><b style='color:#FFB300'>2.</b> <span style='color:#FFB300'>PINCH-ZOOM OUT</span> on the page thumbnail<br><b style='color:#FFB300'>3.</b> Tap the Share icon (top right)<br><b style='color:#FFB300'>4.</b> Tap <span style='color:#FFB300'>'Save to Files'</span>";
   } else if (isAndroid) {
@@ -3161,70 +2579,47 @@ function printPDF() {
   } else {
     instr.innerHTML = "<b style='color:#FFB300'>1.</b> Click CONTINUE to open Print dialog<br><b style='color:#FFB300'>2.</b> Set Destination to <span style='color:#FFB300'>'Save as PDF'</span><br><b style='color:#FFB300'>3.</b> Click Save";
   }
-
   modal.style.display = 'flex';
 }
-function closePdfModal() {
-  document.getElementById('pdfModal').style.display = 'none';
-}
+
+function closePdfModal() { document.getElementById('pdfModal').style.display = 'none'; }
 
 function confirmPdfPrint() {
   closePdfModal();
-
   var toolbar = document.getElementById('toolbar');
   if (toolbar) toolbar.style.display = 'none';
-
   var wasDarkMode = document.body.classList.contains('dark-mode');
   if (wasDarkMode) document.body.classList.remove('dark-mode');
-
-  var seasonalClasses = Array.from(document.body.classList)
-    .filter(function(c) { return c.indexOf('seasonal-') === 0; });
-  seasonalClasses.forEach(function(c) { document.body.classList.remove(c); });
-
+  var seasonalClasses = Array.from(document.body.classList).filter(c => c.indexOf('seasonal-') === 0);
+  seasonalClasses.forEach(c => document.body.classList.remove(c));
   setTimeout(function() {
     window.print();
     setTimeout(function() {
       if (toolbar) toolbar.style.display = '';
       if (wasDarkMode) document.body.classList.add('dark-mode');
-      seasonalClasses.forEach(function(c) { document.body.classList.add(c); });
+      seasonalClasses.forEach(c => document.body.classList.add(c));
     }, 1500);
   }, 150);
 }
 
-function openImageModal() {
-  if (!validateForm()) return;
-  var modal = document.getElementById('imageModal');
-  if (modal) modal.style.display = 'flex';
-}
-
-function closeImageModal() {
-  document.getElementById('imageModal').style.display = 'none';
-}
+// ── IMAGE SAVE ──
+function openImageModal() { if (!validateForm()) return; document.getElementById('imageModal').style.display = 'flex'; }
+function closeImageModal() { document.getElementById('imageModal').style.display = 'none'; }
 
 function saveImageFromModal() {
   closeImageModal();
-
   var page = document.getElementById('page');
-  if (!page) {
-    alert('Error: Could not find form element');
-    return;
-  }
-
+  if (!page) { alert('Error: Could not find form element'); return; }
   var pageTitle = (document.getElementById('name').value || 'Estimate').replace(/\s+/g, '_');
   var timestamp = new Date().toISOString().split('T')[0];
   var filename = pageTitle + '_' + timestamp + '.jpg';
-
   var loadingDiv = document.createElement('div');
-  loadingDiv.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1a1a1a;border:2px solid #D97706;color:#D97706;padding:20px 40px;font-family:monospace;z-index:99999;border-radius:8px;box-shadow:0 0 30px rgba(217,119,6,0.4);';
+  loadingDiv.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1a1a1a;border:2px solid #D97706;color:#D97706;padding:20px 40px;font-family:monospace;z-index:99999;border-radius:8px;';
   loadingDiv.textContent = '⏳ Generating image...';
   document.body.appendChild(loadingDiv);
-
   var NATURAL_W = 1050;
-  var TARGET_W = 816; // 8.5in at 96dpi
-
-  // This scale neutralises whatever zoom the browser is at
+  var TARGET_W = 816;
   var captureScale = NATURAL_W / page.getBoundingClientRect().width;
-
   html2canvas(page, {
     scale: captureScale,
     useCORS: true,
@@ -3234,128 +2629,48 @@ function saveImageFromModal() {
     imageTimeout: 15000,
     removeContainer: true,
     windowWidth: NATURAL_W,
-
     onclone: function(clonedDoc, clonedElement) {
       clonedElement.style.transform = 'none';
-      clonedElement.style.transformOrigin = '';
-      clonedElement.style.position = 'static';
-      clonedElement.style.margin = '0';
-      clonedElement.style.padding = '0';
       clonedElement.style.width = NATURAL_W + 'px';
       clonedElement.style.overflow = 'visible';
-
-      clonedDoc.querySelectorAll('*').forEach(function(el) {
-        if (el.getAttribute('stroke') === 'currentColor') el.setAttribute('stroke', '#D97706');
-        if (el.getAttribute('fill') === 'currentColor') el.setAttribute('fill', '#D97706');
-      });
-
-      var svgs = clonedDoc.querySelectorAll('svg');
-      svgs.forEach(function(svg) {
-        var parent = svg.parentElement;
-        var computedColor = '#D97706';
-        try {
-          if (parent) {
-            var parentStyle = clonedDoc.defaultView.getComputedStyle(parent);
-            computedColor = parentStyle.color || '#D97706';
-          }
-        } catch (e) {}
-
-        if (!svg.getAttribute('xmlns')) svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-
-        svg.querySelectorAll('path, polyline, polygon, line, rect, circle, ellipse, text').forEach(function(el) {
-          if (el.getAttribute('stroke') === 'currentColor') el.setAttribute('stroke', computedColor);
-          if (el.getAttribute('fill') === 'currentColor') el.setAttribute('fill', computedColor);
-          if (!el.getAttribute('fill') && el.tagName.toLowerCase() !== 'text') el.setAttribute('fill', 'none');
-        });
-      });
-
-      var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-      if (isIOS) {
-        clonedDoc.querySelectorAll('svg path').forEach(function(p) {
-          var original = parseFloat(p.getAttribute('stroke-width')) || 2;
-          p.setAttribute('stroke-width', original * 2.2);
-          p.setAttribute('stroke', '#b86a05');
-        });
-      }
-
-      clonedDoc.querySelectorAll('input, textarea').forEach(function(el) {
-        if (!el.value) el.setAttribute('placeholder', '');
-      });
-
-      clonedDoc.querySelectorAll('.section-header, .col-label').forEach(function(h) {
-        h.style.animationPlayState = 'paused';
-      });
-
-      clonedDoc.querySelectorAll('#pdfModal, #imageModal, #offline-banner, .toolbar').forEach(function(m) {
-        m.style.display = 'none';
-      });
+      clonedDoc.querySelectorAll('#pdfModal, #imageModal, #offline-banner, .toolbar').forEach(m => m.style.display = 'none');
     }
-
   }).then(function(canvas) {
-    // canvas is now NATURAL_W px wide — scale down to TARGET_W
     var finalH = Math.round(canvas.height * (TARGET_W / canvas.width));
-
     var out = document.createElement('canvas');
-    out.width = TARGET_W;
-    out.height = finalH;
+    out.width = TARGET_W; out.height = finalH;
     var ctx = out.getContext('2d');
     ctx.fillStyle = '#FFFFFF';
     ctx.fillRect(0, 0, TARGET_W, finalH);
     ctx.drawImage(canvas, 0, 0, TARGET_W, finalH);
-
     if (loadingDiv.parentNode) document.body.removeChild(loadingDiv);
-
     try {
       var dataUrl = out.toDataURL('image/jpeg', 0.95);
       if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
         var newTab = window.open();
         if (newTab) {
-          newTab.document.write(
-            '<html><head><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>' +
-            '<body style="margin:0;padding:10px;background:#f5f5f5;">' +
-            '<img src="' + dataUrl + '" style="width:100%;height:auto;display:block;"/>' +
-            '<p style="font-family:sans-serif;padding:10px;text-align:center;color:#666;">Long‑press the image and select "Save to Photos"</p>' +
-            '</body></html>'
-          );
-        } else {
-          var a = document.createElement('a');
-          a.download = filename; a.href = dataUrl; a.click();
+          newTab.document.write('<html><body style="margin:0;padding:10px;background:#f5f5f5;"><img src="' + dataUrl + '" style="width:100%;height:auto;"/><p style="font-family:sans-serif;text-align:center;color:#666;">Long-press the image and select "Save to Photos"</p></body></html>');
         }
       } else {
         var link = document.createElement('a');
-        link.download = filename;
-        link.href = dataUrl;
-        document.body.appendChild(link);
-        link.click();
-        setTimeout(function() { document.body.removeChild(link); }, 100);
+        link.download = filename; link.href = dataUrl;
+        document.body.appendChild(link); link.click();
+        setTimeout(() => document.body.removeChild(link), 100);
       }
-    } catch(e) {
-      alert('Error saving image: ' + e.message);
-    }
-
+    } catch(e) { alert('Error saving image: ' + e.message); }
   }).catch(function(err) {
     if (loadingDiv.parentNode) document.body.removeChild(loadingDiv);
-    console.error('html2canvas error:', err);
     alert('Error generating image: ' + err.message);
   });
 }
 
-
-
+// ── EMAIL ──
 function sendEmail() {
   if (!validateForm()) return;
-
   var data = getFormData();
   var name = data.name || '';
   var emailTo = data.email || '';
-  var addr1 = data.address || '';
-  var addr2 = data.address2 || '';
-  var address = addr1 + (addr2 ? ', ' + addr2 : '');
-  var phone = data.phone || '';
-  var sqft = data.sqft || '';
-  var estDate = data.est_date || '';
-  var estimator = data.estimator || '';
-
+  var address = (data.address || '') + (data.address2 ? ', ' + data.address2 : '');
   var subject = 'Generator Installation Estimate — ' + name;
   var lines = [
     'Dear ' + name + ',',
@@ -3365,72 +2680,42 @@ function sendEmail() {
     '--- ESTIMATE DETAILS ---',
     'Customer: ' + name,
     'Address: ' + address,
-    'Phone: ' + phone,
-    'Sq. Footage: ' + sqft + ' SF',
-    'Estimate Date: ' + estDate,
-    'Estimator: ' + estimator,
+    'Phone: ' + (data.phone || ''),
+    'Sq. Footage: ' + (data.sqft || '') + ' SF',
+    'Estimate Date: ' + (data.est_date || ''),
+    'Estimator: ' + (data.estimator || ''),
     '',
     'Please reply to this email or call us if you have any questions.',
     '',
     'Best regards,',
     'Always On Generators'
   ];
-
-  var mailtoLink = 'mailto:' + encodeURIComponent(emailTo) + 
-                   '?subject=' + encodeURIComponent(subject) + 
-                   '&body=' + encodeURIComponent(lines.join('\n'));
-
-  window.location.href = mailtoLink;
+  window.location.href = 'mailto:' + encodeURIComponent(emailTo) + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(lines.join('\n'));
 }
 
+// ── CLEAR ──
 function clearForm() {
   if (!confirm('Clear all fields?')) return;
-
-  document.querySelectorAll('input[type="text"],input[type="email"],input[type="tel"],input[type="date"],input[type="number"],textarea').forEach(function(el) {
-    el.value = '';
-  });
-
-  document.querySelectorAll('input[type="checkbox"],input[type="radio"]').forEach(function(el) {
-    el.checked = false;
-  });
-
+  document.querySelectorAll('input[type="text"],input[type="email"],input[type="tel"],input[type="date"],input[type="number"],textarea').forEach(el => el.value = '');
+  document.querySelectorAll('input[type="checkbox"],input[type="radio"]').forEach(el => el.checked = false);
   var s = document.getElementById('sqft-status');
   if (s) s.textContent = '';
-
   var gpsStatus = document.getElementById('gps-status');
-  if (gpsStatus) {
-    gpsStatus.style.display = 'none';
-    gpsStatus.textContent = '';
-  }
-
+  if (gpsStatus) { gpsStatus.style.display = 'none'; gpsStatus.textContent = ''; }
   localStorage.removeItem(DRAFT_KEY);
 }
 
-// ────────────────────────────────────────────────────────────────
-// MODAL CLICK-OUTSIDE CLOSE
-// ────────────────────────────────────────────────────────────────
+// ── MODAL CLICK-OUTSIDE ──
 document.addEventListener('click', function(e) {
   var pdfModal = document.getElementById('pdfModal');
   var imageModal = document.getElementById('imageModal');
-
-  if (pdfModal && e.target === pdfModal) {
-    closePdfModal();
-  }
-  if (imageModal && e.target === imageModal) {
-    closeImageModal();
-  }
+  if (pdfModal && e.target === pdfModal) closePdfModal();
+  if (imageModal && e.target === imageModal) closeImageModal();
 });
 
-// ────────────────────────────────────────────────────────────────
-// ADDRESS AUTOCOMPLETE - SOUTHWEST FLORIDA PRIORITY
-// ────────────────────────────────────────────────────────────────
+// ── ADDRESS AUTOCOMPLETE ──
 var MAPBOX_TOKEN = 'pk.eyJ1IjoicHJvamVjdHdyYXBwZXIiLCJhIjoiY201d2k1eHU3MDAwajJrbzU2a2c5dW40NSJ9.WJlNJ4o5CqBhWpHKMKOzIQ';
-
-// Southwest Florida bounding box: [minLng, minLat, maxLng, maxLat]
-// Covers: Naples, Fort Myers, Cape Coral, Estero, Bonita Springs
 var SW_FLORIDA_BBOX = '-82.2,26.0,-81.2,27.0';
-
-// Center point for proximity boost (Naples area)
 var SW_FLORIDA_CENTER = '-81.76,26.14';
 
 function isFloridaAddress(placeName, address) {
@@ -3438,322 +2723,154 @@ function isFloridaAddress(placeName, address) {
     var s = address.state.toLowerCase();
     if (s === 'florida' || s === 'fl') return true;
   }
-
   if (!placeName) return false;
   var p = placeName.toLowerCase();
-  return p.includes('florida') ||
-         /,\s*fl\b/.test(p) ||
-         /\bfl\s+\d{5}/.test(p);
+  return p.includes('florida') || /,\s*fl\b/.test(p) || /\bfl\s+\d{5}/.test(p);
 }
 
 function setupAddressAutocomplete() {
   var input = document.getElementById('address');
   var list  = document.getElementById('address-suggestions');
   if (!input || !list) return;
-
   var debounce;
 
   input.addEventListener('input', function() {
     clearTimeout(debounce);
     var q = input.value.trim();
-    
-    // ← LOWER THIS TO 1 CHARACTER
-    if (q.length < 1) { 
-      list.classList.remove('open'); 
-      return; 
-    }
+    if (q.length < 1) { list.classList.remove('open'); return; }
 
     debounce = setTimeout(function() {
-      // ===== MAPBOX REQUEST - SW FLORIDA FIRST =====
       var mapboxUrl = 'https://api.mapbox.com/geocoding/v5/mapbox.places/' +
-                encodeURIComponent(q) +
-                '.json?access_token=' + MAPBOX_TOKEN +
-                '&country=US' +
-                '&types=address' +
-                '&autocomplete=true' +
-                '&limit=20' +
-                '&proximity=' + SW_FLORIDA_CENTER +
-                '&bbox=' + SW_FLORIDA_BBOX;
-
-      console.log('Searching for:', q);
+            encodeURIComponent(q) + '.json?access_token=' + MAPBOX_TOKEN +
+            '&country=US&types=address&autocomplete=true&limit=20' +
+            '&proximity=' + SW_FLORIDA_CENTER + '&bbox=' + SW_FLORIDA_BBOX;
 
       fetch(mapboxUrl)
-        .then(function(r) {
-          if (!r.ok) throw new Error('Mapbox error');
-          return r.json();
-        })
-        .then(function(data) {
-          if (!data.features || data.features.length === 0) {
-            console.log('No Mapbox results, trying Nominatim...');
-            tryNominatim(q);
-            return;
-          }
-
-          var floridaResults = [];
-          var otherResults = [];
-
-          data.features.forEach(function(f) {
-            // Prioritize results that have street-level precision
-            var hasPrecision = f.geometry && 
-                             f.geometry.type === 'Point' &&
-                             f.relevance > 0.5;
-            
-            if (isFloridaAddress(f.place_name, null)) {
-              floridaResults.push({ item: f, precision: hasPrecision });
-            } else {
-              otherResults.push({ item: f, precision: hasPrecision });
-            }
+        .then(r => { if (!r.ok) throw new Error('Mapbox error'); return r.json(); })
+        .then(data => {
+          if (!data.features || data.features.length === 0) { tryNominatim(q); return; }
+          var floridaResults = [], otherResults = [];
+          data.features.forEach(f => {
+            if (isFloridaAddress(f.place_name, null)) floridaResults.push({ item: f });
+            else otherResults.push({ item: f });
           });
-
-          // Sort by precision (street addresses first)
-          floridaResults.sort(function(a, b) { 
-            return (b.precision ? 1 : 0) - (a.precision ? 1 : 0); 
-          });
-
-          var allResults = floridaResults
-            .concat(otherResults)
-            .slice(0, 8)
-            .map(function(r) { return r.item; });
-
-          console.log('Mapbox - FL:', floridaResults.length, 'Other:', otherResults.length);
+          var allResults = floridaResults.concat(otherResults).slice(0, 8).map(r => r.item);
           renderResults(allResults, 'mapbox');
         })
-        .catch(function(err) {
-          console.error('Mapbox error:', err);
-          tryNominatim(q);
-        });
+        .catch(() => tryNominatim(q));
 
       function tryNominatim(query) {
-        var nomUrl = 'https://nominatim.openstreetmap.org/search?' +
-                     'format=json' +
-                     '&addressdetails=1' +
-                     '&limit=20' +
-                     '&countrycodes=us' +
-                     '&viewbox=-82.2,27.0,-81.2,26.0' +
-                     '&bounded=1' +
-                     '&q=' + encodeURIComponent(query);
-        
-        console.log('Nominatim fallback for:', query);
-
-        fetch(nomUrl, {
-          headers: { 
-            'Accept-Language': 'en',
-            'User-Agent': 'AOG-Estimate-Form'
-          } 
-        })
-          .then(function(r) { return r.json(); })
-          .then(function(results) {
-            if (!results || results.length === 0) {
-              console.log('No Nominatim results');
-              list.classList.remove('open');
-              list.innerHTML = '';
-              return;
-            }
-
-            var floridaResults = [];
-            var otherResults = [];
-
-            results.forEach(function(result) {
-              if (isFloridaAddress(result.display_name, result.address)) {
-                floridaResults.push(result);
-              } else {
-                otherResults.push(result);
-              }
-            });
-
-            var allResults = floridaResults.concat(otherResults).slice(0, 8);
-            console.log('Nominatim - FL:', floridaResults.length, 'Other:', otherResults.length);
-            renderResults(allResults, 'nominatim');
+        var nomUrl = 'https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=20&countrycodes=us&viewbox=-82.2,27.0,-81.2,26.0&bounded=1&q=' + encodeURIComponent(query);
+        fetch(nomUrl, { headers: { 'Accept-Language': 'en', 'User-Agent': 'AOG-Estimate-Form' } })
+          .then(r => r.json())
+          .then(results => {
+            if (!results || results.length === 0) { list.classList.remove('open'); list.innerHTML = ''; return; }
+            var fl = results.filter(r => isFloridaAddress(r.display_name, r.address));
+            var other = results.filter(r => !isFloridaAddress(r.display_name, r.address));
+            renderResults(fl.concat(other).slice(0, 8), 'nominatim');
           })
-          .catch(function(err) { 
-            console.error('Nominatim error:', err);
-            list.classList.remove('open');
-            list.innerHTML = '';
-          });
+          .catch(() => { list.classList.remove('open'); list.innerHTML = ''; });
       }
 
       function renderResults(results, source) {
         list.innerHTML = '';
-
-        if (results.length === 0) {
-          var noResults = document.createElement('li');
-          noResults.style.cssText = 'color: var(--text-muted); padding: 12px; text-align: center;';
-          noResults.textContent = 'No addresses found in Southwest Florida';
-          list.appendChild(noResults);
-          list.classList.add('open');
-          return;
-        }
-
+        if (results.length === 0) { list.classList.remove('open'); return; }
         results.forEach(function(item) {
           var li = document.createElement('li');
-          var isFlorida;
-          var clickHandler;
-
+          var isFlorida, clickHandler;
           if (source === 'mapbox') {
             li.textContent = item.place_name;
             isFlorida = isFloridaAddress(item.place_name, null);
-            
             clickHandler = function(e) {
               e.preventDefault();
-              var parts = item.place_name.split(',').map(function(p) { return p.trim(); });
+              var parts = item.place_name.split(',').map(p => p.trim());
               input.value = parts[0] || '';
               var addr2 = document.getElementById('address2');
               if (addr2) addr2.value = parts.slice(1).join(', ') || '';
-              list.classList.remove('open');
-              list.innerHTML = '';
-              saveDraft();
+              list.classList.remove('open'); list.innerHTML = ''; saveDraft();
             };
           } else {
-            // nominatim
             li.textContent = item.display_name;
             isFlorida = isFloridaAddress(item.display_name, item.address);
-            
             clickHandler = function(e) {
               e.preventDefault();
               var a = item.address || {};
-              var street = ((a.house_number || '') + ' ' + (a.road || '')).trim() || 
-                          item.display_name.split(',')[0];
-              var city  = a.city || a.town || a.village || a.county || '';
+              var street = ((a.house_number || '') + ' ' + (a.road || '')).trim() || item.display_name.split(',')[0];
+              var city = a.city || a.town || a.village || a.county || '';
               var state = a.state || '';
-              var zip   = a.postcode || '';
-              
+              var zip = a.postcode || '';
               input.value = street;
               var addr2 = document.getElementById('address2');
               if (addr2) addr2.value = [city, state, zip].filter(Boolean).join(', ');
-              
-              list.classList.remove('open');
-              list.innerHTML = '';
-              saveDraft();
+              list.classList.remove('open'); list.innerHTML = ''; saveDraft();
             };
           }
-
-          // Visual styling for Florida results
           if (isFlorida) {
             li.style.fontWeight = 'bold';
             li.style.color = 'var(--cyan)';
-            li.style.textShadow = '0 0 6px rgba(0, 255, 200, 0.4)';
-            li.style.background = 'rgba(0, 255, 200, 0.08)';
           }
-          
           li.addEventListener('mousedown', clickHandler);
-          li.addEventListener('mouseenter', function() {
-            this.classList.add('active');
-          });
-          li.addEventListener('mouseleave', function() {
-            this.classList.remove('active');
-          });
+          li.addEventListener('mouseenter', function() { this.classList.add('active'); });
+          li.addEventListener('mouseleave', function() { this.classList.remove('active'); });
           list.appendChild(li);
         });
-
         list.classList.add('open');
       }
-
-    }, 150); // ← REDUCED DEBOUNCE (was 300ms)
+    }, 150);
   });
 
-  // Close on click outside
   document.addEventListener('click', function(e) {
-    if (!input.contains(e.target) && !list.contains(e.target)) {
-      list.classList.remove('open');
-    }
+    if (!input.contains(e.target) && !list.contains(e.target)) list.classList.remove('open');
   });
 
-  // Keyboard navigation
   input.addEventListener('keydown', function(e) {
     var items = list.querySelectorAll('li');
     var active = list.querySelector('li.active');
     var idx = Array.prototype.indexOf.call(items, active);
-    
-    if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      if (active) active.classList.remove('active');
-      var next = items[idx + 1] || items[0];
-      if (next) next.classList.add('active');
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      if (active) active.classList.remove('active');
-      var prev = items[idx - 1] || items[items.length - 1];
-      if (prev) prev.classList.add('active');
-    } else if (e.key === 'Enter' && active) {
-      e.preventDefault();
-      active.dispatchEvent(new MouseEvent('mousedown'));
-    } else if (e.key === 'Escape') {
-      list.classList.remove('open');
-    }
+    if (e.key === 'ArrowDown') { e.preventDefault(); if (active) active.classList.remove('active'); var next = items[idx + 1] || items[0]; if (next) next.classList.add('active'); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); if (active) active.classList.remove('active'); var prev = items[idx - 1] || items[items.length - 1]; if (prev) prev.classList.add('active'); }
+    else if (e.key === 'Enter' && active) { e.preventDefault(); active.dispatchEvent(new MouseEvent('mousedown')); }
+    else if (e.key === 'Escape') list.classList.remove('open');
   });
 }
 
-
-
-// ────────────────────────────────────────────────────────────────
-// GPS BUTTON
-// ────────────────────────────────────────────────────────────────
+// ── GPS BUTTON ──
 function setupGpsButton() {
   var btn    = document.getElementById('gps-btn');
   var status = document.getElementById('gps-status');
   if (!btn) return;
-
   btn.addEventListener('click', function() {
     if (!navigator.geolocation) {
       if (status) { status.textContent = 'Geolocation not supported'; status.style.display = 'block'; }
       return;
     }
-
     btn.disabled = true;
     if (status) { status.textContent = '📡 Getting location...'; status.style.display = 'block'; }
-
     navigator.geolocation.getCurrentPosition(
       function(pos) {
-        var lat = pos.coords.latitude;
-        var lng = pos.coords.longitude;
-
-        var url = 'https://nominatim.openstreetmap.org/reverse?format=json&lat=' +
-                  lat + '&lon=' + lng + '&addressdetails=1';
-
-        fetch(url, {
-          headers: { 'Accept-Language': 'en', 'User-Agent': 'AOG-Estimate-Form' }
-        })
-          .then(function(r) { return r.json(); })
-          .then(function(data) {
+        var url = 'https://nominatim.openstreetmap.org/reverse?format=json&lat=' + pos.coords.latitude + '&lon=' + pos.coords.longitude + '&addressdetails=1';
+        fetch(url, { headers: { 'Accept-Language': 'en', 'User-Agent': 'AOG-Estimate-Form' } })
+          .then(r => r.json())
+          .then(data => {
             btn.disabled = false;
             if (data && data.address) {
               var a = data.address;
-
-              var street = '';
-              if (a.house_number && a.road) street = a.house_number + ' ' + a.road;
-              else if (a.road) street = a.road;
-              else street = data.display_name.split(',')[0];
-
-              var city  = a.city || a.town || a.village || a.county || '';
-              var state = a.state || '';
-              var zip   = a.postcode || '';
-              var cityLine = city + (state ? ', ' + state : '') + (zip ? ' ' + zip : '');
-
-              var addrInput  = document.getElementById('address');
+              var street = (a.house_number && a.road) ? a.house_number + ' ' + a.road : (a.road || data.display_name.split(',')[0]);
+              var cityLine = (a.city || a.town || a.village || a.county || '') + (a.state ? ', ' + a.state : '') + (a.postcode ? ' ' + a.postcode : '');
+              var addrInput = document.getElementById('address');
               var addr2Input = document.getElementById('address2');
-              if (addrInput)  addrInput.value  = street;
+              if (addrInput) addrInput.value = street;
               if (addr2Input) addr2Input.value = cityLine;
-
               if (status) { status.textContent = '✓ Location found'; status.style.display = 'block'; }
               saveDraft();
-              setTimeout(function() {
-                if (status) status.style.display = 'none';
-              }, 3000);
-            } else {
-              if (status) { status.textContent = 'Could not find address'; status.style.display = 'block'; }
+              setTimeout(() => { if (status) status.style.display = 'none'; }, 3000);
             }
           })
-          .catch(function() {
-            btn.disabled = false;
-            if (status) { status.textContent = 'Location lookup failed'; status.style.display = 'block'; }
-          });
+          .catch(() => { btn.disabled = false; if (status) { status.textContent = 'Location lookup failed'; status.style.display = 'block'; } });
       },
       function(err) {
         btn.disabled = false;
-        var msg = 'Location error';
-        if (err.code === 1) msg = 'Location permission denied';
-        if (err.code === 2) msg = 'Location unavailable';
-        if (err.code === 3) msg = 'Location request timed out';
+        var msg = err.code === 1 ? 'Location permission denied' : err.code === 2 ? 'Location unavailable' : err.code === 3 ? 'Location request timed out' : 'Location error';
         if (status) { status.textContent = msg; status.style.display = 'block'; }
       },
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
@@ -3761,143 +2878,43 @@ function setupGpsButton() {
   });
 }
 
-
-// ────────────────────────────────────────────────────────────────
-// ────────────────────────────────────────────────────────────────
-// SEASONAL THEME SYSTEM
-// ────────────────────────────────────────────────────────────────
-
+// ── SEASONAL THEMES ──
 const SEASONAL_THEMES = {
-  'newyear': {
-    name: 'New Year',
-    start: { month: 1, day: 1 },
-    end: { month: 1, day: 7 },
-    primary: '#1E40AF',
-    secondary: '#FBBF24',
-    accent: '#60A5FA'
-  },
-  'valentines': {
-    name: "Valentine's Day",
-    start: { month: 2, day: 1 },
-    end: { month: 2, day: 28 },
-    primary: '#DC2626',
-    secondary: '#FCA5A5',
-    accent: '#F472B6'
-  },
-  'stpatricks': {
-    name: "St. Patrick's Day",
-    start: { month: 3, day: 1 },
-    end: { month: 3, day: 31 },
-    primary: '#059669',
-    secondary: '#10B981',
-    accent: '#6EE7B7'
-  },
-  'spring': {
-    name: 'Spring',
-    start: { month: 3, day: 20 },
-    end: { month: 6, day: 20 },
-    primary: '#8B5CF6',
-    secondary: '#A78BFA',
-    accent: '#E9D5FF'
-  },
-  'memorialday': {
-    name: 'Memorial Day',
-    start: { month: 5, day: 25 },
-    end: { month: 5, day: 31 },
-    primary: '#1E40AF',
-    secondary: '#DC2626',
-    accent: '#FFFFFF'
-  },
-  'summer': {
-    name: 'Summer',
-    start: { month: 6, day: 21 },
-    end: { month: 9, day: 22 },
-    primary: '#0284C7',
-    secondary: '#06B6D4',
-    accent: '#FCD34D'
-  },
-  'fourthofjuly': {
-    name: 'Fourth of July',
-    start: { month: 7, day: 1 },
-    end: { month: 7, day: 31 },
-    primary: '#DC2626',
-    secondary: '#1E40AF',
-    accent: '#FFFFFF'
-  },
-  'laborday': {
-    name: 'Labor Day',
-    start: { month: 9, day: 1 },
-    end: { month: 9, day: 7 },
-    primary: '#1E40AF',
-    secondary: '#FFFFFF',
-    accent: '#DC2626'
-  },
-  'halloween': {
-    name: 'Halloween',
-    start: { month: 10, day: 1 },
-    end: { month: 10, day: 31 },
-    primary: '#EA580C',
-    secondary: '#1F2937',
-    accent: '#FBBF24'
-  },
-  'thanksgiving': {
-    name: 'Thanksgiving',
-    start: { month: 11, day: 1 },
-    end: { month: 11, day: 30 },
-    primary: '#B45309',
-    secondary: '#EA580C',
-    accent: '#F59E0B'
-  },
-  'christmas': {
-    name: 'Christmas',
-    start: { month: 12, day: 1 },
-    end: { month: 12, day: 31 },
-    primary: '#DC2626',
-    secondary: '#059669',
-    accent: '#FFD700'
-  }
+  'newyear':     { start: { month: 1,  day: 1  }, end: { month: 1,  day: 7  }, primary: '#1E40AF', secondary: '#FBBF24', accent: '#60A5FA' },
+  'valentines':  { start: { month: 2,  day: 1  }, end: { month: 2,  day: 28 }, primary: '#DC2626', secondary: '#FCA5A5', accent: '#F472B6' },
+  'stpatricks':  { start: { month: 3,  day: 1  }, end: { month: 3,  day: 31 }, primary: '#059669', secondary: '#10B981', accent: '#6EE7B7' },
+  'spring':      { start: { month: 3,  day: 20 }, end: { month: 6,  day: 20 }, primary: '#8B5CF6', secondary: '#A78BFA', accent: '#E9D5FF' },
+  'memorialday': { start: { month: 5,  day: 25 }, end: { month: 5,  day: 31 }, primary: '#1E40AF', secondary: '#DC2626', accent: '#FFFFFF' },
+  'summer':      { start: { month: 6,  day: 21 }, end: { month: 9,  day: 22 }, primary: '#0284C7', secondary: '#06B6D4', accent: '#FCD34D' },
+  'fourthofjuly':{ start: { month: 7,  day: 1  }, end: { month: 7,  day: 31 }, primary: '#DC2626', secondary: '#1E40AF', accent: '#FFFFFF' },
+  'laborday':    { start: { month: 9,  day: 1  }, end: { month: 9,  day: 7  }, primary: '#1E40AF', secondary: '#FFFFFF', accent: '#DC2626' },
+  'halloween':   { start: { month: 10, day: 1  }, end: { month: 10, day: 31 }, primary: '#EA580C', secondary: '#1F2937', accent: '#FBBF24' },
+  'thanksgiving':{ start: { month: 11, day: 1  }, end: { month: 11, day: 30 }, primary: '#B45309', secondary: '#EA580C', accent: '#F59E0B' },
+  'christmas':   { start: { month: 12, day: 1  }, end: { month: 12, day: 31 }, primary: '#DC2626', secondary: '#059669', accent: '#FFD700' }
 };
 
 function getCurrentSeasonalTheme() {
   const today = new Date();
   const month = today.getMonth() + 1;
   const date = today.getDate();
-
   for (const [key, theme] of Object.entries(SEASONAL_THEMES)) {
-    const startMonth = theme.start.month;
-    const startDay = theme.start.day;
-    const endMonth = theme.end.month;
-    const endDay = theme.end.day;
-
+    const { start, end } = theme;
     let isActive = false;
-
-    if (startMonth === endMonth) {
-      isActive = month === startMonth && date >= startDay && date <= endDay;
+    if (start.month === end.month) {
+      isActive = month === start.month && date >= start.day && date <= end.day;
     } else {
-      isActive = (month === startMonth && date >= startDay) || 
-                 (month === endMonth && date <= endDay) ||
-                 (month > startMonth && month < endMonth);
+      isActive = (month === start.month && date >= start.day) || (month === end.month && date <= end.day) || (month > start.month && month < end.month);
     }
-
-    if (isActive) {
-      return key;
-    }
+    if (isActive) return key;
   }
-
   return 'default';
 }
 
 function applySeasonalTheme(themeName) {
-  // Remove all seasonal classes
-  Object.keys(SEASONAL_THEMES).forEach(key => {
-    document.body.classList.remove(`seasonal-${key}`);
-  });
-
+  Object.keys(SEASONAL_THEMES).forEach(key => document.body.classList.remove(`seasonal-${key}`));
   if (themeName !== 'default' && SEASONAL_THEMES[themeName]) {
     const theme = SEASONAL_THEMES[themeName];
     document.body.classList.add(`seasonal-${themeName}`);
-
-    // Update CSS variables
     document.documentElement.style.setProperty('--seasonal-primary', theme.primary);
     document.documentElement.style.setProperty('--seasonal-secondary', theme.secondary);
     document.documentElement.style.setProperty('--seasonal-accent', theme.accent);
@@ -3908,532 +2925,25 @@ function injectSeasonalStyles() {
   const style = document.createElement('style');
   style.id = 'seasonal-styles';
   style.textContent = `
-    /* ========== SEASONAL THEME VARIABLES ========== */
     :root {
       --seasonal-primary: #D97706;
       --seasonal-secondary: #059669;
       --seasonal-accent: #FFB300;
-      --page-title-color: #06B6D4;
-      --print-title-color: #D97706;
     }
-
-    /* Generic seasonal styling */
-    body[class*="seasonal-"] .page {
-      border-color: var(--seasonal-primary) !important;
-      box-shadow: 
-        0 0 1px rgba(0, 0, 0, 0.3),
-        0 0 20px rgba(217, 119, 6, 0.2),
-        0 0 40px rgba(5, 150, 105, 0.08),
-        inset 0 0 60px rgba(217, 119, 6, 0.05) !important;
-    }
-
+    body[class*="seasonal-"] .page { border-color: var(--seasonal-primary) !important; }
     body[class*="seasonal-"] .section-header,
     body[class*="seasonal-"] .col-label {
       color: var(--seasonal-primary) !important;
       border-left-color: var(--seasonal-primary) !important;
-      text-shadow: 
-        0 0 8px rgba(217, 119, 6, 0.6),
-        0 0 16px rgba(5, 150, 105, 0.4) !important;
     }
-
     body[class*="seasonal-"] .section-header::before,
-    body[class*="seasonal-"] .col-label::before {
-      background: var(--seasonal-primary) !important;
-      box-shadow: 
-        0 0 8px var(--seasonal-primary),
-        0 0 16px rgba(5, 150, 105, 0.5) !important;
-    }
-
-    /* ===== CSV EXPORT BUTTONS - ALL SECTIONS ===== */
-    .csv-export-btn,
-    #customerInfoCsvBtn,
-    #propertyInfoCsvBtn,
-    #generatorCsvBtn,
-    #transferSwitchCsvBtn,
-    #precastPadCsvBtn,
-    #fuelTankCsvBtn,
-    [class*="csv-export"],
-    [id*="csv"] {
-      color: var(--seasonal-primary) !important;
-      border-color: var(--seasonal-primary) !important;
-      transition: all 0.3s ease !important;
-    }
-
-    .csv-export-btn:hover,
-    #customerInfoCsvBtn:hover,
-    #propertyInfoCsvBtn:hover,
-    #generatorCsvBtn:hover,
-    #transferSwitchCsvBtn:hover,
-    #precastPadCsvBtn:hover,
-    #fuelTankCsvBtn:hover,
-    [class*="csv-export"]:hover,
-    [id*="csv"]:hover {
-      background-color: var(--seasonal-primary) !important;
-      color: #ffffff !important;
-      box-shadow: 
-        0 0 8px var(--seasonal-primary),
-        0 0 16px var(--seasonal-secondary) !important;
-      transform: scale(1.05) !important;
-    }
-
-    .csv-export-btn svg,
-    #customerInfoCsvBtn svg,
-    #propertyInfoCsvBtn svg,
-    #generatorCsvBtn svg,
-    #transferSwitchCsvBtn svg,
-    #precastPadCsvBtn svg,
-    #fuelTankCsvBtn svg,
-    [class*="csv-export"] svg,
-    [id*="csv"] svg {
-      fill: var(--seasonal-primary) !important;
-      stroke: var(--seasonal-primary) !important;
-      transition: all 0.3s ease !important;
-    }
-
-    .csv-export-btn:hover svg,
-    #customerInfoCsvBtn:hover svg,
-    #propertyInfoCsvBtn:hover svg,
-    #generatorCsvBtn:hover svg,
-    #transferSwitchCsvBtn:hover svg,
-    #precastPadCsvBtn:hover svg,
-    #fuelTankCsvBtn:hover svg,
-    [class*="csv-export"]:hover svg,
-    [id*="csv"]:hover svg {
-      fill: #ffffff !important;
-      stroke: #ffffff !important;
-      filter: drop-shadow(0 0 4px var(--seasonal-primary)) !important;
-    }
-
-    /* CSV Icon styling - ensure proper display */
-    .csv-export-btn i,
-    #customerInfoCsvBtn i,
-    #propertyInfoCsvBtn i,
-    #generatorCsvBtn i,
-    #transferSwitchCsvBtn i,
-    #precastPadCsvBtn i,
-    #fuelTankCsvBtn i,
-    [class*="csv-export"] i,
-    [id*="csv"] i {
-      color: var(--seasonal-primary) !important;
-      font-size: 1.2em !important;
-    }
-
-    .csv-export-btn:hover i,
-    #customerInfoCsvBtn:hover i,
-    #propertyInfoCsvBtn:hover i,
-    #generatorCsvBtn:hover i,
-    #transferSwitchCsvBtn:hover i,
-    #precastPadCsvBtn:hover i,
-    #fuelTankCsvBtn:hover i,
-    [class*="csv-export"]:hover i,
-    [id*="csv"]:hover i {
-      color: #ffffff !important;
-      text-shadow: 0 0 8px var(--seasonal-primary) !important;
-    }
-
-    /* ===== VALENTINE'S DAY ===== */
-    body.seasonal-valentines {
-      background: linear-gradient(
-        135deg,
-        #1a0f1a 0%,
-        #2a1a2a 25%,
-        #1a0f1a 50%,
-        #2a1a2a 75%,
-        #1a0f1a 100%
-      ) !important;
-      background-attachment: fixed;
-    }
-
-    @keyframes heartbeat {
-      0%, 100% {
-        transform: scale(1);
-      }
-      50% {
-        transform: scale(1.1);
-      }
-    }
-
-    body.seasonal-valentines::before {
-      content: '💕 ❤️ 💗 ❤️ 💕 ❤️ 💗 ❤️ 💕';
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      font-size: 48px;
-      pointer-events: none;
-      z-index: 1;
-      opacity: 0.15;
-      animation: heartbeat 2s infinite;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    /* ===== ST. PATRICK'S DAY ===== */
-    body.seasonal-stpatricks {
-      background: linear-gradient(
-        135deg,
-        #0a1a0a 0%,
-        #1a2a1a 25%,
-        #0a1a0a 50%,
-        #1a2a1a 75%,
-        #0a1a0a 100%
-      ) !important;
-      background-attachment: fixed;
-    }
-
-    @keyframes shamrock-float {
-      0%, 100% {
-        transform: translateY(0px) rotate(0deg);
-        opacity: 0.3;
-      }
-      50% {
-        transform: translateY(-20px) rotate(15deg);
-        opacity: 0.5;
-      }
-    }
-
-    body.seasonal-stpatricks::after {
-      content: '🍀 ☘️ 🍀 ☘️ 🍀 ☘️ 🍀';
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      font-size: 64px;
-      pointer-events: none;
-      z-index: 1;
-      opacity: 0.15;
-      animation: shamrock-float 6s ease-in-out infinite;
-      display: flex;
-      align-items: center;
-      justify-content: space-around;
-    }
-
-    /* ===== MEMORIAL DAY ===== */
-    body.seasonal-memorialday {
-      background: linear-gradient(
-        135deg,
-        #0a0a1a 0%,
-        #1a1a2a 25%,
-        #0a0a1a 50%,
-        #1a1a2a 75%,
-        #0a0a1a 100%
-      ) !important;
-      background-attachment: fixed;
-    }
-
-    body.seasonal-memorialday .page::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, #DC2626, #1E40AF, #FFFFFF);
-      opacity: 0.8;
-    }
-
-    /* ===== FOURTH OF JULY ===== */
-    body.seasonal-fourthofjuly {
-      background: linear-gradient(
-        135deg,
-        #0a0a1a 0%,
-        #1a1a3a 25%,
-        #0a0a1a 50%,
-        #1a1a3a 75%,
-        #0a0a1a 100%
-      ) !important;
-      background-attachment: fixed;
-    }
-
-    @keyframes firework {
-      0% {
-        transform: translate(0, 0) scale(1);
-        opacity: 1;
-      }
-      100% {
-        transform: translate(var(--tx), var(--ty)) scale(0);
-        opacity: 0;
-      }
-    }
-
-    body.seasonal-fourthofjuly::before {
-      content: '✨ 🎆 ⭐ 🎇 ✨';
-      position: fixed;
-      top: 20%;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 48px;
-      pointer-events: none;
-      z-index: 1;
-      opacity: 0.4;
-      animation: firework 3s ease-out infinite;
-    }
-
-    /* ===== LABOR DAY ===== */
-    body.seasonal-laborday {
-      background: linear-gradient(
-        135deg,
-        #0a0f1a 0%,
-        #0f1a2a 25%,
-        #0a0f1a 50%,
-        #0f1a2a 75%,
-        #0a0f1a 100%
-      ) !important;
-      background-attachment: fixed;
-    }
-
-    body.seasonal-laborday .page {
-      border-color: #1E40AF !important;
-    }
-
-    /* ===== THANKSGIVING ===== */
-    body.seasonal-thanksgiving {
-      background: linear-gradient(
-        135deg,
-        #1a140a 0%,
-        #2a1f0f 25%,
-        #1a140a 50%,
-        #2a1f0f 75%,
-        #1a140a 100%
-      ) !important;
-      background-attachment: fixed;
-    }
-
-    @keyframes autumn-fall {
-      0% {
-        transform: translateY(-10vh) rotate(0deg);
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(100vh) rotate(360deg);
-        opacity: 0;
-      }
-    }
-
-    body.seasonal-thanksgiving::before {
-      content: '🍂 🦃 🍁 🌽 🍂 🦃 🍁 🌽';
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      font-size: 48px;
-      pointer-events: none;
-      z-index: 1;
-      opacity: 0.2;
-      animation: autumn-fall 10s linear infinite;
-      display: flex;
-      justify-content: space-around;
-    }
-
-    /* ===== CHRISTMAS ===== */
-    body.seasonal-christmas {
-      background: linear-gradient(
-        135deg,
-        #0f1520 0%,
-        #1a2a3a 25%,
-        #0f1520 50%,
-        #1a2a3a 75%,
-        #0f1520 100%
-      ) !important;
-      background-attachment: fixed;
-    }
-
-    @keyframes snowfall {
-      0% {
-        transform: translateY(-10vh) translateX(0) rotateZ(0deg);
-        opacity: 1;
-      }
-      90% {
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(100vh) translateX(100px) rotateZ(360deg);
-        opacity: 0;
-      }
-    }
-
-    body.seasonal-christmas::before {
-      content: '❄️ ⛄ 🎄 ❄️ ⛄ 🎄 ❄️ ⛄ 🎄';
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      font-size: 48px;
-      pointer-events: none;
-      z-index: 1;
-      opacity: 0.3;
-      animation: snowfall 10s linear infinite;
-      display: flex;
-      justify-content: space-around;
-    }
-
-    /* ===== NEW YEAR ===== */
-    body.seasonal-newyear {
-      background: linear-gradient(
-        135deg,
-        #0A0E27 0%,
-        #1a1a5a 25%,
-        #0f1535 50%,
-        #1a1a5a 75%,
-        #0A0E27 100%
-      ) !important;
-      background-attachment: fixed;
-    }
-
-    @keyframes confetti-fall {
-      0% {
-        transform: translateY(-10vh) rotate(0deg);
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(100vh) rotate(720deg);
-        opacity: 0;
-      }
-    }
-
-    body.seasonal-newyear::after {
-      content: '🎉 ✨ 🎊 🎆 ✨ 🎉 🎊';
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      font-size: 48px;
-      pointer-events: none;
-      z-index: 1;
-      opacity: 0.4;
-      animation: confetti-fall 15s linear infinite;
-      display: flex;
-      justify-content: space-around;
-    }
-
-    /* ===== SPRING ===== */
-    body.seasonal-spring {
-      background: linear-gradient(
-        135deg,
-        #0f1520 0%,
-        #1a2a4a 25%,
-        #0f1520 50%,
-        #1a2a4a 75%,
-        #0f1520 100%
-      ) !important;
-      background-attachment: fixed;
-    }
-
-    @keyframes flower-bloom {
-      0%, 100% {
-        opacity: 0.2;
-      }
-      50% {
-        opacity: 0.4;
-      }
-    }
-
-    body.seasonal-spring::after {
-      content: '🌸 🌺 🌻 🌷 🌸 🌺 🌻 🌷';
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      font-size: 48px;
-      pointer-events: none;
-      z-index: 1;
-      animation: flower-bloom 4s ease-in-out infinite;
-      display: flex;
-      justify-content: space-around;
-    }
-
-    /* ===== SUMMER ===== */
-    body.seasonal-summer {
-      background: linear-gradient(
-        135deg,
-        #0A1628 0%,
-        #1a3a5a 25%,
-        #0f2540 50%,
-        #1a3a5a 75%,
-        #0A1628 100%
-      ) !important;
-      background-attachment: fixed;
-    }
-
-    @keyframes sun-glow {
-      0%, 100% {
-        opacity: 0.2;
-      }
-      50% {
-        opacity: 0.4;
-      }
-    }
-
-    body.seasonal-summer::after {
-      content: '☀️ 🌊 🏖️ 🌞 ☀️ 🌊 🏖️ 🌞';
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      font-size: 48px;
-      pointer-events: none;
-      z-index: 1;
-      animation: sun-glow 3s ease-in-out infinite;
-      display: flex;
-      justify-content: space-around;
-    }
-
-    /* ===== HALLOWEEN ===== */
-    body.seasonal-halloween {
-      background: linear-gradient(
-        135deg,
-        #1a1a0a 0%,
-        #2d1f0a 25%,
-        #1a1a0a 50%,
-        #2d1f0a 75%,
-        #1a1a0a 100%
-      ) !important;
-      background-attachment: fixed;
-    }
-
-    @keyframes spooky-bob {
-      0%, 100% {
-        transform: translateY(0px);
-      }
-      50% {
-        transform: translateY(-20px);
-      }
-    }
-
-    body.seasonal-halloween::before {
-      content: '👻 🎃 🦇 👻 🎃 🦇 👻 🎃 🦇';
-      position: fixed;
-      top: 10%;
-      left: 0;
-      width: 100%;
-      font-size: 48px;
-      pointer-events: none;
-      z-index: 1;
-      opacity: 0.3;
-      animation: spooky-bob 3s ease-in-out infinite;
-      display: flex;
-      justify-content: space-around;
-    }
-
-    /* Z-index fix to ensure decorations don't block content */
-    body[class*="seasonal-"]::before,
-    body[class*="seasonal-"]::after {
-      pointer-events: none !important;
-    }
-/* ===== SEASONAL SVG ICONS ===== */
+    body[class*="seasonal-"] .col-label::before { background: var(--seasonal-primary) !important; }
     body[class*="seasonal-"] .section-header svg,
     body[class*="seasonal-"] .section-header svg *,
     body[class*="seasonal-"] .section-header svg path,
     body[class*="seasonal-"] .section-header svg line,
     body[class*="seasonal-"] .section-header svg circle,
-    body[class*="seasonal-"] .section-header svg rect {
-      stroke: var(--seasonal-primary) !important;
-      color: var(--seasonal-primary) !important;
-      fill: none !important;
-    }
+    body[class*="seasonal-"] .section-header svg rect,
     body[class*="seasonal-"] .col-label svg,
     body[class*="seasonal-"] .col-label svg *,
     body[class*="seasonal-"] .col-label svg path,
@@ -4441,172 +2951,114 @@ function injectSeasonalStyles() {
     body[class*="seasonal-"] .col-label svg circle,
     body[class*="seasonal-"] .col-label svg rect {
       stroke: var(--seasonal-primary) !important;
-      color: var(--seasonal-primary) !important;
       fill: none !important;
     }
-    /* ========== PRINT MEDIA QUERIES - HIDE SEASONAL THEMES & FORCE #D97706 ========== */
-   @media print {
-      /* Remove seasonal decorations from print */
-      body::before,
-      body::after,
+    body.seasonal-valentines  { background: linear-gradient(135deg,#1a0f1a,#2a1a2a) !important; }
+    body.seasonal-stpatricks  { background: linear-gradient(135deg,#0a1a0a,#1a2a1a) !important; }
+    body.seasonal-halloween   { background: linear-gradient(135deg,#1a1a0a,#2d1f0a) !important; }
+    body.seasonal-thanksgiving{ background: linear-gradient(135deg,#1a140a,#2a1f0f) !important; }
+    body.seasonal-christmas   { background: linear-gradient(135deg,#0f1520,#1a2a3a) !important; }
+    body.seasonal-newyear     { background: linear-gradient(135deg,#0A0E27,#1a1a5a) !important; }
+    body.seasonal-summer      { background: linear-gradient(135deg,#0A1628,#1a3a5a) !important; }
+    body.seasonal-fourthofjuly{ background: linear-gradient(135deg,#0a0a1a,#1a1a3a) !important; }
+    body.seasonal-memorialday { background: linear-gradient(135deg,#0a0a1a,#1a1a2a) !important; }
+    body.seasonal-laborday    { background: linear-gradient(135deg,#0a0f1a,#0f1a2a) !important; }
+    body.seasonal-spring      { background: linear-gradient(135deg,#0f1520,#1a2a4a) !important; }
+    body[class*="seasonal-"]::before,
+    body[class*="seasonal-"]::after { pointer-events: none !important; }
+
+    @keyframes heartbeat { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1)} }
+    body.seasonal-valentines::before { content:'💕 ❤️ 💗 ❤️ 💕'; position:fixed; top:0; left:0; width:100%; height:100%; font-size:48px; pointer-events:none; z-index:1; opacity:0.15; animation:heartbeat 2s infinite; display:flex; align-items:center; justify-content:center; }
+
+    @keyframes shamrock-float { 0%,100%{transform:translateY(0) rotate(0);opacity:0.3} 50%{transform:translateY(-20px) rotate(15deg);opacity:0.5} }
+    body.seasonal-stpatricks::after { content:'🍀 ☘️ 🍀 ☘️ 🍀'; position:fixed; top:0; left:0; width:100%; height:100%; font-size:64px; pointer-events:none; z-index:1; opacity:0.15; animation:shamrock-float 6s ease-in-out infinite; display:flex; align-items:center; justify-content:space-around; }
+
+    @keyframes spooky-bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-20px)} }
+    body.seasonal-halloween::before { content:'👻 🎃 🦇 👻 🎃 🦇'; position:fixed; top:10%; left:0; width:100%; font-size:48px; pointer-events:none; z-index:1; opacity:0.3; animation:spooky-bob 3s ease-in-out infinite; display:flex; justify-content:space-around; }
+
+    @keyframes autumn-fall { 0%{transform:translateY(-10vh) rotate(0);opacity:1} 100%{transform:translateY(100vh) rotate(360deg);opacity:0} }
+    body.seasonal-thanksgiving::before { content:'🍂 🦃 🍁 🌽 🍂 🦃 🍁 🌽'; position:fixed; top:0; left:0; width:100%; font-size:48px; pointer-events:none; z-index:1; opacity:0.2; animation:autumn-fall 10s linear infinite; display:flex; justify-content:space-around; }
+
+    @keyframes snowfall { 0%{transform:translateY(-10vh) translateX(0) rotateZ(0);opacity:1} 90%{opacity:1} 100%{transform:translateY(100vh) translateX(100px) rotateZ(360deg);opacity:0} }
+    body.seasonal-christmas::before { content:'❄️ ⛄ 🎄 ❄️ ⛄ 🎄 ❄️ ⛄'; position:fixed; top:0; left:0; width:100%; font-size:48px; pointer-events:none; z-index:1; opacity:0.3; animation:snowfall 10s linear infinite; display:flex; justify-content:space-around; }
+
+    @keyframes confetti-fall { 0%{transform:translateY(-10vh) rotate(0);opacity:1} 100%{transform:translateY(100vh) rotate(720deg);opacity:0} }
+    body.seasonal-newyear::after { content:'🎉 ✨ 🎊 🎆 ✨ 🎉 🎊'; position:fixed; top:0; left:0; width:100%; font-size:48px; pointer-events:none; z-index:1; opacity:0.4; animation:confetti-fall 15s linear infinite; display:flex; justify-content:space-around; }
+
+    @keyframes sun-glow { 0%,100%{opacity:0.2} 50%{opacity:0.4} }
+    body.seasonal-summer::after { content:'☀️ 🌊 🏖️ 🌞 ☀️ 🌊'; position:fixed; top:0; left:0; width:100%; font-size:48px; pointer-events:none; z-index:1; animation:sun-glow 3s ease-in-out infinite; display:flex; justify-content:space-around; }
+
+    @keyframes firework { 0%{transform:translate(0,0) scale(1);opacity:1} 100%{transform:translate(50px,-50px) scale(0);opacity:0} }
+    body.seasonal-fourthofjuly::before { content:'✨ 🎆 ⭐ 🎇 ✨'; position:fixed; top:20%; left:50%; transform:translateX(-50%); font-size:48px; pointer-events:none; z-index:1; opacity:0.4; animation:firework 3s ease-out infinite; }
+
+    @keyframes flower-bloom { 0%,100%{opacity:0.2} 50%{opacity:0.4} }
+    body.seasonal-spring::after { content:'🌸 🌺 🌻 🌷 🌸 🌺 🌻 🌷'; position:fixed; top:0; left:0; width:100%; font-size:48px; pointer-events:none; z-index:1; animation:flower-bloom 4s ease-in-out infinite; display:flex; justify-content:space-around; }
+
+    @media print {
+      body::before, body::after,
       body[class*="seasonal-"]::before,
       body[class*="seasonal-"]::after {
         display: none !important;
         content: none !important;
-        width: 0 !important;
-        height: 0 !important;
-        font-size: 0 !important;
-        position: static !important;
-        animation: none !important;
       }
-
-      /* Stop all animations */
-      *,
-      *::before,
-      *::after {
-        animation: none !important;
-        animation-play-state: paused !important;
-        transition: none !important;
-      }
-
-      /* Remove seasonal decorations from print */
-      body[class*="seasonal-"]::before,
-      body[class*="seasonal-"]::after {
-        display: none !important;
-      }
-
-      /* Reset seasonal backgrounds to white for printing */
-      body.seasonal-valentines,
-      body.seasonal-stpatricks,
-      body.seasonal-memorialday,
-      body.seasonal-fourthofjuly,
-      body.seasonal-laborday,
-      body.seasonal-thanksgiving,
-      body.seasonal-christmas,
-      body.seasonal-newyear,
-      body.seasonal-spring,
-      body.seasonal-summer,
-      body.seasonal-halloween {
-        background: #ffffff !important;
-        background-attachment: unset !important;
-      }
-
-      /* Remove glow effects from page */
-      body[class*="seasonal-"] .page {
-        border-color: #cccccc !important;
-        box-shadow: none !important;
-      }
-
-      /* Force #D97706 (amber/orange) on ALL titles during print */
-      body[class*="seasonal-"] .section-header,
-      body[class*="seasonal-"] .col-label {
-        color: #D97706 !important;
-        border-left-color: #D97706 !important;
-        text-shadow: none !important;
-      }
-
-      /* Force #D97706 on pseudo-element backgrounds */
-      body[class*="seasonal-"] .section-header::before,
-      body[class*="seasonal-"] .col-label::before {
-        background: #D97706 !important;
-        box-shadow: none !important;
-      }
-
-      /* Force #D97706 on CSV export buttons during print */
-      .csv-export-btn,
-      #customerInfoCsvBtn,
-      #propertyInfoCsvBtn,
-      #generatorCsvBtn,
-      #transferSwitchCsvBtn,
-      #precastPadCsvBtn,
-      #fuelTankCsvBtn,
-      [class*="csv-export"],
-      [id*="csv"] {
-        color: #D97706 !important;
-        border-color: #D97706 !important;
-        box-shadow: none !important;
-      }
-
-      .csv-export-btn:hover,
-      #customerInfoCsvBtn:hover,
-      #propertyInfoCsvBtn:hover,
-      #generatorCsvBtn:hover,
-      #transferSwitchCsvBtn:hover,
-      #precastPadCsvBtn:hover,
-      #fuelTankCsvBtn:hover,
-      [class*="csv-export"]:hover,
-      [id*="csv"]:hover {
-        background-color: transparent !important;
-        color: #D97706 !important;
-        transform: none !important;
-      }
-
-      .csv-export-btn svg,
-      #customerInfoCsvBtn svg,
-      #propertyInfoCsvBtn svg,
-      #generatorCsvBtn svg,
-      #transferSwitchCsvBtn svg,
-      #precastPadCsvBtn svg,
-      #fuelTankCsvBtn svg,
-      [class*="csv-export"] svg,
-      [id*="csv"] svg {
-        fill: #D97706 !important;
-        stroke: #D97706 !important;
-      }
-
-      .csv-export-btn i,
-      #customerInfoCsvBtn i,
-      #propertyInfoCsvBtn i,
-      #generatorCsvBtn i,
-      #transferSwitchCsvBtn i,
-      #precastPadCsvBtn i,
-      #fuelTankCsvBtn i,
-      [class*="csv-export"] i,
-      [id*="csv"] i {
-        color: #D97706 !important;
-        text-shadow: none !important;
-      }
-
-     /* Keep text readable in print */
       body[class*="seasonal-"] {
+        background: #ffffff !important;
         color: #000000 !important;
       }
-
+      body[class*="seasonal-"] .section-header,
+      body[class*="seasonal-"] .col-label { color: #D97706 !important; text-shadow: none !important; }
+      body[class*="seasonal-"] .section-header::before,
+      body[class*="seasonal-"] .col-label::before { background: #D97706 !important; }
       body[class*="seasonal-"] .section-header svg,
       body[class*="seasonal-"] .section-header svg *,
-      body[class*="seasonal-"] .section-header svg path,
-      body[class*="seasonal-"] .section-header svg line,
-      body[class*="seasonal-"] .section-header svg circle,
-      body[class*="seasonal-"] .section-header svg rect {
-        stroke: #D97706 !important;
-        color: #D97706 !important;
-        fill: none !important;
-      }
-
       body[class*="seasonal-"] .col-label svg,
-      body[class*="seasonal-"] .col-label svg *,
-      body[class*="seasonal-"] .col-label svg path,
-      body[class*="seasonal-"] .col-label svg line,
-      body[class*="seasonal-"] .col-label svg circle,
-      body[class*="seasonal-"] .col-label svg rect {
-        stroke: #D97706 !important;
-        color: #D97706 !important;
-        fill: none !important;
-      }
+      body[class*="seasonal-"] .col-label svg * { stroke: #D97706 !important; }
     }
   `;
-
   document.head.appendChild(style);
 }
 
+// ── SAFARI PRINT SCALE ──
+// Chrome/Edge honour html{zoom} in @media print — fills the page perfectly.
+// Safari ignores zoom in print but respects transform, so we apply it via
+// beforeprint/afterprint events instead.
+// Printable width: 8.5in - 0.2in (margins) = 8.3in = 796.8px @ 96dpi
+// Design width: 1050px  →  scale = 796.8 / 1050 = 0.759
+(function() {
+  var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent) ||
+                 (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream);
 
-// INITIALIZATION
-// ────────────────────────────────────────────────────────────────
+  if (!isSafari) return; // Chrome/Edge use css zoom, nothing to do
+
+  var page = null;
+  var SCALE = 0.759;
+
+  function beforePrint() {
+    page = document.getElementById('page');
+    if (!page) return;
+    page.style.transformOrigin = 'top left';
+    page.style.transform = 'scale(' + SCALE + ')';
+    // Compensate: scaling shrinks the element but the document flow still
+    // reserves the original 1050px width. We set body width to match scaled output.
+    document.body.style.width = Math.round(1050 * SCALE) + 'px';
+  }
+
+  function afterPrint() {
+    if (!page) return;
+    page.style.transform = '';
+    page.style.transformOrigin = '';
+    document.body.style.width = '';
+    page = null;
+  }
+
+  window.addEventListener('beforeprint', beforePrint);
+  window.addEventListener('afterprint', afterPrint);
+})();
+
+// ── INIT ──
 document.addEventListener('DOMContentLoaded', function() {
   var todayInput = document.getElementById('today');
-  if (todayInput && !todayInput.value) {
-    todayInput.value = new Date().toISOString().split('T')[0];
-  }
+  if (todayInput && !todayInput.value) todayInput.value = new Date().toISOString().split('T')[0];
 
   if (!navigator.onLine) {
     var b = document.getElementById('offline-banner');
@@ -4614,23 +3066,16 @@ document.addEventListener('DOMContentLoaded', function() {
     document.body.classList.add('offline');
   }
 
-  // ===== SEASONAL THEME SETUP =====
   injectSeasonalStyles();
-  const seasonalTheme = getCurrentSeasonalTheme();
-  applySeasonalTheme(seasonalTheme);
-  // ===== END SEASONAL THEME SETUP =====
-
-  // ===== THEME SETUP =====
-  const initialTheme = getInitialTheme();
-  applyTheme(initialTheme);
+  applySeasonalTheme(getCurrentSeasonalTheme());
+  applyTheme(getInitialTheme());
   setupThemeToggle();
-  // ===== END THEME SETUP =====
-
   setupAddressAutocomplete();
   setupGpsButton();
   setupFieldValidation();
   restoreDraft();
-});</script>
+});
+</script>
 
 </body>
 </html>
