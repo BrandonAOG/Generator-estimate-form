@@ -1668,8 +1668,17 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
   }
 
   /* Fields */
-  .field-row { margin-bottom: 4px !important; flex-wrap: nowrap !important; }
-  .inline-row { margin-bottom: 4px !important; flex-wrap: wrap !important; }
+   .field-row { 
+    margin-bottom: 3px !important; 
+    flex-wrap: nowrap !important; 
+    min-height: 22px !important; 
+  }
+  .inline-row { 
+    margin-bottom: 3px !important; 
+    flex-wrap: wrap !important; 
+    min-height: 22px !important; 
+  }
+
 
   label {
     color: #6B7280 !important;
@@ -1683,12 +1692,11 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     font-size: 0.58rem !important;
   }
 
-  input[type="text"],
+   input[type="text"],
   input[type="email"],
   input[type="tel"],
   input[type="date"],
   input[type="number"],
-  textarea,
   select {
     background: #ffffff !important;
     border-bottom: 2px solid #D97706 !important;
@@ -1696,25 +1704,29 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     border-left: none !important;
     border-right: none !important;
     color: #1F2937 !important;
-    padding: 3px 4px !important;
-    min-height: auto !important;
-    height: auto !important;
-    font-size: 0.88rem !important;
+    padding: 2px 4px !important;
+    min-height: 22px !important;
+    height: 22px !important;
+    font-size: 0.82rem !important;
     box-shadow: none !important;
   }
+
 
   input::placeholder, textarea::placeholder { color: transparent !important; }
 
   #address { padding-right: 6px !important; }
 
-  textarea {
+    textarea {
     border: 1px solid #D97706 !important;
-    min-height: 26px !important;
-    height: 26px !important;
-    max-height: 26px !important;
+    min-height: 32px !important;
+    height: 32px !important;
+    max-height: 32px !important;
     resize: none !important;
     overflow: hidden !important;
+    padding: 4px 6px !important;
+    margin-top: 2px !important;
   }
+
 
   /* Y/N toggles */
   .yn-group {
@@ -1724,9 +1736,10 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     box-shadow: none !important;
   }
 
-  .yn-group .yn-label {
-    min-height: auto !important;
-    padding: 0 10px !important;
+    .yn-group .yn-label {
+    min-height: 22px !important;
+    height: 22px !important;
+    padding: 0 8px !important;
     color: #6B7280 !important;
     background: transparent !important;
     font-size: 0.65rem !important;
@@ -1739,9 +1752,10 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
   /* Checkboxes */
   .check-group { display: flex !important; flex-wrap: wrap !important; gap: 4px !important; }
 
-  .check-item {
-    min-height: auto !important;
-    padding: 2px 6px 2px 4px !important;
+    .check-item {
+    min-height: 20px !important;
+    height: 20px !important;
+    padding: 0 6px 0 4px !important;
     background: #ffffff !important;
     border: 1px solid #D97706 !important;
     box-shadow: none !important;
