@@ -1407,14 +1407,20 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   PRINT STYLES — FULL-WIDTH, CROSS-PLATFORM
-   
-   Strategy:
-   • @page: 0.1in side margins, 0.2in bottom margin — maximum usable width
-   • html { zoom }: Chrome/Edge scale the 1050px design to fill the page
-   • Safari/iOS: JS beforeprint listener applies transform scale instead
-     (Safari ignores zoom in @media print but respects transform)
-   • NO fixed heights anywhere — content flows to its natural height
+   PRINT STYLES — FULL-WIDTH, SINGLE PAGE, ALL BROWSERS
+
+   One mechanism only: html { zoom: 0.759 }
+
+   CSS zoom shrinks BOTH visual render AND layout footprint, so the
+   browser measures the correct scaled height for page breaks.
+   This means one page on Chrome, Safari macOS, and iOS Safari.
+
+   transform: scale() was NOT used — it only scales visually, the
+   layout footprint stays full-size, causing 2-page output on Safari.
+
+   Printable: 8.5in - 0.2in margins = 8.3in = 796.8px @ 96dpi
+   Design: 1050px → zoom = 796.8/1050 = 0.759
+   Scaled content height ~900-990px < 1027px printable ✓
    ═══════════════════════════════════════════════════════════════ */
 @media print {
   @page {
@@ -1452,10 +1458,9 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     content: none !important;
   }
 
-  /* html zoom: Chrome/Edge only.
-     Printable width = 8.5in - 0.2in margins = 8.3in = 796.8px @ 96dpi
-     Design width = 1050px
-     zoom = 796.8 / 1050 = 0.7589 → use 0.759 */
+  /* Scale the 1050px design to fill printable width on ALL browsers.
+     zoom affects layout flow (unlike transform) → correct page-break
+     calculation → single page on Chrome, Safari macOS, and iOS. */
   html {
     zoom: 0.759;
     margin: 0 !important;
@@ -1487,7 +1492,6 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     border: 2px solid #D97706 !important;
     box-shadow: none !important;
     position: static !important;
-    transform: none !important;
   }
 
   /* Corner accents */
@@ -3017,43 +3021,6 @@ function injectSeasonalStyles() {
   `;
   document.head.appendChild(style);
 }
-
-// ── SAFARI PRINT SCALE ──
-// Chrome/Edge honour html{zoom} in @media print — fills the page perfectly.
-// Safari ignores zoom in print but respects transform, so we apply it via
-// beforeprint/afterprint events instead.
-// Printable width: 8.5in - 0.2in (margins) = 8.3in = 796.8px @ 96dpi
-// Design width: 1050px  →  scale = 796.8 / 1050 = 0.759
-(function() {
-  var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent) ||
-                 (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream);
-
-  if (!isSafari) return; // Chrome/Edge use css zoom, nothing to do
-
-  var page = null;
-  var SCALE = 0.759;
-
-  function beforePrint() {
-    page = document.getElementById('page');
-    if (!page) return;
-    page.style.transformOrigin = 'top left';
-    page.style.transform = 'scale(' + SCALE + ')';
-    // Compensate: scaling shrinks the element but the document flow still
-    // reserves the original 1050px width. We set body width to match scaled output.
-    document.body.style.width = Math.round(1050 * SCALE) + 'px';
-  }
-
-  function afterPrint() {
-    if (!page) return;
-    page.style.transform = '';
-    page.style.transformOrigin = '';
-    document.body.style.width = '';
-    page = null;
-  }
-
-  window.addEventListener('beforeprint', beforePrint);
-  window.addEventListener('afterprint', afterPrint);
-})();
 
 // ── INIT ──
 document.addEventListener('DOMContentLoaded', function() {
