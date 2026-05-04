@@ -789,9 +789,12 @@ body.dark-mode .col-label::before {
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-bottom: 7px;
+  margin-bottom: 6px;
   flex-wrap: wrap;
+  min-height: 32px;
 }
+
+
 .field-row:last-child { margin-bottom: 0; }
 
 label {
@@ -823,16 +826,19 @@ select {
   background: var(--panel);
   border: none;
   border-bottom: 2px solid rgba(217,119,6,0.25);
-  padding: 5px 6px;
+  padding: 3px 6px;
   outline: none;
   width: 100%;
   transition: all 0.2s;
   border-radius: 0;
-  min-height: 34px;
+  min-height: 32px;
+  height: 32px;
   -webkit-appearance: none;
   appearance: none;
   caret-color: var(--cyan);
+  box-sizing: border-box;
 }
+
 
 body.dark-mode input[type="text"],
 body.dark-mode input[type="email"],
@@ -904,13 +910,17 @@ textarea {
   width: 100%;
   resize: vertical;
   border: 1px solid rgba(217,119,6,0.2);
-  padding: 6px;
-  margin-top: 4px;
-  min-height: 40px;
+  padding: 5px 6px;
+  margin-top: 3px;
+  min-height: 44px;
+  height: 44px;
   background: var(--panel);
   color: var(--text);
   transition: all 0.3s ease;
+  box-sizing: border-box;
 }
+
+
 
 body.dark-mode textarea {
   background: rgba(10, 14, 39, 0.6);
@@ -946,7 +956,8 @@ body.dark-mode textarea:focus { border-color: #00FFC8; box-shadow: 0 0 8px rgba(
   cursor: pointer;
   user-select: none;
   min-height: 30px;
-  padding: 3px 8px 3px 6px;
+  height: 30px;
+  padding: 0px 8px 0px 6px;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
   border: 1px solid rgba(217,119,6,0.25);
@@ -1043,7 +1054,7 @@ body.dark-mode .yn-group {
 .yn-group input[type="radio"] { display: none; }
 
 .yn-group .yn-label {
-  padding: 0 14px;
+  padding: 0 12px;
   font-family: var(--font-display);
   font-size: 0.65rem;
   font-weight: 700;
@@ -1052,7 +1063,8 @@ body.dark-mode .yn-group {
   color: var(--text-muted);
   background: transparent;
   border: none;
-  min-height: 32px;
+  min-height: 30px;
+  height: 30px;
   display: flex;
   align-items: center;
   white-space: nowrap;
@@ -1060,6 +1072,8 @@ body.dark-mode .yn-group {
   touch-action: manipulation;
   transition: all 0.15s;
 }
+
+
 
 body.dark-mode .yn-group .yn-label {
   color: #7DD3FC;
@@ -1109,10 +1123,12 @@ body.dark-mode .yn-group .yn-n:checked + .yn-label-n {
 .inline-row {
   display: flex;
   align-items: center;
-  gap: 7px;
-  margin-bottom: 9px;
+  gap: 6px;
+  margin-bottom: 6px;
   flex-wrap: wrap;
+  min-height: 30px;
 }
+
 
 .inline-label {
   font-family: var(--font-display);
@@ -1170,7 +1186,6 @@ body.dark-mode .divider::before {
   flex-wrap: wrap;
   background: var(--panel);
   transition: all 0.3s ease;
-  margin-top: -8px !important;
 }
 
 body.dark-mode .flood-bar {
@@ -1345,7 +1360,7 @@ body.dark-mode .gas-appliances-label { color: #7DD3FC; }
   flex-wrap: wrap;
   gap: 6px;
   border-top: 1px solid var(--border-bright);
-  margin-top: -5px;
+  margin-top: auto;
   flex-shrink: 0;
   transition: all 0.3s ease;
   width: 100%;
@@ -1428,14 +1443,6 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     size: 8.5in 11in;
     /* 0.1in left+right margins, 0.1in top, 0.2in bottom */
     margin: 0.1in 0.1in 0.2in 0.1in;
-  }
-
-  /* ... existing print styles ... */
-  
-  input[type="date"] {
-    min-width: 160px !important;
-    width: 160px !important;
-    font-size: 0.95rem !important;
   }
 
   /* Color fidelity */
@@ -1794,79 +1801,6 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
 
   .footer-text { color: #D97706 !important; text-shadow: none !important; }
 
-  /* ── DESKTOP FILL (Chrome/Edge only) ──────────────────────────────
-     Safari supports -webkit-touch-callout so it skips this block entirely.
-     Chrome/Edge do not, so they get:
-       • .page min-height fills the full printable area (1027px at zoom 0.759)
-       • Sections grow equally via flex-grow:1
-       • Full flex chain passes height down to textareas so they expand
-     Result: content fills the page evenly — looks like a professional form.
-     Safari: height:auto, no grow — fits in ~987px available → 1 page ✓
-  ─────────────────────────────────────────────────────────────────── */
-  @supports (not (-webkit-touch-callout: default)) {
-    .page {
-      min-height: 1353px !important;
-    }
-
-    /* Sections grow equally to fill the page */
-    .section {
-      flex-grow: 1 !important;
-      display: flex !important;
-      flex-direction: column !important;
-    }
-
-    /* section-body fills its grown section */
-    .section-body {
-      flex: 1 !important;
-      display: flex !important;
-      flex-direction: column !important;
-    }
-
-    /* Pass height down through .field-block wrappers */
-    .section-body > .field-block:last-child {
-      flex: 1 !important;
-      display: flex !important;
-      flex-direction: column !important;
-    }
-
-    /* Pass height through gas-appliances-box (Fuel Tank section) */
-    .gas-appliances-box {
-      flex: 1 !important;
-      display: flex !important;
-      flex-direction: column !important;
-    }
-
-    .gas-appliances-box > .field-block {
-      flex: 1 !important;
-      display: flex !important;
-      flex-direction: column !important;
-    }
-
-    /* All textareas at the end of sections expand to fill */
-    .section-body textarea,
-    .section-body .field-block textarea,
-    .gas-appliances-box textarea {
-      flex: 1 !important;
-      min-height: 24px !important;
-      max-height: none !important;
-      height: auto !important;
-    }
-
-    /* install-difficulty row grows, ready_notes expands */
-    #install-difficulty-row {
-      flex-grow: 1 !important;
-      display: flex !important;
-      flex-direction: column !important;
-    }
-
-    #ready_notes {
-      flex: 1 !important;
-      min-height: 24px !important;
-      max-height: none !important;
-      height: auto !important;
-    }
-  }
-
   /* Dark mode → white for print */
   body.dark-mode .page,
   body.dark-mode .header,
@@ -1907,7 +1841,16 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
   body[class*="seasonal-"] .section-header svg *,
   body[class*="seasonal-"] .col-label svg,
   body[class*="seasonal-"] .col-label svg * { stroke: #D97706 !important; color: #D97706 !important; }
+
+  /* ... existing print styles ... */
+  
+  input[type="date"] {
+    min-width: 160px !important;
+    width: 160px !important;
+    font-size: 0.95rem !important;
+  }
 }
+
 </style>
 </head>
 
