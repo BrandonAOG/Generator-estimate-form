@@ -1441,11 +1441,9 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
 @media print {
   @page {
     size: 8.5in 11in;
-    /* 0.1in left+right margins, 0.1in top, 0.2in bottom */
-    margin: 0.1in 0.1in 0.2in 0.1in;
+    margin: 0.1in 0.1in 0.1in 0.1in;
   }
 
-  /* Color fidelity */
   * {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
@@ -1454,7 +1452,6 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     transition: none !important;
   }
 
-  /* Hide UI chrome */
   .toolbar,
   #theme-toggle-btn,
   #offline-banner,
@@ -1466,7 +1463,6 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
 
   .header::after { display: none !important; }
 
-  /* Seasonal decorations off */
   body::before, body::after,
   body[class*="seasonal-"]::before,
   body[class*="seasonal-"]::after {
@@ -1474,9 +1470,6 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     content: none !important;
   }
 
-  /* Scale the 1050px design to fill printable width on ALL browsers.
-     zoom affects layout flow (unlike transform) → correct page-break
-     calculation → single page on Chrome, Safari macOS, and iOS. */
   html {
     zoom: 0.759;
     margin: 0 !important;
@@ -1510,11 +1503,10 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     position: static !important;
   }
 
-  /* Corner accents */
   .page::before, .page::after,
   .page-corner-bl, .page-corner-br { display: block !important; }
 
-  /* Header */
+  /* ── HEADER ── */
   .header {
     background: #ffffff !important;
     border-bottom: 1px solid #D97706 !important;
@@ -1541,24 +1533,24 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     text-shadow: none !important;
   }
 
-  /* Content area */
+  /* ── CONTENT ── */
   .content {
     flex: 1 !important;
     min-height: 0 !important;
     overflow: visible !important;
-    padding: 5px 18px !important;
+    padding: 8px 18px !important;
     background: #ffffff !important;
     display: flex !important;
     flex-direction: column !important;
   }
 
-  /* Top grid — side by side */
+  /* ── TOP GRID ── */
   .top-grid {
     display: grid !important;
     grid-template-columns: 1fr 1fr !important;
     background: #ffffff !important;
     border: 1px solid #D97706 !important;
-    margin-bottom: 5px !important;
+    margin-bottom: 6px !important;
     flex-shrink: 0 !important;
   }
 
@@ -1575,7 +1567,7 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     border-bottom: none !important;
   }
 
-  /* Col labels */
+  /* ── COL LABELS ── */
   .col-label {
     display: inline-flex !important;
     background: #f5f5f5 !important;
@@ -1594,15 +1586,16 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     animation: none !important;
   }
 
-  .col-label svg, .col-label svg * { stroke: #D97706 !important; color: #D97706 !important; }
+  .col-label svg,
+  .col-label svg * { stroke: #D97706 !important; color: #D97706 !important; }
 
-  /* Flood bar */
+  /* ── FLOOD BAR ── */
   .flood-bar {
     display: flex !important;
     background: #ffffff !important;
     border: 1px solid #D97706 !important;
     border-top: none !important;
-    margin-bottom: 5px !important;
+    margin-bottom: 6px !important;
     flex-shrink: 0 !important;
   }
 
@@ -1612,11 +1605,11 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     padding: 2px 12px !important;
   }
 
-  /* Sections */
+  /* ── SECTIONS ── */
   .section {
     background: #ffffff !important;
     border: 1px solid #D97706 !important;
-    margin-bottom: 4px !important;
+    margin-bottom: 6px !important;
     flex-shrink: 0 !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
@@ -1629,7 +1622,7 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     color: #D97706 !important;
     border-bottom: 1px solid #D97706 !important;
     text-shadow: none !important;
-    padding: 4px 14px !important;
+    padding: 6px 14px !important;
     font-size: 0.7rem !important;
   }
 
@@ -1639,19 +1632,36 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     animation: none !important;
   }
 
-  .section-header svg, .section-header svg * { stroke: #D97706 !important; color: #D97706 !important; }
+  .section-header svg,
+  .section-header svg * { stroke: #D97706 !important; color: #D97706 !important; }
 
   .section-body {
     background: #ffffff !important;
-    padding: 5px 12px !important;
+    padding: 6px 12px !important;
   }
 
-  /* Grids */
-  .grid-2 { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 8px !important; margin-bottom: 5px !important; }
-  .grid-3 { display: grid !important; grid-template-columns: 1fr 1fr 1fr !important; gap: 8px !important; margin-bottom: 5px !important; }
-  .grid-4 { display: grid !important; grid-template-columns: repeat(4, 1fr) !important; gap: 8px !important; margin-bottom: 5px !important; }
+  /* ── GRIDS ── */
+  .grid-2 {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+    margin-bottom: 6px !important;
+  }
 
-  /* Prevent yn-group from stretching to fill grid cell width */
+  .grid-3 {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr 1fr !important;
+    gap: 8px !important;
+    margin-bottom: 6px !important;
+  }
+
+  .grid-4 {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 8px !important;
+    margin-bottom: 6px !important;
+  }
+
   .grid-4 .yn-group,
   .grid-3 .yn-group,
   .grid-2 .yn-group {
@@ -1667,37 +1677,38 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     overflow: hidden !important;
   }
 
-  /* Fields */
-   .field-row { 
-    margin-bottom: 3px !important; 
-    flex-wrap: nowrap !important; 
-    min-height: 22px !important; 
-  }
-  .inline-row { 
-    margin-bottom: 3px !important; 
-    flex-wrap: wrap !important; 
-    min-height: 22px !important; 
+  /* ── FIELD ROWS ── */
+  .field-row {
+    margin-bottom: 4px !important;
+    flex-wrap: nowrap !important;
+    min-height: 28px !important;
   }
 
+  .inline-row {
+    margin-bottom: 4px !important;
+    flex-wrap: wrap !important;
+    min-height: 28px !important;
+  }
 
+  /* ── LABELS ── */
   label {
     color: #6B7280 !important;
-    font-size: 0.58rem !important;
+    font-size: 0.60rem !important;
     white-space: nowrap !important;
   }
 
   .inline-label {
     color: #6B7280 !important;
     white-space: nowrap !important;
-    font-size: 0.58rem !important;
+    font-size: 0.60rem !important;
   }
 
-   input[type="text"],
+  /* ── INPUTS ── */
+  input[type="text"],
   input[type="email"],
   input[type="tel"],
   input[type="date"],
-  input[type="number"],
-  select {
+  input[type="number"] {
     background: #ffffff !important;
     border-bottom: 2px solid #D97706 !important;
     border-top: none !important;
@@ -1705,30 +1716,40 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     border-right: none !important;
     color: #1F2937 !important;
     padding: 2px 4px !important;
-    min-height: 22px !important;
-    height: 22px !important;
-    font-size: 0.82rem !important;
+    min-height: 28px !important;
+    height: 28px !important;
+    font-size: 0.85rem !important;
     box-shadow: none !important;
   }
 
-
-  input::placeholder, textarea::placeholder { color: transparent !important; }
+  input::placeholder,
+  textarea::placeholder { color: transparent !important; }
 
   #address { padding-right: 6px !important; }
 
-    textarea {
+  input[type="date"] {
+    min-width: 160px !important;
+    width: 160px !important;
+    font-size: 0.85rem !important;
+  }
+
+  /* ── TEXTAREAS ── */
+  textarea {
     border: 1px solid #D97706 !important;
-    min-height: 32px !important;
-    height: 32px !important;
-    max-height: 32px !important;
+    min-height: 48px !important;
+    height: 48px !important;
+    max-height: 48px !important;
     resize: none !important;
     overflow: hidden !important;
     padding: 4px 6px !important;
     margin-top: 2px !important;
+    font-size: 0.85rem !important;
+    background: #ffffff !important;
+    color: #1F2937 !important;
+    box-shadow: none !important;
   }
 
-
-  /* Y/N toggles */
+  /* ── YES/NO TOGGLES ── */
   .yn-group {
     display: inline-flex !important;
     border: 1px solid #D97706 !important;
@@ -1736,46 +1757,111 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     box-shadow: none !important;
   }
 
-    .yn-group .yn-label {
-    min-height: 22px !important;
-    height: 22px !important;
-    padding: 0 8px !important;
+  .yn-group .yn-label {
+    min-height: 28px !important;
+    height: 28px !important;
+    padding: 0 10px !important;
     color: #6B7280 !important;
     background: transparent !important;
     font-size: 0.65rem !important;
+    line-height: 28px !important;
   }
 
-  .yn-group .yn-label:first-of-type { border-right: 1px solid #D97706 !important; }
-  .yn-group .yn-y:checked + .yn-label-y { background: #f0f0f0 !important; color: #059669 !important; text-shadow: none !important; box-shadow: none !important; }
-  .yn-group .yn-n:checked + .yn-label-n { background: #f0f0f0 !important; color: #DC2626 !important; text-shadow: none !important; box-shadow: none !important; }
+  .yn-group .yn-label:first-of-type {
+    border-right: 1px solid #D97706 !important;
+  }
 
-  /* Checkboxes */
-  .check-group { display: flex !important; flex-wrap: wrap !important; gap: 4px !important; }
-
-    .check-item {
-    min-height: 26px !important;
-    height: 26px !important;
-    padding: 0 6px 0 4px !important;
-    background: #ffffff !important;
-    border: 1px solid #D97706 !important;
+  .yn-group .yn-y:checked + .yn-label-y {
+    background: #f0f0f0 !important;
+    color: #059669 !important;
+    text-shadow: none !important;
     box-shadow: none !important;
   }
 
-  .check-item span { color: #1F2937 !important; text-shadow: none !important; font-size: 0.6rem !important; }
-  .check-item:has(input:checked) { background: #f0f0f0 !important; border-color: #D97706 !important; box-shadow: none !important; }
+  .yn-group .yn-n:checked + .yn-label-n {
+    background: #f0f0f0 !important;
+    color: #DC2626 !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+  }
+
+  /* ── CHECK ITEMS ── */
+  .check-group {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 4px !important;
+  }
+
+  .check-item {
+    min-height: 28px !important;
+    height: 28px !important;
+    padding: 0 7px 0 5px !important;
+    background: #ffffff !important;
+    border: 1px solid #D97706 !important;
+    box-shadow: none !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    line-height: 28px !important;
+  }
+
+  .check-item input[type="checkbox"],
+  .check-item input[type="radio"] {
+    width: 12px !important;
+    height: 12px !important;
+    min-height: 12px !important;
+    min-width: 12px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    border-bottom: none !important;
+    flex-shrink: 0 !important;
+  }
+
+  .check-item span {
+    color: #1F2937 !important;
+    text-shadow: none !important;
+    font-size: 0.60rem !important;
+    line-height: 1 !important;
+  }
+
+  .check-item:has(input:checked) {
+    background: #f0f0f0 !important;
+    border-color: #D97706 !important;
+    box-shadow: none !important;
+  }
+
   .check-item:has(input:checked) span { color: #D97706 !important; }
 
-  /* Divider */
-  .divider { border-top: 1px solid #D97706 !important; background: #ffffff !important; margin: 6px 0 !important; }
-  .divider::before { background: #ffffff !important; color: #D97706 !important; }
+  /* ── DIVIDER ── */
+  .divider {
+    border-top: 1px solid #D97706 !important;
+    background: #ffffff !important;
+    margin: 6px 0 !important;
+  }
 
-  /* Gas appliances */
-  .gas-appliances-box { background: #ffffff !important; border-color: #D97706 !important; padding: 5px 8px !important; margin-bottom: 5px !important; }
+  .divider::before {
+    background: #ffffff !important;
+    color: #D97706 !important;
+  }
+
+  /* ── GAS APPLIANCES ── */
+  .gas-appliances-box {
+    background: #ffffff !important;
+    border-color: #D97706 !important;
+    padding: 5px 8px !important;
+    margin-bottom: 6px !important;
+  }
+
   .gas-appliances-box::before { background: none !important; }
-  .gas-appliances-label { color: #6B7280 !important; font-size: 0.54rem !important; margin-bottom: 4px !important; }
 
-  /* Install difficulty / notes — NO margin-top:auto here.
-     Let it flow naturally after the fuel tank section. */
+  .gas-appliances-label {
+    color: #6B7280 !important;
+    font-size: 0.54rem !important;
+    margin-bottom: 4px !important;
+  }
+
+  /* ── INSTALL DIFFICULTY ROW ── */
   #install-difficulty-row {
     flex-shrink: 0 !important;
     margin-top: 4px !important;
@@ -1784,25 +1870,30 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     border: none !important;
   }
 
-  #address-suggestions, #gps-status { display: none !important; }
+  #address-suggestions,
+  #gps-status { display: none !important; }
 
-  #install_days { padding: 2px 4px !important; min-height: auto !important; height: auto !important; }
-
-  #ready_notes {
+  #install_days {
+    padding: 2px 4px !important;
     min-height: 28px !important;
     height: 28px !important;
-    max-height: 28px !important;
+  }
+
+  #ready_notes {
+    min-height: 44px !important;
+    height: 44px !important;
+    max-height: 44px !important;
     resize: none !important;
     overflow: hidden !important;
     width: 100% !important;
     box-sizing: border-box !important;
   }
 
-  /* Footer */
+  /* ── FOOTER ── */
   .footer {
     background: #ffffff !important;
     border-top: 1px solid #D97706 !important;
-    padding: 4px 22px !important;
+    padding: 5px 22px !important;
     margin-top: 4px !important;
     display: flex !important;
     justify-content: space-between !important;
@@ -1813,9 +1904,12 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     height: auto !important;
   }
 
-  .footer-text { color: #D97706 !important; text-shadow: none !important; }
+  .footer-text {
+    color: #D97706 !important;
+    text-shadow: none !important;
+  }
 
-  /* Dark mode → white for print */
+  /* ── DARK MODE → WHITE FOR PRINT ── */
   body.dark-mode .page,
   body.dark-mode .header,
   body.dark-mode .section,
@@ -1843,18 +1937,32 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     border-color: #D97706 !important;
   }
 
-  /* Seasonal → white for print */
+  /* ── SEASONAL → WHITE FOR PRINT ── */
   body[class*="seasonal-"] {
     background: #ffffff !important;
     color: #1F2937 !important;
   }
-  body[class*="seasonal-"] .page { border-color: #D97706 !important; box-shadow: none !important; }
+
+  body[class*="seasonal-"] .page {
+    border-color: #D97706 !important;
+    box-shadow: none !important;
+  }
+
   body[class*="seasonal-"] .section-header,
-  body[class*="seasonal-"] .col-label { color: #D97706 !important; text-shadow: none !important; }
+  body[class*="seasonal-"] .col-label {
+    color: #D97706 !important;
+    text-shadow: none !important;
+  }
+
   body[class*="seasonal-"] .section-header svg,
   body[class*="seasonal-"] .section-header svg *,
   body[class*="seasonal-"] .col-label svg,
-  body[class*="seasonal-"] .col-label svg * { stroke: #D97706 !important; color: #D97706 !important; }
+  body[class*="seasonal-"] .col-label svg * {
+    stroke: #D97706 !important;
+    color: #D97706 !important;
+  }
+}
+
 
   /* ... existing print styles ... */
   
