@@ -1635,6 +1635,22 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
   .grid-3 { display: grid !important; grid-template-columns: 1fr 1fr 1fr !important; gap: 8px !important; margin-bottom: 5px !important; }
   .grid-4 { display: grid !important; grid-template-columns: repeat(4, 1fr) !important; gap: 8px !important; margin-bottom: 5px !important; }
 
+  /* Prevent yn-group from stretching to fill grid cell width */
+  .grid-4 .yn-group,
+  .grid-3 .yn-group,
+  .grid-2 .yn-group {
+    width: fit-content !important;
+    min-width: 0 !important;
+    align-self: flex-start !important;
+  }
+
+  .grid-4 .field-block,
+  .grid-3 .field-block,
+  .grid-2 .field-block {
+    min-width: 0 !important;
+    overflow: hidden !important;
+  }
+
   /* Fields */
   .field-row { margin-bottom: 6px !important; flex-wrap: nowrap !important; }
   .inline-row { margin-bottom: 6px !important; flex-wrap: wrap !important; }
@@ -2240,12 +2256,12 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
             <input type="number" id="fuel_attic" name="fuel_attic" inputmode="numeric" autocomplete="off">
           </div>
           <div class="field-block" style="display:flex;flex-direction:column;gap:14px;">
-            <label style="font-size:0.65rem; margin-bottom:-8px; margin-left:18px;">Bore</label>
-            <div class="yn-group">
+            <label style="font-size:0.65rem; margin-bottom:-8px; margin-left:4px;">Bore</label>
+            <div class="yn-group" style="width:fit-content;min-width:0;flex-shrink:1;">
               <input type="radio" name="bore_fuel" id="bf_y" value="Y" class="yn-y">
-              <label class="yn-label yn-label-y" for="bf_y" style="font-size:0.65rem;">Y</label>
+              <label class="yn-label yn-label-y" for="bf_y" style="font-size:0.65rem;padding:0 10px;">Y</label>
               <input type="radio" name="bore_fuel" id="bf_n" value="N" class="yn-n">
-              <label class="yn-label yn-label-n" for="bf_n" style="font-size:0.65rem;">N</label>
+              <label class="yn-label yn-label-n" for="bf_n" style="font-size:0.65rem;padding:0 10px;">N</label>
             </div>
           </div>
         </div>
