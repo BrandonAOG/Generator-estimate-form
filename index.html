@@ -1706,26 +1706,18 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
   }
 
   /* ─────────────────────────────────────────────────────────────
-     SCALING STRATEGY
-     Design width: 1050px.
-     zoom: 816/1050 = 0.7771 fits the width exactly.
+     SCALING: zoom shrinks the 1050px design to fit 816px paper width.
+     zoom = 816/1050 = 0.7771.
 
-     Safari reserves ~0.5in at the bottom of the page for its own
-     footer notes. We handle this via @page margin-bottom so Safari
-     respects it at the layout level — NOT by shrinking .page height.
+     .page height: 1253px unzoomed.
+     Printed: 1253 × 0.7771 = 973px = ~10.1in.
+     This leaves ~0.9in at the bottom — enough for Safari's footer
+     bar (~0.5in) without overlapping content, while desktop Chrome
+     simply has a clean bottom margin.
 
-     With margin-bottom: 0.5in declared at @page:
-       Printable height = 11in - 0.5in = 10.5in = 1008px printed.
-       Unzoomed: 1008 / 0.7771 = 1297px.
-     But desktop Chrome/Firefox ignore @page margins when margin:0
-     is also set, so we keep margin:0 on @page and instead tell
-     Safari via -webkit-margin-after on body.
-
-     Simplest cross-browser approach:
-       @page margin: 0 (desktop Chrome/Firefox get full 11in)
-       .page height: 1297px unzoomed (= 10.5in printed after zoom)
-       This leaves the bottom 0.5in empty — exactly where Safari
-       draws its footer — so nothing gets clipped on either browser.
+     Key: NO justify-content on .content — that was pushing .footer
+     up via flex gap distribution. Footer stays at bottom via
+     margin-top:auto on the footer itself.
   ───────────────────────────────────────────────────────────── */
   html {
     zoom: 0.7771;
@@ -1744,12 +1736,7 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     color: #1F2937 !important;
   }
 
-  /* ── PAGE CONTAINER ──
-     1297px was the full 10.5in unzoomed, but Safari overlays its
-     own footer bar (~48px screen / ~62px unzoomed) on top of the
-     zoomed content AFTER rendering. Reducing to 1220px gives ~77px
-     of clearance at the bottom — Safari's bar lands in that gap,
-     desktop Chrome/Firefox just shows a small white margin. */
+  /* ── PAGE CONTAINER ── */
   .page {
     position: static !important;
     transform: none !important;
@@ -1757,7 +1744,7 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     top: auto !important;
     width: 1050px !important;
     max-width: 1050px !important;
-    height: 1220px !important;
+    height: 1253px !important;
     margin: 0 !important;
     padding: 0 !important;
     box-sizing: border-box !important;
@@ -1769,7 +1756,7 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     box-shadow: none !important;
   }
 
-  /* Corner accents — keep them visible */
+  /* Corner accents */
   .page::before, .page::after,
   .page-corner-bl, .page-corner-br { display: block !important; }
 
@@ -1809,7 +1796,6 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     background: #ffffff !important;
     display: flex !important;
     flex-direction: column !important;
-    justify-content: space-between !important;
   }
 
   /* ── TOP GRID — SIDE BY SIDE (Customer | Property) ── */
@@ -1885,10 +1871,11 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
 
   .section::before { background: none !important; }
 
-  /* Install difficulty: flex-shrink:0 so it never gets squashed */
+  /* Install difficulty: margin-top auto fills all remaining space
+     above it, pinning it to the bottom of .content above the footer */
   #install-difficulty-row {
     flex-shrink: 0 !important;
-    margin-top: 0 !important;
+    margin-top: auto !important;
     padding: 4px 0 0 0 !important;
     background: transparent !important;
     border: none !important;
@@ -1919,7 +1906,7 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     padding: 7px 12px !important;
   }
 
-  /* ── GRIDS — restore multi-column layout for print ── */
+  /* ── GRIDS ── */
   .grid-2 { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 8px !important; margin-bottom: 5px !important; }
   .grid-3 { display: grid !important; grid-template-columns: 1fr 1fr 1fr !important; gap: 8px !important; margin-bottom: 5px !important; }
   .grid-4 { display: grid !important; grid-template-columns: repeat(4, 1fr) !important; gap: 8px !important; margin-bottom: 5px !important; }
@@ -1988,7 +1975,6 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
   }
 
   .yn-group .yn-label:first-of-type { border-right: 1px solid #D97706 !important; }
-
   .yn-group .yn-y:checked + .yn-label-y { background: #f0f0f0 !important; color: #059669 !important; text-shadow: none !important; box-shadow: none !important; }
   .yn-group .yn-n:checked + .yn-label-n { background: #f0f0f0 !important; color: #DC2626 !important; text-shadow: none !important; box-shadow: none !important; }
 
@@ -2035,7 +2021,7 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     background: #ffffff !important;
     border-top: 1px solid #D97706 !important;
     padding: 7px 22px !important;
-    margin-top: auto !important;
+    margin-top: 0 !important;
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
@@ -2088,6 +2074,7 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
   body[class*="seasonal-"] .col-label svg,
   body[class*="seasonal-"] .col-label svg * { stroke: #D97706 !important; color: #D97706 !important; }
 }
+
 </style>
 </head>
 
