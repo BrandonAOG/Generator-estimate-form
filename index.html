@@ -1707,16 +1707,8 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
   /* ─────────────────────────────────────────────────────────────
      SCALING: zoom shrinks the 1050px design to fit 816px paper width.
      zoom = 816/1050 = 0.7771.
-
-     .page height: 1253px unzoomed.
-     Printed: 1253 × 0.7771 = 973px = ~10.1in.
-     This leaves ~0.9in at the bottom — enough for Safari's footer
-     bar (~0.5in) without overlapping content, while desktop Chrome
-     simply has a clean bottom margin.
-
-     Key: NO justify-content on .content — that was pushing .footer
-     up via flex gap distribution. Footer stays at bottom via
-     margin-top:auto on the footer itself.
+     Safari note: zoom on html works in Safari for print — but
+     .page must be display:flex (not block) or Safari blanks content.
   ───────────────────────────────────────────────────────────── */
   html {
     zoom: 0.7771;
@@ -1735,7 +1727,10 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     color: #1F2937 !important;
   }
 
-  /* ── PAGE CONTAINER ── */
+  /* ── PAGE CONTAINER ──
+     display:flex is critical — display:block causes Safari to blank
+     all content. flex-direction:column lets .content grow to fill
+     the space between header and footer, eliminating the gap. */
   .page {
     position: static !important;
     transform: none !important;
@@ -1747,7 +1742,8 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
     margin: 0 !important;
     padding: 0 !important;
     box-sizing: border-box !important;
-    display: block !important;
+    display: flex !important;
+    flex-direction: column !important;
     overflow: hidden !important;
     background: #ffffff !important;
     border: 2px solid #D97706 !important;
@@ -4655,19 +4651,20 @@ document.addEventListener('DOMContentLoaded', function() {
       var footer = page ? page.querySelector('.footer') : null;
       if (!page || !footer) return;
 
-      var pageTop      = page.getBoundingClientRect().top + window.scrollY;
-      var footerBottom = footer.getBoundingClientRect().bottom + window.scrollY;
-      var exactHeight  = Math.ceil(footerBottom - pageTop);
+      var pageRect   = page.getBoundingClientRect();
+      var footerRect = footer.getBoundingClientRect();
 
-      // zoom: 0.7771 — max printable height at 96dpi = 11in = 1056px printed.
-      // Unzoomed max = 1056 / 0.7771 = 1359px.
-      // Subtract 4px so the bottom border never fractionally overflows to page 2.
-      var safeHeight = Math.min(exactHeight, 1355);
+      // Full height from page top to footer bottom, capped just under 11in unzoomed
+      // 11in at 96dpi = 1056px printed. Unzoomed = 1056 / 0.7771 = 1359px. Use 1354 for safety.
+      var exactHeight = Math.ceil(footerRect.bottom - pageRect.top);
+      var safeHeight  = Math.min(exactHeight, 1354);
 
       dynStyle.textContent = [
         '@media print {',
-        '  .page { height: ' + safeHeight + 'px !important; overflow: hidden !important; }',
-        '  .content { overflow: visible !important; }',
+        '  .page {',
+        '    height: ' + safeHeight + 'px !important;',
+        '    overflow: hidden !important;',
+        '  }',
         '}'
       ].join('\n');
     }
